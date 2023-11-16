@@ -1,0 +1,51 @@
+spring:
+  profiles:
+    active: ${environment}
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_ENDPOINT}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        default_batch_fetch_size: 1000
+        dialect: org.hibernate.dialect.MySQLDialect
+
+# 배치 관련 설정
+#  batch:
+#    jdbc:
+#      initialize-schema: always # batch repo 테이블 자동 생성
+#    job:
+#      enabled: false # 시작과 동시에 실행되는 것 방지
+
+app:
+  auth:
+    secret-key: ${SECRET_KEY}
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${S3_ACCESS_KEY}
+      secret-key: ${S3_SECRET_ACCESS_KEY}
+    s3:
+      bucket: tickerbell-image
+    stack.auto: false #기본 cloudFormation 구성 시작 사용 x
+    region:
+      static: ap-northeast-2
+
+# sms 관련 설정
+#naver-cloud-sms:
+#  accessKey: ${SMS_ACCESS_KEY}
+#  secretKey: ${SMS_SECRET_KEY}
+#  serviceId: ${SMS_SERVICE_ID}
+#  senderPhone: ${SMS_SENDER_PHONE}
+
+# 네이버 지도 관련 설정
+#naver-cloud-map:
+#  api-key-id: ${MAP_API_KEY_ID}
+#  api-key: ${MAP_API_KEY}
