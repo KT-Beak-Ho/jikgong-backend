@@ -1,0 +1,78 @@
+name: Java CI with Gradle
+
+on:
+  push:
+    branches: [ "release" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build-docker-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Run chmod to make graldew executable
+        run: chmod +x ./gradlew
+
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+        with:
+          arguments: clean bootJar -Pspring.profiles.active=prod
+
+      - name: docker image build
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/jikgong .
+
+      - name: docker login
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # 5. Docker Hub 이미지 푸시
+      - name: docker Hub push
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/jikgong
+
+  cd-pipeline:
+    needs: build-docker-image
+    runs-on: ubuntu-latest
+    steps:
+      # docker-compose.yml 파일을 ec2 /home/ubuntu 에 scp
+      - uses: actions/checkout@master
+      - name: copy file via ssh password
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ubuntu
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 22
+          source: "./docker-compose.yml"
+          target: "/home/ubuntu/"
+
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ubuntu
+          key: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            sudo docker rm -f $(docker ps -qa)
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/jikgong
+            docker-compose up -d
+            docker image prune -f
+
+#      # ec2에 접속해 script 명령어 실행
+#      - name: executing remote ssh commands using password
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: ${{ secrets.SSH_HOST }}
+#          username: ubuntu
+#          key: ${{ secrets.SSH_KEY }}
+#          port: 22
+#          script: "sudo docker-compose pull && sudo docker-compose up -d"
