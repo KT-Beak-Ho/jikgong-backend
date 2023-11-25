@@ -1,4 +1,4 @@
-package jikgong.domain.benefit.service;
+package jikgong.domain.pickupLocation.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -9,5 +9,5 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class BenefitService {
+public class PickupLocationService {
 }
