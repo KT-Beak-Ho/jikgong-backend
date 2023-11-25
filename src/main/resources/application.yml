@@ -10,7 +10,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     properties:
       hibernate:
         default_batch_fetch_size: 1000
@@ -38,14 +38,20 @@ cloud:
     region:
       static: ap-northeast-2
 
-# sms 관련 설정
-#naver-cloud-sms:
-#  accessKey: ${SMS_ACCESS_KEY}
-#  secretKey: ${SMS_SECRET_KEY}
-#  serviceId: ${SMS_SERVICE_ID}
-#  senderPhone: ${SMS_SENDER_PHONE}
+#feign:
+#  url:
+#    sms-prefix: https://sens.apigw.ntruss.com
+#  client:
+#    default:
+#      loggerLevel: FULL
 
-# 네이버 지도 관련 설정
-#naver-cloud-map:
-#  api-key-id: ${MAP_API_KEY_ID}
-#  api-key: ${MAP_API_KEY}
+logging:
+  level:
+    jikgong.global.feignClient.client.AlimTalkClient: DEBUG
+
+# naver alimtalk
+ncp:
+  service-id: abc
+  access-key: abc
+  secret-key: abc
+  plus-friend-id: abc
