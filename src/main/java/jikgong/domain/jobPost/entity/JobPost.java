@@ -2,10 +2,7 @@ package jikgong.domain.jobPost.entity;
 
 import jakarta.persistence.*;
 import jikgong.domain.common.Address;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -34,7 +31,7 @@ public class JobPost {
     private Address address;
 
     @Builder
-    public JobPost(Tech tech, LocalDateTime startTime, Integer recruitNum, Integer registeredNum, Integer wage, String workDetail, String preparation, AvailableInfo availableInfo, Address address) {
+    public JobPost(Tech tech, LocalDateTime startTime, Integer recruitNum, Integer registeredNum, Integer wage, String workDetail, String preparation, LocalDateTime expirationTime, AvailableInfo availableInfo, Address address) {
         this.tech = tech;
         this.startTime = startTime;
         this.recruitNum = recruitNum;
@@ -42,6 +39,7 @@ public class JobPost {
         this.wage = wage;
         this.workDetail = workDetail;
         this.preparation = preparation;
+        this.expirationTime = expirationTime;
         this.availableInfo = availableInfo;
         this.address = address;
     }
