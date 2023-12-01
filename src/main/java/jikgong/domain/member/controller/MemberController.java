@@ -39,7 +39,7 @@ public class MemberController {
     }
 
     @Operation(summary = "회원 가입: 계좌 인증")
-    @PostMapping("/sms-verification")
+    @PostMapping("/account-verification")
     public ResponseEntity<Response> verificationAccount(@RequestBody VerificationAccountRequest request) {
         VerificationAccountResponse verificationAccountResponse = memberService.verificationAccount(request);
         return ResponseEntity.ok(new Response(verificationAccountResponse, "2자리 인증 코드 반환"));
