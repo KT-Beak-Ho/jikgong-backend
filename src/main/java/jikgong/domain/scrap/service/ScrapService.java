@@ -1,4 +1,4 @@
-package jikgong.domain.heart.service;
+package jikgong.domain.scrap.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -9,5 +9,5 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class HeartService {
+public class ScrapService {
 }

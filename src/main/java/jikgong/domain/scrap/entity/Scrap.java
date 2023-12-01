@@ -1,4 +1,4 @@
-package jikgong.domain.heart.entity;
+package jikgong.domain.scrap.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Heart {
+public class Scrap {
     @Id
     @GeneratedValue
-    @Column(name = "heart_id")
+    @Column(name = "scrap_id")
     private Long id;
 }
