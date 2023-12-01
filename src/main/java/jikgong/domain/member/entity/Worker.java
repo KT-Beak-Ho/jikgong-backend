@@ -16,7 +16,6 @@ public class Worker {
     private String rrnPrefix; // 생년월일 (주민등록번호 앞자리)
     @Enumerated(value = EnumType.STRING)
     private Gender gender; // 성별
-    @Enumerated(value = EnumType.STRING)
     private String nationality; // 국적
 
     @Builder
