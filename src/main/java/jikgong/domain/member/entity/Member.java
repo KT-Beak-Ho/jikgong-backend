@@ -3,6 +3,7 @@ package jikgong.domain.member.entity;
 import jakarta.persistence.*;
 import jikgong.domain.certification.entity.Certification;
 import jikgong.domain.common.BaseEntity;
+import jikgong.domain.member.dtos.JoinRequest;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,35 +18,35 @@ public class Member extends BaseEntity {
     @Column(name = "member_id")
     private Long id;
 
-    private String username;
-    private String password;
+    private String phone;
+    private String authCode; // 인증 코드 (비밀번호로 사용)
 
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
-    private String phone;
     private String account; // 계좌
     private String bank; // 은행 종류
+    private Boolean isDeleted; // 회원 탈퇴 여부
 
     @Embedded
-    private Worker worker;
+    private Worker workerInfo;
     @Embedded
-    private Company company;
+    private Company companyInfo;
 
     @OneToOne
     @JoinColumn(name = "certification_id")
     private Certification certification;
 
     @Builder
-    public Member(String username, String password, Role role, String phone, String account, String bank, Worker worker, Company company, Certification certification) {
-        this.username = username;
-        this.password = password;
-        this.role = role;
+    public Member(String phone, String authCode, Role role, String account, String bank, Worker worker, Company company, Certification certification) {
         this.phone = phone;
+        this.authCode = authCode;
+        this.role = role;
         this.account = account;
         this.bank = bank;
-        this.worker = worker;
-        this.company = company;
+        this.workerInfo = worker;
+        this.companyInfo = company;
         this.certification = certification;
+        this.isDeleted = false;
     }
 }

@@ -41,7 +41,7 @@ public class JwtFilter extends OncePerRequestFilter {
         try {
             String authorizationHeader = request.getHeader("Authorization");
             String token;
-            String username;
+            String phone;
             // 헤더가 null 이 아니고 올바른 토큰이라면
             if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ") && !request.getRequestURI().equals("/reissue")) {
                 // 토큰 추출
@@ -53,10 +53,10 @@ public class JwtFilter extends OncePerRequestFilter {
                 }
 
                 // claim 을 받아와 정보 추출
-                username = (String) jwtProvider.get(token).get("username");
+                phone = (String) jwtProvider.get(token).get("phone");
 
                 // DB 에 정보가 있는지 확인
-                Member member = memberRepository.findByUsername(username)
+                Member member = memberRepository.findByPhone(phone)
                         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
                 // principalDetails 생성
