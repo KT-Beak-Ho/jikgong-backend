@@ -17,14 +17,21 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
     private final MemberService memberService;
 
-    @Operation(summary = "회원 가입 요청")
-    @PostMapping("/join")
-    public ResponseEntity<Response> joinMember(@RequestBody JoinRequest request) {
-        Long savedMemberId = memberService.joinMember(request);
-        return ResponseEntity.ok(new Response("회원 가입 완료"));
+    @Operation(summary = "회원 가입: 노동자")
+    @PostMapping("/join-worker")
+    public ResponseEntity<Response> joinWorkerMember(@RequestBody JoinWorkerRequest request) {
+        Long savedMemberId = memberService.joinWorkerMember(request);
+        return ResponseEntity.ok(new Response("노동자 회원 가입 완료"));
     }
 
-    @Operation(summary = "회원 가입: 아이디 중복 체크")
+    @Operation(summary = "회원 가입: 기업")
+    @PostMapping("/join-company")
+    public ResponseEntity<Response> joinCompanyMember(@RequestBody JoinCompanyRequest request) {
+        Long savedMemberId = memberService.joinCompanyMember(request);
+        return ResponseEntity.ok(new Response("기업 회원 가입 완료"));
+    }
+
+    @Operation(summary = "회원 가입: 휴대폰 중복 체크")
     @PostMapping("/validation-phone")
     public ResponseEntity<Response> validationPhone(@RequestBody ValidationUsernameRequest request) {
         memberService.validationPhone(request.getPhone());

@@ -3,12 +3,10 @@ package jikgong.domain.member.entity;
 import jakarta.persistence.*;
 import jikgong.domain.certification.entity.Certification;
 import jikgong.domain.common.BaseEntity;
-import jikgong.domain.member.dtos.JoinRequest;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.jdbc.Work;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

@@ -28,32 +28,16 @@ public class MemberService {
     private final LocationRepository locationRepository;
     private final PasswordEncoder encoder;
 
-    public Long joinMember(JoinRequest request) {
+    public Long joinWorkerMember(JoinWorkerRequest request) {
         validationPhone(request.getPhone());
 
-        Worker worker = null;
-        Company company = null;
-
-        // 노동자 회원 가입
-        if (request.getRole() == Role.ROLE_WORKER) {
-            worker = Worker.builder()
+        // 노동자 정보
+        Worker worker = Worker.builder()
                     .workerName(request.getWorkerName())
                     .rrnPrefix(request.getRrnPrefix())
                     .gender(request.getGender())
                     .nationality(request.getNationality())
                     .build();
-        }
-        // 회사 회원 가입
-        if (request.getRole() == Role.ROLE_COMPANY) {
-            company = Company.builder()
-                    .businessNumber(request.getBusinessNumber())
-                    .region(request.getRegion())
-                    .companyName(request.getCompanyName())
-                    .email(request.getEmail())
-                    .manager(request.getManager())
-                    .requestContent(request.getRequestContent())
-                    .build();
-        }
         // 공통 부분
         Member member = Member.builder()
                 .phone(request.getPhone())
@@ -62,7 +46,6 @@ public class MemberService {
                 .bank(request.getBank())
                 .role(request.getRole())
                 .worker(worker)
-                .company(company)
                 .build();
 
         Location location = Location.builder()
@@ -75,8 +58,35 @@ public class MemberService {
 
         Member savedMember = memberRepository.save(member); // 회원 저장
         locationRepository.save(location); // 위치 정보 저장
-        log.info("[" + request.getPhone() + "] 회원 가입 완료");
+        log.info("노동자 회원 가입 완료");
         return savedMember.getId();
+    }
+
+    public Long joinCompanyMember(JoinCompanyRequest request) {
+        validationPhone(request.getPhone());
+
+        // 기업 정보
+        Company company = Company.builder()
+                .businessNumber(request.getBusinessNumber())
+                .region(request.getRegion())
+                .companyName(request.getCompanyName())
+                .email(request.getEmail())
+                .manager(request.getManager())
+                .requestContent(request.getRequestContent())
+                .build();
+
+        // 공통 부분
+        Member member = Member.builder()
+                .phone(request.getPhone())
+                .authCode(encoder.encode(request.getAuthCode()))
+                .account(request.getAccount())
+                .bank(request.getBank())
+                .role(request.getRole())
+                .company(company)
+                .build();
+
+        log.info("기업 회원 가입 완료");
+        return memberRepository.save(member).getId(); // 회원 저장
     }
 
     public void validationPhone(String phone) {
