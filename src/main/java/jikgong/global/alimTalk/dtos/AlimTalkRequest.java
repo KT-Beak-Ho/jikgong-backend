@@ -11,8 +11,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-
 public class AlimTalkRequest {
+    /**
+     * sens 서버에 보내기 위한 dto
+     */
     private String plusFriendId;
     private String templateCode;
     private List<MessageRequest> messages;
