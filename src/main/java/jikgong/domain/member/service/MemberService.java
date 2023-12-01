@@ -29,6 +29,8 @@ public class MemberService {
     private final PasswordEncoder encoder;
 
     public Long joinMember(JoinRequest request) {
+        validationPhone(request.getPhone());
+
         Worker worker = null;
         Company company = null;
 
@@ -77,8 +79,8 @@ public class MemberService {
         return savedMember.getId();
     }
 
-    public void validationPhone(ValidationUsernameRequest request) {
-        Optional<Member> member = memberRepository.findByPhone(request.getUsername());
+    public void validationPhone(String phone) {
+        Optional<Member> member = memberRepository.findByPhone(phone);
         if (member.isPresent()) {
             throw new CustomException(ErrorCode.MEMBER_PHONE_EXIST);
         }

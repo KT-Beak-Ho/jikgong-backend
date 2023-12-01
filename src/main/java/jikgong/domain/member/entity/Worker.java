@@ -17,10 +17,10 @@ public class Worker {
     @Enumerated(value = EnumType.STRING)
     private Gender gender; // 성별
     @Enumerated(value = EnumType.STRING)
-    private Nationality nationality; // 국적
+    private String nationality; // 국적
 
     @Builder
-    public Worker(String workerName, String rrnPrefix, Gender gender, Nationality nationality) {
+    public Worker(String workerName, String rrnPrefix, Gender gender, String nationality) {
         this.workerName = workerName;
         this.rrnPrefix = rrnPrefix;
         this.gender = gender;

@@ -27,7 +27,7 @@ public class MemberController {
     @Operation(summary = "회원 가입: 아이디 중복 체크")
     @PostMapping("/validation-phone")
     public ResponseEntity<Response> validationPhone(@RequestBody ValidationUsernameRequest request) {
-        memberService.validationPhone(request);
+        memberService.validationPhone(request.getPhone());
         return ResponseEntity.ok(new Response("사용 가능한 아이디 입니다."));
     }
 
