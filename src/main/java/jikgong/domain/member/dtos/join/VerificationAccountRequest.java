@@ -1,4 +1,4 @@
-package jikgong.domain.member.dtos;
+package jikgong.domain.member.dtos.join;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;

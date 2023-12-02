@@ -1,4 +1,4 @@
-package jikgong.domain.member.dtos;
+package jikgong.domain.member.dtos.join;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jikgong.domain.member.entity.Gender;
@@ -12,12 +12,12 @@ public class JoinWorkerRequest {
     // 공통 정보
     @Schema(description = "휴대폰 번호", example = "01012345678")
     private String phone;
-    @Schema(description = "인증 코드 6자리", example = "")
+    @Schema(description = "인증 코드 6자리", example = "123456")
     private String authCode; // 인증 코드
     @Schema(description = "회원 타입 [ROLE_WORKER or ROLE_REGISTER]", example = "ROLE_WORKER")
     private Role role; // 회원 타입
     @Schema(description = "계좌 번호", example = "12341234123412")
-    private String account; // 게좌 번호
+    private String account; // 계좌 번호
     @Schema(description = "은행 종류", example = "국민은행")
     private String bank; // 은행
 
