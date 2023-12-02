@@ -1,7 +1,10 @@
 package jikgong.domain.member.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jikgong.domain.member.dtos.*;
+import jikgong.domain.member.dtos.join.*;
+import jikgong.domain.member.dtos.login.LoginRequest;
+import jikgong.domain.member.dtos.login.LoginResponse;
+import jikgong.domain.member.dtos.login.RefreshTokenRequest;
 import jikgong.domain.member.service.MemberService;
 import jikgong.global.dto.Response;
 import lombok.RequiredArgsConstructor;
@@ -50,5 +53,19 @@ public class MemberController {
     public ResponseEntity<Response> verificationAccount(@RequestBody VerificationAccountRequest request) {
         VerificationAccountResponse verificationAccountResponse = memberService.verificationAccount(request);
         return ResponseEntity.ok(new Response(verificationAccountResponse, "2자리 인증 코드 반환"));
+    }
+
+    @Operation(summary = "로그인 요청")
+    @PostMapping("/login")
+    public ResponseEntity<Response> login(@RequestBody LoginRequest request) {
+        LoginResponse loginResponse = memberService.login(request);
+        return ResponseEntity.ok(new Response(loginResponse, "로그인 완료"));
+    }
+
+    @Operation(summary = "refresh 토큰 요청")
+    @PostMapping("/reissue")
+    public ResponseEntity<Response> regenerateToken(@RequestBody RefreshTokenRequest request) {
+        LoginResponse loginResponse = memberService.regenerateToken(request);
+        return ResponseEntity.ok(new Response(loginResponse, "토큰 재발행 완료"));
     }
 }

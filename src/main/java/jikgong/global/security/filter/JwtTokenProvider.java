@@ -6,23 +6,27 @@ import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @Slf4j
 public class JwtTokenProvider {
+    private final RedisTemplate<String, String> redisTemplate;
     private final Key key;
     private static final Long ACCESS_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 2L; // 2 hours
     private static final Long REFRESH_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 90L; // 90 days
     @Autowired
-    public JwtTokenProvider(@Value("${app.auth.secret-key}") String secretKey) {
+    public JwtTokenProvider(@Value("${app.auth.secret-key}") String secretKey, RedisTemplate<String, String> redisTemplate) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
+        this.redisTemplate = redisTemplate;
     }
 
     public String createAccessToken(String phone) {
@@ -36,8 +40,7 @@ public class JwtTokenProvider {
         HashMap<String, Object> claim = new HashMap<>();
         claim.put("phone", phone); // 사용자 휴대폰 번호
         String refreshToken = createJwt("REFRESH_TOKEN", REFRESH_TOKEN_EXPIRATION_TIME, claim);
-        // todo: redis 로직 구현
-//        saveRefreshTokenInRedis(username, refreshToken);
+        saveRefreshTokenInRedis(phone, refreshToken);
         return refreshToken;
     }
 
@@ -84,5 +87,16 @@ public class JwtTokenProvider {
         } catch (ExpiredJwtException e) {
             return true;
         }
+    }
+
+    public void saveRefreshTokenInRedis(String phone, String refreshToken) {
+        // redis 에 저장
+        redisTemplate.opsForValue().set(
+                phone,
+                refreshToken,
+                REFRESH_TOKEN_EXPIRATION_TIME,
+                TimeUnit.MILLISECONDS
+        );
+        log.info("redis 에 refresh token 저장");
     }
 }
