@@ -19,13 +19,13 @@ public class Member extends BaseEntity {
     private String phone;
     private String authCode; // 인증 코드 (비밀번호로 사용)
 
-    @Enumerated(value = EnumType.STRING)
-    private Role role;
-
     private String account; // 계좌
     private String bank; // 은행 종류
     private Boolean isDeleted; // 회원 탈퇴 여부
+    private String deviceToken; // 기기 토큰
 
+    @Enumerated(value = EnumType.STRING)
+    private Role role;
     @Embedded
     private Worker workerInfo;
     @Embedded
@@ -36,12 +36,13 @@ public class Member extends BaseEntity {
     private Certification certification;
 
     @Builder
-    public Member(String phone, String authCode, Role role, String account, String bank, Worker worker, Company company, Certification certification) {
+    public Member(String phone, String authCode, Role role, String account, String bank, String deviceToken, Worker worker, Company company, Certification certification) {
         this.phone = phone;
         this.authCode = authCode;
         this.role = role;
         this.account = account;
         this.bank = bank;
+        this.deviceToken = deviceToken;
         this.workerInfo = worker;
         this.companyInfo = company;
         this.certification = certification;

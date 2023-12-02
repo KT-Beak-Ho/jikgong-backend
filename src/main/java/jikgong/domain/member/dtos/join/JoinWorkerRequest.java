@@ -20,6 +20,8 @@ public class JoinWorkerRequest {
     private String account; // 계좌 번호
     @Schema(description = "은행 종류", example = "국민은행")
     private String bank; // 은행
+    @Schema(description = "device token", example = "token")
+    private String deviceToken; // 기기 토큰
 
     // 노동자 정보
     @Schema(description = "노동자 이름", example = "홍길동")

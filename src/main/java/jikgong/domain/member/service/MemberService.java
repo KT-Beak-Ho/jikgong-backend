@@ -52,6 +52,7 @@ public class MemberService {
                 .account(request.getAccount())
                 .bank(request.getBank())
                 .role(request.getRole())
+                .deviceToken(request.getDeviceToken())
                 .worker(worker)
                 .build();
 
@@ -90,6 +91,7 @@ public class MemberService {
                 .account(request.getAccount())
                 .bank(request.getBank())
                 .role(request.getRole())
+                .deviceToken(request.getDeviceToken())
                 .company(company)
                 .build();
 
@@ -148,7 +150,7 @@ public class MemberService {
         String accessToken = jwtTokenProvider.createAccessToken(member.getPhone());
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getPhone());
 
-        return new LoginResponse(accessToken, refreshToken);
+        return new LoginResponse(accessToken, refreshToken, member.getRole());
     }
 
     public LoginResponse regenerateToken(RefreshTokenRequest request) {
@@ -175,6 +177,6 @@ public class MemberService {
         String new_refresh_token = jwtTokenProvider.createRefreshToken(phone);
         String accessToken = jwtTokenProvider.createAccessToken(phone);
 
-        return new LoginResponse(accessToken, new_refresh_token);
+        return new LoginResponse(accessToken, new_refresh_token, member.getRole());
     }
 }

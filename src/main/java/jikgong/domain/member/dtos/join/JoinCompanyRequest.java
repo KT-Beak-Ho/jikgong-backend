@@ -19,6 +19,8 @@ public class JoinCompanyRequest {
     private String account; // 게좌 번호
     @Schema(description = "은행 종류", example = "국민은행")
     private String bank; // 은행
+    @Schema(description = "device token", example = "token")
+    private String deviceToken; // 기기 토큰
 
     // 회사 정보
     @Schema(description = "사업자 번호", example = "00000000")
