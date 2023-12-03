@@ -18,6 +18,9 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Create Firebase JSON file
+        run: echo "$JIKGONG_FIREBASE" > resources/firebase/jikgong-firebase.json
+
       - name: Run chmod to make graldew executable
         run: chmod +x ./gradlew
 
@@ -25,9 +28,6 @@ jobs:
         uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
         with:
           arguments: clean bootJar -Pspring.profiles.active=prod
-
-      - name: Create Firebase JSON file
-        run: echo "$JIKGONG_FIREBASE" > resources/firebase/jikgong-firebase.json
 
       - name: docker image build
         run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/jikgong .
