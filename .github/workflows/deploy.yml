@@ -21,7 +21,7 @@ jobs:
       - name: Create Firebase JSON file
         run: |
           mkdir -p resources/firebase
-          echo ${{ JIKGONG_FIREBASE }} > resources/firebase/jikgong-firebase.json
+          echo ${{ secrets.JIKGONG_FIREBASE }} > resources/firebase/jikgong-firebase.json
 
 
       - name: Run chmod to make graldew executable
