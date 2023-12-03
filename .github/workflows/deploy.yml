@@ -26,6 +26,9 @@ jobs:
         with:
           arguments: clean bootJar -Pspring.profiles.active=prod
 
+      - name: Create Firebase JSON file
+        run: echo "$JIKGONG_FIREBASE" > resources/firebase/jikgong-firebase.json
+
       - name: docker image build
         run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/jikgong .
 
