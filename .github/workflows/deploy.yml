@@ -23,12 +23,10 @@ jobs:
 #          mkdir -p resources/firebase
 #          echo "${{ secrets.JIKGONG_FIREBASE }}" > ./src/main/resources/firebase/jikgong-firebase.json
 
-      - name: Create Firebase JSON file
-        uses: actions/checkout@v3
-        run: |
-          touch ./src/main/resources/firebase/jikgong-firebase.json
-          echo "${{ secrets.JIKGONG_FIREBASE }}" > ./src/main/resources/firebase/jikgong-firebase.json
-          cat ./src/main/resources/firebase/jikgong-firebase.json
+      - uses: actions/checkout@v3
+      - run: touch ./src/main/resources/firebase/jikgong-firebase.json
+      - run: echo "${{ secrets.JIKGONG_FIREBASE }}" > ./src/main/resources/firebase/jikgong-firebase.json
+      - run: cat ./src/main/resources/firebase/jikgong-firebase.json
 
 
       - name: Run chmod to make graldew executable
