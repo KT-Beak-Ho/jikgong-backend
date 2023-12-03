@@ -24,6 +24,7 @@ jobs:
 #          echo "${{ secrets.JIKGONG_FIREBASE }}" > ./src/main/resources/firebase/jikgong-firebase.json
 
       - uses: actions/checkout@v3
+      - run: mkdir -p ./src/main/resources/firebase
       - run: touch ./src/main/resources/firebase/jikgong-firebase.json
       - run: echo "${{ secrets.JIKGONG_FIREBASE }}" > ./src/main/resources/firebase/jikgong-firebase.json
       - run: cat ./src/main/resources/firebase/jikgong-firebase.json
