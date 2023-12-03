@@ -21,8 +21,9 @@ public class Member extends BaseEntity {
 
     private String account; // 계좌
     private String bank; // 은행 종류
-    private Boolean isDeleted; // 회원 탈퇴 여부
     private String deviceToken; // 기기 토큰
+    private Boolean isNotification; // 알림 수신 여부
+    private Boolean isDeleted; // 회원 탈퇴 여부
 
     @Enumerated(value = EnumType.STRING)
     private Role role;
@@ -36,15 +37,16 @@ public class Member extends BaseEntity {
     private Certification certification;
 
     @Builder
-    public Member(String phone, String authCode, Role role, String account, String bank, String deviceToken, Worker worker, Company company, Certification certification) {
+    public Member(String phone, String authCode, String account, String bank, String deviceToken, Boolean isNotification, Role role, Worker workerInfo, Company companyInfo, Certification certification) {
         this.phone = phone;
         this.authCode = authCode;
-        this.role = role;
         this.account = account;
         this.bank = bank;
         this.deviceToken = deviceToken;
-        this.workerInfo = worker;
-        this.companyInfo = company;
+        this.isNotification = isNotification;
+        this.role = role;
+        this.workerInfo = workerInfo;
+        this.companyInfo = companyInfo;
         this.certification = certification;
         this.isDeleted = false;
     }

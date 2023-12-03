@@ -1,14 +1,14 @@
 package jikgong.domain.resume.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jikgong.domain.common.BaseEntity;
+import jikgong.domain.jobPost.entity.AvailableInfo;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -19,10 +19,11 @@ public class Resume extends BaseEntity {
     private Long id;
     private String position; // 직책
     private Integer experienceYear; // 경력
+    private LocalDate workStartDate; // 근무 가능 시작 일짜
+    private LocalDate workEndDate; // 근무 가능 종료 일짜
+    private String preferTime; // 선호 시간
 
-    @Builder
-    public Resume(String position, Integer experienceYear) {
-        this.position = position;
-        this.experienceYear = experienceYear;
-    }
+    @Embedded
+    private AvailableInfo availableInfo; // 가능 여부 정보
+
 }
