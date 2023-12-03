@@ -19,7 +19,10 @@ jobs:
           distribution: 'temurin'
 
       - name: Create Firebase JSON file
-        run: echo "$JIKGONG_FIREBASE" > resources/firebase/jikgong-firebase.json
+        run: |
+          mkdir -p resources/firebase
+          echo "$JIKGONG_FIREBASE" > resources/firebase/jikgong-firebase.json
+
 
       - name: Run chmod to make graldew executable
         run: chmod +x ./gradlew
