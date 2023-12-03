@@ -53,7 +53,7 @@ public class MemberService {
                 .bank(request.getBank())
                 .role(request.getRole())
                 .deviceToken(request.getDeviceToken())
-                .worker(worker)
+                .workerInfo(worker)
                 .build();
 
         Location location = Location.builder()
@@ -92,7 +92,7 @@ public class MemberService {
                 .bank(request.getBank())
                 .role(request.getRole())
                 .deviceToken(request.getDeviceToken())
-                .company(company)
+                .companyInfo(company)
                 .build();
 
         log.info("기업 회원 가입 완료");
