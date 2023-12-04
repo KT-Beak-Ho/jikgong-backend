@@ -40,4 +40,4 @@ out/
 .env
 
 # firbase json file
-**/firebase/*
+#**/firebase/*
