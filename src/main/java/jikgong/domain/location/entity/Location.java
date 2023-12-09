@@ -33,4 +33,8 @@ public class Location extends BaseEntity {
         this.isMain = isMain;
         this.member = member;
     }
+
+    public void changeMainLocation(Boolean main) {
+        isMain = main;
+    }
 }
