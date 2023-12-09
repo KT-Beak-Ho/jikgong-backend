@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -19,8 +20,8 @@ public class Resume extends BaseEntity {
     private Long id;
     private String position; // 직책
     private Integer experienceYear; // 경력
-    private LocalDate workStartDate; // 근무 가능 시작 일짜
-    private LocalDate workEndDate; // 근무 가능 종료 일짜
+    private LocalDateTime workStartDate; // 근무 가능 시작 일짜
+    private LocalDateTime workEndDate; // 근무 가능 종료 일짜
     private String preferTime; // 선호 시간
 
     @Embedded
