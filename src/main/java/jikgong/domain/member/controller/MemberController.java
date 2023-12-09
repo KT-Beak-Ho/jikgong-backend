@@ -14,56 +14,56 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController("/api/member")
+@RestController
 @RequiredArgsConstructor
 @Slf4j
 public class MemberController {
     private final MemberService memberService;
 
     @Operation(summary = "회원 가입: 노동자")
-    @PostMapping("/join-worker")
+    @PostMapping("/api/member/join-worker")
     public ResponseEntity<Response> joinWorkerMember(@RequestBody JoinWorkerRequest request) {
         Long savedMemberId = memberService.joinWorkerMember(request);
         return ResponseEntity.ok(new Response("노동자 회원 가입 완료"));
     }
 
     @Operation(summary = "회원 가입: 기업")
-    @PostMapping("/join-company")
+    @PostMapping("/api/member/join-company")
     public ResponseEntity<Response> joinCompanyMember(@RequestBody JoinCompanyRequest request) {
         Long savedMemberId = memberService.joinCompanyMember(request);
         return ResponseEntity.ok(new Response("기업 회원 가입 완료"));
     }
 
     @Operation(summary = "회원 가입: 휴대폰 중복 체크")
-    @PostMapping("/validation-phone")
+    @PostMapping("/api/member/validation-phone")
     public ResponseEntity<Response> validationPhone(@RequestBody ValidationUsernameRequest request) {
         memberService.validationPhone(request.getPhone());
         return ResponseEntity.ok(new Response("사용 가능한 아이디 입니다."));
     }
 
     @Operation(summary = "회원 가입: 휴대폰 인증")
-    @PostMapping("/sms-verification")
+    @PostMapping("/api/member/sms-verification")
     public ResponseEntity<Response> verificationSms(@RequestBody VerificationSmsRequest request) {
         VerificationSmsResponse verificationSmsResponse = memberService.verificationSms(request);
         return ResponseEntity.ok(new Response(verificationSmsResponse, "6자리 인증 코드 반환"));
     }
 
     @Operation(summary = "회원 가입: 계좌 인증")
-    @PostMapping("/account-verification")
+    @PostMapping("/api/member/account-verification")
     public ResponseEntity<Response> verificationAccount(@RequestBody VerificationAccountRequest request) {
         VerificationAccountResponse verificationAccountResponse = memberService.verificationAccount(request);
         return ResponseEntity.ok(new Response(verificationAccountResponse, "2자리 인증 코드 반환"));
     }
 
     @Operation(summary = "로그인 요청")
-    @PostMapping("/login")
+    @PostMapping("/api/member/login")
     public ResponseEntity<Response> login(@RequestBody LoginRequest request) {
         LoginResponse loginResponse = memberService.login(request);
         return ResponseEntity.ok(new Response(loginResponse, "로그인 완료"));
     }
 
     @Operation(summary = "refresh 토큰 요청")
-    @PostMapping("/reissue")
+    @PostMapping("/api/member/reissue")
     public ResponseEntity<Response> regenerateToken(@RequestBody RefreshTokenRequest request) {
         LoginResponse loginResponse = memberService.regenerateToken(request);
         return ResponseEntity.ok(new Response(loginResponse, "토큰 재발행 완료"));

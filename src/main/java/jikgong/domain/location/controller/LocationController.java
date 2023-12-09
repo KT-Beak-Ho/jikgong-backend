@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController("/api")
+@RestController
 @RequiredArgsConstructor
 @Slf4j
 public class LocationController {
     private final LocationService locationService;
 
     @Operation(summary = "신규 위치 등록")
-    @PostMapping("/location")
+    @PostMapping("/api/location")
     public ResponseEntity<Response> saveLocation(@RequestBody LocationSaveRequest request,
                                                  @AuthenticationPrincipal PrincipalDetails principalDetails) {
         Long locationId = locationService.saveLocation(principalDetails.getMember().getId(), request);
@@ -29,14 +29,14 @@ public class LocationController {
     }
 
     @Operation(summary = "등록된 위치 조회")
-    @GetMapping("/locations")
+    @GetMapping("/api/locations")
     public ResponseEntity<Response> findLocationByMember(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         List<LocationResponse> locationResponseList = locationService.findLocationByMember(principalDetails.getMember().getId());
         return ResponseEntity.ok(new Response(locationResponseList, "등록된 위치 정보 반환"));
     }
 
     @Operation(summary = "대표 위치 변경")
-    @PutMapping("/location/representative/{locationId}")
+    @PutMapping("/api/locations/representative/{locationId}")
     public ResponseEntity<Response> changeMainLocation(@PathVariable("locationId") Long locationId,
                                                        @AuthenticationPrincipal PrincipalDetails principalDetails) {
         locationService.changeMainLocation(principalDetails.getMember().getId(), locationId);
