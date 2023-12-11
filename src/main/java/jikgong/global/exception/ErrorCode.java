@@ -17,7 +17,8 @@ public enum ErrorCode {
     REFRESH_TOKEN_NOT_MATCH(HttpStatus.FORBIDDEN, "유효하지 않은 refresh token 입니다. 다시 로그인하세요."),
     FCM_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "FCM 알림 전송 중 에러가 발생했습니다."),
     FCM_FIREBASE_TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "회원 정보에 FCM 토큰이 없습니다."),
-    LOCATION_NOT_FOUND(HttpStatus.NOT_FOUND, "위치 정보가 없습니다.");
+    LOCATION_NOT_FOUND(HttpStatus.NOT_FOUND, "위치 정보가 없습니다."),
+    WAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "임금 지급 내역 정보가 없습니다.");
 
     private final HttpStatus status;
     private final String errorMessage;
