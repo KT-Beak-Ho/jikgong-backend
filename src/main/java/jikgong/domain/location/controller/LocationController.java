@@ -32,11 +32,11 @@ public class LocationController {
     @GetMapping("/api/locations")
     public ResponseEntity<Response> findLocationByMember(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         List<LocationResponse> locationResponseList = locationService.findLocationByMember(principalDetails.getMember().getId());
-        return ResponseEntity.ok(new Response(locationResponseList, "등록된 위치 정보 반환"));
+        return ResponseEntity.ok(new Response(locationResponseList, "등록된 위치 정보 반환 완료"));
     }
 
     @Operation(summary = "대표 위치 변경")
-    @PutMapping("/api/locations/representative/{locationId}")
+    @PutMapping("/api/location/representative/{locationId}")
     public ResponseEntity<Response> changeMainLocation(@PathVariable("locationId") Long locationId,
                                                        @AuthenticationPrincipal PrincipalDetails principalDetails) {
         locationService.changeMainLocation(principalDetails.getMember().getId(), locationId);
