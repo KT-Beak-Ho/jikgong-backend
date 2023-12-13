@@ -32,7 +32,7 @@ public class Member extends BaseEntity {
     @Embedded
     private Company companyInfo;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "certification_id")
     private Certification certification;
 
@@ -49,5 +49,9 @@ public class Member extends BaseEntity {
         this.companyInfo = companyInfo;
         this.certification = certification;
         this.isDeleted = false;
+    }
+
+    public void setCertification(Certification certification) {
+        this.certification = certification;
     }
 }
