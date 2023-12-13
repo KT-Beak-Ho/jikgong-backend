@@ -18,7 +18,14 @@ public enum ErrorCode {
     FCM_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "FCM 알림 전송 중 에러가 발생했습니다."),
     FCM_FIREBASE_TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "회원 정보에 FCM 토큰이 없습니다."),
     LOCATION_NOT_FOUND(HttpStatus.NOT_FOUND, "위치 정보가 없습니다."),
-    WAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "임금 지급 내역 정보가 없습니다.");
+    WAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "임금 지급 내역 정보가 없습니다."),
+    FILE_NOT_FOUND_EXTENSION(HttpStatus.BAD_REQUEST, "확장자를 찾을 수 없습니다."),
+    FILE_NOT_SUPPORTED(HttpStatus.BAD_REQUEST, "지원하지 않는 확장자 입니다."),
+    IMAGE_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 처리 중 서버에서 에러가 발생했습니다."),
+    CERTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "회원의 증명서 정보가 없습니다."),
+    LIKE_NOT_FOUND(HttpStatus.NOT_FOUND, "좋아요 누른 정보가 없습니다."),
+    LIKE_REQUEST_INVALID(HttpStatus.BAD_REQUEST, "좋아요는 기업이 노동자에게 누를 수 있습니다."),
+    LIKE_ALREADY_EXIST(HttpStatus.CONFLICT, "해당 회원에겐 이미 좋아요를 눌렀습니다.");
 
     private final HttpStatus status;
     private final String errorMessage;
