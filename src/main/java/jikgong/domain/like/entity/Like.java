@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jikgong.domain.common.BaseEntity;
 import jikgong.domain.member.entity.Member;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,4 +27,10 @@ public class Like extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "receiver_id")
     private Member receiver; // 좋아요 받은 회원
+
+    @Builder
+    public Like(Member sender, Member receiver) {
+        this.sender = sender;
+        this.receiver = receiver;
+    }
 }
