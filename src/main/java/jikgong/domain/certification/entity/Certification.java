@@ -28,4 +28,6 @@ public class Certification extends BaseEntity {
         this.storeImgName = storeImgName;
         this.s3Url = s3Url;
     }
+
+
 }
