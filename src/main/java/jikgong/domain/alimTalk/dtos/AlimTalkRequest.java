@@ -1,4 +1,4 @@
-package jikgong.global.alimTalk.dtos;
+package jikgong.domain.alimTalk.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

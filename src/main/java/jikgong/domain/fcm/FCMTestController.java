@@ -1,9 +1,9 @@
-package jikgong.global.fcm;
+package jikgong.domain.fcm;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jikgong.global.dto.Response;
-import jikgong.global.fcm.dtos.FCMNotificationRequestDto;
-import jikgong.global.fcm.service.FCMNotificationService;
+import jikgong.domain.fcm.dtos.FCMNotificationRequestDto;
+import jikgong.domain.fcm.service.FCMNotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

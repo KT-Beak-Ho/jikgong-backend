@@ -1,4 +1,4 @@
-package jikgong.global.fcm.service;
+package jikgong.domain.fcm.service;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
@@ -8,12 +8,10 @@ import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
 import jikgong.global.exception.CustomException;
 import jikgong.global.exception.ErrorCode;
-import jikgong.global.fcm.dtos.FCMNotificationRequestDto;
+import jikgong.domain.fcm.dtos.FCMNotificationRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service

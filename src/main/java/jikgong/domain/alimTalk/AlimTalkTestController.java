@@ -1,4 +1,4 @@
-package jikgong.global.alimTalk;
+package jikgong.domain.alimTalk;
 
 import jikgong.global.dto.Response;
 import lombok.RequiredArgsConstructor;

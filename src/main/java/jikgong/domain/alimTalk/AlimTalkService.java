@@ -1,8 +1,8 @@
-package jikgong.global.alimTalk;
+package jikgong.domain.alimTalk;
 
-import jikgong.global.alimTalk.dtos.AlimTalkRequest;
-import jikgong.global.alimTalk.dtos.AlimTalkResponse;
-import jikgong.global.alimTalk.dtos.MessageRequest;
+import jikgong.domain.alimTalk.dtos.AlimTalkRequest;
+import jikgong.domain.alimTalk.dtos.MessageRequest;
+import jikgong.domain.alimTalk.dtos.AlimTalkResponse;
 import jikgong.global.feignClient.client.AlimTalkClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.List;
 
 @Service

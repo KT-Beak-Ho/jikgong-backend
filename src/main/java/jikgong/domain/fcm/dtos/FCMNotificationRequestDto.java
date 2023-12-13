@@ -1,4 +1,4 @@
-package jikgong.global.fcm.dtos;
+package jikgong.domain.fcm.dtos;
 
 import lombok.Builder;
 import lombok.Getter;
