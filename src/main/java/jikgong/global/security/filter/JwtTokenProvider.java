@@ -20,7 +20,8 @@ import java.util.concurrent.TimeUnit;
 public class JwtTokenProvider {
     private final RedisTemplate<String, String> redisTemplate;
     private final Key key;
-    private static final Long ACCESS_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 2L; // 2 hours
+//    private static final Long ACCESS_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 2L; // 2 hours
+    private static final Long ACCESS_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 60L; // 60 days
     private static final Long REFRESH_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 90L; // 90 days
     @Autowired
     public JwtTokenProvider(@Value("${app.auth.secret-key}") String secretKey, RedisTemplate<String, String> redisTemplate) {
