@@ -21,6 +21,8 @@ public class JoinCompanyRequest {
     private String bank; // 은행
     @Schema(description = "device token", example = "token")
     private String deviceToken; // 기기 토큰
+    @Schema(description = "알림 수신 여부", example = "true")
+    private Boolean isNotification; // 알림 수신 여부
 
     // 회사 정보
     @Schema(description = "사업자 번호", example = "00000000")

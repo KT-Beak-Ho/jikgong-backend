@@ -53,6 +53,7 @@ public class MemberService {
                 .bank(request.getBank())
                 .role(request.getRole())
                 .deviceToken(request.getDeviceToken())
+                .isNotification(request.getIsNotification())
                 .workerInfo(worker)
                 .build();
 
@@ -92,6 +93,7 @@ public class MemberService {
                 .bank(request.getBank())
                 .role(request.getRole())
                 .deviceToken(request.getDeviceToken())
+                .isNotification(request.getIsNotification())
                 .companyInfo(company)
                 .build();
 

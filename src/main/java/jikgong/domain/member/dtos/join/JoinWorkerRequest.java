@@ -22,6 +22,8 @@ public class JoinWorkerRequest {
     private String bank; // 은행
     @Schema(description = "device token", example = "token")
     private String deviceToken; // 기기 토큰
+    @Schema(description = "알림 수신 여부", example = "true")
+    private Boolean isNotification; // 알림 수신 여부
 
     // 노동자 정보
     @Schema(description = "노동자 이름", example = "홍길동")
