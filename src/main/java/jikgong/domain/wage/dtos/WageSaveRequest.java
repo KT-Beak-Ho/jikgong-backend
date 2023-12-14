@@ -16,10 +16,8 @@ public class WageSaveRequest {
     private String memo; // 메모
     @Schema(description = "회사 명", example = "(주)직공")
     private String companyName; // 회사 명
-    @Schema(description = "근무 시작 시간", example = "2023-12-25T09:30:00")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
+    @Schema(description = "근무 시작 시간", example = "2023-12-25T09:30:00.000Z")
     private LocalDateTime startTime; // 근무 시작 시간
-    @Schema(description = "근무 시작 시간", example = "2023-12-25T18:00:00")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
+    @Schema(description = "근무 시작 시간", example = "2023-12-25T18:00:00.000Z")
     private LocalDateTime endTime; // 근무 종료 시간
 }

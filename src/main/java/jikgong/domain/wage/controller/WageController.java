@@ -35,7 +35,6 @@ public class WageController {
     @Operation(summary = "일별 지급 내역 조회", description = "selectDay 예시: 2023-12-25T00:00:00")
     @GetMapping("/api/wages")
     public ResponseEntity<Response> findDailyWageHistory(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                         @DateTimeFormat (pattern = "yyyy-MM-dd'T'HH:mm:ss")
                                                          @RequestParam("selectDay") LocalDateTime selectDay) {
         List<DailyWageResponse> dailyWageResponseList = wageService.findDailyWageHistory(principalDetails.getMember().getId(), selectDay);
         return ResponseEntity.ok(new Response(dailyWageResponseList, "일별 지급 내역 반환 완료"));
@@ -44,7 +43,6 @@ public class WageController {
     @Operation(summary = "월 별 근무일 & 월 수입 합계", description = "selectDay 예시: 2023-12-01T00:00:00")
     @GetMapping("/api/wages/month")
     public ResponseEntity<Response> findMonthlyWageHistory(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                         @DateTimeFormat (pattern = "yyyy-MM-dd'T'HH:mm:ss")
                                                          @RequestParam("selectMonth") LocalDateTime selectMonth) {
         MonthlyWageResponse dailyWageResponse = wageService.findMonthlyWageHistory(principalDetails.getMember().getId(), selectMonth);
         return ResponseEntity.ok(new Response(dailyWageResponse, "월 별 근무일 & 월 수입 합계"));
