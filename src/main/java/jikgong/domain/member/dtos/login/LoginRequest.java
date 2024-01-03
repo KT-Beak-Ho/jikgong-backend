@@ -11,4 +11,6 @@ public class LoginRequest {
     private String phone;
     @Schema(description = "인증 코드 6자리", example = "123456")
     private String authCode;
+    @Schema(description = "device token")
+    private String deviceToken;
 }

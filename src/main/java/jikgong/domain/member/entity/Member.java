@@ -54,4 +54,8 @@ public class Member extends BaseEntity {
     public void setCertification(Certification certification) {
         this.certification = certification;
     }
+
+    public void updateDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
+    }
 }

@@ -1,5 +1,6 @@
 package jikgong.domain.member.service;
 
+import jikgong.domain.common.Address;
 import jikgong.domain.location.entity.Location;
 import jikgong.domain.location.repository.LocationRepository;
 import jikgong.domain.member.dtos.join.*;
@@ -58,9 +59,7 @@ public class MemberService {
                 .build();
 
         Location location = Location.builder()
-                .address(request.getAddress())
-                .latitude(request.getLatitude())
-                .longitude(request.getLongitude())
+                .address(new Address(request.getAddress(), request.getLatitude(), request.getLongitude()))
                 .isMain(true)
                 .member(member)
                 .build();
@@ -139,6 +138,7 @@ public class MemberService {
     }
 
     public LoginResponse login(LoginRequest request) {
+        // todo: 기업, 노동자 로그인 분리
         // id 체크
         Member member = memberRepository.findByPhone(request.getPhone())
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -151,6 +151,9 @@ public class MemberService {
         // accessToken & refreshToken 생성
         String accessToken = jwtTokenProvider.createAccessToken(member.getPhone());
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getPhone());
+
+        // device token update
+        member.updateDeviceToken(request.getDeviceToken());
 
         return new LoginResponse(accessToken, refreshToken, member.getRole());
     }
