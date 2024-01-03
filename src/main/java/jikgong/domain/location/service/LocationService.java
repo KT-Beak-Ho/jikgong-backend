@@ -1,6 +1,7 @@
 package jikgong.domain.location.service;
 
 
+import jikgong.domain.common.Address;
 import jikgong.domain.location.dtos.LocationResponse;
 import jikgong.domain.location.dtos.LocationSaveRequest;
 import jikgong.domain.location.entity.Location;
@@ -38,9 +39,7 @@ public class LocationService {
         }
 
         Location location = Location.builder()
-                .latitude(request.getLatitude())
-                .longitude(request.getLongitude())
-                .address(request.getAddress())
+                .address(new Address(request.getAddress(), request.getLatitude(), request.getLongitude()))
                 .isMain(request.getIsMain())
                 .member(member)
                 .build();

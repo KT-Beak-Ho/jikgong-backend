@@ -1,6 +1,7 @@
 package jikgong.domain.location.entity;
 
 import jakarta.persistence.*;
+import jikgong.domain.common.Address;
 import jikgong.domain.common.BaseEntity;
 import jikgong.domain.member.entity.Member;
 import lombok.AccessLevel;
@@ -16,9 +17,8 @@ public class Location extends BaseEntity {
     @Column(name = "location_id")
     private Long id;
 
-    private Float latitude; // 위도
-    private Float longitude; // 경도
-    private String address; // 주소
+    @Embedded
+    private Address address;
     private Boolean isMain; // 대표 위치 여부
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -26,9 +26,7 @@ public class Location extends BaseEntity {
     private Member member;
 
     @Builder
-    public Location(Float latitude, Float longitude, String address, Boolean isMain, Member member) {
-        this.latitude = latitude;
-        this.longitude = longitude;
+    public Location(Address address, Boolean isMain, Member member) {
         this.address = address;
         this.isMain = isMain;
         this.member = member;
