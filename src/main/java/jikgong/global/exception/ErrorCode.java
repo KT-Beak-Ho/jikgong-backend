@@ -25,7 +25,10 @@ public enum ErrorCode {
     CERTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "회원의 증명서 정보가 없습니다."),
     LIKE_NOT_FOUND(HttpStatus.NOT_FOUND, "좋아요 누른 정보가 없습니다."),
     LIKE_REQUEST_INVALID(HttpStatus.BAD_REQUEST, "좋아요는 기업이 노동자에게 누를 수 있습니다."),
-    LIKE_ALREADY_EXIST(HttpStatus.CONFLICT, "해당 회원에겐 이미 좋아요를 눌렀습니다.");
+    LIKE_ALREADY_EXIST(HttpStatus.CONFLICT, "해당 회원에겐 이미 좋아요를 눌렀습니다."),
+    JOB_POST_NOT_FOUND(HttpStatus.NOT_FOUND, "모집 공고 정보가 없습니다."),
+    JOB_POST_EXPIRED(HttpStatus.BAD_REQUEST, "모집 기한이 지난 공고입니다."),
+    RECRUITMENT_FULL(HttpStatus.BAD_REQUEST, "이미 모집 인원이 충족되었습니다.");
 
     private final HttpStatus status;
     private final String errorMessage;

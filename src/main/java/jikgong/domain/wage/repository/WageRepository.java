@@ -27,9 +27,9 @@ public interface WageRepository extends JpaRepository<Wage, Long> {
     @Query("select w from Wage w where w.id = :wageId and w.member.id = :memberId")
     Wage findByMemberIdAndWageId(@Param("memberId") Long memberId, @Param("wageId") Long wageId);
 
-    @Query("select w.startTime from Wage w where w.member.id = :memberId and " +
-            "w.startTime between :monthStart and :monthEnd")
-    List<LocalDateTime> findWorkDateInMonth(@Param("memberId") Long memberId,
+    @Query("select w from Wage w where w.member.id = :memberId and " +
+            "w.startTime between :monthStart and :monthEnd order by w.startTime asc")
+    List<Wage> findWorkDateInMonth(@Param("memberId") Long memberId,
                                             @Param("monthStart") LocalDateTime monthStart,
                                             @Param("monthEnd") LocalDateTime monthEnd);
 }

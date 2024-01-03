@@ -16,8 +16,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,7 +62,7 @@ public class WageService {
     }
 
     @Transactional(readOnly = true)
-    public MonthlyWageResponse findMonthlyWageHistory(Long memberId, LocalDateTime selectMonth) {
+    public MonthlyWageResponse findMonthlyWageHistoryCalendar(Long memberId, LocalDateTime selectMonth) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
@@ -69,19 +72,57 @@ public class WageService {
                 TimeTransfer.getFirstDayOfMonth(selectMonth),
                 TimeTransfer.getLastDayOfMonth(selectMonth));
 
+        List<Wage> wageHistoryMonth = wageRepository.findWorkDateInMonth(
+                member.getId(),
+                TimeTransfer.getFirstDayOfMonth(selectMonth),
+                TimeTransfer.getLastDayOfMonth(selectMonth));
+
+        // 일별 일한 시간 합
+        Map<LocalDate, String> dailyWorkTime = wageHistoryMonth.stream()
+                .collect(Collectors.groupingBy(
+                        wage -> wage.getStartTime().toLocalDate(),
+                        Collectors.collectingAndThen(
+                                Collectors.reducing(Duration.ZERO,
+                                        wage -> Duration.between(wage.getStartTime(), wage.getEndTime()),
+                                        Duration::plus),
+                                duration -> formatDuration(duration)
+                        )
+                ));
+
+        // 위와 같은 코드
+        /*
+        for (Wage wage : wageHistoryMonth) {
+            LocalDate date = wage.getStartTime().toLocalDate();
+            Duration duration = Duration.between(wage.getStartTime(), wage.getEndTime());
+
+            // 기존에 해당 날짜에 대한 값이 이미 있을 경우 더하고 없으면 새로 추가
+            if (dailyWorkTime.containsKey(date)) {
+                Duration existingDuration = Duration.parse(dailyWorkTime.get(date));
+                dailyWorkTime.put(date, formatDuration(existingDuration.plus(duration)));
+            } else {
+                dailyWorkTime.put(date, formatDuration(duration));
+            }
+        } */
+
         // 월별 일한 날짜 리스트
-        List<LocalDateTime> workDayList = wageRepository.findWorkDateInMonth(
-                        member.getId(),
-                        TimeTransfer.getFirstDayOfMonth(selectMonth),
-                        TimeTransfer.getLastDayOfMonth(selectMonth)).stream()
-                .map(TimeTransfer::getFirstTimeOfDay)
+        List<LocalDateTime> workDayList = wageHistoryMonth.stream()
+                .map(wage -> TimeTransfer.getFirstTimeOfDay(wage.getStartTime()))
                 .distinct()
                 .collect(Collectors.toList());
 
         return MonthlyWageResponse.builder()
                 .totalMonthlyWage(totalMonthlyWage)
                 .workDayList(workDayList)
+                .dailyWorkTime(dailyWorkTime)
                 .build();
+    }
+
+    // Duration 객체 -> x시 x분 으로 포맷팅
+    private String formatDuration(Duration duration) {
+        long hours = duration.toHours();
+        long minutes = duration.toMinutesPart();
+
+        return String.format("%d시간 %d분", hours, minutes);
     }
 
     public void deleteWageHistory(Long memberId, Long wageId) {
@@ -102,5 +143,17 @@ public class WageService {
 
         // update
         wage.modifyWage(request.getDailyWage(), request.getMemo(), request.getCompanyName(), request.getStartTime(), request.getEndTime());
+    }
+
+    public List<DailyWageResponse> findMonthlyWageHistoryList(Long memberId, LocalDateTime selectMonth) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        return wageRepository.findWorkDateInMonth(
+                        member.getId(),
+                        TimeTransfer.getFirstDayOfMonth(selectMonth),
+                        TimeTransfer.getLastDayOfMonth(selectMonth)).stream()
+                .map(DailyWageResponse::from)
+                .collect(Collectors.toList());
     }
 }

@@ -32,7 +32,7 @@ public class WageController {
         return ResponseEntity.ok(new Response("지급 내역 등록 완료"));
     }
 
-    @Operation(summary = "일별 지급 내역 조회", description = "selectDay 예시: 2023-12-25T00:00:00")
+    @Operation(summary = "일별 지급 내역 조회 (캘린더 형식)", description = "selectDay 예시: 2023-12-25T00:00:00")
     @GetMapping("/api/wages")
     public ResponseEntity<Response> findDailyWageHistory(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                          @RequestParam("selectDay") LocalDateTime selectDay) {
@@ -40,12 +40,20 @@ public class WageController {
         return ResponseEntity.ok(new Response(dailyWageResponseList, "일별 지급 내역 반환 완료"));
     }
 
-    @Operation(summary = "월 별 근무일 & 월 수입 합계", description = "selectDay 예시: 2023-12-01T00:00:00")
-    @GetMapping("/api/wages/month")
-    public ResponseEntity<Response> findMonthlyWageHistory(@AuthenticationPrincipal PrincipalDetails principalDetails,
+    @Operation(summary = "월 별 근무일 & 월 수입 합계 (캘린더 형식)", description = "selectMonth 예시: 2023-12-01T00:00:00")
+    @GetMapping("/api/wages/calendar/month")
+    public ResponseEntity<Response> findMonthlyWageHistoryCalendar(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                          @RequestParam("selectMonth") LocalDateTime selectMonth) {
-        MonthlyWageResponse dailyWageResponse = wageService.findMonthlyWageHistory(principalDetails.getMember().getId(), selectMonth);
+        MonthlyWageResponse dailyWageResponse = wageService.findMonthlyWageHistoryCalendar(principalDetails.getMember().getId(), selectMonth);
         return ResponseEntity.ok(new Response(dailyWageResponse, "월 별 근무일 & 월 수입 합계"));
+    }
+
+    @Operation(summary = "월 별 지급 내역 조회 (리스트 형식)", description = "selectMonth 예시: 2023-12-01T00:00:00")
+    @GetMapping("/api/wages/list/month")
+    public ResponseEntity<Response> findMonthlyWageHistoryList(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                               @RequestParam("selectMonth") LocalDateTime selectMonth) {
+        List<DailyWageResponse> wageResponseList = wageService.findMonthlyWageHistoryList(principalDetails.getMember().getId(), selectMonth);
+        return ResponseEntity.ok(new Response(wageResponseList, "해당 월 지급 내역 리스트 반환 완료"));
     }
 
     @Operation(summary = "지급 내역 삭제")
