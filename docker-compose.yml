@@ -6,13 +6,13 @@ services:
     hostname: redis
     ports:
       - "6379:6379"
+    volumes:
+      - ./redis/data:/data
   spring:
     container_name: spring
     image: ${DOCKERHUB_USERNAME}/jikgong
     depends_on:
       - redis
-    volumes:
-      - ./redis/data:/data
     environment:
       - DB_ENDPOINT=${DB_ENDPOINT}
       - DB_PASSWORD=${DB_PASSWORD}
