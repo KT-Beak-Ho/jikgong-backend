@@ -1,6 +1,7 @@
 package jikgong.domain.jobPost.service;
 
 import jikgong.domain.common.Address;
+import jikgong.domain.jobPost.dtos.JobPostApplyHistoryResponse;
 import jikgong.domain.jobPost.dtos.JobPostSaveRequest;
 import jikgong.domain.jobPost.entity.AvailableInfo;
 import jikgong.domain.jobPost.entity.JobPost;
@@ -56,5 +57,16 @@ public class JobPostService {
         pickupLocationRepository.saveAll(pickupLocationList);
 
         return savedJobPost.getId();
+    }
+
+    public List<JobPostApplyHistoryResponse> findJobPostsByMemberId(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        List<JobPostApplyHistoryResponse> jobPostApplyHistoryResponseList = jobPostRepository.findByMemberId(memberId).stream()
+                .map(JobPostApplyHistoryResponse::from)
+                .collect(Collectors.toList());
+
+        return jobPostApplyHistoryResponseList;
     }
 }

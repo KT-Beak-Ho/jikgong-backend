@@ -11,6 +11,8 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 public class JobPostSaveRequest {
+    @Schema(description = "공고 제목", example = "사하구  낙동5블럭  낙동강 온도 측정 센터 신축공사")
+    private String title;
     @Schema(description = "인부 타입", example = "NORMAL")
     private Tech tech;
     @Schema(description = "시작 일시", example = "2023-12-25T09:30:00")

@@ -16,6 +16,7 @@ public class JobPost {
     @Column(name = "job_post_id")
     private Long id;
 
+    private String title; // 제목
     @Enumerated(value = EnumType.STRING)
     private Tech tech;
     private LocalDateTime startTime; // 시작 일시
@@ -36,7 +37,8 @@ public class JobPost {
     private Member member;
 
     @Builder
-    public JobPost(Tech tech, LocalDateTime startTime, Integer recruitNum, Integer wage, String workDetail, String preparation, LocalDateTime expirationTime, AvailableInfo availableInfo, Address address, Member member) {
+    public JobPost(String title, Tech tech, LocalDateTime startTime, Integer recruitNum, Integer wage, String workDetail, String preparation, LocalDateTime expirationTime, AvailableInfo availableInfo, Address address, Member member) {
+        this.title = title;
         this.tech = tech;
         this.startTime = startTime;
         this.recruitNum = recruitNum;
