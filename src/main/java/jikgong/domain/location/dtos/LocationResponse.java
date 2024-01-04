@@ -16,7 +16,7 @@ public class LocationResponse {
     public static LocationResponse from(Location location) {
         return LocationResponse.builder()
                 .locationId(location.getId())
-                .address(location.getAddress())
+                .address(location.getAddress().getAddress())
                 .isMain(location.getIsMain())
                 .build();
     }
