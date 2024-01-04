@@ -28,7 +28,8 @@ public enum ErrorCode {
     LIKE_ALREADY_EXIST(HttpStatus.CONFLICT, "해당 회원에겐 이미 좋아요를 눌렀습니다."),
     JOB_POST_NOT_FOUND(HttpStatus.NOT_FOUND, "모집 공고 정보가 없습니다."),
     JOB_POST_EXPIRED(HttpStatus.BAD_REQUEST, "모집 기한이 지난 공고입니다."),
-    RECRUITMENT_FULL(HttpStatus.BAD_REQUEST, "이미 모집 인원이 충족되었습니다.");
+    RECRUITMENT_FULL(HttpStatus.BAD_REQUEST, "이미 모집 인원이 충족되었습니다."),
+    APPLY_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 신청한 모집 공고 입니다.");
 
     private final HttpStatus status;
     private final String errorMessage;
