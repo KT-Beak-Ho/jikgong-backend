@@ -3,10 +3,14 @@ package jikgong.domain.member.entity;
 import jakarta.persistence.*;
 import jikgong.domain.certification.entity.Certification;
 import jikgong.domain.common.BaseEntity;
+import jikgong.domain.location.entity.Location;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -35,6 +39,10 @@ public class Member extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "certification_id")
     private Certification certification;
+
+    // 양방향 매핑
+    @OneToMany(mappedBy = "member")
+    List<Location> locationList = new ArrayList<>();
 
     @Builder
     public Member(String phone, String authCode, String account, String bank, String deviceToken, Boolean isNotification, Role role, Worker workerInfo, Company companyInfo, Certification certification) {

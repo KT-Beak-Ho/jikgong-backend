@@ -41,11 +41,12 @@ public class MemberService {
 
         // 노동자 정보
         Worker worker = Worker.builder()
-                    .workerName(request.getWorkerName())
-                    .rrnPrefix(request.getRrnPrefix())
-                    .gender(request.getGender())
-                    .nationality(request.getNationality())
-                    .build();
+                .workerName(request.getWorkerName())
+                .birth(request.getBirth())
+                .rrn(request.getRrn())
+                .gender(request.getGender())
+                .nationality(request.getNationality())
+                .build();
         // 공통 부분
         Member member = Member.builder()
                 .phone(request.getPhone())
@@ -169,7 +170,7 @@ public class MemberService {
 
         Member member = memberRepository.findByPhone(phone)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND)
-        );
+                );
 
         // phone 값으로 redis 에 저장된 refreshToken 추출
         String findRefreshToken = redisTemplate.opsForValue().get(phone);

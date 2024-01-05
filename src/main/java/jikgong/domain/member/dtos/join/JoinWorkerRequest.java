@@ -29,7 +29,9 @@ public class JoinWorkerRequest {
     @Schema(description = "노동자 이름", example = "홍길동")
     private String workerName; // 노동자 이름
     @Schema(description = "생년월일", example = "19750101")
-    private String rrnPrefix; // 생년월일
+    private String birth; // 생년월일
+    @Schema(description = "주민등록번호", example = "750101-1752442")
+    private String rrn; // 생년월일
     @Schema(description = "성별 [MALE or FEMAILE]", example = "MALE")
     private Gender gender; // 성별
     @Schema(description = "국적", example = "대한민국")

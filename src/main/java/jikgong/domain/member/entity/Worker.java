@@ -13,15 +13,17 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Worker {
     private String workerName; // 노동자 이름
-    private String rrnPrefix; // 생년월일 (주민등록번호 앞자리)
+    private String brith; // 생년월일
+    private String rrn; // 주민등록번호
     @Enumerated(value = EnumType.STRING)
     private Gender gender; // 성별
     private String nationality; // 국적
 
     @Builder
-    public Worker(String workerName, String rrnPrefix, Gender gender, String nationality) {
+    public Worker(String workerName, String birth, String rrn, Gender gender, String nationality) {
         this.workerName = workerName;
-        this.rrnPrefix = rrnPrefix;
+        this.brith = birth;
+        this.rrn = rrn;
         this.gender = gender;
         this.nationality = nationality;
     }
