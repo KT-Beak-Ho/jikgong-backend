@@ -20,12 +20,14 @@ public class JobPost {
     @Enumerated(value = EnumType.STRING)
     private Tech tech;
     private LocalDateTime startTime; // 시작 일시
+    private LocalDateTime endTime; // 종료 일시
     private Integer recruitNum; // 모집 인원
     private Integer registeredNum; // 모집된 인원
     private Integer wage; // 임금
     private String workDetail; // 작업 상세
     private String preparation; // 준비 사항
     private LocalDateTime expirationTime; // 모집 마감
+    private Boolean isTemporary; // 임시 저장 여부
 
     @Embedded
     private AvailableInfo availableInfo; // 가능 여부 정보
@@ -37,18 +39,21 @@ public class JobPost {
     private Member member;
 
     @Builder
-    public JobPost(String title, Tech tech, LocalDateTime startTime, Integer recruitNum, Integer wage, String workDetail, String preparation, LocalDateTime expirationTime, AvailableInfo availableInfo, Address address, Member member) {
+    public JobPost(String title, Tech tech, LocalDateTime startTime, LocalDateTime endTime, Integer recruitNum, Integer wage, String workDetail, String preparation, LocalDateTime expirationTime, Boolean isTemporary, AvailableInfo availableInfo, Address address, Member member) {
         this.title = title;
         this.tech = tech;
         this.startTime = startTime;
+        this.endTime = endTime;
         this.recruitNum = recruitNum;
         this.registeredNum = 0;
         this.wage = wage;
         this.workDetail = workDetail;
         this.preparation = preparation;
         this.expirationTime = expirationTime;
+        this.isTemporary = isTemporary;
         this.availableInfo = availableInfo;
         this.address = address;
         this.member = member;
+
     }
 }

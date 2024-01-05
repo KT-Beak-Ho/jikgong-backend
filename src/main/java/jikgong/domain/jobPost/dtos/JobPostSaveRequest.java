@@ -15,8 +15,10 @@ public class JobPostSaveRequest {
     private String title;
     @Schema(description = "인부 타입", example = "NORMAL")
     private Tech tech;
-    @Schema(description = "시작 일시", example = "2023-12-25T09:30:00")
+    @Schema(description = "시작 일시", example = "2024-01-01T09:30:00")
     private LocalDateTime startTime;
+    @Schema(description = "종료 일시", example = "2024-01-05T18:00:00")
+    private LocalDateTime endTime;
     @Schema(description = "모집 인원", example = "60")
     private Integer recruitNum;
     @Schema(description = "임금", example = "150000")
@@ -27,6 +29,8 @@ public class JobPostSaveRequest {
     private String preparation;
     @Schema(description = "모집 마감", example = "2023-12-25T09:30:00")
     private LocalDateTime expirationTime;
+    @Schema(description = "임시 저장 여부", example = "false")
+    private Boolean isTemporary;
 
     // 가능 여부 정보
     @Schema(description = "식사 제공 여부", example = "true")

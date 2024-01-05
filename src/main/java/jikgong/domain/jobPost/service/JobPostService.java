@@ -2,9 +2,11 @@ package jikgong.domain.jobPost.service;
 
 import jikgong.domain.common.Address;
 import jikgong.domain.jobPost.dtos.JobPostApplyHistoryResponse;
+import jikgong.domain.jobPost.dtos.JobPostListResponse;
 import jikgong.domain.jobPost.dtos.JobPostSaveRequest;
 import jikgong.domain.jobPost.entity.AvailableInfo;
 import jikgong.domain.jobPost.entity.JobPost;
+import jikgong.domain.jobPost.entity.JobPostStatus;
 import jikgong.domain.jobPost.repository.JobPostRepository;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
@@ -18,6 +20,8 @@ import org.checkerframework.checker.units.qual.A;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,13 +42,15 @@ public class JobPostService {
         JobPost jobPost = JobPost.builder()
                 .tech(request.getTech())
                 .startTime(request.getStartTime())
+                .endTime(request.getEndTime())
                 .recruitNum(request.getRecruitNum())
                 .wage(request.getWage())
                 .workDetail(request.getWorkDetail())
                 .preparation(request.getPreparation())
                 .expirationTime(request.getExpirationTime())
-                .address(new Address(request.getAddress(), request.getLatitude(), request.getLongitude()))
+                .isTemporary(request.getIsTemporary())
                 .availableInfo(new AvailableInfo(request.getMeal(), request.getPickup(), request.getSafeEquipment(), request.getPark()))
+                .address(new Address(request.getAddress(), request.getLatitude(), request.getLongitude()))
                 .member(member)
                 .build();
 
@@ -59,14 +65,26 @@ public class JobPostService {
         return savedJobPost.getId();
     }
 
-    public List<JobPostApplyHistoryResponse> findJobPostsByMemberId(Long memberId) {
+    // 등록한 공고 리스트
+    public List<JobPostListResponse> findJobPostsByMemberId(Long memberId, JobPostStatus jobPostStatus) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+        LocalDateTime now = LocalDateTime.now();
+        List<JobPost> jobPostList = new ArrayList<>();
+        if (jobPostStatus == JobPostStatus.COMPLETED) {
+            jobPostList = jobPostRepository.findCompletedJobPostByMemberId(memberId, now);
+        }
+        else if (jobPostStatus == JobPostStatus.IN_PROGRESS) {
+            jobPostList = jobPostRepository.findInProgressJobPostByMemberId(memberId, now);
+        }
+        else if (jobPostStatus == JobPostStatus.PLANNED) {
+            jobPostList = jobPostRepository.findPlannedJobPostByMemberId(memberId, now);
+        }
 
-        List<JobPostApplyHistoryResponse> jobPostApplyHistoryResponseList = jobPostRepository.findByMemberId(memberId).stream()
-                .map(JobPostApplyHistoryResponse::from)
+        List<JobPostListResponse> jobPostListResponseList = jobPostList.stream()
+                .map(JobPostListResponse::from)
                 .collect(Collectors.toList());
 
-        return jobPostApplyHistoryResponseList;
+        return jobPostListResponseList;
     }
 }
