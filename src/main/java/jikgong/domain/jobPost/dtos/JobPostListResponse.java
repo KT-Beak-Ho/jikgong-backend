@@ -10,7 +10,8 @@ import lombok.Getter;
 @Builder
 public class JobPostListResponse {
     /**
-     * 등록한 일자리 목록 dto
+     * 등록한 일자리 공고 목록 dto
+     * 임시 저장한 일자리 공고 목록 dto
      */
     private Long jobPostId;
     private String title;

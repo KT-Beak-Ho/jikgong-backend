@@ -87,4 +87,16 @@ public class JobPostService {
 
         return jobPostListResponseList;
     }
+
+    // 임시 등록한 공고 리스트
+    public List<JobPostListResponse> findTemporaryJobPosts(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        List<JobPostListResponse> temporaryJobPostList = jobPostRepository.findTemporaryJobPostByMemberId(member.getId()).stream()
+                .map(JobPostListResponse::from)
+                .collect(Collectors.toList());
+
+        return temporaryJobPostList;
+    }
 }
