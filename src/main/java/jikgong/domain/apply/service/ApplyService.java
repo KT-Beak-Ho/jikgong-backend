@@ -4,7 +4,7 @@ import jikgong.domain.apply.dtos.ApplyRequest;
 import jikgong.domain.apply.dtos.ApplyResponseForCompany;
 import jikgong.domain.apply.dtos.ApplyResponseForWorker;
 import jikgong.domain.apply.entity.Apply;
-import jikgong.domain.apply.entity.Status;
+import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.apply.repository.ApplyRepository;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.repository.JobPostRepository;
@@ -57,7 +57,7 @@ public class ApplyService {
         return applyRepository.save(apply).getId();
     }
 
-    public List<ApplyResponseForWorker> findApplyHistoryWorker(Long memberId, Status status) {
+    public List<ApplyResponseForWorker> findApplyHistoryWorker(Long memberId, ApplyStatus status) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
@@ -68,7 +68,7 @@ public class ApplyService {
         return applyResponseForWorkerList;
     }
 
-    public List<ApplyResponseForCompany> findApplyHistoryCompany(Long memberId, Long jobPostId, Status status) {
+    public List<ApplyResponseForCompany> findApplyHistoryCompany(Long memberId, Long jobPostId, ApplyStatus status) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
         JobPost jobPost = jobPostRepository.findById(jobPostId)

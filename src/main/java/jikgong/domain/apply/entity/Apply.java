@@ -18,7 +18,7 @@ public class Apply extends BaseEntity {
     private Long id;
 
     @Enumerated(value = EnumType.STRING)
-    private Status status; // 신청 현황
+    private ApplyStatus status; // 신청 현황
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -30,7 +30,7 @@ public class Apply extends BaseEntity {
 
     @Builder
     public Apply(Member member, JobPost jobPost) {
-        this.status = Status.PENDING;
+        this.status = ApplyStatus.PENDING;
         this.member = member;
         this.jobPost = jobPost;
     }

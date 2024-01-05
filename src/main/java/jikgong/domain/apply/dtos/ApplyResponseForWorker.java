@@ -1,7 +1,7 @@
 package jikgong.domain.apply.dtos;
 
 import jikgong.domain.apply.entity.Apply;
-import jikgong.domain.apply.entity.Status;
+import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.jobPost.dtos.JobPostApplyHistoryResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +15,7 @@ public class ApplyResponseForWorker {
      * 노동자의 요청 내역 조회에 사용
      */
     private Long applyId;
-    private Status status;
+    private ApplyStatus status;
     private JobPostApplyHistoryResponse jobPostResponse;
 
     public static ApplyResponseForWorker from(Apply apply) {
