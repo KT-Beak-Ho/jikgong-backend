@@ -3,6 +3,7 @@ package jikgong.domain.location.entity;
 import jakarta.persistence.*;
 import jikgong.domain.common.Address;
 import jikgong.domain.common.BaseEntity;
+import jikgong.domain.location.dtos.LocationUpdateRequest;
 import jikgong.domain.member.entity.Member;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -32,7 +33,15 @@ public class Location extends BaseEntity {
         this.member = member;
     }
 
+    // 대표 위치 변경
     public void changeMainLocation(Boolean main) {
-        isMain = main;
+        this.isMain = main;
+    }
+
+    // 위치 정보 업데이트
+    public void updateLocation(LocationUpdateRequest request) {
+        this.address.setAddress(request.getAddress());
+        this.address.setLatitude(request.getLatitude());
+        this.address.setLongitude(request.getLongitude());
     }
 }

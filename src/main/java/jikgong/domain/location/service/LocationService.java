@@ -4,6 +4,7 @@ package jikgong.domain.location.service;
 import jikgong.domain.common.Address;
 import jikgong.domain.location.dtos.LocationResponse;
 import jikgong.domain.location.dtos.LocationSaveRequest;
+import jikgong.domain.location.dtos.LocationUpdateRequest;
 import jikgong.domain.location.entity.Location;
 import jikgong.domain.location.repository.LocationRepository;
 import jikgong.domain.member.entity.Member;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,11 +33,12 @@ public class LocationService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        // 기존 main location 해지
+        // 기존 main location 이 있다면 해지
         if (request.getIsMain()) {
-            Location mainLocation = locationRepository.findMainLocationByMemberId(memberId)
-                    .orElseThrow(() -> new CustomException(ErrorCode.LOCATION_NOT_FOUND));
-            mainLocation.changeMainLocation(false);
+            Optional<Location> mainLocation = locationRepository.findMainLocationByMemberId(memberId);
+            if (mainLocation.isPresent()) {
+                mainLocation.get().changeMainLocation(false);
+            }
         }
 
         Location location = Location.builder()
@@ -60,16 +63,36 @@ public class LocationService {
     }
 
     public void changeMainLocation(Long memberId, Long locationId) {
-        Location location = locationRepository.findById(locationId)
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Location location = locationRepository.findByLocationIdAndMemberId(member.getId(), locationId)
                 .orElseThrow(() -> new CustomException(ErrorCode.LOCATION_NOT_FOUND));
 
         // 요청한 locationId 가 이미 main 이라면
         if (location.getIsMain()) return;
 
-        Location mainLocation = locationRepository.findMainLocationByMemberId(memberId)
+        Optional<Location> mainLocation = locationRepository.findMainLocationByMemberId(memberId);
+        if (mainLocation.isPresent()) {
+            mainLocation.get().changeMainLocation(false); // 기존 main location
+        }
+        location.changeMainLocation(true);  // 신규 main location
+    }
+
+    public void updateLocation(Long memberId, LocationUpdateRequest request) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Location location = locationRepository.findByLocationIdAndMemberId(member.getId(), request.getLocationId())
                 .orElseThrow(() -> new CustomException(ErrorCode.LOCATION_NOT_FOUND));
 
-        mainLocation.changeMainLocation(false); // 기존 main location
-        location.changeMainLocation(true);  // 신규 main location
+        location.updateLocation(request);
+    }
+
+    public void deleteLocation(Long memberId, Long locationId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        locationRepository.deleteByLocationIdAndMemberId(member.getId(), locationId);
     }
 }

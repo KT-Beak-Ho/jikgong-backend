@@ -3,6 +3,7 @@ package jikgong.domain.location.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import jikgong.domain.location.dtos.LocationResponse;
 import jikgong.domain.location.dtos.LocationSaveRequest;
+import jikgong.domain.location.dtos.LocationUpdateRequest;
 import jikgong.domain.location.service.LocationService;
 import jikgong.global.dto.Response;
 import jikgong.global.security.principal.PrincipalDetails;
@@ -35,8 +36,24 @@ public class LocationController {
         return ResponseEntity.ok(new Response(locationResponseList, "등록된 위치 정보 반환 완료"));
     }
 
-    @Operation(summary = "대표 위치 변경")
-    @PutMapping("/api/location/representative/{locationId}")
+    @Operation(summary = "등록한 위치 수정")
+    @PutMapping("/api/location/{locationId}")
+    public ResponseEntity<Response> updateLocation(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                   @RequestBody LocationUpdateRequest request) {
+        locationService.updateLocation(principalDetails.getMember().getId(), request);
+        return ResponseEntity.ok(new Response("위치 정보 수정 완료"));
+    }
+
+    @Operation(summary = "위치 삭제")
+    @DeleteMapping("/api/location/{locationId}")
+    public ResponseEntity<Response> deleteLocation(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                   @PathVariable("locationId") Long locationId) {
+        locationService.deleteLocation(principalDetails.getMember().getId(), locationId);
+        return ResponseEntity.ok(new Response("위치 정보 삭제 완료"));
+    }
+
+    @Operation(summary = "대표 위치 변경 및 설정", description = "기존에 대표 위치로 설정 해둔게 있다면 변경, 없다면 설정")
+    @PostMapping("/api/location/representative/{locationId}")
     public ResponseEntity<Response> changeMainLocation(@PathVariable("locationId") Long locationId,
                                                        @AuthenticationPrincipal PrincipalDetails principalDetails) {
         locationService.changeMainLocation(principalDetails.getMember().getId(), locationId);
