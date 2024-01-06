@@ -72,6 +72,9 @@ dependencies {
 
 	// firebase
 	implementation 'com.google.firebase:firebase-admin:9.1.1'
+
+	// aop
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
 }
 
 tasks.named('bootBuildImage') {
