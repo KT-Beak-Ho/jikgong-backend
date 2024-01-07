@@ -17,6 +17,7 @@ import jikgong.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.units.qual.A;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +41,7 @@ public class JobPostService {
 
         // 모집 공고 저장
         JobPost jobPost = JobPost.builder()
+                .title(request.getTitle())
                 .tech(request.getTech())
                 .startTime(request.getStartTime())
                 .endTime(request.getEndTime())
@@ -66,6 +68,7 @@ public class JobPostService {
     }
 
     // 등록한 공고 리스트
+    @Cacheable(value = "JobPost", cacheManager = "contentCacheManager")
     public List<JobPostListResponse> findJobPostsByMemberId(Long memberId, JobPostStatus jobPostStatus) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));

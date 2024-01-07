@@ -16,11 +16,11 @@ public class TimingAdvisor {
     public void pointcut() {}
 
     @Around("pointcut()") // 어드바이스 + 포인트컷 설정
-    public void advice(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+    public Object advice(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         String methodName = proceedingJoinPoint.getSignature().getName();
 
         long start = System.currentTimeMillis();
-        proceedingJoinPoint.proceed(); // 타깃 메소드 호출
+        Object result = proceedingJoinPoint.proceed();// 타깃 메소드 호출
 
         long end = System.currentTimeMillis();
         long runningTime = end - start;
@@ -30,5 +30,6 @@ public class TimingAdvisor {
         } else {
             log.error("[!경고] [기준 실행 시간을 초과하였습니다] method = {}, 실행시간 = {} ms", methodName, runningTime);
         }
+        return result;
     }
 }
