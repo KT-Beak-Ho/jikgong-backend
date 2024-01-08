@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @AllArgsConstructor
 @Getter
@@ -16,7 +17,7 @@ public class JobPostApplyHistoryResponse {
      */
     private Long postId;
     private String title; // 공고 제목
-    private LocalDateTime startTime; // 시작 일시
+    private LocalTime startTime; // 시작 일시
     private Integer wage; // 임금
     private String address; // 도로명 주소
 

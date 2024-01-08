@@ -10,9 +10,11 @@ import jikgong.global.dto.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -23,10 +25,11 @@ public class JobPostController {
     private final JobPostService jobPostService;
 
     @Operation(summary = "모집 공고 등록")
-    @PostMapping("/api/company/job-post")
+    @PostMapping(value = "/api/company/job-post", consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Response> saveJobPost(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                @RequestBody JobPostSaveRequest request) {
-        Long jobPostId = jobPostService.saveJobPost(principalDetails.getMember().getId(), request);
+                                                @RequestPart JobPostSaveRequest request,
+                                                @RequestPart List<MultipartFile> imageList) {
+        Long jobPostId = jobPostService.saveJobPost(principalDetails.getMember().getId(), request, imageList);
         return ResponseEntity.ok(new Response("모집 공고 등록 완료"));
     }
 
