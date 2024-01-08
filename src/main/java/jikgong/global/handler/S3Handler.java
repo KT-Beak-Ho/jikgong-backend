@@ -28,7 +28,7 @@ public class S3Handler {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public Certification uploadImage(MultipartFile file) {
+    public ImageDto uploadImage(MultipartFile file) {
         String extension; //확장자명
         String contentType = file.getContentType();
 
@@ -65,12 +65,58 @@ public class S3Handler {
         // s3 get
         String s3Url = getImgPath(storeImageName);
 
-        Certification certification = Certification.builder()
-                .storeImgName(storeImageName)
+        return ImageDto.builder()
                 .s3Url(s3Url)
+                .storeImgName(storeImageName)
                 .build();
+    }
 
-        return certification;
+    public List<ImageDto> uploadImageList(List<MultipartFile> files) {
+        List<ImageDto> imageDtoList = new ArrayList<>();
+        for (MultipartFile file : files) {
+            String extension; //확장자명
+            String contentType = file.getContentType();
+
+            if (ObjectUtils.isEmpty(contentType)) {
+                throw new CustomException(ErrorCode.FILE_NOT_FOUND_EXTENSION);
+            } else { //확장자명이 jpeg, png 인 파일들만 받아서 처리
+                if (contentType.contains("image/jpeg")) extension = ".jpg";
+                else if (contentType.contains("image/png")) extension = ".png";
+                else {
+                    log.info("사진이 아닌 파일 입니다.");
+                    throw new CustomException(ErrorCode.FILE_NOT_SUPPORTED);
+                }
+            }
+
+            // unique 이름 생성
+            String storeImageName = createStoreImageName(extension);
+
+            InputStream inputStream = null;
+            try {
+                inputStream = file.getInputStream();
+            } catch (IOException e) {
+                throw new CustomException(ErrorCode.IMAGE_EXCEPTION);
+            }
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(file.getSize());
+            metadata.setContentType(file.getContentType());
+
+            PutObjectRequest request = new PutObjectRequest(bucket, storeImageName, inputStream, metadata);
+
+            // s3 put
+            amazonS3Client.putObject(request);
+            log.info("s3에 사진 저장");
+
+            // s3 get
+            String s3Url = getImgPath(storeImageName);
+
+            ImageDto imageDto = ImageDto.builder()
+                    .s3Url(s3Url)
+                    .storeImgName(storeImageName)
+                    .build();
+            imageDtoList.add(imageDto);
+        }
+        return imageDtoList;
     }
 
     public void deleteImage(List<String> storeImgList) {

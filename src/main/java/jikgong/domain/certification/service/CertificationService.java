@@ -7,6 +7,7 @@ import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
 import jikgong.global.exception.CustomException;
 import jikgong.global.exception.ErrorCode;
+import jikgong.global.handler.ImageDto;
 import jikgong.global.handler.S3Handler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,11 @@ public class CertificationService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Certification certification = s3Handler.uploadImage(file);
+        ImageDto imageDto = s3Handler.uploadImage(file);
+        Certification certification = Certification.builder()
+                .storeImgName(imageDto.getStoreImgName())
+                .s3Url(imageDto.getS3Url())
+                .build();
         Certification savedCertification = certificationRepository.save(certification);
 
         // 회원 엔티티와 연관 관계 세팅
