@@ -73,6 +73,9 @@ public class S3Handler {
 
     public List<ImageDto> uploadImageList(List<MultipartFile> files) {
         List<ImageDto> imageDtoList = new ArrayList<>();
+        if (files == null) {
+            return imageDtoList;
+        }
         for (MultipartFile file : files) {
             String extension; //확장자명
             String contentType = file.getContentType();
