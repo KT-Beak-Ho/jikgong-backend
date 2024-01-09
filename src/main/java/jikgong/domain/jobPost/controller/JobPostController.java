@@ -25,21 +25,22 @@ public class JobPostController {
     private final JobPostService jobPostService;
 
     @Operation(summary = "모집 공고 등록")
-    @PostMapping(value = "/api/company/job-post", consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/api/company/job-post", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Response> saveJobPost(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                 @RequestPart JobPostSaveRequest request,
-                                                @RequestPart List<MultipartFile> imageList) {
+                                                @RequestPart(required = false) List<MultipartFile> imageList) {
         Long jobPostId = jobPostService.saveJobPost(principalDetails.getMember().getId(), request, imageList);
         return ResponseEntity.ok(new Response("모집 공고 등록 완료"));
     }
 
     @Operation(summary = "등록한 모집 공고 리스트 조회", description = "완료된 공고, 진행 중인 공고, 예정된 공고")
-    @GetMapping("/api/company/job-posts")
+    @GetMapping("/api/company/job-posts/{projectId}")
     public ResponseEntity<Response> findJobPosts(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                 @RequestParam("jobPostStatus") JobPostStatus jobPostStatus) {
+                                                 @RequestParam("jobPostStatus") JobPostStatus jobPostStatus,
+                                                 @PathVariable("projectId") Long projectId) {
         // todo: 페이징 처리
         List<JobPostListResponse> jobPostListResponseList =
-                jobPostService.findJobPostsByMemberId(principalDetails.getMember().getId(), jobPostStatus);
+                jobPostService.findJobPostsByMemberAndProject(principalDetails.getMember().getId(), jobPostStatus, projectId);
         return ResponseEntity.ok(new Response(jobPostListResponseList, "등록한 모집 공고 중 " + jobPostStatus.getDescription() + " 모집 공고 조회"));
     }
 

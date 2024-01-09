@@ -15,6 +15,8 @@ import jikgong.domain.member.repository.MemberRepository;
 import jikgong.domain.addressInfo.entity.AddressInfo;
 import jikgong.domain.addressInfo.entity.AddressType;
 import jikgong.domain.addressInfo.repository.AddressInfoRepository;
+import jikgong.domain.project.entity.Project;
+import jikgong.domain.project.repository.ProjectRepository;
 import jikgong.domain.workDay.entity.WorkDay;
 import jikgong.domain.workDay.repository.WorkDayRepository;
 import jikgong.global.exception.CustomException;
@@ -46,14 +48,18 @@ public class JobPostService {
     private final AddressInfoRepository addressInfoRepository;
     private final WorkDayRepository workDayRepository;
     private final S3Handler s3Handler;
+    private final ProjectRepository projectRepository;
 
-    @CachePut(value = "JobPost", cacheManager = "contentCacheManager", key = "#result")
+//    @CachePut(value = "JobPost", cacheManager = "contentCacheManager", key = "#result")
     public Long saveJobPost(Long memberId, JobPostSaveRequest request, List<MultipartFile> imageList) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
+        Project project = projectRepository.findById(request.getProjectId())
+                .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_FOUND));
+
         // 모집 공고 저장
-        JobPost jobPost = JobPost.createEntity(request, member);
+        JobPost jobPost = JobPost.createEntity(request, member, project);
         JobPost savedJobPost = jobPostRepository.save(jobPost);
 
         // 픽업 정보 저장
@@ -89,22 +95,25 @@ public class JobPostService {
     }
 
     // 등록한 공고 리스트
-    @Cacheable(value = "JobPost", cacheManager = "contentCacheManager")
-    public List<JobPostListResponse> findJobPostsByMemberId(Long memberId, JobPostStatus jobPostStatus) {
+//    @Cacheable(value = "JobPost", cacheManager = "contentCacheManager")
+    public List<JobPostListResponse> findJobPostsByMemberAndProject(Long memberId, JobPostStatus jobPostStatus, Long projectId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_FOUND));
 
         LocalDate now = LocalDate.now();
         List<JobPost> jobPostList = new ArrayList<>();
 
         if (jobPostStatus == JobPostStatus.COMPLETED) {
-            jobPostList = jobPostRepository.findCompletedJobPostByMemberId(member.getId(), now);
+            jobPostList = jobPostRepository.findCompletedJobPostByMemberAndProject(member.getId(), now, project.getId());
         }
         else if (jobPostStatus == JobPostStatus.IN_PROGRESS) {
-            jobPostList = jobPostRepository.findInProgressJobPostByMemberId(member.getId(), now);
+            jobPostList = jobPostRepository.findInProgressJobPostByMemberAndProject(member.getId(), now, project.getId());
         }
         else if (jobPostStatus == JobPostStatus.PLANNED) {
-            jobPostList = jobPostRepository.findPlannedJobPostByMemberId(member.getId(), now);
+            jobPostList = jobPostRepository.findPlannedJobPostByMemberAndProject(member.getId(), now, project.getId());
         }
 
         List<JobPostListResponse> jobPostListResponseList = jobPostList.stream()

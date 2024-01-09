@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jikgong.domain.common.Address;
 import jikgong.domain.jobPost.dtos.JobPostSaveRequest;
 import jikgong.domain.member.entity.Member;
+import jikgong.domain.project.entity.Project;
 import jikgong.domain.workDay.entity.WorkDay;
 import lombok.*;
 
@@ -45,12 +46,16 @@ public class JobPost {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id")
+    private Project project;
+
     // 양방향 매핑
     @OneToMany(mappedBy = "jobPost")
     private List<WorkDay> workDayList = new ArrayList<>();
 
     @Builder
-    public JobPost(String title, Tech tech, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, Integer recruitNum, Integer wage, String preparation, LocalDateTime expirationTime, Boolean isTemporary, AvailableInfo availableInfo, Address address, Member member) {
+    public JobPost(String title, Tech tech, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, Integer recruitNum, Integer wage, String preparation, LocalDateTime expirationTime, Boolean isTemporary, AvailableInfo availableInfo, Address address, Member member, Project project) {
         this.title = title;
         this.tech = tech;
         this.startDate = startDate;
@@ -66,9 +71,10 @@ public class JobPost {
         this.availableInfo = availableInfo;
         this.address = address;
         this.member = member;
+        this.project = project;
     }
 
-    public static JobPost createEntity(JobPostSaveRequest request, Member member) {
+    public static JobPost createEntity(JobPostSaveRequest request, Member member, Project project) {
         // 가장 빠른 날짜 찾기
         LocalDate minDate = Collections.min(request.getWorkDayList());
         // 가장 느린 날짜 찾기
@@ -89,6 +95,7 @@ public class JobPost {
                 .availableInfo(new AvailableInfo(request.getMeal(), request.getPickup(), request.getPark()))
                 .address(new Address(request.getAddress(), request.getLatitude(), request.getLongitude()))
                 .member(member)
+                .project(project)
                 .build();
     }
 }

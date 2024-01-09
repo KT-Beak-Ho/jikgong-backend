@@ -15,7 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 public class JobPostSaveRequest {
-    // todo: 기획에 맞게 다시 변경
     @Schema(description = "공고 제목", example = "사하구  낙동5블럭  낙동강 온도 측정 센터 신축공사")
     private String title;
     @Schema(description = "인부 타입", example = "NORMAL")
@@ -65,5 +64,8 @@ public class JobPostSaveRequest {
     @Schema(description = "연락 번호", example = "01012345678")
     private String phone;
 
+    // 프로젝트
+    @Schema(description = "projectId", example = "1")
+    private Long projectId;
 
 }
