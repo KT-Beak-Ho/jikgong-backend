@@ -2,6 +2,7 @@ package jikgong.domain.jobPost.entity;
 
 import jakarta.persistence.*;
 import jikgong.domain.common.Address;
+import jikgong.domain.common.BaseEntity;
 import jikgong.domain.jobPost.dtos.JobPostSaveRequest;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.project.entity.Project;
@@ -18,7 +19,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class JobPost {
+public class JobPost extends BaseEntity {
     @Id @GeneratedValue
     @Column(name = "job_post_id")
     private Long id;

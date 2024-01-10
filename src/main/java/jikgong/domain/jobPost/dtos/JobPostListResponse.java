@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -17,11 +19,13 @@ public class JobPostListResponse {
      */
     private Long jobPostId;
     private String title;
+    private LocalDateTime lastModifiedDate;
 
     public static JobPostListResponse from(JobPost jobPost) {
         return JobPostListResponse.builder()
                 .jobPostId(jobPost.getId())
                 .title(jobPost.getTitle())
+                .lastModifiedDate(jobPost.getLastModifiedDate())
                 .build();
     }
 }
