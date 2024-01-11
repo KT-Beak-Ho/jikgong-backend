@@ -30,7 +30,10 @@ public enum ErrorCode {
     JOB_POST_EXPIRED(HttpStatus.BAD_REQUEST, "모집 기한이 지난 공고입니다."),
     RECRUITMENT_FULL(HttpStatus.BAD_REQUEST, "이미 모집 인원이 충족되었습니다."),
     APPLY_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 신청한 모집 공고 입니다."),
-    PROJECT_NOT_FOUND(HttpStatus.NOT_FOUND, "프로젝트 정보가 없습니다.");
+    PROJECT_NOT_FOUND(HttpStatus.NOT_FOUND, "프로젝트 정보가 없습니다."),
+    HISTORY_NOT_FOUND_APPLY(HttpStatus.NOT_FOUND, "해당 회원은 일자리 공고에 신청한 내역이 없습니다."),
+    HISTORY_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 동일한 출근, 결근 데이터가 있습니다."),
+    WORK_DATE_NOT_FOUND(HttpStatus.NOT_FOUND, "요청한 날짜는 모집 공고에 맞지 않는 날짜 입니다.");
 
     private final HttpStatus status;
     private final String errorMessage;
