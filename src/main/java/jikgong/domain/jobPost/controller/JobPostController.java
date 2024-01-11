@@ -52,4 +52,5 @@ public class JobPostController {
                 jobPostService.findTemporaryJobPosts(principalDetails.getMember().getId());
         return ResponseEntity.ok(new Response(temporaryJobPostList, "임시 등록한 모집 공고 리스트 반환"));
     }
+
 }

@@ -6,7 +6,7 @@ import jikgong.domain.common.BaseEntity;
 import jikgong.domain.jobPost.dtos.JobPostSaveRequest;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.project.entity.Project;
-import jikgong.domain.workDay.entity.WorkDay;
+import jikgong.domain.workDate.entity.WorkDate;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -53,7 +53,7 @@ public class JobPost extends BaseEntity {
 
     // 양방향 매핑
     @OneToMany(mappedBy = "jobPost")
-    private List<WorkDay> workDayList = new ArrayList<>();
+    private List<WorkDate> workDateList = new ArrayList<>();
 
     @Builder
     public JobPost(String title, Tech tech, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, Integer recruitNum, Integer wage, String preparation, LocalDateTime expirationTime, Boolean isTemporary, AvailableInfo availableInfo, Address address, Member member, Project project) {

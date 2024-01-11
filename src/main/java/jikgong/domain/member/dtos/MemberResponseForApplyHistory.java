@@ -1,5 +1,6 @@
 package jikgong.domain.member.dtos;
 
+import jikgong.domain.history.entity.History;
 import jikgong.domain.location.entity.Location;
 import jikgong.domain.member.entity.Gender;
 import jikgong.domain.member.entity.Member;
@@ -9,7 +10,9 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Getter
@@ -20,26 +23,36 @@ public class MemberResponseForApplyHistory {
      */
     private Long memberId;
     private String workerName; // 노동자 이름
+    private String phone; // 휴대폰 번호
     private Integer age; // 나이
-    private String address; // 주소
     private String nationality; // 국적
+    private Integer workTimes; // 출역 횟수
+    private Float participationRate; // 참여율
 
     public static MemberResponseForApplyHistory from(Member member) {
         // 나이 계산
         int age = AgeTransfer.getAgeByRrn(member.getWorkerInfo().getBrith());
 
-        // 메인 주소 추출
-        Optional<Location> mainLocation = member.getLocationList().stream()
-                .filter(Location::getIsMain)
-                .findFirst();
-        String address = mainLocation.isPresent() ? mainLocation.get().getAddress().getAddress() : "주소 정보 없음";
+        // 출역 횟수, 참여율
+        List<History> workHistory = member.getHistoryList().stream()
+                .filter(History::getIsWork)
+                .collect(Collectors.toList());
+        int workTimes = workHistory.size();
+        float participationRate = (float) workTimes / (float) member.getHistoryList().size();
+
+        // 출역 내역이 없을 경우
+        if (member.getHistoryList().isEmpty()) {
+            participationRate = 1;
+        }
 
         return MemberResponseForApplyHistory.builder()
                 .memberId(member.getId())
                 .workerName(member.getWorkerInfo().getWorkerName())
+                .phone(member.getPhone())
                 .age(age)
-                .address(address)
                 .nationality(member.getWorkerInfo().getNationality())
+                .workTimes(workTimes)
+                .participationRate(participationRate)
                 .build();
     }
 }

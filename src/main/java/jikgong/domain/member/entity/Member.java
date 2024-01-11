@@ -3,6 +3,7 @@ package jikgong.domain.member.entity;
 import jakarta.persistence.*;
 import jikgong.domain.certification.entity.Certification;
 import jikgong.domain.common.BaseEntity;
+import jikgong.domain.history.entity.History;
 import jikgong.domain.location.entity.Location;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -43,6 +44,8 @@ public class Member extends BaseEntity {
     // 양방향 매핑
     @OneToMany(mappedBy = "member")
     List<Location> locationList = new ArrayList<>();
+    @OneToMany(mappedBy = "member")
+    List<History> historyList = new ArrayList<>();
 
     @Builder
     public Member(String phone, String authCode, String account, String bank, String deviceToken, Boolean isNotification, Role role, Worker workerInfo, Company companyInfo, Certification certification) {

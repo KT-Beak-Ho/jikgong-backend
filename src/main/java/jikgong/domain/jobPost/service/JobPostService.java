@@ -1,9 +1,7 @@
 package jikgong.domain.jobPost.service;
 
-import jikgong.domain.common.Address;
 import jikgong.domain.jobPost.dtos.JobPostListResponse;
 import jikgong.domain.jobPost.dtos.JobPostSaveRequest;
-import jikgong.domain.jobPost.entity.AvailableInfo;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.entity.JobPostStatus;
 import jikgong.domain.jobPost.entity.Park;
@@ -17,22 +15,19 @@ import jikgong.domain.addressInfo.entity.AddressType;
 import jikgong.domain.addressInfo.repository.AddressInfoRepository;
 import jikgong.domain.project.entity.Project;
 import jikgong.domain.project.repository.ProjectRepository;
-import jikgong.domain.workDay.entity.WorkDay;
-import jikgong.domain.workDay.repository.WorkDayRepository;
+import jikgong.domain.workDate.entity.WorkDate;
+import jikgong.domain.workDate.repository.WorkDateRepository;
 import jikgong.global.exception.CustomException;
 import jikgong.global.exception.ErrorCode;
 import jikgong.global.handler.ImageDto;
 import jikgong.global.handler.S3Handler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,7 +41,7 @@ public class JobPostService {
     private final JobPostImageRepository jobPostImageRepository;
     private final MemberRepository memberRepository;
     private final AddressInfoRepository addressInfoRepository;
-    private final WorkDayRepository workDayRepository;
+    private final WorkDateRepository workDayRepository;
     private final S3Handler s3Handler;
     private final ProjectRepository projectRepository;
 
@@ -79,8 +74,8 @@ public class JobPostService {
         }
 
         // 날짜 정보 저장
-        List<WorkDay> workDayList = request.getWorkDayList().stream()
-                .map(workDay -> new WorkDay(workDay, savedJobPost))
+        List<WorkDate> workDayList = request.getWorkDayList().stream()
+                .map(workDay -> new WorkDate(workDay, savedJobPost))
                 .collect(Collectors.toList());
         workDayRepository.saveAll(workDayList);
 
@@ -134,4 +129,5 @@ public class JobPostService {
 
         return temporaryJobPostList;
     }
+
 }
