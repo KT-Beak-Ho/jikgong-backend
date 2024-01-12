@@ -4,6 +4,7 @@ import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.repository.ApplyRepository;
 import jikgong.domain.history.dtos.HistorySaveRequest;
 import jikgong.domain.history.entity.History;
+import jikgong.domain.history.entity.WorkStatus;
 import jikgong.domain.history.repository.HistoryRepository;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.repository.JobPostRepository;
@@ -16,11 +17,16 @@ import jikgong.global.exception.CustomException;
 import jikgong.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -69,5 +75,15 @@ public class HistoryService {
         History history = History.createEntity(request, targetMember, jobPost);
 
         return historyRepository.save(history).getId();
+    }
+
+    public Page<MemberAcceptedResponse> findHistoryMembers(Long memberId, Long jobPostId, LocalDate workDate, Boolean isWork, Pageable pageable) {
+        Page<History> historyPage = historyRepository.findWorkHistory(memberId, jobPostId, workDate, isWork, pageable);
+
+        List<MemberAcceptedResponse> memberAcceptedResponseList = historyPage.getContent().stream()
+                .map(MemberAcceptedResponse::fromHistory)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(memberAcceptedResponseList, pageable, historyPage.getTotalElements());
     }
 }

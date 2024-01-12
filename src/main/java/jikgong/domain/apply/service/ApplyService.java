@@ -133,10 +133,10 @@ public class ApplyService {
 
         // 현재 출근, 결근, 출근 전 status 값 세팅
         for (MemberAcceptedResponse memberAcceptedResponse : memberAcceptedResponseList) {
-            if (workedMemberIds.contains(memberId)) {
+            if (workedMemberIds.contains(memberAcceptedResponse.getMemberId())) {
                 memberAcceptedResponse.setWorkStatus(WorkStatus.WORK);
             }
-            else if (NotWorkedMemberIds.contains(memberId)) {
+            else if (NotWorkedMemberIds.contains(memberAcceptedResponse.getMemberId())) {
                 memberAcceptedResponse.setWorkStatus(WorkStatus.NOT_WORK);
             }
             else {

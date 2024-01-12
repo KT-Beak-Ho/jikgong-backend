@@ -67,7 +67,7 @@ public class ApplyController {
                                                              @RequestParam(name = "page", defaultValue = "0") int page,
                                                              @RequestParam(name = "size", defaultValue = "10") int size) {
         // 페이징 처리 (이름 순)
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("workerName")));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("m.workerInfo.workerName")));
         Page<MemberAcceptedResponse> memberAcceptedResponsePage =
                 applyService.findAcceptedHistoryCompany(principalDetails.getMember().getId(), request, pageable);
         return ResponseEntity.ok(new Response(memberAcceptedResponsePage, "공고 글에 확정된 노동자 조회"));

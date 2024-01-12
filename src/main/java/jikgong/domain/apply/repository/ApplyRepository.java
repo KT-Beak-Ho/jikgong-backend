@@ -14,8 +14,10 @@ import java.util.Optional;
 
 @Repository
 public interface ApplyRepository extends JpaRepository<Apply, Long> {
-    @Query("select a from Apply a where a.jobPost.member.id = :memberId and a.jobPost.id = :jobPostId and a.status = :status")
-    Page<Apply> findByJobPostIdAndMemberIdAndStatus(Long memberId, Long jobPostId, ApplyStatus status, Pageable pageable);
+    // fetch join 시 count query 별도 지정 필요
+    @Query(value = "select a from Apply a join fetch a.member m where a.jobPost.member.id = :memberId and a.jobPost.id = :jobPostId and a.status = :status",
+            countQuery = "select a from Apply a where a.jobPost.member.id = :memberId and a.jobPost.id = :jobPostId and a.status = :status")
+    Page<Apply> findByJobPostIdAndMemberIdAndStatus(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId, @Param("status") ApplyStatus status, Pageable pageable);
 
     @Query("select a from Apply a where a.member.id = :memberId and a.status = :status")
     Page<Apply> findByMemberIdAndStatus(@Param("memberId") Long memberId, @Param("status") ApplyStatus status, Pageable pageable);
