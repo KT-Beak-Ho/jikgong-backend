@@ -21,7 +21,7 @@ public class WorkDate {
     private LocalDate workDate;
 
     @ManyToOne
-    @JoinColumn(name = "job_posting_id")
+    @JoinColumn(name = "job_post_id")
     private JobPost jobPost;
 
     @Builder
