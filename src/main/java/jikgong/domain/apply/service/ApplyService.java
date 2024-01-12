@@ -19,6 +19,7 @@ import jikgong.global.exception.CustomException;
 import jikgong.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,11 +68,11 @@ public class ApplyService {
     }
 
     // 요청한 내역 조회 (노동자)
-    public List<ApplyResponseForWorker> findApplyHistoryWorker(Long memberId, ApplyStatus status) {
+    public List<ApplyResponseForWorker> findApplyHistoryWorker(Long memberId, ApplyStatus status, Pageable pageable) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        List<ApplyResponseForWorker> applyResponseForWorkerList = applyRepository.findByMemberIdAndStatus(member.getId(), status).stream()
+        List<ApplyResponseForWorker> applyResponseForWorkerList = applyRepository.findByMemberIdAndStatus(member.getId(), status, pageable).stream()
                 .map(ApplyResponseForWorker::from)
                 .collect(Collectors.toList());
 
@@ -79,13 +80,14 @@ public class ApplyService {
     }
 
     // 대기 중인 요청 조회 (회사)
-    public List<ApplyPendingResponseForCompany> findPendingApplyHistoryCompany(Long memberId, Long jobPostId) {
+    public List<ApplyPendingResponseForCompany> findPendingApplyHistoryCompany(Long memberId, Long jobPostId, Pageable pageable) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
         JobPost jobPost = jobPostRepository.findById(jobPostId)
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
 
-        List<ApplyPendingResponseForCompany> applyResponseForCompanyList = applyRepository.findByJobPostIdAndMemberIdAndStatus(member.getId(), jobPost.getId(), ApplyStatus.PENDING).stream()
+        List<ApplyPendingResponseForCompany> applyResponseForCompanyList =
+                applyRepository.findByJobPostIdAndMemberIdAndStatus(member.getId(), jobPost.getId(), ApplyStatus.PENDING, pageable).stream()
                 .map(ApplyPendingResponseForCompany::from)
                 .collect(Collectors.toList());
 
@@ -93,7 +95,7 @@ public class ApplyService {
     }
 
     // 승인된 노동자 조회 (회사)
-    public List<MemberAcceptedResponse> findAcceptedHistoryCompany(Long memberId, AcceptedMemberRequest request) {
+    public List<MemberAcceptedResponse> findAcceptedHistoryCompany(Long memberId, AcceptedMemberRequest request, Pageable pageable) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
         JobPost jobPost = jobPostRepository.findById(request.getJobPostId())
@@ -117,7 +119,7 @@ public class ApplyService {
             NotWorkedMemberIds.add(history.getMember().getId());
         }
 
-        List<MemberAcceptedResponse> memberAcceptedResponseList = applyRepository.findByJobPostIdAndMemberIdAndStatus(member.getId(), jobPost.getId(), ApplyStatus.ACCEPTED).stream()
+        List<MemberAcceptedResponse> memberAcceptedResponseList = applyRepository.findByJobPostIdAndMemberIdAndStatus(member.getId(), jobPost.getId(), ApplyStatus.ACCEPTED, pageable).stream()
                 .map(MemberAcceptedResponse::from)
                 .collect(Collectors.toList());
 

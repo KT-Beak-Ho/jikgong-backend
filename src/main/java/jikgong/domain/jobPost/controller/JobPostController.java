@@ -10,6 +10,7 @@ import jikgong.global.dto.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.*;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -37,20 +38,32 @@ public class JobPostController {
     @GetMapping("/api/company/job-posts/{projectId}")
     public ResponseEntity<Response> findJobPosts(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                  @RequestParam("jobPostStatus") JobPostStatus jobPostStatus,
-                                                 @PathVariable("projectId") Long projectId) {
-        // todo: 페이징 처리
+                                                 @PathVariable("projectId") Long projectId,
+                                                 @RequestParam(name = "page", defaultValue = "0") int page,
+                                                 @RequestParam(name = "size", defaultValue = "10") int size) {
+        // 페이징 처리
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdDate")));
+
         List<JobPostListResponse> jobPostListResponseList =
-                jobPostService.findJobPostsByMemberAndProject(principalDetails.getMember().getId(), jobPostStatus, projectId);
-        return ResponseEntity.ok(new Response(jobPostListResponseList, "등록한 모집 공고 중 " + jobPostStatus.getDescription() + " 모집 공고 조회"));
+                jobPostService.findJobPostsByMemberAndProject(principalDetails.getMember().getId(), jobPostStatus, projectId, pageable);
+
+        Page<JobPostListResponse> jobPostListResponsePage = new PageImpl<>(jobPostListResponseList, pageable, jobPostListResponseList.size());
+        return ResponseEntity.ok(new Response(jobPostListResponsePage, "등록한 모집 공고 중 " + jobPostStatus.getDescription() + " 모집 공고 조회"));
     }
 
     @Operation(summary = "등록한 임시 모집 공고 리스트 조회", description = "완료된 공고, 진행 중인 공고, 예정된 공고")
     @GetMapping("/api/company/job-posts/temporary")
-    public ResponseEntity<Response> findTemporaryJobPosts(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        // todo: 페이징 처리
+    public ResponseEntity<Response> findTemporaryJobPosts(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                          @RequestParam(name = "page", defaultValue = "0") int page,
+                                                          @RequestParam(name = "size", defaultValue = "10") int size) {
+        // 페이징 처리
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdDate")));
+
         List<JobPostListResponse> temporaryJobPostList =
-                jobPostService.findTemporaryJobPosts(principalDetails.getMember().getId());
-        return ResponseEntity.ok(new Response(temporaryJobPostList, "임시 등록한 모집 공고 리스트 반환"));
+                jobPostService.findTemporaryJobPosts(principalDetails.getMember().getId(), pageable);
+
+        Page<JobPostListResponse> temporaryJobPostPage = new PageImpl<>(temporaryJobPostList, pageable, temporaryJobPostList.size());
+        return ResponseEntity.ok(new Response(temporaryJobPostPage, "임시 등록한 모집 공고 리스트 반환"));
     }
 
 }

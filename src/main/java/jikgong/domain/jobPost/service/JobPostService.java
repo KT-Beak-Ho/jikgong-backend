@@ -23,6 +23,7 @@ import jikgong.global.handler.ImageDto;
 import jikgong.global.handler.S3Handler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -89,9 +90,9 @@ public class JobPostService {
         return savedJobPost.getId();
     }
 
-    // 등록한 공고 리스트
+    // 등록한 공고 리스트 in 프로젝트
 //    @Cacheable(value = "JobPost", cacheManager = "contentCacheManager")
-    public List<JobPostListResponse> findJobPostsByMemberAndProject(Long memberId, JobPostStatus jobPostStatus, Long projectId) {
+    public List<JobPostListResponse> findJobPostsByMemberAndProject(Long memberId, JobPostStatus jobPostStatus, Long projectId, Pageable pageable) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
@@ -102,13 +103,13 @@ public class JobPostService {
         List<JobPost> jobPostList = new ArrayList<>();
 
         if (jobPostStatus == JobPostStatus.COMPLETED) {
-            jobPostList = jobPostRepository.findCompletedJobPostByMemberAndProject(member.getId(), now, project.getId());
+            jobPostList = jobPostRepository.findCompletedJobPostByMemberAndProject(member.getId(), now, project.getId(), pageable);
         }
         else if (jobPostStatus == JobPostStatus.IN_PROGRESS) {
-            jobPostList = jobPostRepository.findInProgressJobPostByMemberAndProject(member.getId(), now, project.getId());
+            jobPostList = jobPostRepository.findInProgressJobPostByMemberAndProject(member.getId(), now, project.getId(), pageable);
         }
         else if (jobPostStatus == JobPostStatus.PLANNED) {
-            jobPostList = jobPostRepository.findPlannedJobPostByMemberAndProject(member.getId(), now, project.getId());
+            jobPostList = jobPostRepository.findPlannedJobPostByMemberAndProject(member.getId(), now, project.getId(), pageable);
         }
 
         List<JobPostListResponse> jobPostListResponseList = jobPostList.stream()
@@ -119,11 +120,11 @@ public class JobPostService {
     }
 
     // 임시 등록한 공고 리스트
-    public List<JobPostListResponse> findTemporaryJobPosts(Long memberId) {
+    public List<JobPostListResponse> findTemporaryJobPosts(Long memberId, Pageable pageable) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        List<JobPostListResponse> temporaryJobPostList = jobPostRepository.findTemporaryJobPostByMemberId(member.getId()).stream()
+        List<JobPostListResponse> temporaryJobPostList = jobPostRepository.findTemporaryJobPostByMemberId(member.getId(), pageable).stream()
                 .map(JobPostListResponse::from)
                 .collect(Collectors.toList());
 
