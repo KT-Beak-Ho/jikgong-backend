@@ -1,5 +1,6 @@
 package jikgong.domain.apply.dtos;
 
+import io.netty.channel.ChannelHandler;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

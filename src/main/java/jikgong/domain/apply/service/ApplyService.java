@@ -3,6 +3,7 @@ package jikgong.domain.apply.service;
 import jikgong.domain.apply.dtos.AcceptedMemberRequest;
 import jikgong.domain.apply.dtos.ApplyPendingResponseForCompany;
 import jikgong.domain.apply.dtos.ApplyResponseForWorker;
+import jikgong.domain.history.entity.WorkStatus;
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.apply.repository.ApplyRepository;
@@ -19,6 +20,8 @@ import jikgong.global.exception.CustomException;
 import jikgong.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,34 +71,37 @@ public class ApplyService {
     }
 
     // 요청한 내역 조회 (노동자)
-    public List<ApplyResponseForWorker> findApplyHistoryWorker(Long memberId, ApplyStatus status, Pageable pageable) {
+    public Page<ApplyResponseForWorker> findApplyHistoryWorker(Long memberId, ApplyStatus status, Pageable pageable) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        List<ApplyResponseForWorker> applyResponseForWorkerList = applyRepository.findByMemberIdAndStatus(member.getId(), status, pageable).stream()
+        Page<Apply> applyPage = applyRepository.findByMemberIdAndStatus(member.getId(), status, pageable);
+
+        List<ApplyResponseForWorker> applyResponseForWorkerList = applyPage.getContent().stream()
                 .map(ApplyResponseForWorker::from)
                 .collect(Collectors.toList());
 
-        return applyResponseForWorkerList;
+        return new PageImpl<>(applyResponseForWorkerList, pageable, applyPage.getTotalElements());
     }
 
     // 대기 중인 요청 조회 (회사)
-    public List<ApplyPendingResponseForCompany> findPendingApplyHistoryCompany(Long memberId, Long jobPostId, Pageable pageable) {
+    public Page<ApplyPendingResponseForCompany> findPendingApplyHistoryCompany(Long memberId, Long jobPostId, Pageable pageable) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
         JobPost jobPost = jobPostRepository.findById(jobPostId)
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
 
-        List<ApplyPendingResponseForCompany> applyResponseForCompanyList =
-                applyRepository.findByJobPostIdAndMemberIdAndStatus(member.getId(), jobPost.getId(), ApplyStatus.PENDING, pageable).stream()
+        Page<Apply> applyPage = applyRepository.findByJobPostIdAndMemberIdAndStatus(member.getId(), jobPost.getId(), ApplyStatus.PENDING, pageable);
+
+        List<ApplyPendingResponseForCompany> applyResponseForCompanyList = applyPage.getContent().stream()
                 .map(ApplyPendingResponseForCompany::from)
                 .collect(Collectors.toList());
 
-        return applyResponseForCompanyList;
+        return new PageImpl<>(applyResponseForCompanyList, pageable, applyPage.getTotalElements());
     }
 
     // 승인된 노동자 조회 (회사)
-    public List<MemberAcceptedResponse> findAcceptedHistoryCompany(Long memberId, AcceptedMemberRequest request, Pageable pageable) {
+    public Page<MemberAcceptedResponse> findAcceptedHistoryCompany(Long memberId, AcceptedMemberRequest request, Pageable pageable) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
         JobPost jobPost = jobPostRepository.findById(request.getJobPostId())
@@ -119,23 +125,25 @@ public class ApplyService {
             NotWorkedMemberIds.add(history.getMember().getId());
         }
 
-        List<MemberAcceptedResponse> memberAcceptedResponseList = applyRepository.findByJobPostIdAndMemberIdAndStatus(member.getId(), jobPost.getId(), ApplyStatus.ACCEPTED, pageable).stream()
-                .map(MemberAcceptedResponse::from)
+        Page<Apply> applyPage = applyRepository.findByJobPostIdAndMemberIdAndStatus(member.getId(), jobPost.getId(), ApplyStatus.ACCEPTED, pageable);
+
+        List<MemberAcceptedResponse> memberAcceptedResponseList = applyPage.getContent().stream()
+                .map(MemberAcceptedResponse::fromApply)
                 .collect(Collectors.toList());
 
         // 현재 출근, 결근, 출근 전 status 값 세팅
         for (MemberAcceptedResponse memberAcceptedResponse : memberAcceptedResponseList) {
             if (workedMemberIds.contains(memberId)) {
-                memberAcceptedResponse.setStatus("출근");
+                memberAcceptedResponse.setWorkStatus(WorkStatus.WORK);
             }
             else if (NotWorkedMemberIds.contains(memberId)) {
-                memberAcceptedResponse.setStatus("결근");
+                memberAcceptedResponse.setWorkStatus(WorkStatus.NOT_WORK);
             }
             else {
-                memberAcceptedResponse.setStatus("출근 전");
+                memberAcceptedResponse.setWorkStatus(null);
             }
         }
 
-        return memberAcceptedResponseList;
+        return new PageImpl<>(memberAcceptedResponseList, pageable, applyPage.getTotalElements());
     }
 }

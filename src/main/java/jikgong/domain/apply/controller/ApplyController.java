@@ -11,10 +11,7 @@ import jikgong.global.dto.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -43,11 +40,8 @@ public class ApplyController {
                                                            @RequestParam(name = "size", defaultValue = "10") int size) {
         // 페이징 처리 (먼저 요청한 순)
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("createdDate")));
-
-        List<ApplyResponseForWorker> applyResponseForWorkerList =
+        Page<ApplyResponseForWorker> applyResponseForWorkerPage =
                 applyService.findApplyHistoryWorker(principalDetails.getMember().getId(), status, pageable);
-
-        PageImpl<ApplyResponseForWorker> applyResponseForWorkerPage = new PageImpl<>(applyResponseForWorkerList, pageable, applyResponseForWorkerList.size());
         return ResponseEntity.ok(new Response(applyResponseForWorkerPage, "일자리 신청 내역 조회 완료"));
     }
 
@@ -61,11 +55,8 @@ public class ApplyController {
                                                             @RequestParam(name = "size", defaultValue = "10") int size) {
         // 페이징 처리 (먼저 요청한 순)
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("createdDate")));
-
-        List<ApplyPendingResponseForCompany> applyResponseForCompanyList =
+        Page<ApplyPendingResponseForCompany> applyResponseForCompanyPage =
                 applyService.findPendingApplyHistoryCompany(principalDetails.getMember().getId(), jobPostId, pageable);
-
-        PageImpl<ApplyPendingResponseForCompany> applyResponseForCompanyPage = new PageImpl<>(applyResponseForCompanyList, pageable, applyResponseForCompanyList.size());
         return ResponseEntity.ok(new Response(applyResponseForCompanyPage, "공고 글에 신청된 내역 조회 완료"));
     }
 
@@ -76,12 +67,9 @@ public class ApplyController {
                                                              @RequestParam(name = "page", defaultValue = "0") int page,
                                                              @RequestParam(name = "size", defaultValue = "10") int size) {
         // 페이징 처리 (이름 순)
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("m.workerInfo.workerName")));
-
-        List<MemberAcceptedResponse> memberAcceptedResponseList =
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("workerName")));
+        Page<MemberAcceptedResponse> memberAcceptedResponsePage =
                 applyService.findAcceptedHistoryCompany(principalDetails.getMember().getId(), request, pageable);
-
-        PageImpl<MemberAcceptedResponse> memberAcceptedResponsePage = new PageImpl<>(memberAcceptedResponseList, pageable, memberAcceptedResponseList.size());
         return ResponseEntity.ok(new Response(memberAcceptedResponsePage, "공고 글에 확정된 노동자 조회"));
     }
 }
