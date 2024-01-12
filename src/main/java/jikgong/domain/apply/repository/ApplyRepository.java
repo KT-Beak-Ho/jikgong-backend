@@ -5,6 +5,7 @@ import jikgong.domain.apply.entity.ApplyStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -27,4 +28,14 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
 
     @Query("select a from Apply a where a.jobPost.member.id = :memberId and a.jobPost.id = :jobPostId and a.member.id = :targetMemberId")
     Optional<Apply> checkAppliedAndAuthor(@Param("memberId") Long memberId, @Param("targetMemberId") Long targetMemberId, @Param("jobPostId") Long jobPostId);
+
+    @Query("select count(a) from Apply a where a.jobPost.member.id = :memberId and a.jobPost.id = :jobPostId")
+    Long findCountApply(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId);
+
+    @Query("select a.member.id from Apply a where a.jobPost.member.id = :memberId and a.jobPost.id = :jobPostId")
+    List<Long> findMemberIdListByMemberIdAndJobPostId(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId);
+
+    @Modifying
+    @Query("update Apply a set a.status = :applyStatus where a.member.id in :targetMemberIdList")
+    void updateApplyStatus(@Param("targetMemberIdList") List<Long> targetMemberIdList, @Param("applyStatus") ApplyStatus applyStatus);
 }

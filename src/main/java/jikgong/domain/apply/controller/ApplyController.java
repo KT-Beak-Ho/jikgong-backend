@@ -3,9 +3,11 @@ package jikgong.domain.apply.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import jikgong.domain.apply.dtos.AcceptedMemberRequest;
 import jikgong.domain.apply.dtos.ApplyPendingResponseForCompany;
+import jikgong.domain.apply.dtos.ApplyProcessRequest;
 import jikgong.domain.apply.dtos.ApplyResponseForWorker;
 import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.apply.service.ApplyService;
+import jikgong.domain.jobPost.dtos.JobPostManageWorkerResponse;
 import jikgong.domain.member.dtos.MemberAcceptedResponse;
 import jikgong.global.dto.Response;
 import jikgong.global.security.principal.PrincipalDetails;
@@ -16,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -60,16 +63,24 @@ public class ApplyController {
         return ResponseEntity.ok(new Response(applyResponseForCompanyPage, "공고 글에 신청된 내역 조회 완료"));
     }
 
+    @Operation(summary = "인력 관리: 인부 요청 처리")
+    @PostMapping("/api/apply/company/process-request")
+    public ResponseEntity<Response> processApply(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                 @RequestBody ApplyProcessRequest request) {
+        applyService.processApply(principalDetails.getMember().getId(), request);
+        return ResponseEntity.ok(new Response("인부 요청 처리 완료"));
+    }
+
     @Operation(summary = "인력 관리: 공고 글에 확정된 노동자 조회")
-    @PostMapping("/api/apply/company/accepted")
+    @GetMapping("/api/apply/company/accepted")
     public ResponseEntity<Response> findAcceptedApplyCompany(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                             @RequestBody AcceptedMemberRequest request,
+                                                             @RequestParam("jobPostId") Long jobPostId,
+                                                             @RequestParam("workDate") LocalDate workDate,
                                                              @RequestParam(name = "page", defaultValue = "0") int page,
                                                              @RequestParam(name = "size", defaultValue = "10") int size) {
         // 페이징 처리 (이름 순)
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("m.workerInfo.workerName")));
-        Page<MemberAcceptedResponse> memberAcceptedResponsePage =
-                applyService.findAcceptedHistoryCompany(principalDetails.getMember().getId(), request, pageable);
-        return ResponseEntity.ok(new Response(memberAcceptedResponsePage, "공고 글에 확정된 노동자 조회"));
+        JobPostManageWorkerResponse jobPostManageWorkerResponse = applyService.findAcceptedHistoryCompany(principalDetails.getMember().getId(), jobPostId, workDate, pageable);
+        return ResponseEntity.ok(new Response(jobPostManageWorkerResponse, "공고 글에 확정된 노동자 조회"));
     }
 }
