@@ -26,4 +26,7 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
 
     @Query("select h from History h join fetch Member m where h.jobPost.id = :jobPostId and h.jobPost.member.id = :memberId and h.workDate = :workDate and h.isWork = :isWork")
     Page<History> findWorkHistory(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId, @Param("workDate") LocalDate workDate, @Param("isWork") Boolean isWork, Pageable pageable);
+
+    @Query("select count(h) from History h where h.jobPost.id = :jobPostId and h.jobPost.member.id = :memberId and h.workDate = :workDate and h.isWork = :isWork")
+    Long findCountWorkOrNotWork(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId, @Param("workDate") LocalDate workDate, @Param("isWork") Boolean isWork);
 }

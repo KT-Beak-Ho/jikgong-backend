@@ -1,5 +1,6 @@
 package jikgong.domain.member.dtos;
 
+import jikgong.domain.history.dtos.CountHistory;
 import jikgong.domain.history.entity.History;
 import jikgong.domain.history.entity.WorkStatus;
 import jikgong.domain.apply.entity.Apply;
@@ -14,6 +15,9 @@ import lombok.Setter;
 @Getter @Setter
 @Builder
 public class MemberAcceptedResponse {
+    /**
+     * 인력 관리 화면에서 출퇴근 관련 dto
+     */
     private Long memberId;
     private String workerName; // 노동자 이름
     private String phone; // 휴대폰 번호

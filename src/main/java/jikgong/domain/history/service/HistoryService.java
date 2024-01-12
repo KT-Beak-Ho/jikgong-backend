@@ -1,11 +1,15 @@
 package jikgong.domain.history.service;
 
+import jdk.jshell.Snippet;
 import jikgong.domain.apply.entity.Apply;
+import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.apply.repository.ApplyRepository;
+import jikgong.domain.history.dtos.CountHistory;
 import jikgong.domain.history.dtos.HistorySaveRequest;
 import jikgong.domain.history.entity.History;
 import jikgong.domain.history.entity.WorkStatus;
 import jikgong.domain.history.repository.HistoryRepository;
+import jikgong.domain.jobPost.dtos.JobPostManageWorkerResponse;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.repository.JobPostRepository;
 import jikgong.domain.member.dtos.MemberAcceptedResponse;
@@ -51,6 +55,10 @@ public class HistoryService {
         if (apply.isEmpty()) {
             throw new CustomException(ErrorCode.HISTORY_NOT_FOUND_APPLY);
         }
+        // 승인된 노동자 인지 체크
+        if (apply.get().getStatus() != ApplyStatus.ACCEPTED) {
+            throw new CustomException(ErrorCode.APPLY_NOT_ACCEPTED);
+        }
 
         // 유효한 날짜 인지 체크
         Optional<WorkDate> workDate = workDateRepository.findByWorkDateAndJobPost(jobPost.getId(), request.getWorkDate());
@@ -77,13 +85,32 @@ public class HistoryService {
         return historyRepository.save(history).getId();
     }
 
-    public Page<MemberAcceptedResponse> findHistoryMembers(Long memberId, Long jobPostId, LocalDate workDate, Boolean isWork, Pageable pageable) {
-        Page<History> historyPage = historyRepository.findWorkHistory(memberId, jobPostId, workDate, isWork, pageable);
+    public JobPostManageWorkerResponse findHistoryMembers(Long memberId, Long jobPostId, LocalDate workDate, Boolean isWork, Pageable pageable) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+        JobPost jobPost = jobPostRepository.findById(jobPostId)
+                .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
+
+        Page<History> historyPage = historyRepository.findWorkHistory(member.getId(), jobPost.getId(), workDate, isWork, pageable);
 
         List<MemberAcceptedResponse> memberAcceptedResponseList = historyPage.getContent().stream()
                 .map(MemberAcceptedResponse::fromHistory)
                 .collect(Collectors.toList());
 
-        return new PageImpl<>(memberAcceptedResponseList, pageable, historyPage.getTotalElements());
+        CountHistory countHistory = findCountHistory(member.getId(), jobPost.getId(), workDate);
+        PageImpl<MemberAcceptedResponse> memberAcceptedResponsePage = new PageImpl<>(memberAcceptedResponseList, pageable, historyPage.getTotalElements());
+
+        return JobPostManageWorkerResponse.builder()
+                .countHistory(countHistory)
+                .memberAcceptedResponsePage(memberAcceptedResponsePage)
+                .build();
+    }
+
+    // 인력 관리: 전체, 출근, 결근 인원수 조회
+    public CountHistory findCountHistory(Long memberId, Long jobPostId, LocalDate workDate) {
+        Long allCount = applyRepository.findCountApply(memberId, jobPostId);
+        Long countWork = historyRepository.findCountWorkOrNotWork(memberId, jobPostId, workDate, true);
+        Long countNotWork = historyRepository.findCountWorkOrNotWork(memberId, jobPostId, workDate, false);
+        return new CountHistory(allCount, countWork, countNotWork);
     }
 }

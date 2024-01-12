@@ -3,6 +3,7 @@ package jikgong.domain.jobPost.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import jikgong.domain.jobPost.dtos.JobPostApplyHistoryResponse;
 import jikgong.domain.jobPost.dtos.JobPostListResponse;
+import jikgong.domain.jobPost.dtos.JobPostManageResponse;
 import jikgong.domain.jobPost.dtos.JobPostSaveRequest;
 import jikgong.domain.jobPost.entity.JobPostStatus;
 import jikgong.domain.jobPost.service.JobPostService;
@@ -66,4 +67,10 @@ public class JobPostController {
         return ResponseEntity.ok(new Response(temporaryJobPostPage, "임시 등록한 모집 공고 리스트 반환"));
     }
 
+    @Operation(summary = "인력 관리: 모집 공고 정보 반환", description = "인력 관리 버튼 클릭 시 모집 공고에 대한 정보 반환")
+    @GetMapping("/api/company/job-post/{jobPostId}")
+    public ResponseEntity<Response> findJobPostForManage(@PathVariable("jobPostId") Long jobPostId) {
+        JobPostManageResponse jobPostManageResponse = jobPostService.findJobPostForManage(jobPostId);
+        return ResponseEntity.ok(new Response(jobPostManageResponse, "인력 관리: 모집 공고 정보 반환"));
+    }
 }

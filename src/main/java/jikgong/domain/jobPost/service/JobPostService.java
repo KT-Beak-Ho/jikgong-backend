@@ -1,6 +1,7 @@
 package jikgong.domain.jobPost.service;
 
 import jikgong.domain.jobPost.dtos.JobPostListResponse;
+import jikgong.domain.jobPost.dtos.JobPostManageResponse;
 import jikgong.domain.jobPost.dtos.JobPostSaveRequest;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.entity.JobPostStatus;
@@ -131,4 +132,11 @@ public class JobPostService {
         return temporaryJobPostList;
     }
 
+    // 인력 관리: 모집 공고 정보 조회
+    public JobPostManageResponse findJobPostForManage(Long jobPostId) {
+        JobPost jobPost = jobPostRepository.findById(jobPostId)
+                .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
+
+        return JobPostManageResponse.from(jobPost);
+    }
 }
