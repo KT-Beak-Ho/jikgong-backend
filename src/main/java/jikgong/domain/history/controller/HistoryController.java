@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jikgong.domain.history.dtos.HistorySaveRequest;
 import jikgong.domain.history.entity.WorkStatus;
 import jikgong.domain.history.service.HistoryService;
+import jikgong.domain.jobPost.dtos.JobPostManageWorkerResponse;
 import jikgong.domain.member.dtos.MemberAcceptedResponse;
 import jikgong.global.dto.Response;
 import jikgong.global.security.principal.PrincipalDetails;
@@ -33,7 +34,7 @@ public class HistoryController {
         return ResponseEntity.ok(new Response("출근, 결근 결과 저장 완료"));
     }
 
-    @Operation(summary = "출근 / 결근 조회", description = "ex) workDate: 2024-01-01")
+    @Operation(summary = "인력 관리: 출근 / 결근 조회", description = "ex) workDate: 2024-01-01")
     @GetMapping("/api/history")
     public ResponseEntity<Response> findHistoryMembers(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                        @RequestParam("isWork") Boolean isWork,
@@ -42,7 +43,7 @@ public class HistoryController {
                                                        @RequestParam(name = "page", defaultValue = "0") int page,
                                                        @RequestParam(name = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("m.workerInfo.workerName")));
-        Page<MemberAcceptedResponse> memberAcceptedResponsePage = historyService.findHistoryMembers(principalDetails.getMember().getId(), jobPostId, workDate, isWork, pageable);
-        return ResponseEntity.ok(new Response(memberAcceptedResponsePage, "출근 / 결근 조회 결과 반환 완료"));
+        JobPostManageWorkerResponse jobPostManageWorkerResponse = historyService.findHistoryMembers(principalDetails.getMember().getId(), jobPostId, workDate, isWork, pageable);
+        return ResponseEntity.ok(new Response(jobPostManageWorkerResponse, "출근 / 결근 조회 결과 반환 완료"));
     }
 }
