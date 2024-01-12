@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 @OpenAPIDefinition(
         info = @Info(title = "jikgong API 명세서",
-                description = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwaG9uZSI6IjAxMDEyMzQ1Njc4IiwiZXhwIjoxNzA5NjQwMzc5fQ.KmnnBZIP2uDI3GeJFoaMETmI2326S_kTLYr4-y4mfzs",
+                description = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwaG9uZSI6IjAxMDEyMzQ1Njc4IiwiZXhwIjoxNzA5NjQwMzc5fQ.KmnnBZIP2uDI3GeJFoaMETmI2326S_kTLYr4-y4mfzs  \neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwaG9uZSI6IjAxMDExMTExMTExIiwiZXhwIjoxNzEwMjMwMzE1fQ.I8h6DA2cHHa7A3uFR55b7IyJkQ6Sc_hSqc-BEH1QsvE",
                 version = "v1"))
 @Configuration
 public class SwaggerConfig {
