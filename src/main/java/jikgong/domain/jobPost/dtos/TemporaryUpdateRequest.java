@@ -6,7 +6,6 @@ import jikgong.domain.jobPost.entity.Park;
 import jikgong.domain.jobPost.entity.Tech;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,8 +14,10 @@ import java.util.List;
 
 @NoArgsConstructor
 @Getter
-public class JobPostSaveRequest {
-    @Schema(description = "공고 제목", example = "사하구  낙동5블럭  낙동강 온도 측정 센터 신축공사")
+public class TemporaryUpdateRequest {
+    @Schema(description = "jobPostId", example = "1")
+    private Long jobPostId;
+    @Schema(description = "공고 제목", example = "사하구 낙동5블럭 낙동강 온도 측정 센터 신축공사")
     private String title;
     @Schema(description = "인부 타입", example = "NORMAL")
     private Tech tech;

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class AddressInfo {
 
     @Id @GeneratedValue
-    @Column(name = "pickup_location_id")
+    @Column(name = "address_info_id")
     private Long id;
 
     private String address; // 픽업 도로명 주소

@@ -53,7 +53,8 @@ public class ApplyService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        JobPost jobPost = jobPostRepository.findById(jobPostId)
+        // 임시 저장이 아닌 JobPost 조회
+        JobPost jobPost = jobPostRepository.findJobPostByIdAndTemporary(jobPostId, false)
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
 
         // 중복 신청 조회

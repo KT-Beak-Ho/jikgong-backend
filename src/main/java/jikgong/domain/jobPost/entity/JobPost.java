@@ -1,9 +1,11 @@
 package jikgong.domain.jobPost.entity;
 
 import jakarta.persistence.*;
+import jikgong.domain.addressInfo.entity.AddressInfo;
 import jikgong.domain.common.Address;
 import jikgong.domain.common.BaseEntity;
 import jikgong.domain.jobPost.dtos.JobPostSaveRequest;
+import jikgong.domain.jobPost.dtos.TemporaryUpdateRequest;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.project.entity.Project;
 import jikgong.domain.workDate.entity.WorkDate;
@@ -20,7 +22,8 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class JobPost extends BaseEntity {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "job_post_id")
     private Long id;
 
@@ -34,8 +37,11 @@ public class JobPost extends BaseEntity {
     private Integer recruitNum; // 모집 인원
     private Integer registeredNum; // 모집된 인원
     private Integer wage; // 임금
+    private String parkDetail;
     private String preparation; // 준비 사항
     private LocalDateTime expirationTime; // 모집 마감
+    private String managerName; // 담당자 명
+    private String phone; // 연락 번호
     private Boolean isTemporary; // 임시 저장 여부
 
     @Embedded
@@ -52,11 +58,14 @@ public class JobPost extends BaseEntity {
     private Project project;
 
     // 양방향 매핑
-    @OneToMany(mappedBy = "jobPost")
+    @OneToMany(mappedBy = "jobPost", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WorkDate> workDateList = new ArrayList<>();
+    @OneToMany(mappedBy = "jobPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AddressInfo> addressInfoList = new ArrayList<>();
+
 
     @Builder
-    public JobPost(String title, Tech tech, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, Integer recruitNum, Integer wage, String preparation, LocalDateTime expirationTime, Boolean isTemporary, AvailableInfo availableInfo, Address address, Member member, Project project) {
+    public JobPost(String title, Tech tech, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, Integer recruitNum, Integer wage, String parkDetail, String preparation, LocalDateTime expirationTime, String managerName, String phone, Boolean isTemporary, AvailableInfo availableInfo, Address address, Member member, Project project) {
         this.title = title;
         this.tech = tech;
         this.startDate = startDate;
@@ -65,9 +74,12 @@ public class JobPost extends BaseEntity {
         this.endTime = endTime;
         this.recruitNum = recruitNum;
         this.registeredNum = 0;
+        this.parkDetail = parkDetail;
         this.wage = wage;
         this.preparation = preparation;
         this.expirationTime = expirationTime;
+        this.managerName = managerName;
+        this.phone = phone;
         this.isTemporary = isTemporary;
         this.availableInfo = availableInfo;
         this.address = address;
@@ -76,11 +88,14 @@ public class JobPost extends BaseEntity {
     }
 
     public static JobPost createEntity(JobPostSaveRequest request, Member member, Project project) {
-        // 가장 빠른 날짜 찾기
-        LocalDate minDate = Collections.min(request.getWorkDayList());
-        // 가장 느린 날짜 찾기
-        LocalDate maxDate = Collections.max(request.getWorkDayList());
-
+        LocalDate minDate = null;
+        LocalDate maxDate = null;
+        if (request.getWorkDayList() != null) {
+            // 가장 빠른 날짜 찾기
+            minDate = Collections.min(request.getWorkDayList());
+            // 가장 느린 날짜 찾기
+            maxDate = Collections.max(request.getWorkDayList());
+        }
         return JobPost.builder()
                 .title(request.getTitle())
                 .tech(request.getTech())
@@ -90,13 +105,43 @@ public class JobPost extends BaseEntity {
                 .endTime(request.getEndTime())
                 .recruitNum(request.getRecruitNum())
                 .wage(request.getWage())
+                .parkDetail(request.getParkDetail())
                 .preparation(request.getPreparation())
                 .expirationTime(request.getExpirationTime())
+                .managerName(request.getManagerName())
+                .phone(request.getPhone())
                 .isTemporary(request.getIsTemporary())
                 .availableInfo(new AvailableInfo(request.getMeal(), request.getPickup(), request.getPark()))
                 .address(new Address(request.getAddress(), request.getLatitude(), request.getLongitude()))
                 .member(member)
                 .project(project)
                 .build();
+    }
+
+    public static JobPost updateTemporary(JobPost jobPost, TemporaryUpdateRequest request, Project project) {
+        jobPost.title = request.getTitle();
+        jobPost.tech = request.getTech();
+        jobPost.startTime = request.getStartTime();
+        jobPost.endTime = request.getEndTime();
+        jobPost.recruitNum = request.getRecruitNum();
+        jobPost.wage = request.getWage();
+        jobPost.parkDetail = request.getParkDetail();
+        jobPost.preparation = request.getPreparation();
+        jobPost.expirationTime = request.getExpirationTime();
+        jobPost.managerName = request.getManagerName();
+        jobPost.phone = request.getPhone();
+        jobPost.isTemporary = request.getIsTemporary();
+        jobPost.availableInfo = new AvailableInfo(request.getMeal(), request.getPickup(), request.getPark());
+        jobPost.address = new Address(request.getAddress(), request.getLatitude(), request.getLongitude());
+        jobPost.project = project;
+
+        return jobPost;
+    }
+
+    public void deleteChildeEntity(JobPost jobPost) {
+        // 근무 날짜 정보 삭제
+        jobPost.getWorkDateList().clear();
+        // 위치 관련 정보 삭제
+        jobPost.getAddressInfoList().clear();
     }
 }
