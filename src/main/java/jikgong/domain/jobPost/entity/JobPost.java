@@ -152,4 +152,8 @@ public class JobPost extends BaseEntity {
         // 위치 관련 정보 삭제
         jobPost.getAddressInfoList().clear();
     }
+
+    public void plusRegisteredNum(Integer updateCount) {
+        this.registeredNum += updateCount;
+    }
 }

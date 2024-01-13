@@ -36,6 +36,9 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
     List<Long> findMemberIdListByMemberIdAndJobPostId(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId);
 
     @Modifying
-    @Query("update Apply a set a.status = :applyStatus where a.member.id in :targetMemberIdList")
-    void updateApplyStatus(@Param("targetMemberIdList") List<Long> targetMemberIdList, @Param("applyStatus") ApplyStatus applyStatus);
+    @Query("update Apply a set a.status = :applyStatus where a.id in :applyIdList")
+    int updateApplyStatus(@Param("applyIdList") List<Long> applyIdList, @Param("applyStatus") ApplyStatus applyStatus);
+
+    @Query("select a from Apply a where a.id in :applyIdList")
+    List<Apply> findByIdList(@Param("applyIdList") List<Long> applyIdList);
 }

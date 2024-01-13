@@ -11,8 +11,8 @@ import java.util.List;
 public class ApplyProcessRequest {
     @Schema(description = "jobPostId", example = "1")
     private Long jobPostId;
-    @Schema(description = "수락할 노동자 Id 리스트", example = "[\"1\", \"2\"]")
-    private List<Long> targetMemberIdList;
+    @Schema(description = "수락할 요청 Id 리스트", example = "[\"1\", \"2\"]")
+    private List<Long> applyIdList;
     @Schema(description = "수락(true) or 거절(false)", example = "true")
     private Boolean isAccept;
 }

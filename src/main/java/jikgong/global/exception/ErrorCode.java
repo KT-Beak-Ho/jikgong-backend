@@ -35,7 +35,8 @@ public enum ErrorCode {
     HISTORY_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 동일한 출근, 결근 데이터가 있습니다."),
     WORK_DATE_NOT_FOUND(HttpStatus.NOT_FOUND, "요청한 날짜는 모집 공고에 맞지 않는 날짜 입니다."),
     APPLY_NOT_ACCEPTED(HttpStatus.BAD_REQUEST, "신청 내역이 아직 승인 되지 않았습니다."),
-    APPLY_PROCESS_NOT_FOUND_MEMBER(HttpStatus.NOT_FOUND, "요청 처리 중 회원 정보가 없는 Id 값이 발견됐습니다.");
+    APPLY_NEED_TO_PENDING(HttpStatus.BAD_REQUEST, "대기 중인 요청에 대해서만 처리할 수 있습니다."),
+    JOB_POST_OVER_RECRUIT_NUM(HttpStatus.BAD_REQUEST, "모집 인원을 초과했습니다.");
 
     private final HttpStatus status;
     private final String errorMessage;

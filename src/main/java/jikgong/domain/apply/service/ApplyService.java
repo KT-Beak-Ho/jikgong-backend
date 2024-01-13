@@ -164,18 +164,27 @@ public class ApplyService {
     public void processApply(Long memberId, ApplyProcessRequest request) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+        JobPost jobPost = jobPostRepository.findById(request.getJobPostId())
+                .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
 
-        // 실제 신청한 인부가 맞는지 체크
-        List<Long> applyMemberIds = applyRepository.findMemberIdListByMemberIdAndJobPostId(member.getId(), request.getJobPostId());
-        Set<Long> memberIdSet = new HashSet<>(applyMemberIds);
-        for (Long targetMemberId : request.getTargetMemberIdList()) {
-            if (!memberIdSet.contains(targetMemberId)) {
-                throw new CustomException(ErrorCode.APPLY_PROCESS_NOT_FOUND_MEMBER);
+        // 대기 중인 요청인지 체크
+        List<Apply> applyList = applyRepository.findByIdList(request.getApplyIdList());
+        for (Apply apply : applyList) {
+            if (apply.getStatus() != ApplyStatus.PENDING) {
+                throw new CustomException(ErrorCode.APPLY_NEED_TO_PENDING);
             }
+        }
+
+        // 모집 인원 초과 체크
+        if (jobPost.getRegisteredNum() + applyList.size() > jobPost.getRecruitNum()) {
+            throw new CustomException(ErrorCode.JOB_POST_OVER_RECRUIT_NUM);
         }
 
         // applyStatus 갱신
         ApplyStatus applyStatus = request.getIsAccept() ? ApplyStatus.ACCEPTED : ApplyStatus.REJECTED;
-        applyRepository.updateApplyStatus(request.getTargetMemberIdList(), applyStatus);
+        int updatedCount = applyRepository.updateApplyStatus(request.getApplyIdList(), applyStatus);
+
+        // 모집된 인원 갱신
+        jobPost.plusRegisteredNum(updatedCount);
     }
 }
