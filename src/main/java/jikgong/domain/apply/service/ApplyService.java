@@ -54,7 +54,7 @@ public class ApplyService {
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 임시 저장이 아닌 JobPost 조회
-        JobPost jobPost = jobPostRepository.findJobPostByIdAndTemporary(jobPostId, false)
+        JobPost jobPost = jobPostRepository.findJobPostByIdAndTemporary(member.getId(), jobPostId, false)
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
 
         // 중복 신청 조회

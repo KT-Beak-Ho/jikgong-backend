@@ -27,6 +27,6 @@ public interface JobPostRepository extends JpaRepository<JobPost, Long> {
     @Query("select j from JobPost j where j.member.id = :memberId and j.startDate > :now and j.isTemporary = false and j.project.id = :projectId")
     List<JobPost> findPlannedJobPostByMemberAndProject(@Param("memberId") Long memberId, @Param("now") LocalDate now, @Param("projectId") Long projectId, Pageable pageable);
 
-    @Query("select j from JobPost j where j.id = :jobPostId and j.isTemporary = :isTemporary")
-    Optional<JobPost> findJobPostByIdAndTemporary(@Param("jobPostId") Long jobPostId, @Param("isTemporary") Boolean isTemporary);
+    @Query("select j from JobPost j where j.member.id = :memberId and j.id = :jobPostId and j.isTemporary = :isTemporary")
+    Optional<JobPost> findJobPostByIdAndTemporary(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId, @Param("isTemporary") Boolean isTemporary);
 }

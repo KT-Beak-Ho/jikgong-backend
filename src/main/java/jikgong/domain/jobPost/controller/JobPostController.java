@@ -67,7 +67,7 @@ public class JobPostController {
     @PutMapping("/api/company/job-posts/temporary/")
     public ResponseEntity<Response> findTemporaryJobPosts(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                           @RequestBody TemporaryUpdateRequest request) {
-        jobPostService.deleteChildEntityFromJobPost(request.getJobPostId());
+
         jobPostService.updateTemporaryJobPost(principalDetails.getMember().getId(), request);
         return ResponseEntity.ok(new Response("임시 등록한 모집 공고 업데이트 완료"));
     }

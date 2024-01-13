@@ -143,43 +143,28 @@ public class JobPostService {
     public void deleteTemporaryJobPost(Long memberId, Long jobPostId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-        JobPost jobPost = jobPostRepository.findJobPostByIdAndTemporary(jobPostId, true)
+        JobPost jobPost = jobPostRepository.findJobPostByIdAndTemporary(member.getId(), jobPostId, true)
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
         // todo: 수정
 
-        // 위치 관련 정보 삭제
-        addressInfoRepository.deleteByMemberAndJobPost(member.getId(), jobPost.getId());
         // 이미지 관련 정보 삭제
         jobPostImageService.deleteEntityAndS3(member.getId(), jobPost.getId());
-        // 근무 날짜 정보 삭제
-        workDateRepository.deleteByMemberAndJobPost(member.getId(), jobPost.getId());
+        jobPost.deleteChildeEntity(jobPost);
 
         // 임시 저장 삭제
         jobPostRepository.delete(jobPost);
     }
 
-    public void deleteChildEntityFromJobPost(Long memberId, Long jobPostId) {
-        // 근무 날짜 정보 삭제
-        workDateRepository.deleteByMemberAndJobPost(memberId, jobPostId);
-        // 위치 관련 정보 삭제
-        addressInfoRepository.deleteByMemberAndJobPost(memberId, jobPostId);
-        log.info("임시 저장 전 자식 엔티티 제거");
-    }
-
-    public void deleteChildEntityFromJobPost(Long jobPostId) {
-        JobPost jobPost = jobPostRepository.findJobPostByIdAndTemporary(jobPostId, true)
-                .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
-        jobPost.deleteChildeEntity(jobPost);
-        log.info("임시 저장 전 자식 엔티티 제거");
-    }
-
     public void updateTemporaryJobPost(Long memberId, TemporaryUpdateRequest request) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-        JobPost jobPost = jobPostRepository.findJobPostByIdAndTemporary(request.getJobPostId(), true)
+        JobPost jobPost = jobPostRepository.findJobPostByIdAndTemporary(member.getId(), request.getJobPostId(), true)
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
         Project project = projectRepository.findById(request.getProjectId())
                 .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_FOUND));
+
+        jobPost.deleteChildeEntity(jobPost);
+        log.info("임시 저장 전 자식 엔티티 제거");
 
         // 픽업 정보 저장
         if (request.getPickup()) {
