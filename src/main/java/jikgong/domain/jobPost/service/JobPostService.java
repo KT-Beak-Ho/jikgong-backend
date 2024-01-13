@@ -48,7 +48,7 @@ public class JobPostService {
     private final S3Handler s3Handler;
     private final ProjectRepository projectRepository;
 
-    //    @CachePut(value = "JobPost", cacheManager = "contentCacheManager", key = "#result")
+    // 모집 공고: 저장
     public Long saveJobPost(Long memberId, JobPostSaveRequest request, List<MultipartFile> imageList) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -57,41 +57,34 @@ public class JobPostService {
                 .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_FOUND));
 
         // 모집 공고 저장
-        JobPost jobPost = JobPost.createEntity(request, member, project);
+        JobPost jobPost = JobPost.createEntityByJobPost(request, member, project);
         JobPost savedJobPost = jobPostRepository.save(jobPost);
 
         // 픽업 정보 저장
         if (request.getPickup()) {
-            if (request.getPickupList() != null) {
-                List<AddressInfo> pickupLocationList = request.getPickupList().stream()
-                        .map(address -> new AddressInfo(address, AddressType.PICK_UP, savedJobPost))
-                        .collect(Collectors.toList());
-                addressInfoRepository.saveAll(pickupLocationList);
-            }
+            List<AddressInfo> pickupLocationList = request.getPickupList().stream()
+                    .map(address -> new AddressInfo(address, AddressType.PICK_UP, savedJobPost))
+                    .collect(Collectors.toList());
+            addressInfoRepository.saveAll(pickupLocationList);
         }
 
         // 날짜 정보 저장
-        if (request.getWorkDayList() != null) {
-            List<WorkDate> workDayList = request.getWorkDayList().stream()
-                    .map(workDay -> new WorkDate(workDay, savedJobPost))
-                    .collect(Collectors.toList());
-            workDateRepository.saveAll(workDayList);
-        }
+        List<WorkDate> workDayList = request.getWorkDateList().stream()
+                .map(workDay -> new WorkDate(workDay, savedJobPost))
+                .collect(Collectors.toList());
+        workDateRepository.saveAll(workDayList);
 
         // 이미지 업로드 및 저장
-        if (!request.getIsTemporary()) {
-            List<ImageDto> imageDtoList = s3Handler.uploadImageList(imageList);
-            List<JobPostImage> jobPostImageList = imageDtoList.stream()
-                    .map(imageDto -> JobPostImage.createEntity(imageDto, savedJobPost))
-                    .collect(Collectors.toList());
-            jobPostImageRepository.saveAll(jobPostImageList);
-        }
+        List<ImageDto> imageDtoList = s3Handler.uploadImageList(imageList);
+        List<JobPostImage> jobPostImageList = imageDtoList.stream()
+                .map(imageDto -> JobPostImage.createEntity(imageDto, savedJobPost))
+                .collect(Collectors.toList());
+        jobPostImageRepository.saveAll(jobPostImageList);
 
         return savedJobPost.getId();
     }
 
-    // 등록한 공고 리스트 in 프로젝트
-//    @Cacheable(value = "JobPost", cacheManager = "contentCacheManager")
+    // 모집 공고: 조회 with 프로젝트
     public List<JobPostListResponse> findJobPostsByMemberAndProject(Long memberId, JobPostStatus jobPostStatus, Long projectId, Pageable pageable) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -117,6 +110,14 @@ public class JobPostService {
         return jobPostListResponseList;
     }
 
+    // 인력 관리: 모집 공고 정보 조회
+    public JobPostManageResponse findJobPostForManage(Long jobPostId) {
+        JobPost jobPost = jobPostRepository.findById(jobPostId)
+                .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
+
+        return JobPostManageResponse.from(jobPost);
+    }
+
     // 임시 저장: 목록 조회
     public Page<TemporaryListResponse> findTemporaryJobPosts(Long memberId, Pageable pageable) {
         Member member = memberRepository.findById(memberId)
@@ -131,60 +132,63 @@ public class JobPostService {
         return new PageImpl<>(temporaryJobPostList, pageable, temporaryJobPostPage.getTotalElements());
     }
 
-    // 인력 관리: 모집 공고 정보 조회
-    public JobPostManageResponse findJobPostForManage(Long jobPostId) {
-        JobPost jobPost = jobPostRepository.findById(jobPostId)
-                .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
-
-        return JobPostManageResponse.from(jobPost);
-    }
-
     // 임시 저장: 삭제
     public void deleteTemporaryJobPost(Long memberId, Long jobPostId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
         JobPost jobPost = jobPostRepository.findJobPostByIdAndTemporary(member.getId(), jobPostId, true)
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
-        // todo: 수정
 
         // 이미지 관련 정보 삭제
         jobPostImageService.deleteEntityAndS3(member.getId(), jobPost.getId());
+        // 관련 엔티티 삭제 (WorkDate, AddressInfo)
         jobPost.deleteChildeEntity(jobPost);
 
         // 임시 저장 삭제
         jobPostRepository.delete(jobPost);
     }
 
+    // 임시 저장: 업데이트
     public void updateTemporaryJobPost(Long memberId, TemporaryUpdateRequest request) {
+        deleteTemporaryJobPost(memberId, request.getJobPostId());
+        saveTemporary(memberId, TemporarySaveRequest.from(request));
+    }
+
+    // 임시 저장: 저장
+    public Long saveTemporary(Long memberId, TemporarySaveRequest request) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-        JobPost jobPost = jobPostRepository.findJobPostByIdAndTemporary(member.getId(), request.getJobPostId(), true)
-                .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
-        Project project = projectRepository.findById(request.getProjectId())
-                .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_FOUND));
 
-        jobPost.deleteChildeEntity(jobPost);
-        log.info("임시 저장 전 자식 엔티티 제거");
+        Project project = null;
+        if (request.getProjectId() != null) {
+            project = projectRepository.findById(request.getProjectId())
+                    .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_FOUND));
+        }
+
+        // 모집 공고 저장
+        JobPost jobPost = JobPost.createEntityByTemporary(request, member, project);
+        JobPost savedJobPost = jobPostRepository.save(jobPost);
 
         // 픽업 정보 저장
         if (request.getPickup()) {
             if (request.getPickupList() != null) {
                 List<AddressInfo> pickupLocationList = request.getPickupList().stream()
-                        .map(address -> new AddressInfo(address, AddressType.PICK_UP, jobPost))
+                        .map(address -> new AddressInfo(address, AddressType.PICK_UP, savedJobPost))
                         .collect(Collectors.toList());
                 addressInfoRepository.saveAll(pickupLocationList);
             }
         }
 
         // 날짜 정보 저장
-        if (request.getWorkDayList() != null) {
-            List<WorkDate> workDayList = request.getWorkDayList().stream()
-                    .map(workDay -> new WorkDate(workDay, jobPost))
+        if (request.getWorkDateList() != null) {
+            List<WorkDate> workDayList = request.getWorkDateList().stream()
+                    .map(workDay -> new WorkDate(workDay, savedJobPost))
                     .collect(Collectors.toList());
             workDateRepository.saveAll(workDayList);
         }
 
-        // jobPost 필드 정보 update
-        JobPost.updateTemporary(jobPost, request, project);
+        // 이미지 업로드 및 저장은 x
+
+        return savedJobPost.getId();
     }
 }

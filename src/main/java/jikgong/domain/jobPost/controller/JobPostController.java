@@ -23,7 +23,7 @@ import java.util.List;
 public class JobPostController {
     private final JobPostService jobPostService;
 
-    @Operation(summary = "모집 공고 등록 or 임시 저장")
+    @Operation(summary = "모집 공고 등록")
     @PostMapping(value = "/api/company/job-post", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Response> saveJobPost(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                 @RequestPart JobPostSaveRequest request,
@@ -61,13 +61,19 @@ public class JobPostController {
 
 
 
+    @Operation(summary = "임시 저장: 저장")
+    @PostMapping("/api/company/job-post/temporary")
+    public ResponseEntity<Response> saveTemporaryJobPost(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                           @RequestBody TemporarySaveRequest request) {
+        Long temporaryId = jobPostService.saveTemporary(principalDetails.getMember().getId(), request);
+        return ResponseEntity.ok(new Response("임시 저장 등록 완료"));
+    }
 
 
-    @Operation(summary = "임시 저장: 업데이트")
-    @PutMapping("/api/company/job-posts/temporary/")
+    @Operation(summary = "임시 저장: 업데이트", description = "임시 저장을 또 한번 임시 저장 할 경우")
+    @PutMapping("/api/company/job-post/temporary")
     public ResponseEntity<Response> findTemporaryJobPosts(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                           @RequestBody TemporaryUpdateRequest request) {
-
         jobPostService.updateTemporaryJobPost(principalDetails.getMember().getId(), request);
         return ResponseEntity.ok(new Response("임시 등록한 모집 공고 업데이트 완료"));
     }
@@ -85,7 +91,7 @@ public class JobPostController {
     }
 
     @Operation(summary = "임시 저장: 삭제")
-    @DeleteMapping("/api/company/job-posts/temporary/{jobPostId}")
+    @DeleteMapping("/api/company/job-post/temporary/{jobPostId}")
     public ResponseEntity<Response> deleteTemporaryJobPost(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                            @PathVariable("jobPostId") Long jobPostId) {
         jobPostService.deleteTemporaryJobPost(principalDetails.getMember().getId(), jobPostId);

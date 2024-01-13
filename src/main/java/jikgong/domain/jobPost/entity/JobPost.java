@@ -5,6 +5,7 @@ import jikgong.domain.addressInfo.entity.AddressInfo;
 import jikgong.domain.common.Address;
 import jikgong.domain.common.BaseEntity;
 import jikgong.domain.jobPost.dtos.JobPostSaveRequest;
+import jikgong.domain.jobPost.dtos.TemporarySaveRequest;
 import jikgong.domain.jobPost.dtos.TemporaryUpdateRequest;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.project.entity.Project;
@@ -87,14 +88,14 @@ public class JobPost extends BaseEntity {
         this.project = project;
     }
 
-    public static JobPost createEntity(JobPostSaveRequest request, Member member, Project project) {
+    public static JobPost createEntityByTemporary(TemporarySaveRequest request, Member member, Project project) {
         LocalDate minDate = null;
         LocalDate maxDate = null;
-        if (request.getWorkDayList() != null) {
+        if (request.getWorkDateList() != null) {
             // 가장 빠른 날짜 찾기
-            minDate = Collections.min(request.getWorkDayList());
+            minDate = Collections.min(request.getWorkDateList());
             // 가장 느린 날짜 찾기
-            maxDate = Collections.max(request.getWorkDayList());
+            maxDate = Collections.max(request.getWorkDateList());
         }
         return JobPost.builder()
                 .title(request.getTitle())
@@ -110,7 +111,7 @@ public class JobPost extends BaseEntity {
                 .expirationTime(request.getExpirationTime())
                 .managerName(request.getManagerName())
                 .phone(request.getPhone())
-                .isTemporary(request.getIsTemporary())
+                .isTemporary(true)
                 .availableInfo(new AvailableInfo(request.getMeal(), request.getPickup(), request.getPark()))
                 .address(new Address(request.getAddress(), request.getLatitude(), request.getLongitude()))
                 .member(member)
@@ -118,25 +119,93 @@ public class JobPost extends BaseEntity {
                 .build();
     }
 
-    public static JobPost updateTemporary(JobPost jobPost, TemporaryUpdateRequest request, Project project) {
-        jobPost.title = request.getTitle();
-        jobPost.tech = request.getTech();
-        jobPost.startTime = request.getStartTime();
-        jobPost.endTime = request.getEndTime();
-        jobPost.recruitNum = request.getRecruitNum();
-        jobPost.wage = request.getWage();
-        jobPost.parkDetail = request.getParkDetail();
-        jobPost.preparation = request.getPreparation();
-        jobPost.expirationTime = request.getExpirationTime();
-        jobPost.managerName = request.getManagerName();
-        jobPost.phone = request.getPhone();
-        jobPost.isTemporary = request.getIsTemporary();
-        jobPost.availableInfo = new AvailableInfo(request.getMeal(), request.getPickup(), request.getPark());
-        jobPost.address = new Address(request.getAddress(), request.getLatitude(), request.getLongitude());
-        jobPost.project = project;
-
-        return jobPost;
+    public static JobPost createEntityByTemporary(TemporaryUpdateRequest request, Member member, Project project) {
+        LocalDate minDate = null;
+        LocalDate maxDate = null;
+        if (request.getWorkDateList() != null) {
+            // 가장 빠른 날짜 찾기
+            minDate = Collections.min(request.getWorkDateList());
+            // 가장 느린 날짜 찾기
+            maxDate = Collections.max(request.getWorkDateList());
+        }
+        return JobPost.builder()
+                .title(request.getTitle())
+                .tech(request.getTech())
+                .startDate(minDate)
+                .endDate(maxDate)
+                .startTime(request.getStartTime())
+                .endTime(request.getEndTime())
+                .recruitNum(request.getRecruitNum())
+                .wage(request.getWage())
+                .parkDetail(request.getParkDetail())
+                .preparation(request.getPreparation())
+                .expirationTime(request.getExpirationTime())
+                .managerName(request.getManagerName())
+                .phone(request.getPhone())
+                .isTemporary(true)
+                .availableInfo(new AvailableInfo(request.getMeal(), request.getPickup(), request.getPark()))
+                .address(new Address(request.getAddress(), request.getLatitude(), request.getLongitude()))
+                .member(member)
+                .project(project)
+                .build();
     }
+
+    public static JobPost createEntityByJobPost(JobPostSaveRequest request, Member member, Project project) {
+        // 가장 빠른 날짜 찾기
+        LocalDate minDate = Collections.min(request.getWorkDateList());
+        // 가장 느린 날짜 찾기
+        LocalDate maxDate = Collections.max(request.getWorkDateList());
+        return JobPost.builder()
+                .title(request.getTitle())
+                .tech(request.getTech())
+                .startDate(minDate)
+                .endDate(maxDate)
+                .startTime(request.getStartTime())
+                .endTime(request.getEndTime())
+                .recruitNum(request.getRecruitNum())
+                .wage(request.getWage())
+                .parkDetail(request.getParkDetail())
+                .preparation(request.getPreparation())
+                .expirationTime(request.getExpirationTime())
+                .managerName(request.getManagerName())
+                .phone(request.getPhone())
+                .isTemporary(false)
+                .availableInfo(new AvailableInfo(request.getMeal(), request.getPickup(), request.getPark()))
+                .address(new Address(request.getAddress(), request.getLatitude(), request.getLongitude()))
+                .member(member)
+                .project(project)
+                .build();
+    }
+
+//    public static JobPost updateTemporary(JobPost jobPost, TemporaryUpdateRequest request, Project project) {
+//        LocalDate minDate = null;
+//        LocalDate maxDate = null;
+//        if (request.getWorkDateList() != null) {
+//            // 가장 빠른 날짜 찾기
+//            minDate = Collections.min(request.getWorkDateList());
+//            // 가장 느린 날짜 찾기
+//            maxDate = Collections.max(request.getWorkDateList());
+//        }
+//        jobPost.title = request.getTitle();
+//        jobPost.tech = request.getTech();
+//        jobPost.startDate = minDate;
+//        jobPost.endDate = maxDate;
+//        jobPost.startTime = request.getStartTime();
+//        jobPost.endTime = request.getEndTime();
+//        jobPost.recruitNum = request.getRecruitNum();
+//        jobPost.wage = request.getWage();
+//        jobPost.parkDetail = request.getParkDetail();
+//        jobPost.preparation = request.getPreparation();
+//        jobPost.expirationTime = request.getExpirationTime();
+//        jobPost.managerName = request.getManagerName();
+//        jobPost.phone = request.getPhone();
+//        jobPost.isTemporary = request.getIsTemporary();
+//        jobPost.availableInfo = new AvailableInfo(request.getMeal(), request.getPickup(), request.getPark());
+//        jobPost.address = new Address(request.getAddress(), request.getLatitude(), request.getLongitude());
+//        jobPost.project = project;
+//
+//        return jobPost;
+//    }
 
     public void deleteChildeEntity(JobPost jobPost) {
         // 근무 날짜 정보 삭제

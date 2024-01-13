@@ -32,8 +32,6 @@ public class JobPostSaveRequest {
     private String preparation;
     @Schema(description = "모집 마감", example = "2023-12-25T09:30:00", type="string")
     private LocalDateTime expirationTime;
-    @Schema(description = "임시 저장 여부", example = "false")
-    private Boolean isTemporary;
     @Schema(description = "주차 공간 설명", example = "2번 GateWay 옆 공간")
     private String parkDetail;
 
@@ -56,7 +54,7 @@ public class JobPostSaveRequest {
     // 리스트 정보
     @NotEmpty(message = "일하는 날짜 리스트는 최소한 하나의 날짜가 필요합니다.")
     @Schema(description = "일하는 날짜 리스트", example = "[\"2024-01-01\", \"2024-01-02\"]")
-    private List<LocalDate> workDayList;
+    private List<LocalDate> workDateList;
     @Schema(description = "픽업 주소 리스트", example = "[\"부산광역시 사하구 낙동대로 550번길 37\", \"대한민국 부산광역시 서구 구덕로 225\"]")
     private List<String> pickupList;
 
@@ -69,5 +67,4 @@ public class JobPostSaveRequest {
     // 프로젝트
     @Schema(description = "projectId", example = "1")
     private Long projectId;
-
 }
