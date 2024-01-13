@@ -136,7 +136,7 @@ public class JobPostService {
     public void deleteTemporaryJobPost(Long memberId, Long jobPostId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-        JobPost jobPost = jobPostRepository.findJobPostByIdAndTemporary(member.getId(), jobPostId, true)
+        JobPost jobPost = jobPostRepository.findJobPostByIdAndMemberAndTemporary(member.getId(), jobPostId, true)
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
 
         // 이미지 관련 정보 삭제
