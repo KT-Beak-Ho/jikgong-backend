@@ -30,7 +30,7 @@ public class JobPostSaveRequest {
     private Integer wage;
     @Schema(description = "준비 사항", example = "작업복, 작업화")
     private String preparation;
-    @Schema(description = "모집 마감", example = "2023-12-25T09:30:00", type="string")
+    @Schema(description = "모집 마감", example = "2024-03-01T09:30:00", type="string")
     private LocalDateTime expirationTime;
     @Schema(description = "주차 공간 설명", example = "2번 GateWay 옆 공간")
     private String parkDetail;
