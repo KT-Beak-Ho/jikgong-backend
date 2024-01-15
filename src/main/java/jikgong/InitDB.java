@@ -40,13 +40,13 @@
 //            em.persist(member1);
 //            em.persist(location1);
 //
-//            Worker worker2 = getWorker("김진수");
+//            Worker worker2 = getWorker("이승민");
 //            Member member2 = createMember("01011111111", worker2);
 //            Location location2 = getLocation(member2);
 //            em.persist(member2);
 //            em.persist(location2);
 //
-//            Worker worker3 = getWorker("김진수");
+//            Worker worker3 = getWorker("조영훈");
 //            Member member3 = createMember("01022222222", worker3);
 //            Location location3 = getLocation(member3);
 //            em.persist(member3);
