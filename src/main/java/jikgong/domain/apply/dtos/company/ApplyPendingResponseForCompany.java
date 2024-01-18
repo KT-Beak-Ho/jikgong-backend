@@ -1,4 +1,4 @@
-package jikgong.domain.apply.dtos;
+package jikgong.domain.apply.dtos.company;
 
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.member.dtos.MemberResponseForApplyHistory;
@@ -11,7 +11,7 @@ import lombok.Getter;
 @Builder
 public class ApplyPendingResponseForCompany {
     /**
-     * 대기 중인 요청 조회 (기업)
+     * 인력 관리: 대기 중인 요청 조회
      */
     private Long applyId;
     private MemberResponseForApplyHistory memberResponse;
