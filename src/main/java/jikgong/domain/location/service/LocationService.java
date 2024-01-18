@@ -2,6 +2,7 @@ package jikgong.domain.location.service;
 
 
 import jikgong.domain.common.Address;
+import jikgong.domain.location.dtos.LocationDeleteRequest;
 import jikgong.domain.location.dtos.LocationResponse;
 import jikgong.domain.location.dtos.LocationSaveRequest;
 import jikgong.domain.location.dtos.LocationUpdateRequest;
@@ -62,6 +63,7 @@ public class LocationService {
         return locationResponseList;
     }
 
+    // 대표 위치 변경
     public void changeMainLocation(Long memberId, Long locationId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -89,10 +91,19 @@ public class LocationService {
         location.updateLocation(request);
     }
 
+    // 단일 삭제
     public void deleteLocation(Long memberId, Long locationId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
         locationRepository.deleteByLocationIdAndMemberId(member.getId(), locationId);
+    }
+
+    // 복수 삭제
+    public void deleteLocations(Long memberId, LocationDeleteRequest request) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        locationRepository.deleteByIdList(member.getId(), request.getLocationIdList());
     }
 }

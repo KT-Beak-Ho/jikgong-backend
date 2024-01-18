@@ -1,0 +1,14 @@
+package jikgong.domain.location.dtos;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+@NoArgsConstructor
+@Getter
+public class LocationDeleteRequest {
+    @Schema(description = "삭제할 Location Id list", example = "[\"1\", \"2\"]")
+    private List<String> locationIdList;
+}

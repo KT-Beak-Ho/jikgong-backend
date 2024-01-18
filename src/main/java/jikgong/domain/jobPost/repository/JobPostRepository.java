@@ -18,14 +18,14 @@ public interface JobPostRepository extends JpaRepository<JobPost, Long> {
     @Query("select j from JobPost j where j.member.id = :memberId and j.isTemporary = true")
     Page<JobPost> findTemporaryJobPostByMemberId(@Param("memberId") Long memberId, Pageable pageable);
 
+
     @Query("select j from JobPost j where j.member.id = :memberId and j.endDate < :now and j.isTemporary = false and j.project.id = :projectId")
     List<JobPost> findCompletedJobPostByMemberAndProject(@Param("memberId") Long memberId, @Param("now") LocalDate now, @Param("projectId") Long projectId, Pageable pageable);
-
     @Query("select j from JobPost j where j.member.id = :memberId and j.startDate < :now and j.endDate > :now and j.isTemporary = false and j.project.id = :projectId")
     List<JobPost> findInProgressJobPostByMemberAndProject(@Param("memberId") Long memberId, @Param("now") LocalDate now, @Param("projectId") Long projectId, Pageable pageable);
-
     @Query("select j from JobPost j where j.member.id = :memberId and j.startDate > :now and j.isTemporary = false and j.project.id = :projectId")
     List<JobPost> findPlannedJobPostByMemberAndProject(@Param("memberId") Long memberId, @Param("now") LocalDate now, @Param("projectId") Long projectId, Pageable pageable);
+
 
     @Query("select j from JobPost j where j.member.id = :memberId and j.id = :jobPostId and j.isTemporary = :isTemporary")
     Optional<JobPost> findJobPostByIdAndMemberAndTemporary(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId, @Param("isTemporary") Boolean isTemporary);

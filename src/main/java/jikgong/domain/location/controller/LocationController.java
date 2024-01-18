@@ -1,6 +1,7 @@
 package jikgong.domain.location.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jikgong.domain.location.dtos.LocationDeleteRequest;
 import jikgong.domain.location.dtos.LocationResponse;
 import jikgong.domain.location.dtos.LocationSaveRequest;
 import jikgong.domain.location.dtos.LocationUpdateRequest;
@@ -44,11 +45,19 @@ public class LocationController {
         return ResponseEntity.ok(new Response("위치 정보 수정 완료"));
     }
 
-    @Operation(summary = "위치 삭제")
+    @Operation(summary = "위치 삭제 (단일)")
     @DeleteMapping("/api/location/{locationId}")
     public ResponseEntity<Response> deleteLocation(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                    @PathVariable("locationId") Long locationId) {
         locationService.deleteLocation(principalDetails.getMember().getId(), locationId);
+        return ResponseEntity.ok(new Response("위치 정보 삭제 완료"));
+    }
+
+    @Operation(summary = "위치 삭제 (복수)")
+    @DeleteMapping("/api/locations/")
+    public ResponseEntity<Response> deleteLocations(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                    @RequestBody LocationDeleteRequest request) {
+        locationService.deleteLocations(principalDetails.getMember().getId(), request);
         return ResponseEntity.ok(new Response("위치 정보 삭제 완료"));
     }
 
