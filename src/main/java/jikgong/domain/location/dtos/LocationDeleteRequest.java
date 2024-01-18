@@ -10,5 +10,5 @@ import java.util.List;
 @Getter
 public class LocationDeleteRequest {
     @Schema(description = "삭제할 Location Id list", example = "[\"1\", \"2\"]")
-    private List<String> locationIdList;
+    private List<Long> locationIdList;
 }

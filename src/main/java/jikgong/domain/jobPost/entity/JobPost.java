@@ -2,6 +2,7 @@ package jikgong.domain.jobPost.entity;
 
 import jakarta.persistence.*;
 import jikgong.domain.addressInfo.entity.AddressInfo;
+import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.common.Address;
 import jikgong.domain.common.BaseEntity;
 import jikgong.domain.jobPost.dtos.JobPostSaveRequest;
@@ -36,9 +37,8 @@ public class JobPost extends BaseEntity {
     private LocalTime startTime; // 시작 시간
     private LocalTime endTime; // 종료 시간
     private Integer recruitNum; // 모집 인원
-    private Integer registeredNum; // 모집된 인원
     private Integer wage; // 임금
-    private String parkDetail;
+    private String parkDetail; // 주차장 상세 설명
     private String preparation; // 준비 사항
     private LocalDateTime expirationTime; // 모집 마감
     private String managerName; // 담당자 명
@@ -73,9 +73,8 @@ public class JobPost extends BaseEntity {
         this.endDate = endDate;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.recruitNum = recruitNum;
-        this.registeredNum = 0;
         this.parkDetail = parkDetail;
+        this.recruitNum = recruitNum;
         this.wage = wage;
         this.preparation = preparation;
         this.expirationTime = expirationTime;
@@ -151,9 +150,5 @@ public class JobPost extends BaseEntity {
         jobPost.getWorkDateList().clear();
         // 위치 관련 정보 삭제
         jobPost.getAddressInfoList().clear();
-    }
-
-    public void plusRegisteredNum(Integer updateCount) {
-        this.registeredNum += updateCount;
     }
 }

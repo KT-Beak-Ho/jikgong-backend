@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jikgong.domain.common.BaseEntity;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.member.entity.Member;
+import jikgong.domain.workDate.entity.WorkDate;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,13 +26,13 @@ public class Apply extends BaseEntity {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "job_post_id")
-    private JobPost jobPost;
+    @JoinColumn(name = "work_date_id")
+    private WorkDate workDate;
 
     @Builder
-    public Apply(Member member, JobPost jobPost) {
+    public Apply(Member member, WorkDate workDate) {
         this.status = ApplyStatus.PENDING;
         this.member = member;
-        this.jobPost = jobPost;
+        this.workDate = workDate;
     }
 }

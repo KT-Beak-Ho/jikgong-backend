@@ -1,5 +1,6 @@
 package jikgong.domain.jobPost.service;
 
+import jikgong.domain.apply.repository.ApplyRepository;
 import jikgong.domain.jobPost.dtos.*;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.entity.JobPostStatus;
@@ -39,6 +40,7 @@ import java.util.stream.Collectors;
 @Transactional
 @Slf4j
 public class JobPostService {
+    private final ApplyRepository applyRepository;
     private final JobPostRepository jobPostRepository;
     private final JobPostImageRepository jobPostImageRepository;
     private final JobPostImageService jobPostImageService;
@@ -69,10 +71,10 @@ public class JobPostService {
         }
 
         // 날짜 정보 저장
-        List<WorkDate> workDayList = request.getWorkDateList().stream()
-                .map(workDay -> new WorkDate(workDay, savedJobPost))
+        List<WorkDate> workDateList = request.getWorkDateList().stream()
+                .map(workDate -> new WorkDate(workDate, request.getRecruitNum(), savedJobPost))
                 .collect(Collectors.toList());
-        workDateRepository.saveAll(workDayList);
+        workDateRepository.saveAll(workDateList);
 
         // 이미지 업로드 및 저장
         List<ImageDto> imageDtoList = s3Handler.uploadImageList(imageList);
@@ -182,7 +184,7 @@ public class JobPostService {
         // 날짜 정보 저장
         if (request.getWorkDateList() != null) {
             List<WorkDate> workDayList = request.getWorkDateList().stream()
-                    .map(workDay -> new WorkDate(workDay, savedJobPost))
+                    .map(workDay -> new WorkDate(workDay, request.getRecruitNum(), savedJobPost))
                     .collect(Collectors.toList());
             workDateRepository.saveAll(workDayList);
         }

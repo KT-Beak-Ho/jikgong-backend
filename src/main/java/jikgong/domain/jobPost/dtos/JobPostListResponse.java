@@ -1,7 +1,9 @@
 package jikgong.domain.jobPost.dtos;
 
+import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.entity.Tech;
+import jikgong.domain.workDate.entity.WorkDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,10 +27,18 @@ public class JobPostListResponse {
 
 
     public static JobPostListResponse from(JobPost jobPost) {
+        int applyNum = 0;
+        int acceptedNum = 0;
+        for (WorkDate workDate : jobPost.getWorkDateList()) {
+            applyNum += workDate.getApplyList().size();
+            acceptedNum += workDate.getRegisteredNum();
+        }
         return JobPostListResponse.builder()
                 .jobPostId(jobPost.getId())
                 .title(jobPost.getTitle())
                 .createdDate(jobPost.getCreatedDate())
+                .applyNum(applyNum)
+                .acceptedNum(acceptedNum)
                 .build();
     }
 }

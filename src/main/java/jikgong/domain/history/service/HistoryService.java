@@ -61,7 +61,7 @@ public class HistoryService {
         }
 
         // 유효한 날짜 인지 체크
-        Optional<WorkDate> workDate = workDateRepository.findByWorkDateAndJobPost(jobPost.getId(), request.getWorkDate());
+        Optional<WorkDate> workDate = workDateRepository.findByMemberAndJobPostAndWorkDate(member.getId(), jobPost.getId(), request.getWorkDate());
         if (workDate.isEmpty()) {
             throw new CustomException(ErrorCode.WORK_DATE_NOT_FOUND);
         }
