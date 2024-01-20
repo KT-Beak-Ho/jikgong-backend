@@ -94,7 +94,7 @@ jobs:
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ubuntu
-          key: ${{ secrets.SSH_KEY }}
+          password: ${{ secrets.SSH_PASSWORD }}
           port: 22
           script: |
             chmod +x /home/ubuntu/deploy.sh
