@@ -49,3 +49,8 @@ ncp:
   access-key: abc
   secret-key: abc
   plus-friend-id: abc
+
+management:
+  endpoints:
+    web:
+      base-path: /jikgong

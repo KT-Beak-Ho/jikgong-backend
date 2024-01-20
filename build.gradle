@@ -75,6 +75,9 @@ dependencies {
 
 	// aop
 	implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+	// actuator
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }
 
 tasks.named('bootBuildImage') {
