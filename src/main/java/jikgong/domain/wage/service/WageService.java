@@ -35,39 +35,34 @@ public class WageService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Wage wage = Wage.builder()
-                .dailyWage(request.getDailyWage())
-                .memo(request.getMemo())
-                .companyName(request.getCompanyName())
-                .startTime(request.getStartTime())
-                .endTime(request.getEndTime())
-                .member(member)
-                .build();
+        Wage wage = Wage.createEntity(request, member);
+
         return wageRepository.save(wage).getId();
     }
 
     @Transactional(readOnly = true)
-    public List<DailyWageResponse> findDailyWageHistory(Long memberId, LocalDateTime selectDay) {
+    public List<DailyWageResponse> findDailyWageHistory(Long memberId, LocalDate selectDay) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 일일 임금 지급 리스트
-        List<DailyWageResponse> wageDetailResponseList = wageRepository.findBySelectDay(member.getId(),
-                        TimeTransfer.getFirstTimeOfDay(selectDay),
-                        TimeTransfer.getLastTimeOfDay(selectDay)).stream()
+        return wageRepository.findBySelectDay(member.getId(), selectDay).stream()
                 .map(DailyWageResponse::from)
                 .collect(Collectors.toList());
-
-        return wageDetailResponseList;
     }
 
     @Transactional(readOnly = true)
-    public MonthlyWageResponse findMonthlyWageHistoryCalendar(Long memberId, LocalDateTime selectMonth) {
+    public MonthlyWageResponse findMonthlyWageHistoryCalendar(Long memberId, LocalDate selectMonth) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 해당 달의 임금 합
-        Integer totalMonthlyWage = wageRepository.findTotalMonthlyWage(
+        Integer wageInMonth = wageRepository.findTotalMonthlyWage(
+                member.getId(),
+                TimeTransfer.getFirstDayOfMonth(selectMonth),
+                TimeTransfer.getLastDayOfMonth(selectMonth));
+
+        Integer workTimeInMonth = wageRepository.findWorkTimeInMonth(
                 member.getId(),
                 TimeTransfer.getFirstDayOfMonth(selectMonth),
                 TimeTransfer.getLastDayOfMonth(selectMonth));
@@ -77,17 +72,21 @@ public class WageService {
                 TimeTransfer.getFirstDayOfMonth(selectMonth),
                 TimeTransfer.getLastDayOfMonth(selectMonth));
 
-        // 일별 일한 시간 합
-        Map<LocalDate, String> dailyWorkTime = wageHistoryMonth.stream()
-                .collect(Collectors.groupingBy(
-                        wage -> wage.getStartTime().toLocalDate(),
-                        Collectors.collectingAndThen(
-                                Collectors.reducing(Duration.ZERO,
-                                        wage -> Duration.between(wage.getStartTime(), wage.getEndTime()),
-                                        Duration::plus),
-                                duration -> formatDuration(duration)
-                        )
-                ));
+        List<DailyWageResponse> dailyWageResponseList = wageHistoryMonth.stream()
+                .map(DailyWageResponse::from)
+                .collect(Collectors.toList());
+
+//        // 일별 일한 시간 합
+//        Map<LocalDate, String> dailyWorkTime = wageHistoryMonth.stream()
+//                .collect(Collectors.groupingBy(
+//                        wage -> wage.getWorkDate(),
+//                        Collectors.collectingAndThen(
+//                                Collectors.reducing(Duration.ZERO,
+//                                        wage -> Duration.between(wage.getStartTime(), wage.getEndTime()),
+//                                        Duration::plus),
+//                                duration -> formatDuration(duration)
+//                        )
+//                ));
 
         // 위와 같은 코드
         /*
@@ -105,15 +104,16 @@ public class WageService {
         } */
 
         // 월별 일한 날짜 리스트
-        List<LocalDateTime> workDayList = wageHistoryMonth.stream()
-                .map(wage -> TimeTransfer.getFirstTimeOfDay(wage.getStartTime()))
+        List<LocalDate> workDayList = wageHistoryMonth.stream()
+                .map(Wage::getWorkDate)
                 .distinct()
                 .collect(Collectors.toList());
 
         return MonthlyWageResponse.builder()
-                .totalMonthlyWage(totalMonthlyWage)
+                .wageInMonth(wageInMonth)
+                .workTimeInMonth(TimeTransfer.getHourMinute(workTimeInMonth))
                 .workDayList(workDayList)
-                .dailyWorkTime(dailyWorkTime)
+                .wageResponseList(dailyWageResponseList)
                 .build();
     }
 
@@ -142,18 +142,6 @@ public class WageService {
                 .orElseThrow(() -> new CustomException(ErrorCode.WAGE_NOT_FOUND));
 
         // update
-        wage.modifyWage(request.getDailyWage(), request.getMemo(), request.getCompanyName(), request.getStartTime(), request.getEndTime());
-    }
-
-    public List<DailyWageResponse> findMonthlyWageHistoryList(Long memberId, LocalDateTime selectMonth) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-
-        return wageRepository.findWorkDateInMonth(
-                        member.getId(),
-                        TimeTransfer.getFirstDayOfMonth(selectMonth),
-                        TimeTransfer.getLastDayOfMonth(selectMonth)).stream()
-                .map(DailyWageResponse::from)
-                .collect(Collectors.toList());
+        wage.modifyWage(request);
     }
 }

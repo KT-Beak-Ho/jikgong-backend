@@ -28,4 +28,10 @@ public class TimeTransfer {
     public static LocalDateTime getLastTimeOfDay(LocalDateTime localDateTime) {
         return localDateTime.withHour(23).withMinute(59).withSecond(59).withNano(0);
     }
+
+    public static String getHourMinute(Integer minute) {
+        int hours = minute / 60;
+        int remainingMinutes = minute % 60;
+        return hours + "시간 " + remainingMinutes + "분";
+    }
 }

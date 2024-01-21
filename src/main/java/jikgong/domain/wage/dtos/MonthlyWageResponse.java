@@ -13,7 +13,8 @@ import java.util.Map;
 @Getter
 @Builder
 public class MonthlyWageResponse {
-    private Integer totalMonthlyWage; // 한달 임금 합
-    private List<LocalDateTime> workDayList; // 해당 월 일한 날짜
-    private Map<LocalDate, String> dailyWorkTime; // 날짜별 일한 시간 합
+    private Integer wageInMonth; // 한달 임금 합
+    private String workTimeInMonth; // 한달 근무 시간 합
+    private List<LocalDate> workDayList; // 해당 월 일한 날짜
+    private List<DailyWageResponse> wageResponseList; // 수익 내역 리스트
 }
