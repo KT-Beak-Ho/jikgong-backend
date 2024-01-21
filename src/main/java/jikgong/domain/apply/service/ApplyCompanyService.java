@@ -2,15 +2,12 @@ package jikgong.domain.apply.service;
 
 import jikgong.domain.apply.dtos.company.ApplyPendingResponseForCompany;
 import jikgong.domain.apply.dtos.company.ApplyProcessRequest;
-import jikgong.domain.apply.dtos.worker.ApplyResponseForWorker;
-import jikgong.domain.apply.dtos.worker.ApplyResponseMonthly;
-import jikgong.domain.apply.dtos.worker.ApplySaveRequest;
-import jikgong.domain.history.dtos.CountHistory;
-import jikgong.domain.history.entity.WorkStatus;
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.apply.repository.ApplyRepository;
+import jikgong.domain.history.dtos.CountHistory;
 import jikgong.domain.history.entity.History;
+import jikgong.domain.history.entity.WorkStatus;
 import jikgong.domain.history.repository.HistoryRepository;
 import jikgong.domain.history.service.HistoryService;
 import jikgong.domain.jobPost.dtos.JobPostManageWorkerResponse;
@@ -23,7 +20,6 @@ import jikgong.domain.workDate.entity.WorkDate;
 import jikgong.domain.workDate.repository.WorkDateRepository;
 import jikgong.global.exception.CustomException;
 import jikgong.global.exception.ErrorCode;
-import jikgong.global.utils.TimeTransfer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -34,101 +30,24 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
-public class ApplyService {
+public class ApplyCompanyService {
+
     private final ApplyRepository applyRepository;
     private final MemberRepository memberRepository;
     private final JobPostRepository jobPostRepository;
     private final HistoryRepository historyRepository;
     private final WorkDateRepository workDateRepository;
     private final HistoryService historyService;
-
-    public void saveApply(Long memberId, ApplySaveRequest request) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-
-        // 임시 저장이 아닌 JobPost 조회
-        JobPost jobPost = jobPostRepository.findJobPostByIdAndTemporary(request.getJobPostId(), false)
-                .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
-
-        // 신청할 날짜 조회
-        List<WorkDate> workDateList = workDateRepository.findAllByWorkDateAndJobPost(jobPost.getId(), request.getWorkDateList());
-
-        if (workDateList.size() != request.getWorkDateList().size()) {
-            throw new CustomException(ErrorCode.WORK_DATE_LIST_NOT_FOUND);
-        }
-
-        // 중복 신청 조회
-        Optional<Apply> findApply = applyRepository.findByMemberIdAndJobPostId(member.getId(), jobPost.getId());
-        if (findApply.isPresent()) {
-            throw new CustomException(ErrorCode.APPLY_ALREADY_EXIST);
-        }
-
-        // 모집 기한 체크
-        if (jobPost.getExpirationTime().isBefore(LocalDateTime.now())) {
-            throw new CustomException(ErrorCode.JOB_POST_EXPIRED);
-        }
-
-        ArrayList<Apply> applyList = new ArrayList<>();
-        for (WorkDate workDate : workDateList) {
-            Apply apply = Apply.builder()
-                    .member(member)
-                    .workDate(workDate)
-                    .member(member)
-                    .build();
-            applyList.add(apply);
-        }
-        applyRepository.saveAll(applyList);
-    }
-
-    // 신청 내역: 일별 조회
-    public List<ApplyResponseForWorker> findAcceptedApplyWorker(Long memberId, LocalDate workDate) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-
-        List<ApplyResponseForWorker> applyResponseList = applyRepository.findByMemberAndWorkDate(member.getId(), workDate, ApplyStatus.ACCEPTED).stream()
-                .map(ApplyResponseForWorker::from)
-                .collect(Collectors.toList());
-
-        return applyResponseList;
-    }
-
-    // 신청 내역: 월별 조회
-    public List<ApplyResponseMonthly> findAcceptedApplyWorkerMonthly(Long memberId, LocalDate workMonth) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-
-        List<Apply> applyList = applyRepository.findByMemberAndWorkMonth(member.getId(),
-                TimeTransfer.getFirstDayOfMonth(workMonth),
-                TimeTransfer.getLastDayOfMonth(workMonth));
-
-        Map<LocalDate, ApplyStatus> workDateMap = new HashMap<>();
-
-        for (Apply apply : applyList) {
-            LocalDate applyDate = apply.getWorkDate().getWorkDate();
-            ApplyStatus currentStatus = apply.getStatus();
-
-            // 매핑된 날짜가 있을 때 -> 수락된 게 있다면 수락 으로 update
-            // 매핑된 날짜가 없을 때 -> 추가
-            if (workDateMap.containsKey(applyDate) && currentStatus == ApplyStatus.ACCEPTED) {
-                workDateMap.put(applyDate, ApplyStatus.ACCEPTED);
-            } else {
-                workDateMap.put(applyDate, currentStatus);
-            }
-        }
-
-        List<ApplyResponseMonthly> applyResponseMonthlyList = workDateMap.entrySet().stream()
-                .map(entry -> ApplyResponseMonthly.from(entry.getKey(), entry.getValue()))
-                .collect(Collectors.toList());
-
-        return applyResponseMonthlyList;
-    }
 
     // 인력 관리: 인부 신청 현황 조회 (회사)
     public Page<ApplyPendingResponseForCompany> findPendingApplyHistoryCompany(Long memberId, Long jobPostId, LocalDate workDate, Pageable pageable) {
@@ -214,6 +133,7 @@ public class ApplyService {
             }
         }
 
+
         // 모집 인원 초과 체크
         if (workDate.getRegisteredNum() + applyList.size() > workDate.getRecruitNum()) {
             throw new CustomException(ErrorCode.APPLY_OVER_RECRUIT_NUM);
@@ -226,7 +146,15 @@ public class ApplyService {
 
         // 모집된 인원 갱신
         workDate.plusRegisteredNum(updatedCount);
+
+        // todo: workDate 에 다른 apply 들은 전부 자동 취소
+        if (request.getIsAccept()) {
+            // 수락 하려는 회원이 같은 날 다른 공고에 지원 했던 요청 취소
+            List<Long> memberIdList = applyList.stream().map(apply -> apply.getMember().getId()).collect(Collectors.toList());
+            List<Apply> deleteApply = applyRepository.deleteOtherApplyByWorkDate(request.getWorkDate(), request.getApplyIdList(), memberIdList);
+            List<Long> cancelApplyIdList = deleteApply.stream().map(Apply::getId).collect(Collectors.toList());
+            int canceledCount = applyRepository.updateApplyStatus(cancelApplyIdList, ApplyStatus.CANCELED, LocalDateTime.now());
+            log.info("취소된 요청 횟수: " + canceledCount);
+        }
     }
-
-
 }

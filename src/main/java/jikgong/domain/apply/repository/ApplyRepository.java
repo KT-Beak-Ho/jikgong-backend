@@ -30,8 +30,8 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
     List<Apply> findByMemberAndWorkMonth(@Param("memberId") Long memberId, @Param("monthStart") LocalDate monthStart, @Param("monthEnd") LocalDate monthEnd);
 
 
-    @Query("select a from Apply a where a.member.id = :memberId and a.workDate.jobPost.id = :jobPostId")
-    Optional<Apply> findByMemberIdAndJobPostId(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId);
+    @Query("select a from Apply a where a.member.id = :memberId and a.workDate.jobPost.id = :jobPostId and a.workDate.workDate in :workDateList")
+    List<Apply> findByMemberIdAndJobPostId(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId, @Param("workDateList") List<LocalDate> workDateList);
 
     @Query("select a from Apply a where a.workDate.jobPost.member.id = :memberId and a.workDate.jobPost.id = :jobPostId and a.member.id = :targetMemberId")
     Optional<Apply> checkAppliedAndAuthor(@Param("memberId") Long memberId, @Param("targetMemberId") Long targetMemberId, @Param("jobPostId") Long jobPostId);
@@ -43,7 +43,12 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
     @Query("update Apply a set a.status = :applyStatus, a.statusDecisionTime = :now where a.id in :applyIdList")
     int updateApplyStatus(@Param("applyIdList") List<Long> applyIdList, @Param("applyStatus") ApplyStatus applyStatus, @Param("now")LocalDateTime now);
 
-    @Query("select a from Apply a where a.id in :applyIdList and a.workDate.workDate = :workDate")
+    @Query("select a from Apply a join fetch a.member m where a.id in :applyIdList and a.workDate.workDate = :workDate")
     List<Apply> findByIdList(@Param("applyIdList") List<Long> applyIdList, @Param("workDate") LocalDate workDate);
 
+    @Query("select a from Apply a where a.workDate.workDate = :workDate and a.member.id in :memberIdList and a.id not in :applyIdList")
+    List<Apply> deleteOtherApplyByWorkDate(@Param("workDate") LocalDate workDate, @Param("applyIdList") List<Long> applyIdList, @Param("memberIdList") List<Long> memberIdList);
+
+    @Query("select a from Apply a where a.member.id = :memberId and a.workDate.workDate in :workDateList and a.status = 'ACCEPTED'")
+    List<Apply> findAcceptedApplyInWorkDateList(@Param("memberId") Long memberId, @Param("workDateList") List<LocalDate> workDateList);
 }

@@ -6,7 +6,8 @@ import jikgong.domain.apply.dtos.company.ApplyProcessRequest;
 import jikgong.domain.apply.dtos.worker.ApplyResponseForWorker;
 import jikgong.domain.apply.dtos.worker.ApplyResponseMonthly;
 import jikgong.domain.apply.dtos.worker.ApplySaveRequest;
-import jikgong.domain.apply.service.ApplyService;
+import jikgong.domain.apply.service.ApplyCompanyService;
+import jikgong.domain.apply.service.ApplyWorkerService;
 import jikgong.domain.jobPost.dtos.JobPostManageWorkerResponse;
 import jikgong.global.dto.Response;
 import jikgong.global.security.principal.PrincipalDetails;
@@ -24,13 +25,14 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class ApplyController {
-    private final ApplyService applyService;
+    private final ApplyWorkerService applyWorkerService;
+    private final ApplyCompanyService applyCompanyService;
 
     @Operation(summary = "노동자: 일자리 신청")
     @PostMapping("/api/apply")
     public ResponseEntity<Response> saveApply(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                               @RequestBody ApplySaveRequest request) {
-        applyService.saveApply(principalDetails.getMember().getId(), request);
+        applyWorkerService.saveApply(principalDetails.getMember().getId(), request);
         return ResponseEntity.ok(new Response("일자리 신청 완료"));
     }
 
@@ -38,7 +40,7 @@ public class ApplyController {
     @GetMapping("/api/apply/worker")
     public ResponseEntity<Response> findAcceptedApplyWorker(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                            @RequestParam("workDate") LocalDate workDate) {
-        List<ApplyResponseForWorker> applyResponseList = applyService.findAcceptedApplyWorker(principalDetails.getMember().getId(), workDate);
+        List<ApplyResponseForWorker> applyResponseList = applyWorkerService.findAcceptedApplyWorker(principalDetails.getMember().getId(), workDate);
         return ResponseEntity.ok(new Response(applyResponseList, "일자리 신청 내역 조회 완료"));
     }
 
@@ -46,7 +48,7 @@ public class ApplyController {
     @GetMapping("/api/apply/worker/monthly")
     public ResponseEntity<Response> findAcceptedApplyWorkerMonthly(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                                    @RequestParam("workMonth") LocalDate workMonth) {
-        List<ApplyResponseMonthly> applyResponseMonthlyList = applyService.findAcceptedApplyWorkerMonthly(principalDetails.getMember().getId(), workMonth);
+        List<ApplyResponseMonthly> applyResponseMonthlyList = applyWorkerService.findAcceptedApplyWorkerMonthly(principalDetails.getMember().getId(), workMonth);
         return ResponseEntity.ok(new Response(applyResponseMonthlyList, "일자리 신청 내역 조회 완료"));
     }
 
@@ -62,7 +64,7 @@ public class ApplyController {
         // 페이징 처리 (먼저 요청한 순)
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("createdDate")));
         Page<ApplyPendingResponseForCompany> applyResponseForCompanyPage =
-                applyService.findPendingApplyHistoryCompany(principalDetails.getMember().getId(), jobPostId, workDate, pageable);
+                applyCompanyService.findPendingApplyHistoryCompany(principalDetails.getMember().getId(), jobPostId, workDate, pageable);
         return ResponseEntity.ok(new Response(applyResponseForCompanyPage, "공고 글에 신청된 내역 조회 완료"));
     }
 
@@ -70,7 +72,7 @@ public class ApplyController {
     @PostMapping("/api/apply/company/process-request")
     public ResponseEntity<Response> processApply(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                  @RequestBody ApplyProcessRequest request) {
-        applyService.processApply(principalDetails.getMember().getId(), request);
+        applyCompanyService.processApply(principalDetails.getMember().getId(), request);
         return ResponseEntity.ok(new Response("인부 요청 처리 완료"));
     }
 
@@ -83,7 +85,7 @@ public class ApplyController {
                                                              @RequestParam(name = "size", defaultValue = "10") int size) {
         // 페이징 처리 (이름 순)
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("m.workerInfo.workerName")));
-        JobPostManageWorkerResponse jobPostManageWorkerResponse = applyService.findAcceptedHistoryCompany(principalDetails.getMember().getId(), jobPostId, workDate, pageable);
+        JobPostManageWorkerResponse jobPostManageWorkerResponse = applyCompanyService.findAcceptedHistoryCompany(principalDetails.getMember().getId(), jobPostId, workDate, pageable);
         return ResponseEntity.ok(new Response(jobPostManageWorkerResponse, "공고 글에 확정된 노동자 조회"));
     }
 }
