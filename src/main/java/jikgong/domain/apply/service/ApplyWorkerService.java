@@ -1,5 +1,6 @@
 package jikgong.domain.apply.service;
 
+import jikgong.domain.apply.dtos.worker.ApplyPendingResponse;
 import jikgong.domain.apply.dtos.worker.ApplyResponseForWorker;
 import jikgong.domain.apply.dtos.worker.ApplyResponseMonthly;
 import jikgong.domain.apply.dtos.worker.ApplySaveRequest;
@@ -19,6 +20,9 @@ import jikgong.global.exception.ErrorCode;
 import jikgong.global.utils.TimeTransfer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -118,5 +122,18 @@ public class ApplyWorkerService {
                 .collect(Collectors.toList());
 
         return applyResponseMonthlyList;
+    }
+
+    public Page<ApplyPendingResponse> findPendingApply(Long memberId, Pageable pageable) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Page<Apply> pendingApplyPage = applyRepository.findPendingApply(member.getId(), pageable);
+
+        List<ApplyPendingResponse> pendingApplyList = pendingApplyPage.getContent().stream()
+                .map(ApplyPendingResponse::from)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(pendingApplyList, pageable, pendingApplyPage.getTotalElements());
     }
 }

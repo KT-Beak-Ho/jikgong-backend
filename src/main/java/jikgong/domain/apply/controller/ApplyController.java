@@ -3,6 +3,7 @@ package jikgong.domain.apply.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import jikgong.domain.apply.dtos.company.ApplyPendingResponseForCompany;
 import jikgong.domain.apply.dtos.company.ApplyProcessRequest;
+import jikgong.domain.apply.dtos.worker.ApplyPendingResponse;
 import jikgong.domain.apply.dtos.worker.ApplyResponseForWorker;
 import jikgong.domain.apply.dtos.worker.ApplyResponseMonthly;
 import jikgong.domain.apply.dtos.worker.ApplySaveRequest;
@@ -52,7 +53,19 @@ public class ApplyController {
         return ResponseEntity.ok(new Response(applyResponseMonthlyList, "일자리 신청 내역 조회 완료"));
     }
 
+    @Operation(summary = "노동자: 신청 내역 조회 - 진행 중")
+    @GetMapping("/api/apply/worker/pending")
+    public ResponseEntity<Response> findPendingApply(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                     @RequestParam(name = "page", defaultValue = "0") int page,
+                                                     @RequestParam(name = "size", defaultValue = "10") int size) {
+        // 페이징 처리 (먼저 요청한 순)
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdDate")));
+        Page<ApplyPendingResponse> pendingApplyPage = applyWorkerService.findPendingApply(principalDetails.getMember().getId(), pageable);
+        return ResponseEntity.ok(new Response(pendingApplyPage, "일자리 신청 내역 조회 완료"));
+    }
+
     // todo: 일자리 신청 취소 프로세스 확정 안 남
+    // todo: 기한이 지났을 경우 자동으로 신청 취소되게 하는 기능도 개발해야 함
 
     @Operation(summary = "인력 관리: 대기 중인 노동자 조회")
     @GetMapping("/api/apply/company/pending/{jobPostId}")

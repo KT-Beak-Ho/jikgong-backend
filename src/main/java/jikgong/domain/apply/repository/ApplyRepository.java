@@ -41,7 +41,7 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
 
     @Modifying
     @Query("update Apply a set a.status = :applyStatus, a.statusDecisionTime = :now where a.id in :applyIdList")
-    int updateApplyStatus(@Param("applyIdList") List<Long> applyIdList, @Param("applyStatus") ApplyStatus applyStatus, @Param("now")LocalDateTime now);
+    int updateApplyStatus(@Param("applyIdList") List<Long> applyIdList, @Param("applyStatus") ApplyStatus applyStatus, @Param("now") LocalDateTime now);
 
     @Query("select a from Apply a join fetch a.member m where a.id in :applyIdList and a.workDate.workDate = :workDate")
     List<Apply> findByIdList(@Param("applyIdList") List<Long> applyIdList, @Param("workDate") LocalDate workDate);
@@ -51,4 +51,8 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
 
     @Query("select a from Apply a where a.member.id = :memberId and a.workDate.workDate in :workDateList and a.status = 'ACCEPTED'")
     List<Apply> findAcceptedApplyInWorkDateList(@Param("memberId") Long memberId, @Param("workDateList") List<LocalDate> workDateList);
+
+    @Query(value = "select a from Apply a join fetch a.workDate w join fetch w.jobPost j where a.member.id = :memberId and a.status = 'PENDING'",
+            countQuery = "select a from Apply a where a.member.id = :memberId and a.status = 'PENDING'")
+    Page<Apply> findPendingApply(@Param("memberId") Long memberId, Pageable pageable);
 }
