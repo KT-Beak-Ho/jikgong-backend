@@ -222,7 +222,7 @@ public class ApplyService {
         // applyStatus 갱신
         List<Long> updateApplyIdList = applyList.stream().map(Apply::getId).collect(Collectors.toList());
         ApplyStatus applyStatus = request.getIsAccept() ? ApplyStatus.ACCEPTED : ApplyStatus.REJECTED;
-        int updatedCount = applyRepository.updateApplyStatus(updateApplyIdList, applyStatus);
+        int updatedCount = applyRepository.updateApplyStatus(updateApplyIdList, applyStatus, LocalDateTime.now());
 
         // 모집된 인원 갱신
         workDate.plusRegisteredNum(updatedCount);

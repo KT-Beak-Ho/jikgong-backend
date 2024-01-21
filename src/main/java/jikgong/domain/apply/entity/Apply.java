@@ -10,6 +10,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -17,6 +19,8 @@ public class Apply extends BaseEntity {
     @Id @GeneratedValue
     @Column(name = "apply_id")
     private Long id;
+
+    private LocalDateTime statusDecisionTime; // 신청 처리 시간
 
     @Enumerated(value = EnumType.STRING)
     private ApplyStatus status; // 신청 현황

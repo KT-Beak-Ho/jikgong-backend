@@ -34,7 +34,7 @@ public class ApplyController {
         return ResponseEntity.ok(new Response("일자리 신청 완료"));
     }
 
-    @Operation(summary = "노동자: 신청 내역 확정", description = "workDate: 2024-01-01")
+    @Operation(summary = "노동자: 신청 내역 일별 조회", description = "workDate: 2024-01-01")
     @GetMapping("/api/apply/worker")
     public ResponseEntity<Response> findAcceptedApplyWorker(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                            @RequestParam("workDate") LocalDate workDate) {
@@ -42,7 +42,7 @@ public class ApplyController {
         return ResponseEntity.ok(new Response(applyResponseList, "일자리 신청 내역 조회 완료"));
     }
 
-    @Operation(summary = "노동자: 신청 내역 확정 월별 유무 데이터", description = "신청 내역 확정 화면의 달력 동그라미 표시할 날짜 반환 \n workMonth: 2024-01-01  << 이렇게 주면 년,월만 추출 예정")
+    @Operation(summary = "노동자: 신청 내역 월별 조회", description = "신청 내역 확정 화면의 달력 동그라미 표시할 날짜 반환  \n workMonth: 2024-01-01  << 이렇게 주면 년,월만 추출 예정")
     @GetMapping("/api/apply/worker/monthly")
     public ResponseEntity<Response> findAcceptedApplyWorkerMonthly(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                                    @RequestParam("workMonth") LocalDate workMonth) {

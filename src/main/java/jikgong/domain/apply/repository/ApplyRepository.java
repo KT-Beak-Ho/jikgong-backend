@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,8 +40,8 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
     Long findCountApply(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId);
 
     @Modifying
-    @Query("update Apply a set a.status = :applyStatus where a.id in :applyIdList")
-    int updateApplyStatus(@Param("applyIdList") List<Long> applyIdList, @Param("applyStatus") ApplyStatus applyStatus);
+    @Query("update Apply a set a.status = :applyStatus, a.statusDecisionTime = :now where a.id in :applyIdList")
+    int updateApplyStatus(@Param("applyIdList") List<Long> applyIdList, @Param("applyStatus") ApplyStatus applyStatus, @Param("now")LocalDateTime now);
 
     @Query("select a from Apply a where a.id in :applyIdList and a.workDate.workDate = :workDate")
     List<Apply> findByIdList(@Param("applyIdList") List<Long> applyIdList, @Param("workDate") LocalDate workDate);

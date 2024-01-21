@@ -19,6 +19,7 @@ public class ApplyResponseForWorker {
     private Long applyId;
     private ApplyStatus status;
     private LocalDateTime applyTime; // 신청 시간
+    private LocalDateTime statusDecisionTime; // 신청 처리 시간
 
     private JobPostApplyHistoryResponse jobPostResponse;
 
@@ -26,6 +27,8 @@ public class ApplyResponseForWorker {
         return ApplyResponseForWorker.builder()
                 .applyId(apply.getId())
                 .status(apply.getStatus())
+                .applyTime(apply.getCreatedDate())
+                .statusDecisionTime(apply.getStatusDecisionTime())
                 .jobPostResponse(JobPostApplyHistoryResponse.from(apply.getWorkDate().getJobPost()))
                 .build();
     }
