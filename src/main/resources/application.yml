@@ -56,3 +56,6 @@ management:
       base-path: /jikgong
       exposure:
         include: prometheus
+
+fcm:
+  path: ${FCM_PATH}
