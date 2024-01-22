@@ -54,3 +54,5 @@ management:
   endpoints:
     web:
       base-path: /jikgong
+      exposure:
+        include: prometheus
