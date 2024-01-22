@@ -13,14 +13,8 @@ services:
     image: ${DOCKERHUB_USERNAME}/jikgong
 #    depends_on:
 #      - redis
-    environment:
-      - DB_ENDPOINT=${DB_ENDPOINT}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_USERNAME=${DB_USERNAME}
-      - SECRET_KEY=${SECRET_KEY}
-      - S3_ACCESS_KEY=${S3_ACCESS_KEY}
-      - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY}
-      - FCM_PATH=${FCM_PATH}
+    env_file:
+      - .env
     logging:
       driver: awslogs
       options:
