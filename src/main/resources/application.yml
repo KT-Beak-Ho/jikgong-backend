@@ -59,3 +59,7 @@ management:
 
 fcm:
   path: ${FCM_PATH}
+
+webhook:
+  slack:
+    url: ${WEBHOOK_SLACK_URL}

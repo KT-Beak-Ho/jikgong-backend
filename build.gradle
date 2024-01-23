@@ -81,6 +81,9 @@ dependencies {
 
 	// prometheus
 	implementation 'io.micrometer:micrometer-registry-prometheus'
+
+	// slack
+	implementation 'com.slack.api:slack-api-client:1.30.0'
 }
 
 tasks.named('bootBuildImage') {
