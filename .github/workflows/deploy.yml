@@ -48,7 +48,7 @@ jobs:
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/jikgong
 
   cd-pipeline:
-    needs: build-docker-image
+    needs: ci-pipeline
     runs-on: ubuntu-latest
     steps:
       # docker compose a 파일 scp
