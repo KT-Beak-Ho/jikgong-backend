@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 jobs:
-  build-docker-image:
+  ci-pipeline:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -109,3 +109,20 @@ jobs:
           script: |
             chmod +x /home/ubuntu/deploy.sh
             /home/ubuntu/deploy.sh
+
+  notify-slack:
+    needs: cd-pipeline
+    runs-on: ubuntu-latest
+    if: always() # 이 작업은 성공하거나 취소되었을 때에도 실행
+    steps:
+      - name: action-slack
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ needs.cd-pipeline.result }}
+          author_name: jikgong backend - prod
+          fields: repo,commit,message,author
+          mention: here
+          if_mention: failure,cancelled
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
