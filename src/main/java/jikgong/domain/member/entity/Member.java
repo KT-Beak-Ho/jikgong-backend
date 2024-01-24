@@ -47,6 +47,11 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member")
     List<History> historyList = new ArrayList<>();
 
+    @Override
+    public String toString() {
+        return "{ phone=" + phone + ", role=" + role + " }";
+    }
+
     @Builder
     public Member(String phone, String authCode, String account, String bank, String deviceToken, Boolean isNotification, Role role, Worker workerInfo, Company companyInfo, Certification certification) {
         this.phone = phone;

@@ -3,11 +3,13 @@ package jikgong.domain.history.dtos;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDate;
 
 @NoArgsConstructor
 @Getter
+@ToString
 public class HistorySaveRequest {
     @Schema(description = "인부 id", example = "1")
     private Long targetMemberId;

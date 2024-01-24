@@ -1,13 +1,11 @@
 package jikgong.domain.history.service;
 
-import jdk.jshell.Snippet;
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.apply.repository.ApplyRepository;
-import jikgong.domain.history.dtos.CountHistory;
+import jikgong.domain.history.dtos.CountHistoryResponse;
 import jikgong.domain.history.dtos.HistorySaveRequest;
 import jikgong.domain.history.entity.History;
-import jikgong.domain.history.entity.WorkStatus;
 import jikgong.domain.history.repository.HistoryRepository;
 import jikgong.domain.jobPost.dtos.JobPostManageWorkerResponse;
 import jikgong.domain.jobPost.entity.JobPost;
@@ -97,7 +95,7 @@ public class HistoryService {
                 .map(MemberAcceptedResponse::fromHistory)
                 .collect(Collectors.toList());
 
-        CountHistory countHistory = findCountHistory(member.getId(), jobPost.getId(), workDate);
+        CountHistoryResponse countHistory = findCountHistory(member.getId(), jobPost.getId(), workDate);
         PageImpl<MemberAcceptedResponse> memberAcceptedResponsePage = new PageImpl<>(memberAcceptedResponseList, pageable, historyPage.getTotalElements());
 
         return JobPostManageWorkerResponse.builder()
@@ -107,10 +105,10 @@ public class HistoryService {
     }
 
     // 인력 관리: 전체, 출근, 결근 인원수 조회
-    public CountHistory findCountHistory(Long memberId, Long jobPostId, LocalDate workDate) {
+    public CountHistoryResponse findCountHistory(Long memberId, Long jobPostId, LocalDate workDate) {
         Long allCount = applyRepository.findCountApply(memberId, jobPostId);
         Long countWork = historyRepository.findCountWorkOrNotWork(memberId, jobPostId, workDate, true);
         Long countNotWork = historyRepository.findCountWorkOrNotWork(memberId, jobPostId, workDate, false);
-        return new CountHistory(allCount, countWork, countNotWork);
+        return new CountHistoryResponse(allCount, countWork, countNotWork);
     }
 }

@@ -4,9 +4,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jikgong.domain.member.entity.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @NoArgsConstructor
 @Getter
+@ToString
 public class JoinCompanyRequest {
     // 공통 정보
     @Schema(description = "휴대폰 번호", example = "01012345678")

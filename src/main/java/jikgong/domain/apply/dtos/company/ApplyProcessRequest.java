@@ -3,12 +3,14 @@ package jikgong.domain.apply.dtos.company;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @NoArgsConstructor
 @Getter
+@ToString
 public class ApplyProcessRequest {
     @Schema(description = "jobPostId", example = "1")
     private Long jobPostId;

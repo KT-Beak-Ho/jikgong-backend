@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 @Builder
-public class CountHistory {
+public class CountHistoryResponse {
     private Long allCount;
     private Long workCount;
     private Long notWorkCount;

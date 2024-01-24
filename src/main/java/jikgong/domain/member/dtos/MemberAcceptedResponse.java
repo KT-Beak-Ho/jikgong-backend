@@ -1,6 +1,5 @@
 package jikgong.domain.member.dtos;
 
-import jikgong.domain.history.dtos.CountHistory;
 import jikgong.domain.history.entity.History;
 import jikgong.domain.history.entity.WorkStatus;
 import jikgong.domain.apply.entity.Apply;

@@ -6,6 +6,7 @@ import jikgong.domain.jobPost.entity.Tech;
 import jikgong.domain.wage.entity.WageType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.time.LocalTime;
 
 @NoArgsConstructor
 @Getter
+@ToString
 public class WageSaveRequest {
     @Schema(description = "일급", example = "130000")
     private Integer dailyWage; // 일급

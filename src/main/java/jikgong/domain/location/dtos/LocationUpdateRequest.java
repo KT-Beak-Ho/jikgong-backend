@@ -3,9 +3,11 @@ package jikgong.domain.location.dtos;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @NoArgsConstructor
 @Getter
+@ToString
 public class LocationUpdateRequest {
     @Schema(description = "locationId", example = "1")
     private Long locationId;

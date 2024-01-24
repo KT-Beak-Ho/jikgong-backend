@@ -5,7 +5,7 @@ import jikgong.domain.apply.dtos.company.ApplyProcessRequest;
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.apply.repository.ApplyRepository;
-import jikgong.domain.history.dtos.CountHistory;
+import jikgong.domain.history.dtos.CountHistoryResponse;
 import jikgong.domain.history.entity.History;
 import jikgong.domain.history.entity.WorkStatus;
 import jikgong.domain.history.repository.HistoryRepository;
@@ -108,7 +108,7 @@ public class ApplyCompanyService {
         }
         PageImpl<MemberAcceptedResponse> memberAcceptedResponsePage = new PageImpl<>(memberAcceptedResponseList, pageable, applyPage.getTotalElements());
 
-        CountHistory countHistory = historyService.findCountHistory(member.getId(), jobPost.getId(), workDate);
+        CountHistoryResponse countHistory = historyService.findCountHistory(member.getId(), jobPost.getId(), workDate);
 
         return JobPostManageWorkerResponse.builder()
                 .countHistory(countHistory)

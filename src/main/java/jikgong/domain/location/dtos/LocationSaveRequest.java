@@ -3,9 +3,11 @@ package jikgong.domain.location.dtos;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @NoArgsConstructor
 @Getter
+@ToString
 public class LocationSaveRequest {
     @Schema(description = "도로명 주소", example = "부산광역시 사하구 낙동대로 550번길 37")
     private String address; // 도로명 주소

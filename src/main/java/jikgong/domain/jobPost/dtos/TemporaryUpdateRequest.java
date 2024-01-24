@@ -6,6 +6,7 @@ import jikgong.domain.jobPost.entity.Park;
 import jikgong.domain.jobPost.entity.Tech;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @NoArgsConstructor
 @Getter
+@ToString
 public class TemporaryUpdateRequest {
     @Schema(description = "jobPostId", example = "1")
     private Long jobPostId;
