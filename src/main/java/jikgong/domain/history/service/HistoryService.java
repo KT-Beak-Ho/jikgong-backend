@@ -1,11 +1,11 @@
 package jikgong.domain.history.service;
 
-import jikgong.domain.apply.entity.Apply;
-import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.apply.repository.ApplyRepository;
 import jikgong.domain.history.dtos.CountHistoryResponse;
-import jikgong.domain.history.dtos.HistorySaveRequest;
+import jikgong.domain.history.dtos.HistoryFinishSaveRequest;
+import jikgong.domain.history.dtos.HistoryStartSaveRequest;
 import jikgong.domain.history.entity.History;
+import jikgong.domain.history.entity.WorkStatus;
 import jikgong.domain.history.repository.HistoryRepository;
 import jikgong.domain.jobPost.dtos.JobPostManageWorkerResponse;
 import jikgong.domain.jobPost.entity.JobPost;
@@ -26,8 +26,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,47 +40,61 @@ public class HistoryService {
     private final ApplyRepository applyRepository;
     private final JobPostRepository jobPostRepository;
     private final WorkDateRepository workDateRepository;
-    public Long saveHistory(Long memberId, HistorySaveRequest request) {
+
+    // todo: 나중에 O(1) 이 되도록 리펙토링
+    // 출근, 결근 저장
+    public int saveHistoryAtStart(Long memberId, HistoryStartSaveRequest request) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-        Member targetMember = memberRepository.findById(request.getTargetMemberId())
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
         JobPost jobPost = jobPostRepository.findById(request.getJobPostId())
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
+        WorkDate workDate = workDateRepository.findById(request.getWorkDateId())
+                .orElseThrow(() -> new CustomException(ErrorCode.WORK_DATE_NOT_FOUND));
 
-        // 실제 신청 했는지 체크
-        Optional<Apply> apply = applyRepository.checkAppliedAndAuthor(member.getId(), targetMember.getId(), jobPost.getId());
-        if (apply.isEmpty()) {
-            throw new CustomException(ErrorCode.HISTORY_NOT_FOUND_APPLY);
-        }
-        // 승인된 노동자 인지 체크
-        if (apply.get().getStatus() != ApplyStatus.ACCEPTED) {
-            throw new CustomException(ErrorCode.APPLY_NOT_ACCEPTED);
-        }
+        // 기존에 history 데이터가 있다면 제거
+        historyRepository.deleteByWorkDateAndAndMember(request.getStartWorkList(), request.getNotWorkList(), request.getWorkDateId());
 
-        // 유효한 날짜 인지 체크
-        Optional<WorkDate> workDate = workDateRepository.findByMemberAndJobPostAndWorkDate(member.getId(), jobPost.getId(), request.getWorkDate());
-        if (workDate.isEmpty()) {
-            throw new CustomException(ErrorCode.WORK_DATE_NOT_FOUND);
+        List<History> saveHistoryList = new ArrayList<>();
+
+        // 출근 history
+        for (Long targetMemberId : request.getStartWorkList()) {
+            Member targetMember = memberRepository.findById(targetMemberId)
+                    .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+            saveHistoryList.add(History.createEntity(WorkStatus.START_WORK, targetMember, workDate));
         }
 
-        // 중복 체크
-        Optional<History> findHistory = historyRepository.findExistHistory(targetMember.getId(), jobPost.getId(), request.getWorkDate(), request.getIsWork());
-        if (findHistory.isPresent()) {
-            throw new CustomException(ErrorCode.HISTORY_ALREADY_EXIST);
+        // 결근 history
+        for (Long targetMemberId : request.getNotWorkList()) {
+            Member targetMember = memberRepository.findById(targetMemberId)
+                    .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+            saveHistoryList.add(History.createEntity(WorkStatus.NOT_WORK, targetMember, workDate));
         }
 
-        // 출근 요청 시 결근 데이터가 있다면 제거
-        // 결근 요청 시 출근 데이터가 있다면 제거
-        Optional<History> oppositeHistory = historyRepository.findExistHistory(targetMember.getId(), jobPost.getId(), request.getWorkDate(), !request.getIsWork());
-        if (oppositeHistory.isPresent()) {
-            log.info("기존의 isWork:" + !request.getIsWork() + " 데이터 삭제");
-            historyRepository.delete(oppositeHistory.get());
+        return historyRepository.saveAll(saveHistoryList).size();
+    }
+
+    public int updateHistoryAtFinish(Long memberId, HistoryFinishSaveRequest request) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+        JobPost jobPost = jobPostRepository.findById(request.getJobPostId())
+                .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
+        WorkDate workDate = workDateRepository.findById(request.getWorkDateId())
+                .orElseThrow(() -> new CustomException(ErrorCode.WORK_DATE_NOT_FOUND));
+
+        // 퇴근
+        int updateFinishWork = historyRepository.updateHistoryByIdList(request.getFinishWorkList(), WorkStatus.FINISH_WORK);
+        log.info("퇴근 처리된 데이터: " + updateFinishWork);
+
+        // 조퇴
+        int updateEarlyLeave = historyRepository.updateHistoryByIdList(request.getFinishWorkList(), WorkStatus.EARLY_LEAVE);
+        log.info("조퇴 처리된 데이터: " + updateFinishWork);
+
+        // 요청한 데이터와 업데이트한 데이터 비교
+        if (updateFinishWork != request.getFinishWorkList().size() && updateEarlyLeave != request.getEarlyLeaveList().size()) {
+            throw new CustomException(ErrorCode.HISTORY_UPDATE_FAIL);
         }
 
-        History history = History.createEntity(request, targetMember, jobPost);
-
-        return historyRepository.save(history).getId();
+        return updateFinishWork + updateEarlyLeave;
     }
 
     public JobPostManageWorkerResponse findHistoryMembers(Long memberId, Long jobPostId, LocalDate workDate, Boolean isWork, Pageable pageable) {

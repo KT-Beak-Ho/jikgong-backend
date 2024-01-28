@@ -1,6 +1,7 @@
 package jikgong.domain.member.dtos;
 
 import jikgong.domain.history.entity.History;
+import jikgong.domain.history.entity.WorkStatus;
 import jikgong.domain.location.entity.Location;
 import jikgong.domain.member.entity.Gender;
 import jikgong.domain.member.entity.Member;
@@ -35,7 +36,7 @@ public class MemberResponseForApplyHistory {
 
         // 출역 횟수, 참여율
         List<History> workHistory = member.getHistoryList().stream()
-                .filter(History::getIsWork)
+                .filter(history -> history.getStatus() == WorkStatus.FINISH_WORK)
                 .collect(Collectors.toList());
         int workTimes = workHistory.size();
         float participationRate = (float) workTimes / (float) member.getHistoryList().size();

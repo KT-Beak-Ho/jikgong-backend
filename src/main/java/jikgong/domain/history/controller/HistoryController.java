@@ -1,16 +1,14 @@
 package jikgong.domain.history.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jikgong.domain.history.dtos.HistorySaveRequest;
-import jikgong.domain.history.entity.WorkStatus;
+import jikgong.domain.history.dtos.HistoryFinishSaveRequest;
+import jikgong.domain.history.dtos.HistoryStartSaveRequest;
 import jikgong.domain.history.service.HistoryService;
 import jikgong.domain.jobPost.dtos.JobPostManageWorkerResponse;
-import jikgong.domain.member.dtos.MemberAcceptedResponse;
 import jikgong.global.dto.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -27,10 +25,18 @@ public class HistoryController {
     private final HistoryService historyService;
 
     @Operation(summary = "출근 / 결근 선택")
-    @PostMapping("/api/history")
-    public ResponseEntity<Response> saveHistory(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                @RequestBody HistorySaveRequest request) {
-        Long historyId = historyService.saveHistory(principalDetails.getMember().getId(), request);
+    @PostMapping("/api/history/start")
+    public ResponseEntity<Response> saveHistoryAtStart(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                @RequestBody HistoryStartSaveRequest request) {
+        int saveCount = historyService.saveHistoryAtStart(principalDetails.getMember().getId(), request);
+        return ResponseEntity.ok(new Response("출근, 결근 결과 저장 완료"));
+    }
+
+    @Operation(summary = "조퇴 / 퇴근 선택")
+    @PostMapping("/api/history/finish")
+    public ResponseEntity<Response> updateHistoryAtFinish(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                @RequestBody HistoryFinishSaveRequest request) {
+        int updateCount = historyService.updateHistoryAtFinish(principalDetails.getMember().getId(), request);
         return ResponseEntity.ok(new Response("출근, 결근 결과 저장 완료"));
     }
 

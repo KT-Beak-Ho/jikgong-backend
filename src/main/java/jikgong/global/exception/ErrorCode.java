@@ -38,7 +38,8 @@ public enum ErrorCode {
     APPLY_NOT_ACCEPTED(HttpStatus.BAD_REQUEST, "신청 내역이 아직 승인 되지 않았습니다."),
     APPLY_NEED_TO_PENDING(HttpStatus.BAD_REQUEST, "대기 중인 요청에 대해서만 처리할 수 있습니다."),
     APPLY_OVER_RECRUIT_NUM(HttpStatus.BAD_REQUEST, "모집 인원을 초과했습니다."),
-    APPLY_ALREADY_ACCEPTED_IN_WORKDATE(HttpStatus.CONFLICT, "선택 날짜 중 이미 신청이 승인된 날짜가 포함되어 있습니다.");
+    APPLY_ALREADY_ACCEPTED_IN_WORKDATE(HttpStatus.CONFLICT, "선택 날짜 중 이미 신청이 승인된 날짜가 포함되어 있습니다."),
+    HISTORY_UPDATE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "출,퇴근 데이터 업데이트 중 에러가 발생했습니다.");
 
     private final HttpStatus status;
     private final String errorMessage;

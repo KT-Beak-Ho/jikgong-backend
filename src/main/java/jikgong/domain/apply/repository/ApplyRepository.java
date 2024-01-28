@@ -33,9 +33,6 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
     @Query("select a from Apply a where a.member.id = :memberId and a.workDate.jobPost.id = :jobPostId and a.workDate.workDate in :workDateList")
     List<Apply> findByMemberIdAndJobPostId(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId, @Param("workDateList") List<LocalDate> workDateList);
 
-    @Query("select a from Apply a where a.workDate.jobPost.member.id = :memberId and a.workDate.jobPost.id = :jobPostId and a.member.id = :targetMemberId")
-    Optional<Apply> checkAppliedAndAuthor(@Param("memberId") Long memberId, @Param("targetMemberId") Long targetMemberId, @Param("jobPostId") Long jobPostId);
-
     @Query("select count(a) from Apply a where a.workDate.jobPost.member.id = :memberId and a.workDate.jobPost.id = :jobPostId")
     Long findCountApply(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId);
 
