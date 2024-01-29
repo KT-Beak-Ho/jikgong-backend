@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface JobPostRepository extends JpaRepository<JobPost, Long> {
+public interface JobPostRepository extends JpaRepository<JobPost, Long>, JobPostRepositoryCustom {
     @Query("select j from JobPost j where j.member.id = :memberId and j.isTemporary = true")
     Page<JobPost> findTemporaryJobPostByMemberId(@Param("memberId") Long memberId, Pageable pageable);
 

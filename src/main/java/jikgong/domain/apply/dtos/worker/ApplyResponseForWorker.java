@@ -2,7 +2,7 @@ package jikgong.domain.apply.dtos.worker;
 
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.entity.ApplyStatus;
-import jikgong.domain.jobPost.dtos.JobPostResponseForAcceptedApply;
+import jikgong.domain.jobPost.dtos.company.JobPostResponseForAcceptedApply;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -11,7 +11,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 @Builder
-@ToString
 public class WorkDateResponse {
     private Long workDateId;
     private LocalDate workDate;
