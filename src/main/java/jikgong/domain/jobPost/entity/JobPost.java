@@ -2,14 +2,13 @@ package jikgong.domain.jobPost.entity;
 
 import jakarta.persistence.*;
 import jikgong.domain.addressInfo.entity.AddressInfo;
-import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.common.Address;
 import jikgong.domain.common.BaseEntity;
-import jikgong.domain.jobPost.dtos.JobPostSaveRequest;
-import jikgong.domain.jobPost.dtos.TemporarySaveRequest;
-import jikgong.domain.jobPost.dtos.TemporaryUpdateRequest;
+import jikgong.domain.jobPost.dtos.company.JobPostSaveRequest;
+import jikgong.domain.jobPost.dtos.company.TemporarySaveRequest;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.project.entity.Project;
+import jikgong.domain.scrap.entity.Scrap;
 import jikgong.domain.workDate.entity.WorkDate;
 import lombok.*;
 
@@ -31,7 +30,7 @@ public class JobPost extends BaseEntity {
 
     private String title; // 제목
     @Enumerated(value = EnumType.STRING)
-    private Tech tech;
+    private Tech tech; // 직종
     private LocalDate startDate; // 시작 날짜
     private LocalDate endDate; // 종료 날짜
     private LocalTime startTime; // 시작 시간
@@ -63,6 +62,9 @@ public class JobPost extends BaseEntity {
     private List<WorkDate> workDateList = new ArrayList<>();
     @OneToMany(mappedBy = "jobPost", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AddressInfo> addressInfoList = new ArrayList<>();
+    @OneToMany(mappedBy = "jobPost")
+    private List<Scrap> scrapList = new ArrayList<>();
+
 
 
     @Builder

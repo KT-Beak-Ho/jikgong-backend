@@ -1,13 +1,10 @@
-package jikgong.domain.jobPost.dtos;
+package jikgong.domain.jobPost.dtos.company;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jikgong.domain.jobPost.entity.Park;
 import jikgong.domain.jobPost.entity.Tech;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.springframework.web.multipart.MultipartFile;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,9 +12,10 @@ import java.time.LocalTime;
 import java.util.List;
 
 @NoArgsConstructor
-@Getter
+@AllArgsConstructor
+@Getter @Builder
 @ToString
-public class JobPostSaveRequest {
+public class TemporarySaveRequest {
     @Schema(description = "공고 제목", example = "사하구  낙동5블럭  낙동강 온도 측정 센터 신축공사")
     private String title;
     @Schema(description = "인부 타입", example = "NORMAL")
@@ -69,4 +67,29 @@ public class JobPostSaveRequest {
     // 프로젝트
     @Schema(description = "projectId", example = "1")
     private Long projectId;
+
+    public static TemporarySaveRequest from(TemporaryUpdateRequest request) {
+        return TemporarySaveRequest.builder()
+                .title(request.getTitle())
+                .tech(request.getTech())
+                .startTime(request.getStartTime())
+                .endTime(request.getEndTime())
+                .recruitNum(request.getRecruitNum())
+                .wage(request.getWage())
+                .preparation(request.getPreparation())
+                .expirationTime(request.getExpirationTime())
+                .parkDetail(request.getParkDetail())
+                .meal(request.getMeal())
+                .pickup(request.getPickup())
+                .park(request.getPark())
+                .address(request.getAddress())
+                .latitude(request.getLatitude())
+                .longitude(request.getLongitude())
+                .workDateList(request.getWorkDateList())
+                .pickupList(request.getPickupList())
+                .managerName(request.getManagerName())
+                .phone(request.getPhone())
+                .projectId(request.getProjectId())
+                .build();
+    }
 }

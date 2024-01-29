@@ -2,13 +2,12 @@ package jikgong.domain.apply.dtos.worker;
 
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.entity.ApplyStatus;
-import jikgong.domain.jobPost.dtos.JobPostResponseForPendingApply;
+import jikgong.domain.jobPost.dtos.company.JobPostResponseForPendingApply;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @Getter
