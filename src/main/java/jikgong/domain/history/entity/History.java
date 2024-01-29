@@ -15,16 +15,17 @@ import lombok.NoArgsConstructor;
 public class History extends BaseEntity {
     @Id
     @GeneratedValue
-    @Column(name = "apply_id")
+    @Column(name = "history_id")
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     private WorkStatus status; // 출근, 퇴근, 결근, 조퇴
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "work_date_id")
     private WorkDate workDate;
 

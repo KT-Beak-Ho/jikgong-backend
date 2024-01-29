@@ -12,9 +12,9 @@ import java.util.List;
 @ToString
 public class HistoryFinishSaveRequest {
     @Schema(description = "퇴근 history id list", example = "[\"1\", \"2\"]")
-    private List<Long> finishWorkList;
+    private List<Long> finishWorkHistoryIdList;
     @Schema(description = "조퇴 history id list", example = "[\"3\", \"4\"]")
-    private List<Long> earlyLeaveList;
+    private List<Long> earlyLeaveHistoryIdList;
     @Schema(description = "공고 id", example = "1")
     private Long jobPostId;
     @Schema(description = "날짜 id", example = "1")

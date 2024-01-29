@@ -2,6 +2,7 @@ package jikgong.domain.jobPost.dtos;
 
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.entity.Tech;
+import jikgong.domain.workDate.dtos.WorkDateResponse;
 import jikgong.domain.workDate.entity.WorkDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Getter
@@ -24,13 +26,9 @@ public class JobPostManageResponse {
     private LocalTime startTime; // 시작 시간
     private LocalTime endTime; // 종료 시간
     private Integer wage; // 임금
-    private List<LocalDate> workDateList; // 일하는 날짜
+    private List<WorkDateResponse> workDateResponseList; // 일하는 날짜
 
     public static JobPostManageResponse from(JobPost jobPost) {
-        List<LocalDate> workDateList = new ArrayList<>();
-        for (WorkDate workDate : jobPost.getWorkDateList()) {
-            workDateList.add(workDate.getWorkDate());
-        }
         return JobPostManageResponse.builder()
                 .jobPostId(jobPost.getId())
                 .tech(jobPost.getTech())
@@ -40,7 +38,7 @@ public class JobPostManageResponse {
                 .startTime(jobPost.getStartTime())
                 .endTime(jobPost.getEndTime())
                 .wage(jobPost.getWage())
-                .workDateList(workDateList)
+                .workDateResponseList(jobPost.getWorkDateList().stream().map(WorkDateResponse::from).collect(Collectors.toList()))
                 .build();
 
     }
