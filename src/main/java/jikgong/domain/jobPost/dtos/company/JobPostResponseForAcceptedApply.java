@@ -1,4 +1,4 @@
-package jikgong.domain.jobPost.dtos;
+package jikgong.domain.jobPost.dtos.company;
 
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.entity.Tech;

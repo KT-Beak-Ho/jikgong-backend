@@ -1,13 +1,10 @@
-package jikgong.domain.jobPost.dtos;
+package jikgong.domain.jobPost.dtos.company;
 
-import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.jobPost.entity.JobPost;
-import jikgong.domain.jobPost.entity.Tech;
 import jikgong.domain.workDate.entity.WorkDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 

@@ -1,7 +1,6 @@
 package jikgong.domain.jobPost.service;
 
-import jikgong.domain.apply.repository.ApplyRepository;
-import jikgong.domain.jobPost.dtos.*;
+import jikgong.domain.jobPost.dtos.company.*;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.entity.JobPostStatus;
 import jikgong.domain.jobPost.repository.JobPostRepository;
@@ -39,8 +38,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class JobPostService {
-    private final ApplyRepository applyRepository;
+public class JobPostCompanyService {
     private final JobPostRepository jobPostRepository;
     private final JobPostImageRepository jobPostImageRepository;
     private final JobPostImageService jobPostImageService;

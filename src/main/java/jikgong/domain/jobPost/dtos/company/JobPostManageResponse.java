@@ -1,16 +1,14 @@
-package jikgong.domain.jobPost.dtos;
+package jikgong.domain.jobPost.dtos.company;
 
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.entity.Tech;
 import jikgong.domain.workDate.dtos.WorkDateResponse;
-import jikgong.domain.workDate.entity.WorkDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

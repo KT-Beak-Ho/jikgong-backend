@@ -1,4 +1,4 @@
-package jikgong.domain.jobPost.dtos;
+package jikgong.domain.jobPost.dtos.company;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
