@@ -67,5 +67,5 @@ sudo service nginx reload
 
 # 기존에 실행 중이었던 docker-compose는 종료시켜줍니다.
 echo "jikgong-${TERMINATE_CONTAINER} down"
-sudo docker-compose -f docker-compose.${TERMINATE_CONTAINER}.yml down
+sudo docker-compose -f docker-compose.${TERMINATE_CONTAINER}.yml down --rmi all
 echo "success deployment"
