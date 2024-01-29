@@ -2,15 +2,12 @@ package jikgong.domain.history.entity;
 
 import jakarta.persistence.*;
 import jikgong.domain.common.BaseEntity;
-import jikgong.domain.history.dtos.HistorySaveRequest;
-import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.member.entity.Member;
+import jikgong.domain.workDate.entity.WorkDate;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -18,34 +15,34 @@ import java.time.LocalDate;
 public class History extends BaseEntity {
     @Id
     @GeneratedValue
-    @Column(name = "apply_id")
+    @Column(name = "history_id")
     private Long id;
 
-    private Boolean isWork; // 출근 여부
-    private LocalDate workDate; // 출근 일짜
+    @Enumerated(EnumType.STRING)
+    private WorkStatus status; // 출근, 퇴근, 결근, 조퇴
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "job_post_id")
-    private JobPost jobPost;
+    @JoinColumn(name = "work_date_id")
+    private WorkDate workDate;
+
+    // todo: jobPost -> workDate 로 변경
 
     @Builder
-    public History(Boolean isWork, LocalDate workDate, Member member, JobPost jobPost) {
-        this.isWork = isWork;
-        this.workDate = workDate;
+    public History(WorkStatus status, Member member, WorkDate workDate) {
+        this.status = status;
         this.member = member;
-        this.jobPost = jobPost;
+        this.workDate = workDate;
     }
 
-    public static History createEntity(HistorySaveRequest request, Member member, JobPost jobPost) {
+    public static History createEntity(WorkStatus workStatus, Member member, WorkDate workDate) {
         return History.builder()
-                .isWork(request.getIsWork())
-                .workDate(request.getWorkDate())
+                .status(workStatus)
                 .member(member)
-                .jobPost(jobPost)
+                .workDate(workDate)
                 .build();
     }
 }

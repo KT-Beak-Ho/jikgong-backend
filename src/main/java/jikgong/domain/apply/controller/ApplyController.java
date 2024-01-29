@@ -1,7 +1,7 @@
 package jikgong.domain.apply.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jikgong.domain.apply.dtos.company.ApplyPendingResponseForCompany;
+import jikgong.domain.apply.dtos.company.ApplyResponseForCompany;
 import jikgong.domain.apply.dtos.company.ApplyProcessRequest;
 import jikgong.domain.apply.dtos.worker.ApplyPendingResponse;
 import jikgong.domain.apply.dtos.worker.ApplyResponseForWorker;
@@ -9,7 +9,7 @@ import jikgong.domain.apply.dtos.worker.ApplyResponseMonthly;
 import jikgong.domain.apply.dtos.worker.ApplySaveRequest;
 import jikgong.domain.apply.service.ApplyCompanyService;
 import jikgong.domain.apply.service.ApplyWorkerService;
-import jikgong.domain.jobPost.dtos.JobPostManageWorkerResponse;
+import jikgong.domain.member.dtos.MemberAcceptedResponse;
 import jikgong.global.dto.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
@@ -68,18 +68,33 @@ public class ApplyController {
     // todo: 기한이 지났을 경우 자동으로 신청 취소되게 하는 기능도 개발해야 함
 
     @Operation(summary = "인력 관리: 대기 중인 노동자 조회")
-    @GetMapping("/api/apply/company/pending/{jobPostId}")
+    @GetMapping("/api/apply/company/pending/{jobPostId}/{workDateId}")
     public ResponseEntity<Response> findPendingApplyCompany(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                             @PathVariable("jobPostId") Long jobPostId,
-                                                            @RequestParam(name = "workDate") LocalDate workDate,
+                                                            @PathVariable("workDateId") Long workDateId,
                                                             @RequestParam(name = "page", defaultValue = "0") int page,
                                                             @RequestParam(name = "size", defaultValue = "10") int size) {
         // 페이징 처리 (먼저 요청한 순)
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("createdDate")));
-        Page<ApplyPendingResponseForCompany> applyResponseForCompanyPage =
-                applyCompanyService.findPendingApplyHistoryCompany(principalDetails.getMember().getId(), jobPostId, workDate, pageable);
+        Page<ApplyResponseForCompany> applyResponseForCompanyPage =
+                applyCompanyService.findPendingApplyHistoryCompany(principalDetails.getMember().getId(), jobPostId, workDateId, pageable);
         return ResponseEntity.ok(new Response(applyResponseForCompanyPage, "공고 글에 신청된 내역 조회 완료"));
     }
+
+    @Operation(summary = "인력 관리: 확정된 노동자 조회")
+    @GetMapping("/api/apply/company/accepted/{jobPostId}/{workDateId}")
+    public ResponseEntity<Response> findAcceptedApplyCompany(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                             @PathVariable("jobPostId") Long jobPostId,
+                                                             @PathVariable("workDateId") Long workDateId,
+                                                             @RequestParam(name = "page", defaultValue = "0") int page,
+                                                             @RequestParam(name = "size", defaultValue = "10") int size) {
+        // 페이징 처리 (이름 순)
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("m.workerInfo.workerName")));
+        Page<ApplyResponseForCompany> applyResponseForCompanyPage =
+                applyCompanyService.findAcceptedHistoryCompany(principalDetails.getMember().getId(), jobPostId, workDateId, pageable);
+        return ResponseEntity.ok(new Response(applyResponseForCompanyPage, "공고 글에 확정된 노동자 조회"));
+    }
+
 
     @Operation(summary = "인력 관리: 인부 요청 처리")
     @PostMapping("/api/apply/company/process-request")
@@ -87,18 +102,5 @@ public class ApplyController {
                                                  @RequestBody ApplyProcessRequest request) {
         applyCompanyService.processApply(principalDetails.getMember().getId(), request);
         return ResponseEntity.ok(new Response("인부 요청 처리 완료"));
-    }
-
-    @Operation(summary = "인력 관리: 확정된 노동자 조회")
-    @GetMapping("/api/apply/company/accepted")
-    public ResponseEntity<Response> findAcceptedApplyCompany(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                             @RequestParam("jobPostId") Long jobPostId,
-                                                             @RequestParam("workDate") LocalDate workDate,
-                                                             @RequestParam(name = "page", defaultValue = "0") int page,
-                                                             @RequestParam(name = "size", defaultValue = "10") int size) {
-        // 페이징 처리 (이름 순)
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("m.workerInfo.workerName")));
-        JobPostManageWorkerResponse jobPostManageWorkerResponse = applyCompanyService.findAcceptedHistoryCompany(principalDetails.getMember().getId(), jobPostId, workDate, pageable);
-        return ResponseEntity.ok(new Response(jobPostManageWorkerResponse, "공고 글에 확정된 노동자 조회"));
     }
 }

@@ -31,14 +31,15 @@ public enum ErrorCode {
     RECRUITMENT_FULL(HttpStatus.BAD_REQUEST, "이미 모집 인원이 충족되었습니다."),
     APPLY_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 신청한 모집 공고 입니다."),
     PROJECT_NOT_FOUND(HttpStatus.NOT_FOUND, "프로젝트 정보가 없습니다."),
-    HISTORY_NOT_FOUND_APPLY(HttpStatus.NOT_FOUND, "해당 회원은 일자리 공고에 신청한 내역이 없습니다."),
+    HISTORY_NOT_FOUND_APPLY(HttpStatus.NOT_FOUND, "일자리 공고에 신청한 내역이 없습니다."),
     HISTORY_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 동일한 출근, 결근 데이터가 있습니다."),
     WORK_DATE_NOT_FOUND(HttpStatus.NOT_FOUND, "요청한 날짜는 모집 공고에 맞지 않는 날짜 입니다."),
     WORK_DATE_LIST_NOT_FOUND(HttpStatus.NOT_FOUND, "요청한 날짜 중 모집 공고에 맞지 않는 날짜가 있습니다."),
     APPLY_NOT_ACCEPTED(HttpStatus.BAD_REQUEST, "신청 내역이 아직 승인 되지 않았습니다."),
     APPLY_NEED_TO_PENDING(HttpStatus.BAD_REQUEST, "대기 중인 요청에 대해서만 처리할 수 있습니다."),
     APPLY_OVER_RECRUIT_NUM(HttpStatus.BAD_REQUEST, "모집 인원을 초과했습니다."),
-    APPLY_ALREADY_ACCEPTED_IN_WORKDATE(HttpStatus.CONFLICT, "선택 날짜 중 이미 신청이 승인된 날짜가 포함되어 있습니다.");
+    APPLY_ALREADY_ACCEPTED_IN_WORKDATE(HttpStatus.CONFLICT, "선택 날짜 중 이미 신청이 승인된 날짜가 포함되어 있습니다."),
+    HISTORY_UPDATE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "출,퇴근 데이터 업데이트 중 에러가 발생했습니다.");
 
     private final HttpStatus status;
     private final String errorMessage;

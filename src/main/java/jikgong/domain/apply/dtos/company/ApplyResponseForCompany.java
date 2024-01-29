@@ -5,19 +5,21 @@ import jikgong.domain.member.dtos.MemberResponseForApplyHistory;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 @AllArgsConstructor
 @Getter
 @Builder
-public class ApplyPendingResponseForCompany {
+@ToString
+public class ApplyResponseForCompany {
     /**
      * 인력 관리: 대기 중인 요청 조회
      */
     private Long applyId;
     private MemberResponseForApplyHistory memberResponse;
 
-    public static ApplyPendingResponseForCompany from(Apply apply) {
-        return ApplyPendingResponseForCompany.builder()
+    public static ApplyResponseForCompany from(Apply apply) {
+        return ApplyResponseForCompany.builder()
                 .applyId(apply.getId())
                 .memberResponse(MemberResponseForApplyHistory.from(apply.getMember()))
                 .build();

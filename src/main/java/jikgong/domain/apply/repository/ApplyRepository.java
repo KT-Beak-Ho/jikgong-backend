@@ -19,9 +19,10 @@ import java.util.Optional;
 @Repository
 public interface ApplyRepository extends JpaRepository<Apply, Long> {
     // fetch join 시 count query 별도 지정 필요
-    @Query(value = "select a from Apply a join fetch a.member m where a.workDate.jobPost.member.id = :memberId and a.workDate.jobPost.id = :jobPostId and a.status = :status and a.workDate.workDate = :workDate",
-            countQuery = "select a from Apply a where a.workDate.jobPost.member.id = :memberId and a.workDate.jobPost.id = :jobPostId and a.status = :status and a.workDate.workDate = :workDate")
-    Page<Apply> findByJobPostIdAndMemberIdAndStatus(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId, @Param("status") ApplyStatus status, @Param("workDate") LocalDate workDate, Pageable pageable);
+    @Query(value = "select a from Apply a join fetch a.member m where a.workDate.jobPost.member.id = :memberId and a.workDate.jobPost.id = :jobPostId and a.status = :status and a.workDate.id = :workDateId",
+            countQuery = "select a from Apply a where a.workDate.jobPost.member.id = :memberId and a.workDate.jobPost.id = :jobPostId and a.status = :status and a.workDate.id = :workDateId")
+    Page<Apply> findByMemberAndJobPostAndWorkDate(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId, @Param("workDateId") Long workDateId, @Param("status") ApplyStatus status, Pageable pageable);
+
 
     @Query("select a from Apply a where a.member.id = :memberId and a.workDate.workDate = :workDate and a.status = :applyStatus")
     List<Apply> findByMemberAndWorkDate(@Param("memberId") Long memberId, @Param("workDate") LocalDate workDate, @Param("applyStatus") ApplyStatus applyStatus);
@@ -30,21 +31,15 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
     List<Apply> findByMemberAndWorkMonth(@Param("memberId") Long memberId, @Param("monthStart") LocalDate monthStart, @Param("monthEnd") LocalDate monthEnd);
 
 
-    @Query("select a from Apply a where a.member.id = :memberId and a.workDate.jobPost.id = :jobPostId and a.workDate.workDate in :workDateList")
-    List<Apply> findByMemberIdAndJobPostId(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId, @Param("workDateList") List<LocalDate> workDateList);
-
-    @Query("select a from Apply a where a.workDate.jobPost.member.id = :memberId and a.workDate.jobPost.id = :jobPostId and a.member.id = :targetMemberId")
-    Optional<Apply> checkAppliedAndAuthor(@Param("memberId") Long memberId, @Param("targetMemberId") Long targetMemberId, @Param("jobPostId") Long jobPostId);
-
-    @Query("select count(a) from Apply a where a.workDate.jobPost.member.id = :memberId and a.workDate.jobPost.id = :jobPostId")
-    Long findCountApply(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId);
+    @Query("select a from Apply a where a.member.id = :memberId and a.workDate.jobPost.id = :jobPostId and a.workDate.id in :workDateList")
+    List<Apply> findByMemberIdAndJobPostId(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId, @Param("workDateList") List<Long> workDateList);
 
     @Modifying
     @Query("update Apply a set a.status = :applyStatus, a.statusDecisionTime = :now where a.id in :applyIdList")
     int updateApplyStatus(@Param("applyIdList") List<Long> applyIdList, @Param("applyStatus") ApplyStatus applyStatus, @Param("now") LocalDateTime now);
 
-    @Query("select a from Apply a join fetch a.member m where a.id in :applyIdList and a.workDate.workDate = :workDate")
-    List<Apply> findByIdList(@Param("applyIdList") List<Long> applyIdList, @Param("workDate") LocalDate workDate);
+    @Query("select a from Apply a join fetch a.member m where a.id in :applyIdList and a.workDate.id = :workDateId and a.workDate.jobPost.id = :jobPostId")
+    List<Apply> findByIdList(@Param("applyIdList") List<Long> applyIdList, @Param("workDateId") Long workDateId, @Param("jobPostId") Long jobPostId);
 
     @Query("select a from Apply a where a.workDate.workDate = :workDate and a.member.id in :memberIdList and a.id not in :applyIdList")
     List<Apply> deleteOtherApplyByWorkDate(@Param("workDate") LocalDate workDate, @Param("applyIdList") List<Long> applyIdList, @Param("memberIdList") List<Long> memberIdList);
@@ -55,4 +50,10 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
     @Query(value = "select a from Apply a join fetch a.workDate w join fetch w.jobPost j where a.member.id = :memberId and a.status = 'PENDING'",
             countQuery = "select a from Apply a where a.member.id = :memberId and a.status = 'PENDING'")
     Page<Apply> findPendingApply(@Param("memberId") Long memberId, Pageable pageable);
+
+    @Query("select a from Apply a where a.workDate.jobPost.id = :jobPostId and a.workDate.id = :workDateId and (a.member.id in :startWorkMemberList or a.member.id in :notWorkMemberList) and a.status = :status")
+    List<Apply> checkApplyBeforeSaveHistory(@Param("jobPostId") Long jobPostId, @Param("workDateId") Long workDateId, @Param("startWorkMemberList") List<Long> startWorkMemberList, @Param("notWorkMemberList") List<Long> notWorkMemberList, @Param("status") ApplyStatus status);
+
+    @Query(value = "select a from Apply a join fetch a.member m where a.workDate.jobPost.member.id = :memberId and a.workDate.jobPost.id = :jobPostId and a.status = :status and a.workDate.id = :workDateId")
+    List<Apply> findApplyAtStartWorkCheck(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId, @Param("workDateId") Long workDateId, @Param("status") ApplyStatus status);
 }
