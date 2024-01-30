@@ -1,26 +1,18 @@
 version: "3.8"
 services:
-#  redis:
-#    image: redis:latest
-#    container_name: redis
-#    hostname: redis
-#    ports:
-#      - "6379:6379"
-#    volumes:
-#      - ./redis/data:/data
   jikgong-a:
     container_name: jikgong-a
     image: ${DOCKERHUB_USERNAME}/jikgong
-#    depends_on:
-#      - redis
+    volumes:
+      - ./logs:/logs
     env_file:
       - .env
-    logging:
-      driver: awslogs
-      options:
-        awslogs-group: "jikgong-logs"
-        awslogs-region: "ap-northeast-2"
-        awslogs-stream: "jikgong-stream"
+#    logging:
+#      driver: awslogs
+#      options:
+#        awslogs-group: "jikgong-logs"
+#        awslogs-region: "ap-northeast-2"
+#        awslogs-stream: "jikgong-stream"
     ports:
       - "8080:8080"
     restart: always
