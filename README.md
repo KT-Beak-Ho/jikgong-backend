@@ -4,7 +4,8 @@
 <br><br>
 
 ## 🛠️ Architecture
-![image](https://github.com/KT-Beak-Ho/jikgong-backend/assets/97269799/ec6dbe62-bb7c-4e1f-886b-a8659595ea75)
+![image](https://github.com/KT-Beak-Ho/jikgong-backend/assets/97269799/ac2e2931-ebab-4be0-9a88-1bef76fee728)
+
 
 ## 🛠️ ERD
 > 변경 예정
