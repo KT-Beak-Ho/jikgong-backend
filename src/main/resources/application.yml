@@ -38,13 +38,6 @@ cloud:
 #    default:
 #      loggerLevel: FULL
 
-#logging:
-#  config: classpath:logback-spring.xml
-#  level:
-#    root: INFO
-#  level:
-#    jikgong.global.feignClient.client.AlimTalkClient: DEBUG
-
 # naver alimtalk
 ncp:
   service-id: abc

@@ -1,38 +1,32 @@
-package jikgong.domain.jobPost.repository;
+package jikgong.domain.scrap.repository;
 
+import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.BooleanTemplate;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jikgong.domain.jobPost.dtos.worker.JobPostListResponse;
-import jikgong.domain.jobPost.entity.JobPost;
-import jikgong.domain.jobPost.entity.Park;
-import jikgong.domain.jobPost.entity.Tech;
 import jikgong.domain.location.entity.Location;
-import jikgong.domain.scrap.entity.QScrap;
-import jikgong.domain.scrap.entity.Scrap;
-import jikgong.global.utils.DistanceCal;
+import jikgong.domain.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static jikgong.domain.jobPost.entity.QJobPost.*;
 import static jikgong.domain.member.entity.QMember.member;
 import static jikgong.domain.scrap.entity.QScrap.*;
 
 @RequiredArgsConstructor
-public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
+public class ScrapRepositoryImpl implements ScrapRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<JobPostListResponse> getMainPage(Long memberId, Tech tech, List<LocalDate> workDateList, Boolean isScrap, Boolean meal, Park park, Location location, Pageable pageable) {
+    public Page<JobPostListResponse> findByMember(Member worker, Location location, Pageable pageable) {
         List<JobPostListResponse> jobPostList = queryFactory
                 .select(Projections.constructor(JobPostListResponse.class,
                         jobPost.id,
@@ -49,50 +43,23 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
                         jobPost.address.address,
                         getDistance(location),
                         member.companyInfo.companyName,
-                        jobPost.wage))
-                .from(jobPost)
-                .leftJoin(jobPost.member, member)
-                .where(
-                        eqTech(tech),
-                        eqWorkDate(workDateList),
-                        eqScrap(memberId, isScrap),
-                        eqMeal(meal),
-                        eqPark(park)
-                )
+                        jobPost.wage,
+                        Expressions.constant(false)
+                ))
+                .from(scrap)
+                .leftJoin(scrap.jobPost, jobPost)
+                .leftJoin(scrap.member, member)
+                .where(scrap.member.id.eq(worker.getId()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(getDistance(location).asc())
                 .fetch();
 
         Long totalCount = queryFactory
-                .select(jobPost.count())
-                .from(jobPost)
-                .where(
-                        eqTech(tech),
-                        eqWorkDate(workDateList),
-                        eqScrap(memberId, isScrap),
-                        eqMeal(meal),
-                        eqPark(park)
-                )
-                .fetchOne();
-
-        List<Long> scrapJobPostId = queryFactory
-                .select(jobPost.id)
+                .select(scrap.count())
                 .from(scrap)
-                .leftJoin(scrap.jobPost, jobPost)
-                .where(scrap.member.id.eq(memberId))
-                .fetch();
-
-        Set<Long> scrapJobPostIdSet = new HashSet<>(scrapJobPostId);
-
-        // 스크랩 여부
-        for (JobPostListResponse jobPostListResponse : jobPostList) {
-            if (scrapJobPostIdSet.contains(jobPostListResponse.getJobPostId())) {
-                jobPostListResponse.setScrap(true);
-            } else {
-                jobPostListResponse.setScrap(false);
-            }
-        }
+                .where(scrap.member.id.eq(worker.getId()))
+                .fetchOne();
 
         return new PageImpl<>(jobPostList, pageable, totalCount);
     }
@@ -126,25 +93,5 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
                 Expressions.numberTemplate(Double.class, "6371 * {0}", acosExpression);
 
         return distanceExpression;
-    }
-
-    private BooleanExpression eqTech(Tech tech) {
-        return tech == null ? null : jobPost.tech.eq(tech);
-    }
-
-    private BooleanExpression eqWorkDate(List<LocalDate> workDateList) {
-        return workDateList == null ? null : jobPost.workDateList.any().workDate.in(workDateList);
-    }
-
-    private BooleanExpression eqScrap(Long memberId, Boolean scrap) {
-        return scrap == null ? null : jobPost.scrapList.any().member.id.eq(memberId);
-    }
-
-    private BooleanExpression eqMeal(Boolean meal) {
-        return meal == null ? null : jobPost.availableInfo.meal.eq(meal);
-    }
-
-    private BooleanExpression eqPark(Park park) {
-        return park == null ? null : jobPost.availableInfo.park.eq(park);
     }
 }

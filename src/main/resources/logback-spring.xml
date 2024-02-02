@@ -1,36 +1,43 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration>
-    <property name="LOG_PATH" value="./logs"/>
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
 
-    <!-- Appenders -->
-    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>INFO</level>
-        </filter>
+    <property name="CONSOLE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %clr(%5level) %cyan(%logger) - %msg%n" />
+    <property name="FILE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %5level %logger - %msg%n" />
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>[%d{yyy-MM-dd HH:mm:ss.SSS}] [%-5level] [%thread] %logger %msg%n</pattern>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
         </encoder>
     </appender>
-
-    <appender name="INFO_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>INFO</level>
-        </filter>
-        <file>${LOG_PATH}/info.log</file>
-        <append>true</append>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_PATH}/info_${type}.%d{yyyy-MM-dd}.gz</fileNamePattern>
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>./log/%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
-        <encoder>
-            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%-5level] [%thread] %logger %msg%n</pattern>
-        </encoder>
     </appender>
 
-    <!--TRACE > DEBUG > INFO > WARN > ERROR > OFF -->
-    <!-- Root Logger -->
-    <root level="INFO">
-        <appender-ref ref="console"/>
-        <appender-ref ref="INFO_LOG"/>
-    </root>
+    <springProfile name="local">
+        <logger name="com.feelcoding.logbackdemo" level="DEBUG" />
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="FILE" />
+        </root>
+    </springProfile>
+<!--    <springProfile name="dev|stg">-->
+<!--        <root level="INFO">-->
+<!--            <appender-ref ref="CONSOLE" />-->
+<!--            <appender-ref ref="FILE" />-->
+<!--        </root>-->
+<!--    </springProfile>-->
+    <springProfile name="prod">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="FILE" />
+        </root>
+    </springProfile>
 </configuration>
