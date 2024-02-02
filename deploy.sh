@@ -25,7 +25,7 @@ echo "jikgong-${START_CONTAINER} up"
 
 # 실행해야하는 컨테이너 docker-compose로 실행. -p는 docker-compose 프로젝트에 이름을 부여
 # -f는 docker-compose파일 경로를 지정
-sudo docker-compose -f docker-compose.${START_CONTAINER}.yml up -d --build
+sudo docker-compose -f docker-compose.${START_CONTAINER}.yml up -d --build --no-cache
 
 RUNNING_CONTAINER=$(sudo docker ps)
 echo "실행중인 컨테이너 목록: ${RUNNING_CONTAINER}"
