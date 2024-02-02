@@ -29,15 +29,4 @@ public class ScrapController {
         String message = result ? "완료" : "취소";
         return ResponseEntity.ok(new Response("모집 공고 스크랩 " + message));
     }
-
-    @Operation(summary = "스크랩한 모집 공고 조회")
-    @GetMapping("/api/scrap/job-posts")
-    public ResponseEntity<Response> findScrapJobPostList(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                         @RequestParam(name = "page", defaultValue = "0") int page,
-                                                         @RequestParam(name = "size", defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdDate")));
-        Page<JobPostListResponse> jobPostListResponsePage = scrapService.findScrapJobPostList(principalDetails.getMember().getId(), pageable);
-        return ResponseEntity.ok(new Response(jobPostListResponsePage, "스크랩한 모집 공고 조회 완료"));
-    }
-
 }

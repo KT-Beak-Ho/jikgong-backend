@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ScrapRepository extends JpaRepository<Scrap, Long>, ScrapRepositoryCustom {
+public interface ScrapRepository extends JpaRepository<Scrap, Long> {
     @Query("select s from Scrap s where s.member.id = :memberId and s.jobPost.id = :jobPostId")
     Optional<Scrap> findByMemberAndJobPost(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId);
 }

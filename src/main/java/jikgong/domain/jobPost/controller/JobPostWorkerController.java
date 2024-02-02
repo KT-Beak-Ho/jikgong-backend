@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jikgong.domain.jobPost.dtos.worker.JobPostListResponse;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.entity.Park;
+import jikgong.domain.jobPost.entity.SortType;
 import jikgong.domain.jobPost.entity.Tech;
 import jikgong.domain.jobPost.service.JobPostWorkerService;
 import jikgong.global.dto.Response;
@@ -37,10 +38,12 @@ public class JobPostWorkerController {
                                                 @RequestParam(name = "scrap", required = false) Boolean scrap,
                                                 @RequestParam(name = "meal", required = false) Boolean meal,
                                                 @RequestParam(name = "park", required = false)Park park,
+                                                @RequestParam(name = "sortType", required = false, defaultValue = "DISTANCE") SortType sortType,
                                                 @RequestParam(name = "page", defaultValue = "0") int page,
                                                 @RequestParam(name = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdDate")));
-        Page<JobPostListResponse> jobPostListResponsePage = jobPostWorkerService.getMainPage(principalDetails.getMember().getId(), tech, workDateList, scrap, meal, park, pageable);
+        Page<JobPostListResponse> jobPostListResponsePage =
+                jobPostWorkerService.getMainPage(principalDetails.getMember().getId(), tech, workDateList, scrap, meal, park, sortType, pageable);
         return ResponseEntity.ok(new Response(jobPostListResponsePage, "구직자 홈화면 정보 반환 완료"));
     }
 

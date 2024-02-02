@@ -1,5 +1,6 @@
 package jikgong.domain.jobPost.repository;
 
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
@@ -8,6 +9,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jikgong.domain.jobPost.dtos.worker.JobPostListResponse;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.entity.Park;
+import jikgong.domain.jobPost.entity.SortType;
 import jikgong.domain.jobPost.entity.Tech;
 import jikgong.domain.location.entity.Location;
 import jikgong.domain.scrap.entity.QScrap;
@@ -32,7 +34,7 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<JobPostListResponse> getMainPage(Long memberId, Tech tech, List<LocalDate> workDateList, Boolean isScrap, Boolean meal, Park park, Location location, Pageable pageable) {
+    public Page<JobPostListResponse> getMainPage(Long memberId, Tech tech, List<LocalDate> workDateList, Boolean isScrap, Boolean meal, Park park, Location location, SortType sortType, Pageable pageable) {
         List<JobPostListResponse> jobPostList = queryFactory
                 .select(Projections.constructor(JobPostListResponse.class,
                         jobPost.id,
@@ -49,7 +51,8 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
                         jobPost.address.address,
                         getDistance(location),
                         member.companyInfo.companyName,
-                        jobPost.wage))
+                        jobPost.wage,
+                        Expressions.constant(false)))
                 .from(jobPost)
                 .leftJoin(jobPost.member, member)
                 .where(
@@ -61,7 +64,7 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(getDistance(location).asc())
+                .orderBy(selectOrderBySpecifier(sortType, location))
                 .fetch();
 
         Long totalCount = queryFactory
@@ -89,8 +92,6 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
         for (JobPostListResponse jobPostListResponse : jobPostList) {
             if (scrapJobPostIdSet.contains(jobPostListResponse.getJobPostId())) {
                 jobPostListResponse.setScrap(true);
-            } else {
-                jobPostListResponse.setScrap(false);
             }
         }
 
@@ -146,5 +147,17 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
 
     private BooleanExpression eqPark(Park park) {
         return park == null ? null : jobPost.availableInfo.park.eq(park);
+    }
+
+    // 동적 정렬 기준
+    private OrderSpecifier<?> selectOrderBySpecifier(SortType sortType, Location location) {
+        // 임금 높은 순 (기본)
+        if (sortType == SortType.WAGE) {
+            return jobPost.wage.desc();
+        }
+        // 가까운 순
+        else {
+            return getDistance(location).asc();
+        }
     }
 }

@@ -53,17 +53,4 @@ public class ScrapService {
             return true;
         }
     }
-
-
-    public Page<JobPostListResponse> findScrapJobPostList(Long memberId, Pageable pageable) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-
-        Location location = locationRepository.findMainLocationByMemberId(member.getId())
-                .orElseThrow(() -> new CustomException(ErrorCode.LOCATION_NOT_FOUND));
-
-        Page<JobPostListResponse> jobPostListResponsePage = scrapRepository.findByMember(member, location, pageable);
-
-        return jobPostListResponsePage;
-    }
 }

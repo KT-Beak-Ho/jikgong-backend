@@ -68,4 +68,10 @@ sudo service nginx reload
 # 기존에 실행 중이었던 docker-compose는 종료시켜줍니다.
 echo "jikgong-${TERMINATE_CONTAINER} down"
 sudo docker-compose -f docker-compose.${TERMINATE_CONTAINER}.yml down --rmi all
+
+# 컨테이너에 사용되지 않는 이미지 전부 제거
+sudo docker image prune -af
+EXIST_IMAGES=$(sudo docker images)
+echo "현재 이미지 리스트: ${EXIST_IMAGES}"
+
 echo "success deployment"

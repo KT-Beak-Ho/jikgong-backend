@@ -3,6 +3,7 @@ package jikgong.domain.jobPost.service;
 import jikgong.domain.jobPost.dtos.worker.JobPostListResponse;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.entity.Park;
+import jikgong.domain.jobPost.entity.SortType;
 import jikgong.domain.jobPost.entity.Tech;
 import jikgong.domain.jobPost.repository.JobPostRepository;
 import jikgong.domain.location.entity.Location;
@@ -32,14 +33,14 @@ public class JobPostWorkerService {
     private final JobPostRepository jobPostRepository;
     private final MemberRepository memberRepository;
     private final LocationRepository locationRepository;
-    public Page<JobPostListResponse> getMainPage(Long memberId, Tech tech, List<LocalDate> workDateList, Boolean scrap, Boolean meal, Park park, Pageable pageable) {
+    public Page<JobPostListResponse> getMainPage(Long memberId, Tech tech, List<LocalDate> workDateList, Boolean scrap, Boolean meal, Park park, SortType sortType, Pageable pageable) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
         Location location = locationRepository.findMainLocationByMemberId(member.getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.LOCATION_NOT_FOUND));
 
-        Page<JobPostListResponse> jobPostPage = jobPostRepository.getMainPage(member.getId(), tech, workDateList, scrap, meal, park, location, pageable);
+        Page<JobPostListResponse> jobPostPage = jobPostRepository.getMainPage(member.getId(), tech, workDateList, scrap, meal, park, location, sortType, pageable);
 
         return jobPostPage;
     }
