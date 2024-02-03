@@ -30,6 +30,7 @@ import java.util.List;
 public class JobPostWorkerController {
     private final JobPostWorkerService jobPostWorkerService;
 
+    // todo: 검색 기능 추가
     @Operation(summary = "구직자 홈화면")
     @GetMapping("/api/worker/job-posts")
     public ResponseEntity<Response> getMainPage(@AuthenticationPrincipal PrincipalDetails principalDetails,
@@ -46,5 +47,4 @@ public class JobPostWorkerController {
                 jobPostWorkerService.getMainPage(principalDetails.getMember().getId(), tech, workDateList, scrap, meal, park, sortType, pageable);
         return ResponseEntity.ok(new Response(jobPostListResponsePage, "구직자 홈화면 정보 반환 완료"));
     }
-
 }

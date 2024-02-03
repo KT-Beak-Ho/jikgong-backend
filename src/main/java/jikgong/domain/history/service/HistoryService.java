@@ -137,11 +137,11 @@ public class HistoryService {
         // 현재 출근, 결근, 출근 전 status 값 세팅
         for (MemberAcceptedResponse memberAcceptedResponse : memberAcceptedResponseList) {
             if (startWorkMember.contains(memberAcceptedResponse.getMemberId())) {
-                memberAcceptedResponse.setWorkStatus(WorkStatus.START_WORK);
+                memberAcceptedResponse.setStartStatus(WorkStatus.START_WORK);
             } else if (notWorkMember.contains(memberAcceptedResponse.getMemberId())) {
-                memberAcceptedResponse.setWorkStatus(WorkStatus.NOT_WORK);
+                memberAcceptedResponse.setStartStatus(WorkStatus.NOT_WORK);
             } else {
-                memberAcceptedResponse.setWorkStatus(null);
+                memberAcceptedResponse.setStartStatus(null);
             }
         }
 
@@ -157,7 +157,7 @@ public class HistoryService {
                 .orElseThrow(() -> new CustomException(ErrorCode.WORK_DATE_NOT_FOUND));
 
         // 퇴근한 member, 조퇴한 member ID를 저장 하는 Set 생성
-        List<History> workHistoryList = historyRepository.findHistoryAtFinishWorkCheck(jobPost.getId(), workDate.getId(), WorkStatus.NOT_WORK);
+        List<History> workHistoryList = historyRepository.findHistoryAtStartWorkCheck(jobPost.getId(), workDate.getId(), WorkStatus.START_WORK);
         List<History> notWorkHistoryList = historyRepository.findHistoryAtStartWorkCheck(jobPost.getId(), workDate.getId(), WorkStatus.NOT_WORK);
 
         List<MemberAcceptedResponse> workMemberResponse = workHistoryList.stream()

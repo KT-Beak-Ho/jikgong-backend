@@ -13,7 +13,8 @@ import lombok.ToString;
 @ToString
 public class ApplyResponseForCompany {
     /**
-     * 인력 관리: 대기 중인 요청 조회
+     * 인력 관리: 대기 중인 인부 조회
+     * 인력 관리: 확정 된 인부 조회
      */
     private Long applyId;
     private MemberResponseForApplyHistory memberResponse;

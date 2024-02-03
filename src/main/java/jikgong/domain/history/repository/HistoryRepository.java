@@ -23,12 +23,12 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
                                              @Param("workDateId") Long workDateId);
 
     @Modifying
-    @Query("update History h set h.status = :status where h.id in :finishWorkList and h.status != 'NOT_WORK'")
+    @Query("update History h set h.endStatus = :status where h.id in :finishWorkList and h.startStatus != 'NOT_WORK'")
     int updateHistoryByIdList(@Param("finishWorkList") List<Long> finishWorkList, @Param("status") WorkStatus status);
 
-    @Query("select h from History h join fetch Member m where h.workDate.jobPost.id = :jobPostId and h.workDate.id = :workDateId and h.status = :status")
+    @Query("select h from History h join fetch Member m where h.workDate.jobPost.id = :jobPostId and h.workDate.id = :workDateId and h.startStatus = :status")
     List<History> findHistoryAtStartWorkCheck(@Param("jobPostId") Long jobPostId, @Param("workDateId") Long workDateId, @Param("status") WorkStatus status);
 
-    @Query("select h from History h join fetch Member m where h.workDate.jobPost.id = :jobPostId and h.workDate.id = :workDateId and h.status != :status")
+    @Query("select h from History h join fetch Member m where h.workDate.jobPost.id = :jobPostId and h.workDate.id = :workDateId and h.startStatus = :status")
     List<History> findHistoryAtFinishWorkCheck(@Param("jobPostId") Long jobPostId, @Param("workDateId") Long workDateId, @Param("status") WorkStatus status);
 }

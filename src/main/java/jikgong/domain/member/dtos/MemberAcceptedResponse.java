@@ -14,7 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter @Setter
 @Builder
-@JsonInclude(JsonInclude.Include.NON_NULL) // Exclude null fields
+//@JsonInclude(JsonInclude.Include.NON_NULL) // Exclude null fields
 public class MemberAcceptedResponse {
     /**
      * 인력 관리 화면에서 출퇴근 관련 dto
@@ -24,7 +24,8 @@ public class MemberAcceptedResponse {
     private String workerName; // 노동자 이름
     private String phone; // 휴대폰 번호
     private Integer age; // 나이
-    private WorkStatus workStatus; // 출근,결근 여부
+    private WorkStatus startStatus; // 출근,결근 여부
+    private WorkStatus endStatus; // 퇴근, 조퇴 여부
 
 
     public static MemberAcceptedResponse from (Apply apply) {
@@ -53,7 +54,8 @@ public class MemberAcceptedResponse {
                 .workerName(member.getWorkerInfo().getWorkerName())
                 .phone(member.getPhone())
                 .age(age)
-                .workStatus(history.getStatus())
+                .startStatus(history.getStartStatus())
+                .endStatus(history.getEndStatus())
                 .build();
     }
 }

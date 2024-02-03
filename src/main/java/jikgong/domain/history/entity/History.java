@@ -19,7 +19,10 @@ public class History extends BaseEntity {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private WorkStatus status; // 출근, 퇴근, 결근, 조퇴
+    private WorkStatus startStatus; // 출근, 퇴근
+
+    @Enumerated(EnumType.STRING)
+    private WorkStatus endStatus; // 결근, 조퇴
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -29,18 +32,18 @@ public class History extends BaseEntity {
     @JoinColumn(name = "work_date_id")
     private WorkDate workDate;
 
-    // todo: jobPost -> workDate 로 변경
 
     @Builder
-    public History(WorkStatus status, Member member, WorkDate workDate) {
-        this.status = status;
+    public History(WorkStatus startStatus, WorkStatus endStatus, Member member, WorkDate workDate) {
+        this.startStatus = startStatus;
+        this.endStatus = endStatus;
         this.member = member;
         this.workDate = workDate;
     }
 
     public static History createEntity(WorkStatus workStatus, Member member, WorkDate workDate) {
         return History.builder()
-                .status(workStatus)
+                .startStatus(workStatus)
                 .member(member)
                 .workDate(workDate)
                 .build();

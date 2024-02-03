@@ -36,14 +36,14 @@ public class MemberResponseForApplyHistory {
 
         // 출역 횟수, 참여율
         List<History> workHistory = member.getHistoryList().stream()
-                .filter(history -> history.getStatus() == WorkStatus.FINISH_WORK)
+                .filter(history -> history.getEndStatus() == WorkStatus.FINISH_WORK)
                 .collect(Collectors.toList());
         int workTimes = workHistory.size();
         float participationRate = (float) workTimes / (float) member.getHistoryList().size();
 
-        // 출역 내역이 없을 경우
-        if (member.getHistoryList().isEmpty()) {
-            participationRate = 1;
+        // 출역 내역이 없을 경우 -1
+        if (workTimes == 0) {
+            participationRate = -1;
         }
 
         return MemberResponseForApplyHistory.builder()
