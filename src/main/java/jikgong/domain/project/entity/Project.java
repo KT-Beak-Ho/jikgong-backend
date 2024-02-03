@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jikgong.domain.common.BaseEntity;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.project.dtos.ProjectSaveRequest;
+import jikgong.domain.project.dtos.ProjectUpdateRequest;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -46,5 +47,12 @@ public class Project extends BaseEntity {
                 .address(request.getAddress())
                 .member(member)
                 .build();
+    }
+
+    public void updateProject(ProjectUpdateRequest request) {
+        this.name = request.getName();
+        this.startDate = request.getStartDate();
+        this.endDate = request.getEndDate();
+        this.address = request.getAddress();
     }
 }

@@ -5,6 +5,7 @@ import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
 import jikgong.domain.project.dtos.ProjectListResponse;
 import jikgong.domain.project.dtos.ProjectSaveRequest;
+import jikgong.domain.project.dtos.ProjectUpdateRequest;
 import jikgong.domain.project.entity.Project;
 import jikgong.domain.project.entity.ProjectStatus;
 import jikgong.domain.project.repository.ProjectRepository;
@@ -61,5 +62,15 @@ public class ProjectService {
                 .collect(Collectors.toList());
 
         return projectListResponseList;
+    }
+
+    public void updateProject(Long memberId, ProjectUpdateRequest request) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Project project = projectRepository.findById(request.getProjectId())
+                .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_FOUND));
+
+        project.updateProject(request);
     }
 }
