@@ -8,4 +8,5 @@
 
 
 ## 🛠️ ERD
-> 변경 예정
+![image](https://github.com/dgjinsu/jikgong-backend/assets/97269799/df4be2fc-3593-499a-aeb4-7e2c57e49a11)
+
