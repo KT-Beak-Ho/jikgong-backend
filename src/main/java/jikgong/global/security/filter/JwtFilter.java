@@ -12,6 +12,7 @@ import jikgong.global.dto.Response;
 import jikgong.global.exception.CustomException;
 import jikgong.global.exception.ErrorCode;
 import jikgong.global.security.principal.PrincipalDetails;
+import jikgong.global.security.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtProvider;
     private final MemberRepository memberRepository;
     private final ObjectMapper objectMapper;
+    private final CustomUserDetailsService userDetailsService;
 
 
     @Override
@@ -55,12 +57,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 // claim 을 받아와 정보 추출
                 phone = (String) jwtProvider.get(token).get("phone");
 
-                // DB 에 정보가 있는지 확인
-                Member member = memberRepository.findByPhone(phone)
-                        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-
-                // principalDetails 생성
-                PrincipalDetails principalDetails = new PrincipalDetails(member);
+                PrincipalDetails principalDetails = userDetailsService.loadUserByUsername(phone);
 
                 // 인증 정보 생성
                 Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());

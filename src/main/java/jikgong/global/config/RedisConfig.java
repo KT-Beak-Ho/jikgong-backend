@@ -61,7 +61,7 @@ public class RedisConfig {
 
     // 캐싱 처리를 위한 빈 등록
     @Bean
-    public CacheManager contentCacheManager(RedisConnectionFactory cf) {
+    public CacheManager authCacheManager(RedisConnectionFactory cf) {
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer())) // Value Serializer 변경
