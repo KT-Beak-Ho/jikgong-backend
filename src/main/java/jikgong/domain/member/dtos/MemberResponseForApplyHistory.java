@@ -26,6 +26,7 @@ public class MemberResponseForApplyHistory {
     private String workerName; // 노동자 이름
     private String phone; // 휴대폰 번호
     private Integer age; // 나이
+    private Gender gender; // 성별
     private String nationality; // 국적
     private Integer workTimes; // 출역 횟수
     private Float participationRate; // 참여율
@@ -51,6 +52,7 @@ public class MemberResponseForApplyHistory {
                 .workerName(member.getWorkerInfo().getWorkerName())
                 .phone(member.getPhone())
                 .age(age)
+                .gender(member.getWorkerInfo().getGender())
                 .nationality(member.getWorkerInfo().getNationality())
                 .workTimes(workTimes)
                 .participationRate(participationRate)

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import jikgong.domain.history.entity.History;
 import jikgong.domain.history.entity.WorkStatus;
 import jikgong.domain.apply.entity.Apply;
+import jikgong.domain.member.entity.Gender;
 import jikgong.domain.member.entity.Member;
 import jikgong.global.utils.AgeTransfer;
 import lombok.AllArgsConstructor;
@@ -24,6 +25,7 @@ public class MemberAcceptedResponse {
     private String workerName; // 노동자 이름
     private String phone; // 휴대폰 번호
     private Integer age; // 나이
+    private Gender gender; // 성별
     private WorkStatus startStatus; // 출근,결근 여부
     private WorkStatus endStatus; // 퇴근, 조퇴 여부
 
@@ -39,6 +41,7 @@ public class MemberAcceptedResponse {
                 .workerName(member.getWorkerInfo().getWorkerName())
                 .phone(member.getPhone())
                 .age(age)
+                .gender(member.getWorkerInfo().getGender())
                 .build();
     }
 
@@ -54,6 +57,7 @@ public class MemberAcceptedResponse {
                 .workerName(member.getWorkerInfo().getWorkerName())
                 .phone(member.getPhone())
                 .age(age)
+                .gender(member.getWorkerInfo().getGender())
                 .startStatus(history.getStartStatus())
                 .endStatus(history.getEndStatus())
                 .build();
