@@ -18,6 +18,7 @@ public class Worker {
     @Enumerated(value = EnumType.STRING)
     private Gender gender; // 성별
     private String nationality; // 국적
+    private Boolean isOpen; // 헤드헌팅 여부
 
     @Builder
     public Worker(String workerName, String birth, String rrn, Gender gender, String nationality) {
@@ -26,5 +27,6 @@ public class Worker {
         this.rrn = rrn;
         this.gender = gender;
         this.nationality = nationality;
+        this.isOpen = true; // 기본 true
     }
 }

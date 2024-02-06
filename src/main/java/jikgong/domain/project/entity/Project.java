@@ -1,6 +1,7 @@
 package jikgong.domain.project.entity;
 
 import jakarta.persistence.*;
+import jikgong.domain.common.Address;
 import jikgong.domain.common.BaseEntity;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.project.dtos.ProjectSaveRequest;
@@ -24,14 +25,15 @@ public class Project extends BaseEntity {
     private String name; // 프로젝트 명
     private LocalDate startDate; // 착공일
     private LocalDate endDate; // 준공일
-    private String address;
+    @Embedded
+    private Address address;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
     @Builder
-    public Project(String name, LocalDate startDate, LocalDate endDate, String address, Member member) {
+    public Project(String name, LocalDate startDate, LocalDate endDate, Address address, Member member) {
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -44,7 +46,7 @@ public class Project extends BaseEntity {
                 .name(request.getName())
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
-                .address(request.getAddress())
+                .address(new Address(request.getAddress(), request.getLatitude(), request.getLongitude()))
                 .member(member)
                 .build();
     }
@@ -53,6 +55,6 @@ public class Project extends BaseEntity {
         this.name = request.getName();
         this.startDate = request.getStartDate();
         this.endDate = request.getEndDate();
-        this.address = request.getAddress();
+        this.address = new Address(request.getAddress(), request.getLatitude(), request.getLongitude());
     }
 }
