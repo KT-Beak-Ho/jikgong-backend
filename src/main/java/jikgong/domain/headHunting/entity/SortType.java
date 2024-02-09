@@ -1,4 +1,4 @@
-package jikgong.domain.member.entity;
+package jikgong.domain.headHunting.entity;
 
 import lombok.Getter;
 
