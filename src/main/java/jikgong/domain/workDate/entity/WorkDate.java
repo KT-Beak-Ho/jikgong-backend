@@ -39,6 +39,8 @@ public class WorkDate {
         this.recruitNum = recruitNum;
         this.registeredNum = 0;
         this.jobPost = jobPost;
+
+        this.applyList = new ArrayList<>();
     }
 
     public void plusRegisteredNum(Integer updateCount) {

@@ -87,6 +87,10 @@ public class JobPost extends BaseEntity {
         this.address = address;
         this.member = member;
         this.project = project;
+
+        this.workDateList = new ArrayList<>();
+        this.addressInfoList = new ArrayList<>();
+        this.scrapList = new ArrayList<>();
     }
 
     public static JobPost createEntityByTemporary(TemporarySaveRequest request, Member member, Project project) {

@@ -60,11 +60,13 @@ public class Member extends BaseEntity {
         this.bank = bank;
         this.deviceToken = deviceToken;
         this.isNotification = isNotification;
+        this.isDeleted = false;
         this.role = role;
         this.workerInfo = workerInfo;
         this.companyInfo = companyInfo;
         this.certification = certification;
-        this.isDeleted = false;
+        this.locationList = new ArrayList<>();
+        this.historyList = new ArrayList<>();
     }
 
     public void setCertification(Certification certification) {
