@@ -1,8 +1,10 @@
 package jikgong.domain.skill.entity;
 
 import jakarta.persistence.*;
+import jikgong.domain.headHunting.entity.HeadHunting;
 import jikgong.domain.jobPost.entity.Tech;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,4 +19,21 @@ public class Skill {
 
     @Enumerated(EnumType.STRING)
     private Tech tech;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "head_hunting_id")
+    private HeadHunting headHunting;
+
+    @Builder
+    public Skill(Tech tech, HeadHunting headHunting) {
+        this.tech = tech;
+        this.headHunting = headHunting;
+    }
+
+    public static Skill createEntity(Tech tech, HeadHunting headHunting) {
+        return Skill.builder()
+                .tech(tech)
+                .headHunting(headHunting)
+                .build();
+    }
 }

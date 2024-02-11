@@ -34,7 +34,7 @@ public class MemberAcceptedResponse {
         Member member = apply.getMember();
 
         // 나이 계산
-        int age = AgeTransfer.getAgeByRrn(member.getWorkerInfo().getBrith());
+        int age = AgeTransfer.getAgeByBirth(member.getWorkerInfo().getBrith());
 
         return MemberAcceptedResponse.builder()
                 .memberId(member.getId())
@@ -49,7 +49,7 @@ public class MemberAcceptedResponse {
         Member member = history.getMember();
 
         // 나이 계산
-        int age = AgeTransfer.getAgeByRrn(member.getWorkerInfo().getBrith());
+        int age = AgeTransfer.getAgeByBirth(member.getWorkerInfo().getBrith());
 
         return MemberAcceptedResponse.builder()
                 .historyId(history.getId())

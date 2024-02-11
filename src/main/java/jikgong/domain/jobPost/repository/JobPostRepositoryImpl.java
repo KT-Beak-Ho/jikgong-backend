@@ -16,6 +16,7 @@ import jikgong.domain.scrap.entity.QScrap;
 import jikgong.domain.scrap.entity.Scrap;
 import jikgong.global.utils.DistanceCal;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +31,7 @@ import static jikgong.domain.member.entity.QMember.member;
 import static jikgong.domain.scrap.entity.QScrap.*;
 
 @RequiredArgsConstructor
+@Slf4j
 public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
@@ -99,6 +101,7 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
     }
 
     private NumberExpression<Double> getDistance(Location location) {
+        log.info("123");
         // latitude 를 radians 로 계산
         NumberExpression<Double> radiansLatitude =
                 Expressions.numberTemplate(Double.class, "radians({0})", location.getAddress().getLatitude());

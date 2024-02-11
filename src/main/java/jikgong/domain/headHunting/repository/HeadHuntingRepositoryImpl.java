@@ -1,20 +1,29 @@
 package jikgong.domain.headHunting.repository;
 
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jikgong.domain.common.Address;
 import jikgong.domain.headHunting.dtos.HeadHuntingListResponse;
+import jikgong.domain.headHunting.entity.HeadHunting;
 import jikgong.domain.headHunting.entity.QHeadHunting;
 import jikgong.domain.headHunting.entity.SortType;
 import jikgong.domain.jobPost.entity.Tech;
 import jikgong.domain.location.entity.Location;
 import jikgong.domain.location.entity.QLocation;
 import jikgong.domain.member.entity.QMember;
+import jikgong.global.utils.AgeTransfer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static jikgong.domain.headHunting.entity.QHeadHunting.*;
 import static jikgong.domain.location.entity.QLocation.*;
@@ -25,18 +34,58 @@ public class HeadHuntingRepositoryImpl implements HeadHuntingRepositoryCustom {
     private final JPAQueryFactory queryFactory;
     @Override
     public Page<HeadHuntingListResponse> findHeadHuntingMemberList(Address projectAddress, Tech tech, Float bound, SortType sortType, Pageable pageable) {
-//        queryFactory
-//                .select(Projections.constructor(HeadHuntingListResponse.class,
-//                        ))
-//                .from(headHunting)
-//                .join(headHunting.member, member)
-//                .join(member.locationList, location).on(location.isMain.isTrue())
-//                .where(
-//                        eqTech(tech),
-//                        ltBound(bound),
-//                        getDistance(projectAddress, location)
-//                )
-        return null;
+        List<HeadHunting> headHuntingList = queryFactory
+                .selectFrom(headHunting)
+                .leftJoin(headHunting.member, member)
+                .leftJoin(member.locationList, location).on(location.isMain.isTrue())
+                .where(
+                        containTech(tech),
+                        ltBound(bound, projectAddress, location)
+                )
+                .orderBy(selectOrderBySpecifier(sortType, projectAddress, location))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long totalCount = queryFactory
+                .select(headHunting.count())
+                .from(headHunting)
+                .leftJoin(headHunting.member, member)
+                .leftJoin(member.locationList, location).on(location.isMain.isTrue())
+                .where(
+                        containTech(tech),
+                        ltBound(bound, projectAddress, location)
+                )
+                .fetchOne();
+
+        List<HeadHuntingListResponse> headHuntingListResponse = headHuntingList.stream()
+                .map(h -> HeadHuntingListResponse.from(h, projectAddress))
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(headHuntingListResponse, pageable, totalCount);
+    }
+
+
+    private OrderSpecifier<?> selectOrderBySpecifier(SortType sortType, Address projectAddress, QLocation location) {
+        // 경력 내림 차순
+        if (sortType == SortType.CAREER) {
+            return headHunting.career.desc();
+        }
+        // 거리 오름 차순
+        if (sortType == SortType.DISTANCE) {
+            return getDistance(projectAddress, location).asc();
+        }
+
+        // 기본 정렬: 거리 오름 차순
+        return getDistance(projectAddress, location).asc();
+    }
+
+    private BooleanExpression ltBound(Float bound, Address projectAddress, QLocation location) {
+        return bound == null ? null : getDistance(projectAddress, location).lt(bound);
+    }
+
+    private BooleanExpression containTech(Tech tech) {
+        return tech == null ? null : headHunting.skillList.any().tech.eq(tech);
     }
 
     private NumberExpression<Double> getDistance(Address projectAddress, QLocation locationParam) {
