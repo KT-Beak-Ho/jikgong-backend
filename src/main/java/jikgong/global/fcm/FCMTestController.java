@@ -1,9 +1,9 @@
-package jikgong.domain.fcm;
+package jikgong.global.fcm;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jikgong.global.dto.Response;
-import jikgong.domain.fcm.dtos.FCMNotificationRequestDto;
-import jikgong.domain.fcm.service.FCMNotificationService;
+import jikgong.global.fcm.dtos.FCMNotificationRequestDto;
+import jikgong.global.fcm.service.FCMNotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +18,7 @@ public class FCMTestController {
     @Operation(summary = "알림 보내기 위한 테스트 api")
     @PostMapping("/notification")
     public ResponseEntity<Response> sendNotification(@RequestBody FCMNotificationRequestDto requestDto) {
+        fcmNotificationService.sendNotificationByToken(requestDto);
         fcmNotificationService.sendNotificationByToken(requestDto);
         return ResponseEntity.ok(new Response("알림 전송 완료"));
     }

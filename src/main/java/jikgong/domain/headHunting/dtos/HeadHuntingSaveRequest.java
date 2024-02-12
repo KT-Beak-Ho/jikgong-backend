@@ -5,13 +5,21 @@ import jikgong.domain.jobPost.entity.Park;
 import jikgong.domain.jobPost.entity.Tech;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @NoArgsConstructor
 @Getter
+@ToString
 public class HeadHuntingSaveRequest {
+    @Schema(description = "경력", example = "15")
     private Integer career;
+    @Schema(description = "시작 선호 시간", example = "06:00:00")
+    private LocalTime preferTimeStart;
+    @Schema(description = "종료 선호 시간", example = "21:00:00")
+    private LocalTime preferTimeEnd;
 
     @Schema(description = "가능 직종 리스트", example = "[\"NORMAL\"]")
     private List<Tech> techList;

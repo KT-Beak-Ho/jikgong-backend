@@ -1,5 +1,6 @@
 package jikgong.domain.workDate.repository;
 
+import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.workDate.entity.WorkDate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

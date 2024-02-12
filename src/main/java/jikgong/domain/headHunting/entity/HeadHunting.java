@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,10 +25,13 @@ public class HeadHunting extends BaseEntity {
     private Long id;
 
     private Integer career; // 경력
+    private LocalTime preferTimeStart; // 시작 선호 시간
+    private LocalTime preferTimeEnd; // 종료 선호 시간
+
     @Embedded
     private AvailableInfo availableInfo; // 가능 여부 정보
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "member_id")
     private Member member;
 
@@ -36,8 +40,10 @@ public class HeadHunting extends BaseEntity {
     private List<Skill> skillList = new ArrayList<>();
 
     @Builder
-    public HeadHunting(Integer career, AvailableInfo availableInfo, Member member) {
+    public HeadHunting(Integer career, LocalTime preferTimeStart, LocalTime preferTimeEnd, AvailableInfo availableInfo, Member member) {
         this.career = career;
+        this.preferTimeStart = preferTimeStart;
+        this.preferTimeEnd = preferTimeEnd;
         this.availableInfo = availableInfo;
         this.member = member;
 
@@ -47,6 +53,8 @@ public class HeadHunting extends BaseEntity {
     public static HeadHunting createEntity(HeadHuntingSaveRequest request, Member member) {
         return HeadHunting.builder()
                 .career(request.getCareer())
+                .preferTimeStart(request.getPreferTimeStart())
+                .preferTimeEnd(request.getPreferTimeEnd())
                 .availableInfo(new AvailableInfo(request.getMeal(), request.getPickup(), request.getPark()))
                 .member(member)
                 .build();

@@ -1,6 +1,7 @@
 package jikgong.domain.member.entity;
 
 import jakarta.persistence.*;
+import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.certification.entity.Certification;
 import jikgong.domain.common.BaseEntity;
 import jikgong.domain.history.entity.History;
@@ -46,6 +47,8 @@ public class Member extends BaseEntity {
     List<Location> locationList = new ArrayList<>();
     @OneToMany(mappedBy = "member")
     List<History> historyList = new ArrayList<>();
+    @OneToMany(mappedBy = "member")
+    List<Apply> applyList = new ArrayList<>();
 
     @Override
     public String toString() {
@@ -65,8 +68,10 @@ public class Member extends BaseEntity {
         this.workerInfo = workerInfo;
         this.companyInfo = companyInfo;
         this.certification = certification;
+
         this.locationList = new ArrayList<>();
         this.historyList = new ArrayList<>();
+        this.applyList = new ArrayList<>();
     }
 
     public void setCertification(Certification certification) {
