@@ -1,6 +1,5 @@
-package jikgong.domain.headHunting.dtos;
+package jikgong.domain.headHunting.dtos.company;
 
-import jikgong.domain.addressInfo.entity.AddressInfo;
 import jikgong.domain.common.Address;
 import jikgong.domain.headHunting.entity.HeadHunting;
 import jikgong.domain.history.entity.History;

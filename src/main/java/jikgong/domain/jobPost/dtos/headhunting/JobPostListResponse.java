@@ -1,6 +1,5 @@
 package jikgong.domain.jobPost.dtos.headhunting;
 
-import jikgong.domain.headHunting.dtos.SelectOfferJobPostResponse;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.entity.Tech;
 import lombok.AllArgsConstructor;

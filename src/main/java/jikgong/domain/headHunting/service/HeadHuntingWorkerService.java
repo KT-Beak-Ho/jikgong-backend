@@ -1,13 +1,12 @@
 package jikgong.domain.headHunting.service;
 
 
-import jikgong.domain.headHunting.dtos.HeadHuntingSaveRequest;
+import jikgong.domain.headHunting.dtos.worker.HeadHuntingSaveRequest;
 import jikgong.domain.headHunting.entity.HeadHunting;
 import jikgong.domain.headHunting.repository.HeadHuntingRepository;
 import jikgong.domain.jobPost.entity.Tech;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
-import jikgong.domain.project.repository.ProjectRepository;
 import jikgong.domain.skill.entity.Skill;
 import jikgong.domain.skill.repository.SkillRepository;
 import jikgong.global.exception.CustomException;

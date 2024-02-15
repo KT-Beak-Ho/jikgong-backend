@@ -2,7 +2,7 @@ package jikgong.domain.headHunting.controller;
 
 
 import io.swagger.v3.oas.annotations.Operation;
-import jikgong.domain.headHunting.dtos.HeadHuntingSaveRequest;
+import jikgong.domain.headHunting.dtos.worker.HeadHuntingSaveRequest;
 import jikgong.domain.headHunting.service.HeadHuntingWorkerService;
 import jikgong.global.dto.Response;
 import jikgong.global.security.principal.PrincipalDetails;

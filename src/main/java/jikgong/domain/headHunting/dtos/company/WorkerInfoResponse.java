@@ -1,4 +1,4 @@
-package jikgong.domain.headHunting.dtos;
+package jikgong.domain.headHunting.dtos.company;
 
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.headHunting.entity.HeadHunting;

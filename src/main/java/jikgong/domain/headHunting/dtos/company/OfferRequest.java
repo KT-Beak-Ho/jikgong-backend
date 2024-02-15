@@ -1,4 +1,4 @@
-package jikgong.domain.headHunting.dtos;
+package jikgong.domain.headHunting.dtos.company;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;

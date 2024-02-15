@@ -1,22 +1,16 @@
 package jikgong.domain.headHunting.repository;
 
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Predicate;
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jikgong.domain.common.Address;
-import jikgong.domain.headHunting.dtos.HeadHuntingListResponse;
+import jikgong.domain.headHunting.dtos.company.HeadHuntingListResponse;
 import jikgong.domain.headHunting.entity.HeadHunting;
-import jikgong.domain.headHunting.entity.QHeadHunting;
 import jikgong.domain.headHunting.entity.SortType;
 import jikgong.domain.jobPost.entity.Tech;
-import jikgong.domain.location.entity.Location;
 import jikgong.domain.location.entity.QLocation;
-import jikgong.domain.member.entity.QMember;
-import jikgong.global.utils.AgeTransfer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

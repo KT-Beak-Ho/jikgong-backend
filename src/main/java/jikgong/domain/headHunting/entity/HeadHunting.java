@@ -2,7 +2,7 @@ package jikgong.domain.headHunting.entity;
 
 import jakarta.persistence.*;
 import jikgong.domain.common.BaseEntity;
-import jikgong.domain.headHunting.dtos.HeadHuntingSaveRequest;
+import jikgong.domain.headHunting.dtos.worker.HeadHuntingSaveRequest;
 import jikgong.domain.jobPost.entity.AvailableInfo;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.skill.entity.Skill;
