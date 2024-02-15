@@ -25,7 +25,7 @@ public class WorkDate {
     private Integer recruitNum; // 모집 인원
     private Integer registeredNum; // 모집된 인원
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "job_post_id")
     private JobPost jobPost;
 
