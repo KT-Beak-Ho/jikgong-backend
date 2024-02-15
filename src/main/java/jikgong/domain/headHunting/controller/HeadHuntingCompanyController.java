@@ -2,6 +2,7 @@ package jikgong.domain.headHunting.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jikgong.domain.headHunting.dtos.HeadHuntingListResponse;
+import jikgong.domain.headHunting.dtos.SelectOfferJobPostResponse;
 import jikgong.domain.headHunting.dtos.WorkerInfoResponse;
 import jikgong.domain.headHunting.entity.SortType;
 import jikgong.domain.headHunting.service.HeadHuntingCompanyService;
@@ -53,7 +54,8 @@ public class HeadHuntingCompanyController {
     public ResponseEntity<Response> findAvailableJobPosts(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                           @RequestParam(name = "memberId") Long memberId,
                                                           @RequestParam(name = "projectId") Long projectId) {
-        headHuntingCompanyService.findAvailableJobPosts(principalDetails.getMember().getId(), memberId, projectId);
+        SelectOfferJobPostResponse selectOfferJobPostResponse = headHuntingCompanyService.findAvailableJobPosts(principalDetails.getMember().getId(), memberId, projectId);
+        return ResponseEntity.ok(new Response(selectOfferJobPostResponse, "기업: 출역 가능한 현장 목록 반환 완료"));
     }
 
     @Operation(summary = "기업: 일자리 제안 하기")

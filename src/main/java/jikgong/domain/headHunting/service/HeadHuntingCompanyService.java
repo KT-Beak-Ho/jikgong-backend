@@ -3,6 +3,7 @@ package jikgong.domain.headHunting.service;
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.repository.ApplyRepository;
 import jikgong.domain.headHunting.dtos.HeadHuntingListResponse;
+import jikgong.domain.headHunting.dtos.SelectOfferJobPostResponse;
 import jikgong.domain.headHunting.dtos.WorkerInfoResponse;
 import jikgong.domain.headHunting.entity.HeadHunting;
 import jikgong.domain.headHunting.entity.SortType;
@@ -61,7 +62,7 @@ public class HeadHuntingCompanyService {
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
 
-        notificationService.saveNotification(workerId, NotificationType.OFFER, );
+//        notificationService.saveNotification(workerId, NotificationType.OFFER, );
     }
 
     public WorkerInfoResponse findWorkerInfo(Long companyId, Long workerId, LocalDate selectMonth) {
@@ -82,7 +83,7 @@ public class HeadHuntingCompanyService {
         return WorkerInfoResponse.from(headHunting, findCantWorkDate);
     }
 
-    public void findAvailableJobPosts(Long companyId, Long workerId, Long projectId) {
+    public SelectOfferJobPostResponse findAvailableJobPosts(Long companyId, Long workerId, Long projectId) {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
@@ -92,13 +93,14 @@ public class HeadHuntingCompanyService {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_FOUND));
 
-        List<JobPost> jobPostList = jobPostRepository.findByProject(project.getId());
 
         List<LocalDate> cantWorkDate = applyRepository.findAllCantWorkDate(worker.getId()).stream()
                 .map(apply -> apply.getWorkDate().getWorkDate())
                 .collect(Collectors.toList());
-
         Set<LocalDate> cantWorkDateSet = new HashSet<>(cantWorkDate);
-        // todo: 이어서 개발 예정
+
+        List<JobPost> jobPostList = jobPostRepository.findByProject(project.getId());
+
+        return SelectOfferJobPostResponse.from(jobPostList, worker, cantWorkDateSet);
     }
 }
