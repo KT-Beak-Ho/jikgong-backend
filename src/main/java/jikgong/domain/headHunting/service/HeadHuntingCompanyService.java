@@ -3,7 +3,9 @@ package jikgong.domain.headHunting.service;
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.repository.ApplyRepository;
 import jikgong.domain.headHunting.dtos.company.HeadHuntingListResponse;
-import jikgong.domain.headHunting.dtos.company.SelectOfferJobPostResponse;
+import jikgong.domain.headHunting.dtos.company.offer.OfferJobPostRequest;
+import jikgong.domain.headHunting.dtos.company.offer.OfferRequest;
+import jikgong.domain.headHunting.dtos.company.offer.SelectOfferJobPostResponse;
 import jikgong.domain.headHunting.dtos.company.WorkerInfoResponse;
 import jikgong.domain.headHunting.entity.HeadHunting;
 import jikgong.domain.headHunting.entity.SortType;
@@ -13,6 +15,7 @@ import jikgong.domain.jobPost.entity.Tech;
 import jikgong.domain.jobPost.repository.JobPostRepository;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
+import jikgong.domain.notification.entity.NotificationType;
 import jikgong.domain.notification.service.NotificationService;
 import jikgong.domain.project.entity.Project;
 import jikgong.domain.project.repository.ProjectRepository;
@@ -54,12 +57,25 @@ public class HeadHuntingCompanyService {
         return headHuntingRepository.findHeadHuntingMemberList(project.getAddress(), tech, bound, sortType, pageable);
     }
 
-    public void offerJobPost(Long companyId, Long workerId) {
+    public void offerJobPost(Long companyId, OfferRequest request) {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
+        List<OfferJobPostRequest> offerJobPostRequestList = request.getOfferJobPostRequest();
+        for (OfferJobPostRequest offerJobPostRequest : offerJobPostRequestList) {
+            JobPost jobPost = jobPostRepository.findById(offerJobPostRequest.getJobPostId())
+                    .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
 
-//        notificationService.saveNotification(workerId, NotificationType.OFFER, );
+            String dateList = offerJobPostRequest.getWorkDateList().stream()
+                    .map(date -> date.toString().substring(5, 10))
+                    .collect(Collectors.joining(", "));
+
+            // todo: 일자리 제안 메시지, url 변경
+            String content = "[" + company.getPhone() + "] 에서 " + dateList + "에 일자리를 제안했습니다.";
+            String url = "test";
+
+            notificationService.saveNotification(request.getMemberId(), NotificationType.OFFER, content, url);
+        }
     }
 
     public WorkerInfoResponse findWorkerInfo(Long companyId, Long workerId, LocalDate selectMonth) {

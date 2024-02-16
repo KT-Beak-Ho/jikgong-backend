@@ -42,6 +42,6 @@ public class NotificationService {
                 .title(content)
                 .body(content)
                 .build();
-        fcmNotificationService.sendNotificationByToken(request);
+//        fcmNotificationService.sendNotificationByToken(request);
     }
 }

@@ -1,4 +1,4 @@
-package jikgong.domain.headHunting.dtos.company;
+package jikgong.domain.headHunting.dtos.company.offer;
 
 import jikgong.domain.jobPost.dtos.headhunting.JobPostListResponse;
 import jikgong.domain.jobPost.entity.JobPost;
