@@ -35,4 +35,7 @@ public interface JobPostRepository extends JpaRepository<JobPost, Long>, JobPost
 
     @Query("select j from JobPost j where j.project.id = :projectId")
     List<JobPost> findByProject(@Param("projectId") Long projectId);
+
+    @Query("select j from JobPost j join fetch j.member m where j.id = :jobPostId")
+    Optional<JobPost> findByIdWithMember(@Param("jobPostId") Long jobPostId);
 }

@@ -41,7 +41,8 @@ public enum ErrorCode {
     APPLY_ALREADY_ACCEPTED_IN_WORKDATE(HttpStatus.CONFLICT, "선택 날짜 중 이미 신청이 승인된 날짜가 포함되어 있습니다."),
     HISTORY_UPDATE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "출,퇴근 데이터 업데이트 중 에러가 발생했습니다."),
     SEARCH_LOG_NOT_EXIST(HttpStatus.NOT_FOUND, "Redis 에서 요청한 검색 기록을 찾을 수 없습니다."),
-    HEAD_HUNTING_NOT_FOUND(HttpStatus.NOT_FOUND, "헤드 헌팅 등록한 정보가 없습니다.");
+    HEAD_HUNTING_NOT_FOUND(HttpStatus.NOT_FOUND, "헤드 헌팅 등록한 정보가 없습니다."),
+    EMPTY_WORK_DATE_LIST(HttpStatus.NOT_FOUND, "날짜 정보가 없습니다.");
 
     private final HttpStatus status;
     private final String errorMessage;

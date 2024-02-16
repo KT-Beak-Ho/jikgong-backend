@@ -1,6 +1,7 @@
 package jikgong.domain.jobPost.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jikgong.domain.jobPost.dtos.worker.JobPostDetailResponse;
 import jikgong.domain.jobPost.dtos.worker.JobPostListResponse;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.entity.Park;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -46,5 +48,13 @@ public class JobPostWorkerController {
         Page<JobPostListResponse> jobPostListResponsePage =
                 jobPostWorkerService.getMainPage(principalDetails.getMember().getId(), tech, workDateList, scrap, meal, park, sortType, pageable);
         return ResponseEntity.ok(new Response(jobPostListResponsePage, "구직자 홈화면 정보 반환 완료"));
+    }
+
+    @Operation(summary = "모집 공고 상세 화면")
+    @GetMapping("/api/worker/job-post/{jobPostId}")
+    public ResponseEntity<Response> getJobPostDetail(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                     @PathVariable("jobPostId") Long jobPostId) {
+        JobPostDetailResponse jobPostDetailResponse = jobPostWorkerService.getJobPostDetail(principalDetails.getMember().getId(), jobPostId);
+        return ResponseEntity.ok(new Response(jobPostDetailResponse, "모집 공고 상세 화면 반환 완료"));
     }
 }

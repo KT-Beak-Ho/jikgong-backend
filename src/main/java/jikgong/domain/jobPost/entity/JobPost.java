@@ -39,7 +39,6 @@ public class JobPost extends BaseEntity {
     private Integer wage; // 임금
     private String parkDetail; // 주차장 상세 설명
     private String preparation; // 준비 사항
-    private LocalDateTime expirationTime; // 모집 마감
     private String managerName; // 담당자 명
     private String phone; // 연락 번호
     private Boolean isTemporary; // 임시 저장 여부
@@ -65,8 +64,6 @@ public class JobPost extends BaseEntity {
     @OneToMany(mappedBy = "jobPost")
     private List<Scrap> scrapList = new ArrayList<>();
 
-
-
     @Builder
     public JobPost(String title, Tech tech, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, Integer recruitNum, Integer wage, String parkDetail, String preparation, LocalDateTime expirationTime, String managerName, String phone, Boolean isTemporary, AvailableInfo availableInfo, Address address, Member member, Project project) {
         this.title = title;
@@ -79,7 +76,6 @@ public class JobPost extends BaseEntity {
         this.recruitNum = recruitNum;
         this.wage = wage;
         this.preparation = preparation;
-        this.expirationTime = expirationTime;
         this.managerName = managerName;
         this.phone = phone;
         this.isTemporary = isTemporary;
@@ -113,7 +109,6 @@ public class JobPost extends BaseEntity {
                 .wage(request.getWage())
                 .parkDetail(request.getParkDetail())
                 .preparation(request.getPreparation())
-                .expirationTime(request.getExpirationTime())
                 .managerName(request.getManagerName())
                 .phone(request.getPhone())
                 .isTemporary(true)
@@ -140,7 +135,6 @@ public class JobPost extends BaseEntity {
                 .wage(request.getWage())
                 .parkDetail(request.getParkDetail())
                 .preparation(request.getPreparation())
-                .expirationTime(request.getExpirationTime())
                 .managerName(request.getManagerName())
                 .phone(request.getPhone())
                 .isTemporary(false)

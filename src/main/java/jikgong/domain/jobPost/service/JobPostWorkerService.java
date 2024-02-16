@@ -1,5 +1,6 @@
 package jikgong.domain.jobPost.service;
 
+import jikgong.domain.jobPost.dtos.worker.JobPostDetailResponse;
 import jikgong.domain.jobPost.dtos.worker.JobPostListResponse;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.entity.Park;
@@ -43,5 +44,19 @@ public class JobPostWorkerService {
         Page<JobPostListResponse> jobPostPage = jobPostRepository.getMainPage(member.getId(), tech, workDateList, scrap, meal, park, location, sortType, pageable);
 
         return jobPostPage;
+    }
+
+    public JobPostDetailResponse getJobPostDetail(Long memberId, Long jobPostId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        JobPost jobPost = jobPostRepository.findByIdWithMember(jobPostId)
+                .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
+
+        Location location = locationRepository.findMainLocationByMemberId(member.getId())
+                .orElseThrow(() -> new CustomException(ErrorCode.LOCATION_NOT_FOUND));
+
+        return JobPostDetailResponse.from(jobPost, location);
+
     }
 }
