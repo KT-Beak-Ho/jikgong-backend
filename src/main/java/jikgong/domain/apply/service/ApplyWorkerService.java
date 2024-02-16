@@ -57,6 +57,16 @@ public class ApplyWorkerService {
             throw new CustomException(ErrorCode.WORK_DATE_LIST_NOT_FOUND);
         }
 
+        // 가장 빠른 신청 날짜가 2일 후인지 체크
+        LocalDate minWorkDate = workDateList.stream()
+                .map(WorkDate::getWorkDate)
+                .min(LocalDate::compareTo)
+                .orElseThrow(() -> new CustomException(ErrorCode.EMPTY_WORK_DATE_LIST));
+        LocalDate twoDaysInFuture = LocalDate.now().plusDays(2);
+        if (twoDaysInFuture.isAfter(minWorkDate)) {
+            throw new CustomException(ErrorCode.JOB_POST_EXPIRED);
+        }
+
         // 중복 신청 조회
         List<Apply> findApply = applyRepository.findByMemberIdAndJobPostId(member.getId(), jobPost.getId(), request.getWorkDateList());
         if (!findApply.isEmpty()) {
@@ -68,11 +78,6 @@ public class ApplyWorkerService {
         List<Apply> acceptedApplyInWorkDateList = applyRepository.findAcceptedApplyInWorkDateList(member.getId(), dateList);
         if (!acceptedApplyInWorkDateList.isEmpty()) {
             throw new CustomException(ErrorCode.APPLY_ALREADY_ACCEPTED_IN_WORKDATE);
-        }
-
-        // 모집 기한 체크
-        if (jobPost.getExpirationTime().isBefore(LocalDateTime.now())) {
-            throw new CustomException(ErrorCode.JOB_POST_EXPIRED);
         }
 
         ArrayList<Apply> applyList = new ArrayList<>();
