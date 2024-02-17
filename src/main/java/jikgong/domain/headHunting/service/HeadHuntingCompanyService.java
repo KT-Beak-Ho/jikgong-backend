@@ -71,8 +71,8 @@ public class HeadHuntingCompanyService {
                     .collect(Collectors.joining(", "));
 
             // todo: 일자리 제안 메시지, url 변경
-            String content = "[" + company.getPhone() + "] 에서 " + dateList + "에 일자리를 제안했습니다.";
-            String url = "test";
+            String content = "[" + company.getCompanyInfo().getCompanyName() + "] 에서 " + dateList + "에 일자리를 제안했습니다.";
+            String url = "/api/worker/job-post/" + jobPost.getId();
 
             notificationService.saveNotification(request.getMemberId(), NotificationType.OFFER, content, url);
         }
