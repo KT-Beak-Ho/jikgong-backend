@@ -81,4 +81,8 @@ public class Member extends BaseEntity {
     public void updateDeviceToken(String deviceToken) {
         this.deviceToken = deviceToken;
     }
+
+    public void updateNotificationInfo() {
+        this.isNotification = !isNotification;
+    }
 }
