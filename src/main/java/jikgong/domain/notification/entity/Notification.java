@@ -1,6 +1,7 @@
 package jikgong.domain.notification.entity;
 
 import jakarta.persistence.*;
+import jikgong.domain.common.BaseEntity;
 import jikgong.domain.member.entity.Member;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Notification {
+public class Notification extends BaseEntity {
     @Id
     @GeneratedValue
     @Column(name = "notification_id")
@@ -34,5 +35,9 @@ public class Notification {
         this.isRead = false;
         this.notificationType = notificationType;
         this.receiver = receiver;
+    }
+
+    public void readNotification() {
+        this.isRead = true;
     }
 }
