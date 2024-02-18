@@ -70,7 +70,6 @@ public class HeadHuntingCompanyService {
                     .map(date -> date.toString().substring(5, 10))
                     .collect(Collectors.joining(", "));
 
-            // todo: 일자리 제안 메시지, url 변경
             String content = "[" + company.getCompanyInfo().getCompanyName() + "] 에서 " + dateList + "에 일자리를 제안했습니다.";
             String url = "/api/worker/job-post/" + jobPost.getId();
 

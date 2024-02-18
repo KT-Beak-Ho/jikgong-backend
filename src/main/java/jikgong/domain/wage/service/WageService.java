@@ -34,10 +34,7 @@ public class WageService {
     public Long saveWageHistory(Long memberId, WageSaveRequest request) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-
-        Wage wage = Wage.createEntity(request, member);
-
-        return wageRepository.save(wage).getId();
+        return wageRepository.save(Wage.createEntity(request, member)).getId();
     }
 
     @Transactional(readOnly = true)
@@ -62,6 +59,7 @@ public class WageService {
                 TimeTransfer.getFirstDayOfMonth(selectMonth),
                 TimeTransfer.getLastDayOfMonth(selectMonth));
 
+        // 해당 달의 근무 시간 합
         Integer workTimeInMonth = wageRepository.findWorkTimeInMonth(
                 member.getId(),
                 TimeTransfer.getFirstDayOfMonth(selectMonth),
@@ -75,33 +73,6 @@ public class WageService {
         List<DailyWageResponse> dailyWageResponseList = wageHistoryMonth.stream()
                 .map(DailyWageResponse::from)
                 .collect(Collectors.toList());
-
-//        // 일별 일한 시간 합
-//        Map<LocalDate, String> dailyWorkTime = wageHistoryMonth.stream()
-//                .collect(Collectors.groupingBy(
-//                        wage -> wage.getWorkDate(),
-//                        Collectors.collectingAndThen(
-//                                Collectors.reducing(Duration.ZERO,
-//                                        wage -> Duration.between(wage.getStartTime(), wage.getEndTime()),
-//                                        Duration::plus),
-//                                duration -> formatDuration(duration)
-//                        )
-//                ));
-
-        // 위와 같은 코드
-        /*
-        for (Wage wage : wageHistoryMonth) {
-            LocalDate date = wage.getStartTime().toLocalDate();
-            Duration duration = Duration.between(wage.getStartTime(), wage.getEndTime());
-
-            // 기존에 해당 날짜에 대한 값이 이미 있을 경우 더하고 없으면 새로 추가
-            if (dailyWorkTime.containsKey(date)) {
-                Duration existingDuration = Duration.parse(dailyWorkTime.get(date));
-                dailyWorkTime.put(date, formatDuration(existingDuration.plus(duration)));
-            } else {
-                dailyWorkTime.put(date, formatDuration(duration));
-            }
-        } */
 
         // 월별 일한 날짜 리스트
         List<LocalDate> workDayList = wageHistoryMonth.stream()
@@ -117,13 +88,6 @@ public class WageService {
                 .build();
     }
 
-    // Duration 객체 -> x시 x분 으로 포맷팅
-    private String formatDuration(Duration duration) {
-        long hours = duration.toHours();
-        long minutes = duration.toMinutesPart();
-
-        return String.format("%d시간 %d분", hours, minutes);
-    }
 
     public void deleteWageHistory(Long memberId, Long wageId) {
         Member member = memberRepository.findById(memberId)
@@ -143,5 +107,14 @@ public class WageService {
 
         // update
         wage.modifyWage(request);
+    }
+
+    public List<DailyWageResponse> findWageHistoryList(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        return wageRepository.findByMember(member.getId()).stream()
+                .map(DailyWageResponse::from)
+                .collect(Collectors.toList());
     }
 }

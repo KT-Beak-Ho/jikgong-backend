@@ -64,4 +64,11 @@ public class WageController {
         wageService.modifyWageHistory(principalDetails.getMember().getId(), request);
         return ResponseEntity.ok(new Response("지급 내역 수정 완료"));
     }
+
+    @Operation(summary = "수익금 내역 (리스트)")
+    @GetMapping("/api/wages/list")
+    public ResponseEntity<Response> findWageHistoryList(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        List<DailyWageResponse> dailyWageResponseList = wageService.findWageHistoryList(principalDetails.getMember().getId());
+        return ResponseEntity.ok(new Response(dailyWageResponseList, "수익금 내역 (리스트) 반환 완료"));
+    }
 }
