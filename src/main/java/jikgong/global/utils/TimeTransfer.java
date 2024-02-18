@@ -30,6 +30,9 @@ public class TimeTransfer {
     }
 
     public static String getHourMinute(Integer minute) {
+        if (minute == null) {
+            return "0시간 0분";
+        }
         int hours = minute / 60;
         int remainingMinutes = minute % 60;
         return hours + "시간 " + remainingMinutes + "분";
