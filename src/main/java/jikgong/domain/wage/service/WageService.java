@@ -2,10 +2,7 @@ package jikgong.domain.wage.service;
 
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
-import jikgong.domain.wage.dtos.MonthlyWageResponse;
-import jikgong.domain.wage.dtos.DailyWageResponse;
-import jikgong.domain.wage.dtos.WageModifyRequest;
-import jikgong.domain.wage.dtos.WageSaveRequest;
+import jikgong.domain.wage.dtos.*;
 import jikgong.domain.wage.entity.Wage;
 import jikgong.domain.wage.repository.WageRepository;
 import jikgong.global.exception.CustomException;
@@ -19,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -53,22 +51,16 @@ public class WageService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
+        LocalDate monthStart = TimeTransfer.getFirstDayOfMonth(selectMonth);
+        LocalDate monthEnd = TimeTransfer.getLastDayOfMonth(selectMonth);
+
         // 해당 달의 임금 합
-        Integer wageInMonth = wageRepository.findTotalMonthlyWage(
-                member.getId(),
-                TimeTransfer.getFirstDayOfMonth(selectMonth),
-                TimeTransfer.getLastDayOfMonth(selectMonth));
+        Integer wageInMonth = wageRepository.findTotalMonthlyWage(monthStart, monthEnd);
 
         // 해당 달의 근무 시간 합
-        Integer workTimeInMonth = wageRepository.findWorkTimeInMonth(
-                member.getId(),
-                TimeTransfer.getFirstDayOfMonth(selectMonth),
-                TimeTransfer.getLastDayOfMonth(selectMonth));
+        Integer workTimeInMonth = wageRepository.findWorkTimeInMonth(monthStart, monthEnd);
 
-        List<Wage> wageHistoryMonth = wageRepository.findWorkDateInMonth(
-                member.getId(),
-                TimeTransfer.getFirstDayOfMonth(selectMonth),
-                TimeTransfer.getLastDayOfMonth(selectMonth));
+        List<Wage> wageHistoryMonth = wageRepository.findWageInMonth(monthStart, monthEnd);
 
         List<DailyWageResponse> dailyWageResponseList = wageHistoryMonth.stream()
                 .map(DailyWageResponse::from)
@@ -116,5 +108,39 @@ public class WageService {
         return wageRepository.findByMember(member.getId()).stream()
                 .map(DailyWageResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    public WageSummaryInfoResponse findSummaryInfo(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Integer totalWorkTime = wageRepository.findTotalWorkTimeByMember(member.getId());
+        Integer totalWage = wageRepository.findTotalWageByMember(member.getId());
+
+        return WageSummaryInfoResponse.builder()
+                .totalWorkTime(totalWorkTime)
+                .totalWage(totalWage)
+                .build();
+    }
+
+
+    public void findGraphInfo(Long memberId, LocalDate selectMonth) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        LocalDate monthStart = TimeTransfer.getFirstDayOfMonth(selectMonth);
+        LocalDate monthEnd = TimeTransfer.getLastDayOfMonth(selectMonth);
+
+        List<Wage> wageInMonth = wageRepository.findWageInMonth(monthStart, monthEnd);
+
+        Map<LocalDate, Integer> workTimeMap = new HashMap<>();
+
+        for (Wage wage : wageInMonth) {
+            if (workTimeMap.containsKey(wage.getWorkDate())) {
+                workTimeMap.put(wage.getWorkDate(), workTimeMap.get(wage.getWorkDate()) + wage.getDailyWage());
+            } else {
+                workTimeMap.put(wage.getWorkDate(), wage.getDailyWage())
+            }
+        }
     }
 }

@@ -1,10 +1,7 @@
 package jikgong.domain.wage.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jikgong.domain.wage.dtos.DailyWageResponse;
-import jikgong.domain.wage.dtos.MonthlyWageResponse;
-import jikgong.domain.wage.dtos.WageModifyRequest;
-import jikgong.domain.wage.dtos.WageSaveRequest;
+import jikgong.domain.wage.dtos.*;
 import jikgong.domain.wage.service.WageService;
 import jikgong.global.dto.Response;
 import jikgong.global.security.principal.PrincipalDetails;
@@ -70,5 +67,19 @@ public class WageController {
     public ResponseEntity<Response> findWageHistoryList(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         List<DailyWageResponse> dailyWageResponseList = wageService.findWageHistoryList(principalDetails.getMember().getId());
         return ResponseEntity.ok(new Response(dailyWageResponseList, "수익금 내역 (리스트) 반환 완료"));
+    }
+
+    @Operation(summary = "총 수익금 및 근무시간")
+    @GetMapping("/api/wage/summary-info")
+    public ResponseEntity<Response> findSummaryInfo(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        WageSummaryInfoResponse summaryInfo = wageService.findSummaryInfo(principalDetails.getMember().getId());
+        return ResponseEntity.ok(new Response(summaryInfo, "수익금 내역 (리스트) 반환 완료"));
+    }
+
+    @Operation(summary = "근무 시간 그래프")
+    @GetMapping("/api/wage/graph-info")
+    public ResponseEntity<Response> findGraphInfo(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                  @RequestParam(name = "selectMonth") LocalDate selectMonth) {
+        wageService.findGraphInfo(principalDetails.getMember().getId(), selectMonth);
     }
 }
