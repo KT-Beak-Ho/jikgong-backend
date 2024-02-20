@@ -2,18 +2,17 @@ package jikgong.domain.wage.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jikgong.domain.wage.dtos.*;
+import jikgong.domain.wage.dtos.graph.WageDailyGraphResponse;
 import jikgong.domain.wage.service.WageService;
 import jikgong.global.dto.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -76,10 +75,19 @@ public class WageController {
         return ResponseEntity.ok(new Response(summaryInfo, "수익금 내역 (리스트) 반환 완료"));
     }
 
-    @Operation(summary = "근무 시간 그래프")
-    @GetMapping("/api/wage/graph-info")
-    public ResponseEntity<Response> findGraphInfo(@AuthenticationPrincipal PrincipalDetails principalDetails,
+    @Operation(summary = "근무 시간 그래프: 일별")
+    @GetMapping("/api/wage/graph-info/daily")
+    public ResponseEntity<Response> findDailyGraphInfo(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                   @RequestParam(name = "selectMonth") LocalDate selectMonth) {
-        wageService.findGraphInfo(principalDetails.getMember().getId(), selectMonth);
+        WageDailyGraphResponse wageDailyGraphResponse = wageService.findDailyGraphInfo(principalDetails.getMember().getId(), selectMonth);
+        return ResponseEntity.ok(new Response(wageDailyGraphResponse, "근무 시간 일별 그래프"));
+    }
+
+    @Operation(summary = "근무 시간 그래프: 월별")
+    @GetMapping("/api/wage/graph-info/monthly")
+    public ResponseEntity<Response> findMonthlyGraphInfo(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                       @RequestParam(name = "selectYear") LocalDate selectYear) {
+        wageService.findMonthlyGraphInfo(principalDetails.getMember().getId(), selectYear);
+        return ResponseEntity.ok(new Response(wageDailyGraphResponse, "근무 시간 일별 그래프"));
     }
 }
