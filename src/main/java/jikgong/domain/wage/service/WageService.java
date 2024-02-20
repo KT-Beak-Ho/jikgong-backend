@@ -2,9 +2,10 @@ package jikgong.domain.wage.service;
 
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
-import jikgong.domain.wage.dtos.*;
-import jikgong.domain.wage.dtos.graph.WageDailyGraphResponse;
+import jikgong.domain.wage.dtos.graph.DailyGraphResponse;
+import jikgong.domain.wage.dtos.graph.MonthlyGraphResponse;
 import jikgong.domain.wage.dtos.graph.WorkTimeGraphResponse;
+import jikgong.domain.wage.dtos.history.*;
 import jikgong.domain.wage.entity.Wage;
 import jikgong.domain.wage.repository.WageRepository;
 import jikgong.global.exception.CustomException;
@@ -124,46 +125,46 @@ public class WageService {
     }
 
 
-    public WageDailyGraphResponse findDailyGraphInfo(Long memberId, LocalDate selectMonth) {
+    public DailyGraphResponse findDailyGraphInfo(Long memberId, LocalDate selectMonth) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        LocalDate monthStart = TimeTransfer.getFirstDayOfMonth(selectMonth);
-        LocalDate monthEnd = TimeTransfer.getLastDayOfMonth(selectMonth);
+        List<Object[]> totalWagePerDay = wageRepository.getTotalWagePerDay(selectMonth.getYear(), selectMonth.getMonth().getValue());
 
-        List<Wage> wageInMonth = wageRepository.findWageInMonth(member.getId(), monthStart, monthEnd);
+        List<Wage> wageInMonth = wageRepository.findWageInMonth(
+                member.getId(),
+                TimeTransfer.getFirstDayOfMonth(selectMonth),
+                TimeTransfer.getLastDayOfMonth(selectMonth));
 
-        Map<LocalDate, Integer> wageMap = new HashMap<>();
-        Map<LocalDate, WorkTimeGraphResponse> workTimeMap = new HashMap<>();
-
+        Map<LocalDate, WorkTimeGraphResponse> totalWorkTimePerDay = new HashMap<>();
         for (Wage wage : wageInMonth) {
-            if (wageMap.containsKey(wage.getWorkDate())) {
-                wageMap.put(wage.getWorkDate(), wageMap.get(wage.getWorkDate()) + wage.getDailyWage());
-            } else {
-                wageMap.put(wage.getWorkDate(), wage.getDailyWage());
-            }
-        }
-
-        for (Wage wage : wageInMonth) {
-            if (workTimeMap.containsKey(wage.getWorkDate())) {
-                WorkTimeGraphResponse workTimeGraphResponse = workTimeMap.get(wage.getWorkDate());
+            if (totalWorkTimePerDay.containsKey(wage.getWorkDate())) {
+                WorkTimeGraphResponse workTimeGraphResponse = totalWorkTimePerDay.get(wage.getWorkDate());
 
                 workTimeGraphResponse.plusTime(wage.getStartTime(), wage.getEndTime());
                 workTimeGraphResponse.addWorkTime(wage.getStartTime(), wage.getEndTime());
 
-                workTimeMap.put(wage.getWorkDate(), workTimeGraphResponse);
+                totalWorkTimePerDay.put(wage.getWorkDate(), workTimeGraphResponse);
             } else {
-                workTimeMap.put(wage.getWorkDate(), WorkTimeGraphResponse.createDto(wage.getStartTime(), wage.getEndTime()));
+                totalWorkTimePerDay.put(wage.getWorkDate(), WorkTimeGraphResponse.createDto(wage.getStartTime(), wage.getEndTime()));
             }
         }
 
-        return WageDailyGraphResponse.builder()
-                .wageMap(wageMap)
-                .workTimeMap(workTimeMap)
+        return DailyGraphResponse.builder()
+                .totalWagePerDay(totalWagePerDay)
+                .totalWorkTimePerDay(totalWorkTimePerDay)
                 .build();
     }
 
-    public void findMonthlyGraphInfo(Long memberId, LocalDate selectYear) {
+    public MonthlyGraphResponse findMonthlyGraphInfo(Long memberId, LocalDate selectYear) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
+        List<Object[]> totalWageAndWorkTimePerMonth = wageRepository.getTotalWageAndWorkTimePerMonth(selectYear.getYear());
+
+        return MonthlyGraphResponse
+                .builder()
+                .totalWageAndWorkTimePerMonth(totalWageAndWorkTimePerMonth)
+                .build();
     }
 }

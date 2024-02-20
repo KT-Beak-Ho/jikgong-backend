@@ -1,4 +1,4 @@
-package jikgong.domain.wage.dtos;
+package jikgong.domain.wage.dtos.history;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,9 +15,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @Getter
 @ToString
-public class WageModifyRequest {
-    @Schema(description = "wageId", example = "1")
-    private Long wageId;
+public class WageSaveRequest {
     @Schema(description = "일급", example = "130000")
     private Integer dailyWage; // 일급
     @Schema(description = "현장명", example = "사하구 낙동5블럭 낙동강 온도 측정 센서")

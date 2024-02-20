@@ -1,4 +1,4 @@
-package jikgong.domain.wage.dtos;
+package jikgong.domain.wage.dtos.history;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

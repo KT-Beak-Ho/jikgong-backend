@@ -4,15 +4,14 @@ package jikgong.domain.wage.entity;
 import jakarta.persistence.*;
 import jikgong.domain.jobPost.entity.Tech;
 import jikgong.domain.member.entity.Member;
-import jikgong.domain.wage.dtos.WageModifyRequest;
-import jikgong.domain.wage.dtos.WageSaveRequest;
+import jikgong.domain.wage.dtos.history.WageModifyRequest;
+import jikgong.domain.wage.dtos.history.WageSaveRequest;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity

@@ -1,4 +1,4 @@
-package jikgong.domain.wage.dtos;
+package jikgong.domain.wage.dtos.history;
 
 import jikgong.domain.jobPost.entity.Tech;
 import jikgong.domain.wage.entity.Wage;
@@ -8,7 +8,6 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @AllArgsConstructor

@@ -1,8 +1,9 @@
 package jikgong.domain.wage.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jikgong.domain.wage.dtos.*;
-import jikgong.domain.wage.dtos.graph.WageDailyGraphResponse;
+import jikgong.domain.wage.dtos.graph.DailyGraphResponse;
+import jikgong.domain.wage.dtos.graph.MonthlyGraphResponse;
+import jikgong.domain.wage.dtos.history.*;
 import jikgong.domain.wage.service.WageService;
 import jikgong.global.dto.Response;
 import jikgong.global.security.principal.PrincipalDetails;
@@ -79,7 +80,7 @@ public class WageController {
     @GetMapping("/api/wage/graph-info/daily")
     public ResponseEntity<Response> findDailyGraphInfo(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                   @RequestParam(name = "selectMonth") LocalDate selectMonth) {
-        WageDailyGraphResponse wageDailyGraphResponse = wageService.findDailyGraphInfo(principalDetails.getMember().getId(), selectMonth);
+        DailyGraphResponse wageDailyGraphResponse = wageService.findDailyGraphInfo(principalDetails.getMember().getId(), selectMonth);
         return ResponseEntity.ok(new Response(wageDailyGraphResponse, "근무 시간 일별 그래프"));
     }
 
@@ -87,7 +88,7 @@ public class WageController {
     @GetMapping("/api/wage/graph-info/monthly")
     public ResponseEntity<Response> findMonthlyGraphInfo(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                        @RequestParam(name = "selectYear") LocalDate selectYear) {
-        wageService.findMonthlyGraphInfo(principalDetails.getMember().getId(), selectYear);
-        return ResponseEntity.ok(new Response(wageDailyGraphResponse, "근무 시간 일별 그래프"));
+        MonthlyGraphResponse wage = wageService.findMonthlyGraphInfo(principalDetails.getMember().getId(), selectYear);
+        return ResponseEntity.ok(new Response(monthlyGraphInfo, "근무 시간 일별 그래프"));
     }
 }
