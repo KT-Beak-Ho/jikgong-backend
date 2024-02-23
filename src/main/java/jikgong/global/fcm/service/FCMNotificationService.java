@@ -37,13 +37,14 @@ public class FCMNotificationService {
                     .setNotification(notification)
                     // .putAllData(requestDto.getData())
                     .build();
-            try {
-                firebaseMessaging.send(message);
-                log.info("FCM 알림 전송 완료. targetMember: " + member.getPhone());
-            } catch (FirebaseMessagingException e) {
-                log.error("FCM 발송 중 에러");
-                throw new CustomException(ErrorCode.FCM_ERROR);
-            }
+            // todo: 프론트 연동 시 fcm 로직 주석 해제
+//            try {
+//                firebaseMessaging.send(message);
+//                log.info("FCM 알림 전송 완료. targetMember: " + member.getPhone());
+//            } catch (FirebaseMessagingException e) {
+//                log.error("FCM 발송 중 에러");
+//                throw new CustomException(ErrorCode.FCM_ERROR);
+//            }
         } else {
             throw new CustomException(ErrorCode.FCM_FIREBASE_TOKEN_NOT_FOUND);
         }
