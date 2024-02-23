@@ -1,8 +1,8 @@
-package jikgong.domain.alimTalk;
+package jikgong.global.alimTalk.service;
 
-import jikgong.domain.alimTalk.dtos.AlimTalkRequest;
-import jikgong.domain.alimTalk.dtos.MessageRequest;
-import jikgong.domain.alimTalk.dtos.AlimTalkResponse;
+import jikgong.global.alimTalk.dtos.AlimTalkRequest;
+import jikgong.global.alimTalk.dtos.MessageRequest;
+import jikgong.global.alimTalk.dtos.AlimTalkResponse;
 import jikgong.global.feignClient.client.AlimTalkClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,31 +32,31 @@ public class AlimTalkService {
     private String plusFriendId;
 
     public void sendAlimTalk(String to, String templateCode, String content) {
-        String alimTalkSignatureRequestUrl = "/alimtalk/v2/services/" + serviceID + "/messages";
-        try {
-            // signature 생성
-            String[] signatureArray =
-                    makePostSignature(ncpAccessKey, ncpSecretKey, alimTalkSignatureRequestUrl);
-
-            // body 설정
-            AlimTalkRequest alimTalkRequest = AlimTalkRequest.builder()
-                    .plusFriendId(plusFriendId)
-                    .templateCode(templateCode)
-                    .messages(List.of(new MessageRequest(to, content)))
-                    .build();
-
-            AlimTalkResponse alimTalkResponse = alimTalkClient.callAlimTalkApi(
-                    serviceID,
-//                    "charset=UTF-8",
-                    ncpAccessKey,
-                    signatureArray[0],
-                    signatureArray[1],
-                    alimTalkRequest);
-
-            log.info("status: " + alimTalkResponse.getStatusCode());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+//        String alimTalkSignatureRequestUrl = "/alimtalk/v2/services/" + serviceID + "/messages";
+//        try {
+//            // signature 생성
+//            String[] signatureArray =
+//                    makePostSignature(ncpAccessKey, ncpSecretKey, alimTalkSignatureRequestUrl);
+//
+//            // body 설정
+//            AlimTalkRequest alimTalkRequest = AlimTalkRequest.builder()
+//                    .plusFriendId(plusFriendId)
+//                    .templateCode(templateCode)
+//                    .messages(List.of(new MessageRequest(to, content)))
+//                    .build();
+//
+//            AlimTalkResponse alimTalkResponse = alimTalkClient.callAlimTalkApi(
+//                    serviceID,
+////                    "charset=UTF-8",
+//                    ncpAccessKey,
+//                    signatureArray[0],
+//                    signatureArray[1],
+//                    alimTalkRequest);
+//
+//            log.info("status: " + alimTalkResponse.getStatusCode());
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
     }
 
     public String[] makePostSignature(String accessKey, String secretKey, String url) {

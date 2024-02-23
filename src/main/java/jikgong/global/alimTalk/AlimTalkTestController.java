@@ -1,5 +1,6 @@
-package jikgong.domain.alimTalk;
+package jikgong.global.alimTalk;
 
+import jikgong.global.alimTalk.service.AlimTalkService;
 import jikgong.global.dto.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
