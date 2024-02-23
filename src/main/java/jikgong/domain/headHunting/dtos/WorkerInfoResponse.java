@@ -1,13 +1,13 @@
-package jikgong.domain.headHunting.dtos.company;
+package jikgong.domain.headHunting.dtos;
 
 import jikgong.domain.apply.entity.Apply;
-import jikgong.domain.headHunting.entity.HeadHunting;
 import jikgong.domain.history.entity.History;
 import jikgong.domain.history.entity.WorkStatus;
 import jikgong.domain.jobPost.entity.Park;
 import jikgong.domain.location.entity.Location;
 import jikgong.domain.member.entity.Gender;
 import jikgong.domain.member.entity.Member;
+import jikgong.domain.resume.entity.Resume;
 import jikgong.global.utils.AgeTransfer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,8 +44,8 @@ public class WorkerInfoResponse {
 
     private List<LocalDate> cantWorkDateList;
 
-    public static WorkerInfoResponse from(HeadHunting headHunting, List<Apply> findCantWorkDate) {
-        Member member = headHunting.getMember();
+    public static WorkerInfoResponse from(Resume resume, List<Apply> findCantWorkDate) {
+        Member member = resume.getMember();
 
         // 대표 위치
         Optional<Location> mainLocation = member.getLocationList().stream()
@@ -64,7 +64,7 @@ public class WorkerInfoResponse {
         }
 
         // skill 리스트
-        List<String> skillList = headHunting.getSkillList().stream()
+        List<String> skillList = resume.getSkillList().stream()
                 .map(skill -> skill.getTech().getDescription())
                 .collect(Collectors.toList());
 
@@ -78,19 +78,19 @@ public class WorkerInfoResponse {
                 .workerName(member.getWorkerInfo().getWorkerName())
                 .age(AgeTransfer.getAgeByBirth(member.getWorkerInfo().getBrith()))
                 .gender(member.getWorkerInfo().getGender())
-                .career(headHunting.getCareer())
+                .career(resume.getCareer())
 
                 .address(mainLocation.map(location -> location.getAddress().getAddress()).orElse(null))
                 .workTimes(workTimes)
                 .participationRate(participationRate)
                 .skillList(skillList)
 
-                .preferTimeStart(headHunting.getPreferTimeStart())
-                .preferTimeEnd(headHunting.getPreferTimeEnd())
+                .preferTimeStart(resume.getPreferTimeStart())
+                .preferTimeEnd(resume.getPreferTimeEnd())
 
-                .meal(headHunting.getAvailableInfo().getMeal())
-                .pickup(headHunting.getAvailableInfo().getPickup())
-                .park(headHunting.getAvailableInfo().getPark())
+                .meal(resume.getAvailableInfo().getMeal())
+                .pickup(resume.getAvailableInfo().getPickup())
+                .park(resume.getAvailableInfo().getPark())
 
                 .cantWorkDateList(cantWorkDateList)
                 .build();

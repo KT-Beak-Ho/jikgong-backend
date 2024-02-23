@@ -1,16 +1,18 @@
-package jikgong.domain.headHunting.dtos.company.offer;
+package jikgong.domain.headHunting.dtos.offer;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
 @NoArgsConstructor
 @Getter
+@ToString
 public class OfferRequest {
-    @Schema(description = "headHuntingId", example = "1")
-    private Long headHuntingId;
+    @Schema(description = "resumeId", example = "1")
+    private Long resumeId;
 
     private List<OfferJobPostRequest> offerJobPostRequest;
 

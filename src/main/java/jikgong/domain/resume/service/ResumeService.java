@@ -1,12 +1,11 @@
-package jikgong.domain.headHunting.service;
+package jikgong.domain.resume.service;
 
-
-import jikgong.domain.headHunting.dtos.worker.HeadHuntingSaveRequest;
-import jikgong.domain.headHunting.entity.HeadHunting;
-import jikgong.domain.headHunting.repository.HeadHuntingRepository;
 import jikgong.domain.jobPost.entity.Tech;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
+import jikgong.domain.resume.dtos.ResumeSaveRequest;
+import jikgong.domain.resume.entity.Resume;
+import jikgong.domain.resume.repository.ResumeRepository;
 import jikgong.domain.skill.entity.Skill;
 import jikgong.domain.skill.repository.SkillRepository;
 import jikgong.global.exception.CustomException;
@@ -23,23 +22,23 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class HeadHuntingWorkerService {
+public class ResumeService {
     private final MemberRepository memberRepository;
-    private final HeadHuntingRepository headHuntingRepository;
+    private final ResumeRepository resumeRepository;
     private final SkillRepository skillRepository;
 
-    public void saveHeadHunting(Long memberId, HeadHuntingSaveRequest request) {
+    public void saveResume(Long memberId, ResumeSaveRequest request) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        HeadHunting headHunting = HeadHunting.createEntity(request, member);
+        Resume resume = Resume.createEntity(request, member);
 
-        headHuntingRepository.save(headHunting);
+        resumeRepository.save(resume);
 
         List<Tech> techList = request.getTechList();
         List<Skill> skillList = new ArrayList<>();
         for (Tech tech : techList) {
-            skillList.add(Skill.createEntity(tech, headHunting));
+            skillList.add(Skill.createEntity(tech, resume));
         }
         skillRepository.saveAll(skillList);
     }

@@ -1,12 +1,12 @@
 package jikgong.domain.headHunting.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jikgong.domain.headHunting.dtos.company.HeadHuntingListResponse;
-import jikgong.domain.headHunting.dtos.company.offer.OfferRequest;
-import jikgong.domain.headHunting.dtos.company.offer.SelectOfferJobPostResponse;
-import jikgong.domain.headHunting.dtos.company.WorkerInfoResponse;
+import jikgong.domain.headHunting.dtos.HeadHuntingListResponse;
+import jikgong.domain.headHunting.dtos.WorkerInfoResponse;
+import jikgong.domain.headHunting.dtos.offer.OfferRequest;
+import jikgong.domain.headHunting.dtos.offer.SelectOfferJobPostResponse;
 import jikgong.domain.headHunting.entity.SortType;
-import jikgong.domain.headHunting.service.HeadHuntingCompanyService;
+import jikgong.domain.headHunting.service.HeadHuntingService;
 import jikgong.domain.jobPost.entity.Tech;
 import jikgong.global.dto.Response;
 import jikgong.global.security.principal.PrincipalDetails;
@@ -24,8 +24,8 @@ import java.time.LocalDate;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-public class HeadHuntingCompanyController {
-    private final HeadHuntingCompanyService headHuntingCompanyService;
+public class HeadHuntingController {
+    private final HeadHuntingService headHuntingCompanyService;
 
     @Operation(summary = "기업: 헤드헌팅 노동자 조회")
     @GetMapping("/api/head-hunting/{projectId}")
@@ -42,11 +42,11 @@ public class HeadHuntingCompanyController {
     }
 
     @Operation(summary = "기업: 노동자 상세 정보")
-    @GetMapping("/api/head-hunting/worker-detail/{headHuntingId}")
+    @GetMapping("/api/head-hunting/worker-detail/{resumeId}")
     public ResponseEntity<Response> findWorkerInfo(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                   @PathVariable("headHuntingId") Long headHuntingId,
+                                                   @PathVariable("resumeId") Long resumeId,
                                                    @RequestParam(name = "selectMonth") LocalDate selectMonth) {
-        WorkerInfoResponse workerInfoResponse = headHuntingCompanyService.findWorkerInfo(principalDetails.getMember().getId(), headHuntingId, selectMonth);
+        WorkerInfoResponse workerInfoResponse = headHuntingCompanyService.findWorkerInfo(principalDetails.getMember().getId(), resumeId, selectMonth);
         return ResponseEntity.ok(new Response(workerInfoResponse, "기업: 노동자 상세 정보 조회 완료"));
     }
 

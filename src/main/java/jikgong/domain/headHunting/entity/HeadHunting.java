@@ -2,16 +2,12 @@ package jikgong.domain.headHunting.entity;
 
 import jakarta.persistence.*;
 import jikgong.domain.common.BaseEntity;
-import jikgong.domain.headHunting.dtos.worker.HeadHuntingSaveRequest;
-import jikgong.domain.jobPost.entity.AvailableInfo;
 import jikgong.domain.member.entity.Member;
-import jikgong.domain.skill.entity.Skill;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,41 +20,33 @@ public class HeadHunting extends BaseEntity {
     @Column(name = "head_hunting_id")
     private Long id;
 
-    private Integer career; // 경력
-    private LocalTime preferTimeStart; // 시작 선호 시간
-    private LocalTime preferTimeEnd; // 종료 선호 시간
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id")
+    private Member company;
 
-    @Embedded
-    private AvailableInfo availableInfo; // 가능 여부 정보
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "worker_id")
+    private Member worker;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "member_id")
-    private Member member;
-
-    // 양방향 매핑
-    @OneToMany(mappedBy = "headHunting")
-    private List<Skill> skillList = new ArrayList<>();
+    @OneToMany(mappedBy = "headHunting", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OfferDate> offerDateList = new ArrayList<>();
 
     @Builder
-    public HeadHunting(Integer career, LocalTime preferTimeStart, LocalTime preferTimeEnd, AvailableInfo availableInfo, Member member) {
-        this.career = career;
-        this.preferTimeStart = preferTimeStart;
-        this.preferTimeEnd = preferTimeEnd;
-        this.availableInfo = availableInfo;
-        this.member = member;
+    public HeadHunting(Member company, Member worker) {
+        this.company = company;
+        this.worker = worker;
 
-        this.skillList = new ArrayList<>();
+        this.offerDateList = new ArrayList<>();
     }
 
-    public static HeadHunting createEntity(HeadHuntingSaveRequest request, Member member) {
+    public static HeadHunting createEntity(Member company, Member worker) {
         return HeadHunting.builder()
-                .career(request.getCareer())
-                .preferTimeStart(request.getPreferTimeStart())
-                .preferTimeEnd(request.getPreferTimeEnd())
-                .availableInfo(new AvailableInfo(request.getMeal(), request.getPickup(), request.getPark()))
-                .member(member)
+                .company(company)
+                .worker(worker)
                 .build();
     }
 
-
+    public void addOfferDate(List<OfferDate> offerDateList) {
+        this.offerDateList.addAll(offerDateList);
+    }
 }

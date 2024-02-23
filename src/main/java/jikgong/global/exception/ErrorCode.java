@@ -43,7 +43,8 @@ public enum ErrorCode {
     SEARCH_LOG_NOT_EXIST(HttpStatus.NOT_FOUND, "Redis 에서 요청한 검색 기록을 찾을 수 없습니다."),
     HEAD_HUNTING_NOT_FOUND(HttpStatus.NOT_FOUND, "헤드 헌팅 등록한 정보가 없습니다."),
     EMPTY_WORK_DATE_LIST(HttpStatus.NOT_FOUND, "날짜 정보가 없습니다."),
-    NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "알림 정보가 없습니다.");
+    NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "알림 정보가 없습니다."),
+    RESUME_NOT_FOUND(HttpStatus.NOT_FOUND, "이력서 정보가 없습니다.");
 
     private final HttpStatus status;
     private final String errorMessage;

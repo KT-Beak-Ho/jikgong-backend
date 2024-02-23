@@ -3,6 +3,7 @@ package jikgong.domain.skill.entity;
 import jakarta.persistence.*;
 import jikgong.domain.headHunting.entity.HeadHunting;
 import jikgong.domain.jobPost.entity.Tech;
+import jikgong.domain.resume.entity.Resume;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,19 +22,19 @@ public class Skill {
     private Tech tech;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "head_hunting_id")
-    private HeadHunting headHunting;
+    @JoinColumn(name = "resume_id")
+    private Resume resume;
 
     @Builder
-    public Skill(Tech tech, HeadHunting headHunting) {
+    public Skill(Tech tech, Resume resume) {
         this.tech = tech;
-        this.headHunting = headHunting;
+        this.resume = resume;
     }
 
-    public static Skill createEntity(Tech tech, HeadHunting headHunting) {
+    public static Skill createEntity(Tech tech, Resume resume) {
         return Skill.builder()
                 .tech(tech)
-                .headHunting(headHunting)
+                .resume(resume)
                 .build();
     }
 }

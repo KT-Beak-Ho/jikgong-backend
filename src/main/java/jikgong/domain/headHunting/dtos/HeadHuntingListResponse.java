@@ -1,13 +1,13 @@
-package jikgong.domain.headHunting.dtos.company;
+package jikgong.domain.headHunting.dtos;
 
 import jikgong.domain.common.Address;
-import jikgong.domain.headHunting.entity.HeadHunting;
 import jikgong.domain.history.entity.History;
 import jikgong.domain.history.entity.WorkStatus;
 import jikgong.domain.jobPost.entity.Park;
 import jikgong.domain.location.entity.Location;
 import jikgong.domain.member.entity.Gender;
 import jikgong.domain.member.entity.Member;
+import jikgong.domain.resume.entity.Resume;
 import jikgong.global.utils.AgeTransfer;
 import jikgong.global.utils.DistanceCal;
 import lombok.AllArgsConstructor;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Getter
 @Builder
 public class HeadHuntingListResponse {
-    private Long headHuntingId;
+    private Long resumeId;
     private Long memberId;
     private String workerName; // 이름
     private Integer age; // 나이
@@ -42,8 +42,8 @@ public class HeadHuntingListResponse {
     private Boolean pickup; // 픽업 여부
     private Park park; // 주차 가능 여부
 
-    public static HeadHuntingListResponse from(HeadHunting headHunting, Address projectAddress) {
-        Member member = headHunting.getMember();
+    public static HeadHuntingListResponse from(Resume resume, Address projectAddress) {
+        Member member = resume.getMember();
 
         // 대표 위치
         Optional<Location> mainLocation = member.getLocationList().stream()
@@ -63,7 +63,7 @@ public class HeadHuntingListResponse {
         }
 
         // skill 리스트
-        List<String> skillList = headHunting.getSkillList().stream()
+        List<String> skillList = resume.getSkillList().stream()
                 .map(skill -> skill.getTech().getDescription())
                 .collect(Collectors.toList());
 
@@ -74,20 +74,20 @@ public class HeadHuntingListResponse {
         }
 
         return HeadHuntingListResponse.builder()
-                .headHuntingId(headHunting.getId())
+                .resumeId(resume.getId())
                 .memberId(member.getId())
                 .workerName(member.getWorkerInfo().getWorkerName())
                 .age(AgeTransfer.getAgeByBirth(member.getWorkerInfo().getBrith()))
                 .gender(member.getWorkerInfo().getGender())
-                .career(headHunting.getCareer())
+                .career(resume.getCareer())
                 .address(mainLocation.map(location -> location.getAddress().getAddress()).orElse(null))
                 .distance(distance)
                 .workTimes(workTimes)
                 .participationRate(participationRate)
                 .skillList(skillList)
-                .meal(headHunting.getAvailableInfo().getMeal())
-                .pickup(headHunting.getAvailableInfo().getPickup())
-                .park(headHunting.getAvailableInfo().getPark())
+                .meal(resume.getAvailableInfo().getMeal())
+                .pickup(resume.getAvailableInfo().getPickup())
+                .park(resume.getAvailableInfo().getPark())
                 .build();
     }
 }

@@ -1,15 +1,16 @@
-package jikgong.domain.headHunting.dtos.company.offer;
+package jikgong.domain.headHunting.dtos.offer;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jikgong.domain.workDate.entity.WorkDate;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @NoArgsConstructor
 @Getter
+@ToString
 public class OfferJobPostRequest {
     @Schema(description = "jobPostId", example = "1")
     private Long jobPostId;

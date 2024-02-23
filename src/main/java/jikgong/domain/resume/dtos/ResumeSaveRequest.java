@@ -1,4 +1,4 @@
-package jikgong.domain.headHunting.dtos.worker;
+package jikgong.domain.resume.dtos;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jikgong.domain.jobPost.entity.Park;
@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @ToString
-public class HeadHuntingSaveRequest {
+public class ResumeSaveRequest {
     @Schema(description = "경력", example = "15")
     private Integer career;
     @Schema(description = "시작 선호 시간", example = "06:00:00")
