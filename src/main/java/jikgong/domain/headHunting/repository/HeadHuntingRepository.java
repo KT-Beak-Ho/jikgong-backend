@@ -11,6 +11,6 @@ import java.util.Optional;
 
 @Repository
 public interface HeadHuntingRepository extends JpaRepository<HeadHunting, Long>, HeadHuntingRepositoryCustom {
-    @Query("select h from HeadHunting h join fetch h.member m where m.id = :memberId")
-    Optional<HeadHunting> findWorkerInfoByMember(@Param("memberId") Long memberId);
+    @Query("select h from HeadHunting h join fetch h.member m where h.id = :headHuntingId")
+    Optional<HeadHunting> findByIdWithMember(@Param("headHuntingId") Long headHuntingId);
 }

@@ -9,8 +9,8 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 public class OfferRequest {
-    @Schema(description = "memberId", example = "1")
-    private Long memberId;
+    @Schema(description = "headHuntingId", example = "1")
+    private Long headHuntingId;
 
     private List<OfferJobPostRequest> offerJobPostRequest;
 

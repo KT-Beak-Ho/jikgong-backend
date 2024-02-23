@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 @Getter
 @Builder
 public class HeadHuntingListResponse {
+    private Long headHuntingId;
     private Long memberId;
     private String workerName; // 이름
     private Integer age; // 나이
@@ -73,6 +74,7 @@ public class HeadHuntingListResponse {
         }
 
         return HeadHuntingListResponse.builder()
+                .headHuntingId(headHunting.getId())
                 .memberId(member.getId())
                 .workerName(member.getWorkerInfo().getWorkerName())
                 .age(AgeTransfer.getAgeByBirth(member.getWorkerInfo().getBrith()))

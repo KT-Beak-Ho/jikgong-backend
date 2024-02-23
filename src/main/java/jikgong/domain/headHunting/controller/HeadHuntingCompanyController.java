@@ -42,11 +42,11 @@ public class HeadHuntingCompanyController {
     }
 
     @Operation(summary = "기업: 노동자 상세 정보")
-    @GetMapping("/api/head-hunting/worker-detail/{memberId}")
+    @GetMapping("/api/head-hunting/worker-detail/{headHuntingId}")
     public ResponseEntity<Response> findWorkerInfo(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                   @PathVariable("memberId") Long memberId,
+                                                   @PathVariable("headHuntingId") Long headHuntingId,
                                                    @RequestParam(name = "selectMonth") LocalDate selectMonth) {
-        WorkerInfoResponse workerInfoResponse = headHuntingCompanyService.findWorkerInfo(principalDetails.getMember().getId(), memberId, selectMonth);
+        WorkerInfoResponse workerInfoResponse = headHuntingCompanyService.findWorkerInfo(principalDetails.getMember().getId(), headHuntingId, selectMonth);
         return ResponseEntity.ok(new Response(workerInfoResponse, "기업: 노동자 상세 정보 조회 완료"));
     }
 

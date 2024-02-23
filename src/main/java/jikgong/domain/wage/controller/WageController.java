@@ -88,7 +88,7 @@ public class WageController {
     @GetMapping("/api/wage/graph-info/monthly")
     public ResponseEntity<Response> findMonthlyGraphInfo(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                        @RequestParam(name = "selectYear") LocalDate selectYear) {
-        MonthlyGraphResponse wage = wageService.findMonthlyGraphInfo(principalDetails.getMember().getId(), selectYear);
-        return ResponseEntity.ok(new Response(monthlyGraphInfo, "근무 시간 일별 그래프"));
+        MonthlyGraphResponse monthlyGraphResponse = wageService.findMonthlyGraphInfo(principalDetails.getMember().getId(), selectYear);
+        return ResponseEntity.ok(new Response(monthlyGraphResponse, "근무 시간 일별 그래프"));
     }
 }

@@ -1,8 +1,7 @@
 package jikgong.domain.notification.service;
 
 import jikgong.domain.notification.dtos.NotificationResponse;
-import jikgong.global.fcm.dtos.FCMNotificationRequestDto;
-import jikgong.global.fcm.service.FCMNotificationService;
+import jikgong.global.event.dtos.AlarmEvent;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
 import jikgong.domain.notification.entity.Notification;
@@ -12,6 +11,7 @@ import jikgong.global.exception.CustomException;
 import jikgong.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,8 +24,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class NotificationService {
     private final NotificationRepository notificationRepository;
-    private final FCMNotificationService fcmNotificationService;
     private final MemberRepository memberRepository;
+    private final ApplicationEventPublisher publisher;
 
     public void saveNotification(Long receiverId, NotificationType type, String content, String url) {
         Member worker = memberRepository.findById(receiverId)
@@ -40,16 +40,8 @@ public class NotificationService {
 
         notificationRepository.save(notification);
 
-        // push 알림 수락 시
-        if (worker.getIsNotification()) {
-            // fcm 알림 발송
-            FCMNotificationRequestDto request = FCMNotificationRequestDto.builder()
-                    .targetMemberId(worker.getId())
-                    .title(content)
-                    .body(content)
-                    .build();
-//            fcmNotificationService.sendNotificationByToken(request);
-        }
+        // todo: templateCode 변경
+        publisher.publishEvent(new AlarmEvent(content, worker.getId(), worker.getPhone(), "code"));
     }
 
     public List<NotificationResponse> findNotifications(Long memberId) {
