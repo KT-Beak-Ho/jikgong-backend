@@ -39,6 +39,6 @@ public interface JobPostRepository extends JpaRepository<JobPost, Long>, JobPost
     @Query("select j from JobPost j join fetch j.member m where j.id = :jobPostId")
     Optional<JobPost> findByIdWithMember(@Param("jobPostId") Long jobPostId);
 
-    @Query("select count(j) from JobPost j where j.id in :jobPostId")
-    Long findByIdList(List<Long> jobPostIdList);
+    @Query("select count(j) from JobPost j where j.id in :jobPostIdList")
+    Long findByIdList(@Param("jobPostIdList") List<Long> jobPostIdList);
 }
