@@ -40,9 +40,7 @@ public class ApplyWorkerService {
     private final ApplyRepository applyRepository;
     private final MemberRepository memberRepository;
     private final JobPostRepository jobPostRepository;
-    private final HistoryRepository historyRepository;
     private final WorkDateRepository workDateRepository;
-    private final HistoryService historyService;
 
     public void saveApply(Long memberId, ApplySaveRequest request) {
         Member member = memberRepository.findById(memberId)
@@ -126,6 +124,18 @@ public class ApplyWorkerService {
                 TimeTransfer.getFirstDayOfMonth(workMonth),
                 TimeTransfer.getLastDayOfMonth(workMonth));
 
+        // 지원 날짜와 지원 결과가 담긴 map
+        Map<LocalDate, ApplyStatus> workDateMap = getWorkDateMap(applyList);
+
+        List<ApplyResponseMonthly> applyResponseMonthlyList = workDateMap.entrySet().stream()
+                .map(entry -> ApplyResponseMonthly.from(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
+
+        return applyResponseMonthlyList;
+    }
+
+    @NotNull
+    private Map<LocalDate, ApplyStatus> getWorkDateMap(List<Apply> applyList) {
         Map<LocalDate, ApplyStatus> workDateMap = new HashMap<>();
 
         for (Apply apply : applyList) {
@@ -140,12 +150,7 @@ public class ApplyWorkerService {
                 workDateMap.put(applyDate, currentStatus);
             }
         }
-
-        List<ApplyResponseMonthly> applyResponseMonthlyList = workDateMap.entrySet().stream()
-                .map(entry -> ApplyResponseMonthly.from(entry.getKey(), entry.getValue()))
-                .collect(Collectors.toList());
-
-        return applyResponseMonthlyList;
+        return workDateMap;
     }
 
     public Page<ApplyPendingResponse> findPendingApply(Long memberId, Pageable pageable) {
