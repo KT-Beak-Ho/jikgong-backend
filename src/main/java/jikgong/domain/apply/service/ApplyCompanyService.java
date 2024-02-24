@@ -20,6 +20,7 @@ import jikgong.global.exception.CustomException;
 import jikgong.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -91,17 +92,10 @@ public class ApplyCompanyService {
                 .orElseThrow(() -> new CustomException(ErrorCode.WORK_DATE_NOT_FOUND));
 
         // 대기 중인 요청인지 체크
-        List<Apply> applyList = applyRepository.findByIdList(request.getApplyIdList(), workDate.getId(), jobPost.getId());
-        for (Apply apply : applyList) {
-            if (apply.getStatus() != ApplyStatus.PENDING) {
-                throw new CustomException(ErrorCode.APPLY_NEED_TO_PENDING);
-            }
-        }
+        List<Apply> applyList = checkPendingApply(request, workDate, jobPost);
 
         // 모집 인원 초과 체크
-        if (workDate.getRegisteredNum() + applyList.size() > workDate.getRecruitNum()) {
-            throw new CustomException(ErrorCode.APPLY_OVER_RECRUIT_NUM);
-        }
+        checkRegisteredNum(workDate, applyList);
 
         // applyStatus 갱신
         List<Long> updateApplyIdList = applyList.stream().map(Apply::getId).collect(Collectors.toList());
@@ -111,13 +105,33 @@ public class ApplyCompanyService {
         // 모집된 인원 갱신
         workDate.plusRegisteredNum(updatedCount);
 
+        // 수락 하려는 회원이 같은 날 다른 공고에 지원 했던 요청 취소
         if (request.getIsAccept()) {
-            // 수락 하려는 회원이 같은 날 다른 공고에 지원 했던 요청 취소
-            List<Long> memberIdList = applyList.stream().map(apply -> apply.getMember().getId()).collect(Collectors.toList());
-            List<Apply> deleteApply = applyRepository.deleteOtherApplyByWorkDate(workDate.getWorkDate(), request.getApplyIdList(), memberIdList);
-            List<Long> cancelApplyIdList = deleteApply.stream().map(Apply::getId).collect(Collectors.toList());
-            int canceledCount = applyRepository.updateApplyStatus(cancelApplyIdList, ApplyStatus.CANCELED, LocalDateTime.now());
-            log.info("취소된 요청 횟수: " + canceledCount);
+            cancelAnotherApply(request, applyList, workDate);
         }
+    }
+
+    private void checkRegisteredNum(WorkDate workDate, List<Apply> applyList) {
+        if (workDate.getRegisteredNum() + applyList.size() > workDate.getRecruitNum()) {
+            throw new CustomException(ErrorCode.APPLY_OVER_RECRUIT_NUM);
+        }
+    }
+
+    private List<Apply> checkPendingApply(ApplyProcessRequest request, WorkDate workDate, JobPost jobPost) {
+        List<Apply> applyList = applyRepository.findByIdList(request.getApplyIdList(), workDate.getId(), jobPost.getId());
+        for (Apply apply : applyList) {
+            if (apply.getStatus() != ApplyStatus.PENDING) {
+                throw new CustomException(ErrorCode.APPLY_NEED_TO_PENDING);
+            }
+        }
+        return applyList;
+    }
+
+    private void cancelAnotherApply(ApplyProcessRequest request, List<Apply> applyList, WorkDate workDate) {
+        List<Long> memberIdList = applyList.stream().map(apply -> apply.getMember().getId()).collect(Collectors.toList());
+        List<Apply> deleteApply = applyRepository.deleteOtherApplyByWorkDate(workDate.getWorkDate(), request.getApplyIdList(), memberIdList);
+        List<Long> cancelApplyIdList = deleteApply.stream().map(Apply::getId).collect(Collectors.toList());
+        int canceledCount = applyRepository.updateApplyStatus(cancelApplyIdList, ApplyStatus.CANCELED, LocalDateTime.now());
+        log.info("취소된 요청 횟수: " + canceledCount);
     }
 }

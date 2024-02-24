@@ -24,11 +24,13 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
     Page<Apply> findByMemberAndJobPostAndWorkDate(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId, @Param("workDateId") Long workDateId, @Param("status") ApplyStatus status, Pageable pageable);
 
 
-    @Query("select a from Apply a where a.member.id = :memberId and a.workDate.workDate = :workDate and a.status = :applyStatus")
-    List<Apply> findByMemberAndWorkDate(@Param("memberId") Long memberId, @Param("workDate") LocalDate workDate, @Param("applyStatus") ApplyStatus applyStatus);
+    @Query("select a from Apply a join fetch a.workDate w join fetch a.workDate.jobPost j " +
+            "where a.member.id = :memberId and w.workDate = :workDate and a.status = :applyStatus")
+    List<Apply> findApplyPerDay(@Param("memberId") Long memberId, @Param("workDate") LocalDate workDate, @Param("applyStatus") ApplyStatus applyStatus);
 
-    @Query("select a from Apply a where a.member.id = :memberId and a.workDate.workDate >= :monthStart and a.workDate.workDate <= :monthEnd")
-    List<Apply> findByMemberAndWorkMonth(@Param("memberId") Long memberId, @Param("monthStart") LocalDate monthStart, @Param("monthEnd") LocalDate monthEnd);
+    @Query("select a from Apply a join fetch a.workDate w " +
+            "where a.member.id = :memberId and w.workDate between :monthStart and :monthEnd")
+    List<Apply> findApplyPerMonth(@Param("memberId") Long memberId, @Param("monthStart") LocalDate monthStart, @Param("monthEnd") LocalDate monthEnd);
 
 
     @Query("select a from Apply a where a.member.id = :memberId and a.workDate.jobPost.id = :jobPostId and a.workDate.id in :workDateList")

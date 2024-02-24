@@ -110,7 +110,7 @@ public class ApplyWorkerService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        List<ApplyResponseForWorker> applyResponseList = applyRepository.findByMemberAndWorkDate(member.getId(), workDate, ApplyStatus.ACCEPTED).stream()
+        List<ApplyResponseForWorker> applyResponseList = applyRepository.findApplyPerDay(member.getId(), workDate, ApplyStatus.ACCEPTED).stream()
                 .map(ApplyResponseForWorker::from)
                 .collect(Collectors.toList());
 
@@ -122,7 +122,7 @@ public class ApplyWorkerService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        List<Apply> applyList = applyRepository.findByMemberAndWorkMonth(member.getId(),
+        List<Apply> applyList = applyRepository.findApplyPerMonth(member.getId(),
                 TimeTransfer.getFirstDayOfMonth(workMonth),
                 TimeTransfer.getLastDayOfMonth(workMonth));
 

@@ -34,7 +34,7 @@ public class ApplyWorkerController {
     }
 
     @Operation(summary = "노동자: 신청 내역 일별 조회", description = "workDate: 2024-01-01")
-    @GetMapping("/api/apply/worker")
+    @GetMapping("/api/apply/worker/daily")
     public ResponseEntity<Response> findAcceptedApplyWorker(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                            @RequestParam("workDate") LocalDate workDate) {
         List<ApplyResponseForWorker> applyResponseList = applyWorkerService.findAcceptedApplyWorker(principalDetails.getMember().getId(), workDate);
