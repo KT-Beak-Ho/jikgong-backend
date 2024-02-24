@@ -32,7 +32,7 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
 
 
     @Query("select a from Apply a where a.member.id = :memberId and a.workDate.jobPost.id = :jobPostId and a.workDate.id in :workDateList")
-    List<Apply> findByMemberIdAndJobPostId(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId, @Param("workDateList") List<Long> workDateList);
+    List<Apply> checkDuplication(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId, @Param("workDateList") List<Long> workDateList);
 
     @Modifying
     @Query("update Apply a set a.status = :applyStatus, a.statusDecisionTime = :now where a.id in :applyIdList")
@@ -45,7 +45,7 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
     List<Apply> deleteOtherApplyByWorkDate(@Param("workDate") LocalDate workDate, @Param("applyIdList") List<Long> applyIdList, @Param("memberIdList") List<Long> memberIdList);
 
     @Query("select a from Apply a where a.member.id = :memberId and a.workDate.workDate in :workDateList and a.status = 'ACCEPTED'")
-    List<Apply> findAcceptedApplyInWorkDateList(@Param("memberId") Long memberId, @Param("workDateList") List<LocalDate> workDateList);
+    List<Apply> checkAcceptedApply(@Param("memberId") Long memberId, @Param("workDateList") List<LocalDate> workDateList);
 
     @Query(value = "select a from Apply a join fetch a.workDate w join fetch w.jobPost j where a.member.id = :memberId and a.status = 'PENDING'",
             countQuery = "select a from Apply a where a.member.id = :memberId and a.status = 'PENDING'")

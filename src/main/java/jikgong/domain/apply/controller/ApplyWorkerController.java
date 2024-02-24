@@ -24,7 +24,6 @@ import java.util.List;
 @Slf4j
 public class ApplyWorkerController {
     private final ApplyWorkerService applyWorkerService;
-    private final ApplyCompanyService applyCompanyService;
 
     @Operation(summary = "노동자: 일자리 신청")
     @PostMapping("/api/apply")

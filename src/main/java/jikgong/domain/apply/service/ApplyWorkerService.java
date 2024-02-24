@@ -20,6 +20,7 @@ import jikgong.global.exception.ErrorCode;
 import jikgong.global.utils.TimeTransfer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -48,16 +49,44 @@ public class ApplyWorkerService {
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 임시 저장이 아닌 JobPost 조회
-        JobPost jobPost = jobPostRepository.findJobPostByIdAndTemporary(request.getJobPostId(), false)
+        JobPost jobPost = jobPostRepository.findNotTemporaryJobPost(request.getJobPostId(), false)
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
 
         // 신청할 날짜 validation 체크
-        List<WorkDate> workDateList = workDateRepository.findAllByWorkDateAndJobPost(jobPost.getId(), request.getWorkDateList());
-        if (workDateList.size() != request.getWorkDateList().size()) {
-            throw new CustomException(ErrorCode.WORK_DATE_LIST_NOT_FOUND);
-        }
+        List<WorkDate> workDateList = validateWorkDate(request, jobPost);
 
         // 가장 빠른 신청 날짜가 2일 후인지 체크
+        validateTwoDaysBefore(workDateList);
+
+        // 중복 신청 조회
+        validateDuplication(request, member, jobPost);
+
+        // // 선택한 날 중 이미 승인된 날이 있는 경우 체크
+        checkAcceptedApply(workDateList, member);
+
+        ArrayList<Apply> applyList = new ArrayList<>();
+        for (WorkDate workDate : workDateList) {
+            applyList.add(new Apply(member, workDate));
+        }
+        applyRepository.saveAll(applyList);
+    }
+
+    private void checkAcceptedApply(List<WorkDate> workDateList, Member member) {
+        List<LocalDate> dateList = workDateList.stream().map(WorkDate::getWorkDate).collect(Collectors.toList());
+        List<Apply> acceptedApplyInWorkDateList = applyRepository.checkAcceptedApply(member.getId(), dateList);
+        if (!acceptedApplyInWorkDateList.isEmpty()) {
+            throw new CustomException(ErrorCode.APPLY_ALREADY_ACCEPTED_IN_WORKDATE);
+        }
+    }
+
+    private void validateDuplication(ApplySaveRequest request, Member member, JobPost jobPost) {
+        List<Apply> findApply = applyRepository.checkDuplication(member.getId(), jobPost.getId(), request.getWorkDateList());
+        if (!findApply.isEmpty()) {
+            throw new CustomException(ErrorCode.APPLY_ALREADY_EXIST);
+        }
+    }
+
+    private void validateTwoDaysBefore(List<WorkDate> workDateList) {
         LocalDate minWorkDate = workDateList.stream()
                 .map(WorkDate::getWorkDate)
                 .min(LocalDate::compareTo)
@@ -66,25 +95,14 @@ public class ApplyWorkerService {
         if (twoDaysInFuture.isAfter(minWorkDate)) {
             throw new CustomException(ErrorCode.JOB_POST_EXPIRED);
         }
+    }
 
-        // 중복 신청 조회
-        List<Apply> findApply = applyRepository.findByMemberIdAndJobPostId(member.getId(), jobPost.getId(), request.getWorkDateList());
-        if (!findApply.isEmpty()) {
-            throw new CustomException(ErrorCode.APPLY_ALREADY_EXIST);
+    private List<WorkDate> validateWorkDate(ApplySaveRequest request, JobPost jobPost) {
+        List<WorkDate> workDateList = workDateRepository.findAllByWorkDateAndJobPost(jobPost.getId(), request.getWorkDateList());
+        if (workDateList.size() != request.getWorkDateList().size()) {
+            throw new CustomException(ErrorCode.WORK_DATE_LIST_NOT_FOUND);
         }
-
-        // 선택한 날 중 이미 승인된 날이 있는 경우
-        List<LocalDate> dateList = workDateList.stream().map(WorkDate::getWorkDate).collect(Collectors.toList());
-        List<Apply> acceptedApplyInWorkDateList = applyRepository.findAcceptedApplyInWorkDateList(member.getId(), dateList);
-        if (!acceptedApplyInWorkDateList.isEmpty()) {
-            throw new CustomException(ErrorCode.APPLY_ALREADY_ACCEPTED_IN_WORKDATE);
-        }
-
-        ArrayList<Apply> applyList = new ArrayList<>();
-        for (WorkDate workDate : workDateList) {
-            applyList.add(new Apply(member, workDate));
-        }
-        applyRepository.saveAll(applyList);
+        return workDateList;
     }
 
     // 신청 내역: 일별 조회
