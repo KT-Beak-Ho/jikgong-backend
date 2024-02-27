@@ -2,11 +2,9 @@ package jikgong.domain.offer.service;
 
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.repository.ApplyRepository;
-import jikgong.domain.offer.dtos.offer.OfferJobPostRequest;
+import jikgong.domain.offer.dtos.*;
+import jikgong.domain.offer.entity.OfferStatus;
 import jikgong.domain.offer.repository.OfferRepository;
-import jikgong.domain.offer.dtos.WorkerInfoResponse;
-import jikgong.domain.offer.dtos.offer.OfferRequest;
-import jikgong.domain.offer.dtos.offer.SelectOfferJobPostResponse;
 import jikgong.domain.offer.entity.Offer;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.repository.JobPostRepository;
@@ -28,12 +26,14 @@ import jikgong.global.utils.TimeTransfer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -66,16 +66,15 @@ public class OfferService {
             workDateIdList.addAll(offerJobPostRequest.getWorkDateIdList());
         }
 
-
+        // jpa 1차 캐싱을 위한 조회
         jobPostRepository.findByIdList(jobPostIdList);
         List<WorkDate> workDateList = workDateRepository.findByIdList(workDateIdList);
 
         Map<Long, List<WorkDate>> workDateMap = new HashMap<>();
         for (WorkDate workDate : workDateList) {
             Long jobPostId = workDate.getJobPost().getId();
-            Long workDateId = workDate.getId();
 
-            // 첫 번째 Key가 jobPostId인 Map을 가져오거나, 없으면 새로운 Map을 생성
+            // 첫 번째 Key가 jobPostId인 List 가져오거나, 새로 생성
             List<WorkDate> innerList = workDateMap.computeIfAbsent(jobPostId, k -> new ArrayList<>());
 
             // innerMap에 workDateId와 workDate를 추가
@@ -145,5 +144,13 @@ public class OfferService {
         List<JobPost> jobPostList = jobPostRepository.findByProject(project.getId());
 
         return SelectOfferJobPostResponse.from(jobPostList, worker, cantWorkDateSet);
+    }
+
+    public Page<OfferHistoryResponse> findOfferHistory(Long companyId, OfferStatus offerStatus, Pageable pageable) {
+        Page<Offer> offerHistoryPage = offerRepository.findOfferHistory(companyId, offerStatus, pageable);
+        List<OfferHistoryResponse> offerHistoryResponseList = offerHistoryPage.getContent().stream()
+                .map(OfferHistoryResponse::from)
+                .collect(Collectors.toList());
+        return new PageImpl<>(offerHistoryResponseList, pageable, offerHistoryPage.getTotalElements());
     }
 }

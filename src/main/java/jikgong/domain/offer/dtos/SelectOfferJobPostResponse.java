@@ -1,4 +1,4 @@
-package jikgong.domain.offer.dtos.offer;
+package jikgong.domain.offer.dtos;
 
 import jikgong.domain.jobPost.dtos.headhunting.JobPostListResponse;
 import jikgong.domain.jobPost.entity.JobPost;
@@ -10,7 +10,6 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
