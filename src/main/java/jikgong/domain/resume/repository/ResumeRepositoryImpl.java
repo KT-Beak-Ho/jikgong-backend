@@ -6,12 +6,10 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jikgong.domain.common.Address;
-import jikgong.domain.headHunting.dtos.HeadHuntingListResponse;
-import jikgong.domain.headHunting.entity.SortType;
+import jikgong.domain.resume.dtos.ResumeListResponse;
+import jikgong.domain.offer.entity.SortType;
 import jikgong.domain.jobPost.entity.Tech;
 import jikgong.domain.location.entity.QLocation;
-import jikgong.domain.member.entity.QMember;
-import jikgong.domain.resume.entity.QResume;
 import jikgong.domain.resume.entity.Resume;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,7 +28,7 @@ public class ResumeRepositoryImpl implements ResumeRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
     @Override
-    public Page<HeadHuntingListResponse> findHeadHuntingMemberList(Address projectAddress, Tech tech, Float bound, SortType sortType, Pageable pageable) {
+    public Page<ResumeListResponse> findHeadHuntingMemberList(Address projectAddress, Tech tech, Float bound, SortType sortType, Pageable pageable) {
         List<Resume> headHuntingList = queryFactory
                 .selectFrom(resume)
                 .leftJoin(resume.member, member)
@@ -55,11 +53,11 @@ public class ResumeRepositoryImpl implements ResumeRepositoryCustom {
                 )
                 .fetchOne();
 
-        List<HeadHuntingListResponse> headHuntingListResponse = headHuntingList.stream()
-                .map(h -> HeadHuntingListResponse.from(h, projectAddress))
+        List<ResumeListResponse> resumeListResponse = headHuntingList.stream()
+                .map(h -> ResumeListResponse.from(h, projectAddress))
                 .collect(Collectors.toList());
 
-        return new PageImpl<>(headHuntingListResponse, pageable, totalCount);
+        return new PageImpl<>(resumeListResponse, pageable, totalCount);
     }
 
     private OrderSpecifier<?> selectOrderBySpecifier(SortType sortType, Address projectAddress, QLocation location) {

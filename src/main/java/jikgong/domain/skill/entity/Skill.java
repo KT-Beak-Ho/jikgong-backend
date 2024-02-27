@@ -1,7 +1,6 @@
 package jikgong.domain.skill.entity;
 
 import jakarta.persistence.*;
-import jikgong.domain.headHunting.entity.HeadHunting;
 import jikgong.domain.jobPost.entity.Tech;
 import jikgong.domain.resume.entity.Resume;
 import lombok.AccessLevel;

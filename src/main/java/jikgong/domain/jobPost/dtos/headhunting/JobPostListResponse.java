@@ -2,6 +2,7 @@ package jikgong.domain.jobPost.dtos.headhunting;
 
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.entity.Tech;
+import jikgong.domain.workDate.dtos.WorkDateResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,12 +18,12 @@ public class JobPostListResponse {
     private Long jobPostId;
     private Tech tech; // 타입
     private String title; // 모집 공고 제목
-    private List<LocalDate> availableDate; // 제안 가능 날짜
+    private List<WorkDateResponse> availableDate; // 제안 가능 날짜
     private LocalTime startTime; // 시작 시간
     private LocalTime endTime; // 종료 시간
     private Integer wage; // 임금
 
-    public static JobPostListResponse from(JobPost jobPost, List<LocalDate> availableDate) {
+    public static JobPostListResponse from(JobPost jobPost, List<WorkDateResponse> availableDate) {
         return JobPostListResponse.builder()
                 .jobPostId(jobPost.getId())
                 .tech(jobPost.getTech())
