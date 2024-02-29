@@ -45,7 +45,8 @@ public enum ErrorCode {
     EMPTY_WORK_DATE_LIST(HttpStatus.NOT_FOUND, "날짜 정보가 없습니다."),
     NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "알림 정보가 없습니다."),
     RESUME_NOT_FOUND(HttpStatus.NOT_FOUND, "이력서 정보가 없습니다."),
-    WORK_DATE_NEED_TO_FUTURE(HttpStatus.BAD_REQUEST, "당일, 과거 날짜에 대한 일자리는 제안할 수 없습니다.");
+    WORK_DATE_NEED_TO_FUTURE(HttpStatus.BAD_REQUEST, "당일, 과거 날짜에 대한 일자리는 제안할 수 없습니다."),
+    WORK_DATE_NOT_MATCH(HttpStatus.BAD_REQUEST, "요청한 workDate id 값이 jobPost와 연관되어있지 않습니다.");
 
     private final HttpStatus status;
     private final String errorMessage;

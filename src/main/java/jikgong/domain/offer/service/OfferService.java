@@ -25,7 +25,6 @@ import jikgong.global.exception.ErrorCode;
 import jikgong.global.utils.TimeTransfer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -67,7 +66,7 @@ public class OfferService {
             workDateIdList.addAll(offerJobPostRequest.getWorkDateIdList());
         }
 
-        // jpa 1차 캐싱을 위한 조회
+        // jpa 1차 캐싱을 위한 조회 & workDate 임시 캐시 map 생성
         Map<Long, List<WorkDate>> workDateMap = getWorkDateMap(jobPostIdList, workDateIdList);
 
         List<Offer> offerList = new ArrayList<>();
@@ -80,6 +79,9 @@ public class OfferService {
             List<LocalDate> LocalDateList = new ArrayList<>();
 
             List<WorkDate> workDateEntityList = workDateMap.get(jobPost.getId());
+            if (workDateEntityList.size() != offerJobPostRequest.getWorkDateIdList().size()) {
+                throw new CustomException(ErrorCode.WORK_DATE_NOT_MATCH);
+            }
             for (WorkDate workDate : workDateEntityList) {
                 if (!LocalDate.now().isBefore(workDate.getWorkDate())) {
                     throw new CustomException(ErrorCode.WORK_DATE_NEED_TO_FUTURE);
@@ -106,10 +108,8 @@ public class OfferService {
         Map<Long, List<WorkDate>> workDateMap = new HashMap<>();
         for (WorkDate workDate : workDateList) {
             Long jobPostId = workDate.getJobPost().getId();
-
-            // 첫 번째 Key가 jobPostId인 List 가져오거나, 새로 생성
+            // Key가 jobPostId인 List 가져오거나, 새로 생성
             List<WorkDate> innerList = workDateMap.computeIfAbsent(jobPostId, k -> new ArrayList<>());
-
             // innerMap에 workDateId와 workDate를 추가
             innerList.add(workDate);
         }
