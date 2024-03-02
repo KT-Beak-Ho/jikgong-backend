@@ -91,7 +91,7 @@ public class OfferService {
 
             // offer 엔티티 생성
             // offerWorkDate 엔티티 리스트 생성
-            Offer offer = Offer.createEntity(company, worker);
+            Offer offer = Offer.createEntity(company, worker, jobPost);
             offerList.add(offer);
             offerWorkDateList.addAll(OfferWorkDate.createEntityList(offer, workDateEntityList));
             publisher.publishEvent(new NotificationEvent(company.getCompanyInfo().getCompanyName(), LocalDateList, offerJobPostRequest.getJobPostId(), NotificationType.OFFER, worker.getId()));

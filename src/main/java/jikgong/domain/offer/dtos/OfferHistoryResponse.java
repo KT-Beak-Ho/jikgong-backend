@@ -40,7 +40,7 @@ public class OfferHistoryResponse {
                 .collect(Collectors.toList());
 
 
-        JobPost jobPost = workDateList.get(0).getJobPost();
+        JobPost jobPost = offer.getJobPost();
         Member worker = offer.getWorker();
 
         return OfferHistoryResponse.builder()

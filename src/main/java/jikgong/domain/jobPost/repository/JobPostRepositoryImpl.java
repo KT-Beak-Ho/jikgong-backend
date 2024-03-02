@@ -101,7 +101,6 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
     }
 
     private NumberExpression<Double> getDistance(Location location) {
-        log.info("123");
         // latitude 를 radians 로 계산
         NumberExpression<Double> radiansLatitude =
                 Expressions.numberTemplate(Double.class, "radians({0})", location.getAddress().getLatitude());
