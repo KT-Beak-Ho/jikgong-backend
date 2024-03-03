@@ -58,6 +58,9 @@ public class HistoryService {
 
         List<History> saveHistoryList = new ArrayList<>();
 
+        // JPA 1차 캐싱 처리
+        getMemberList(request);
+
         // 출근 history
         for (Long targetMemberId : request.getStartWorkMemberIdList()) {
             Member targetMember = memberRepository.findById(targetMemberId)
@@ -73,6 +76,13 @@ public class HistoryService {
         }
 
         return historyRepository.saveAll(saveHistoryList).size();
+    }
+
+    private void getMemberList(HistoryStartSaveRequest request) {
+        List<Long> memberIdList = new ArrayList<>();
+        memberIdList.addAll(request.getStartWorkMemberIdList());
+        memberIdList.addAll(request.getNotWorkMemberIdList());
+        memberRepository.findByIdList(memberIdList);
     }
 
     public int updateHistoryAtFinish(Long memberId, HistoryFinishSaveRequest request) {
