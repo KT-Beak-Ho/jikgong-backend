@@ -60,6 +60,7 @@ public class OfferController {
                                                   @RequestParam(name = "offerStatus") OfferStatus offerStatus,
                                                   @RequestParam(name = "page", defaultValue = "0") int page,
                                                   @RequestParam(name = "size", defaultValue = "10") int size) {
+        // todo: 필터 추가
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdDate")));
         Page<OfferHistoryResponse> offerHistory = offerService.findOfferHistory(principalDetails.getMember().getId(), offerStatus, pageable);
         return ResponseEntity.ok(new Response(offerHistory, "제안 기록 조회 완료"));
