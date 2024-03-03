@@ -4,21 +4,17 @@ import io.swagger.v3.oas.annotations.Operation;
 import jikgong.domain.history.dtos.HistoryAtFinishResponse;
 import jikgong.domain.history.dtos.HistoryFinishSaveRequest;
 import jikgong.domain.history.dtos.HistoryStartSaveRequest;
+import jikgong.domain.history.dtos.PaymentStatementResponse;
 import jikgong.domain.history.service.HistoryService;
 import jikgong.domain.member.dtos.MemberAcceptedResponse;
 import jikgong.global.dto.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -59,5 +55,14 @@ public class HistoryController {
                                                        @PathVariable("workDateId") Long workDateId) {
         HistoryAtFinishResponse historyAtFinishResponse = historyService.findHistoryAtFinish(principalDetails.getMember().getId(), jobPostId, workDateId);
         return ResponseEntity.ok(new Response(historyAtFinishResponse, "퇴근 / 조퇴 조회 결과 반환 완료"));
+    }
+
+    @Operation(summary = "지급 내역서 확인")
+    @GetMapping("/api/history/payment-statement/{jobPostId}/{workDateId}")
+    public ResponseEntity<Response> findPaymentStatement(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                         @PathVariable("jobPostId") Long jobPostId,
+                                                         @PathVariable("workDateId") Long workDateId) {
+        PaymentStatementResponse paymentStatementResponse = historyService.findPaymentStatement(principalDetails.getMember().getId(), jobPostId, workDateId);
+        return ResponseEntity.ok(new Response(paymentStatementResponse, "지급 내역서 확인 정보 반환 완료"));
     }
 }

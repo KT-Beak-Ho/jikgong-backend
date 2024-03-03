@@ -1,12 +1,9 @@
 package jikgong.domain.history.service;
 
-import jikgong.domain.apply.dtos.company.ApplyResponseForCompany;
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.apply.repository.ApplyRepository;
-import jikgong.domain.history.dtos.HistoryAtFinishResponse;
-import jikgong.domain.history.dtos.HistoryFinishSaveRequest;
-import jikgong.domain.history.dtos.HistoryStartSaveRequest;
+import jikgong.domain.history.dtos.*;
 import jikgong.domain.history.entity.History;
 import jikgong.domain.history.entity.WorkStatus;
 import jikgong.domain.history.repository.HistoryRepository;
@@ -21,13 +18,9 @@ import jikgong.global.exception.CustomException;
 import jikgong.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -129,7 +122,7 @@ public class HistoryService {
             if (startWorkMember.containsKey(memberAcceptedResponse.getMemberId())) {
                 memberAcceptedResponse.updateHistoryInfo(startWorkMember.get(memberAcceptedResponse.getMemberId()));
             } else if (notWorkMember.containsKey(memberAcceptedResponse.getMemberId())) {
-                memberAcceptedResponse.updateHistoryInfo(startWorkMember.get(memberAcceptedResponse.getMemberId()));
+                memberAcceptedResponse.updateHistoryInfo(notWorkMember.get(memberAcceptedResponse.getMemberId()));
             }
         }
 
@@ -163,5 +156,20 @@ public class HistoryService {
                 .workMemberResponse(workMemberResponse)
                 .notWorkMemberResponse(notWorkMemberResponse)
                 .build();
+    }
+
+    public PaymentStatementResponse findPaymentStatement(Long memberId, Long jobPostId, Long workDateId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+        JobPost jobPost = jobPostRepository.findById(jobPostId)
+                .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
+        WorkDate workDate = workDateRepository.findById(workDateId)
+                .orElseThrow(() -> new CustomException(ErrorCode.WORK_DATE_NOT_FOUND));
+
+        List<PaymentMemberInfo> paymentMemberInfoList = historyRepository.findPaymentStatementInfo(jobPost.getId(), workDate.getId()).stream()
+                .map(PaymentMemberInfo::from)
+                .collect(Collectors.toList());
+
+        return PaymentStatementResponse.from(paymentMemberInfoList);
     }
 }

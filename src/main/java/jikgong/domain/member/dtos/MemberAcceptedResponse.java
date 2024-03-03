@@ -66,5 +66,6 @@ public class MemberAcceptedResponse {
     public void updateHistoryInfo(History history) {
         this.historyId = history.getId();
         this.startStatus = history.getStartStatus();
+        this.endStatus = history.getEndStatus();
     }
 }
