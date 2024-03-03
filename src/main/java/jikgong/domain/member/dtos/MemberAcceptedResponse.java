@@ -62,4 +62,9 @@ public class MemberAcceptedResponse {
                 .endStatus(history.getEndStatus())
                 .build();
     }
+
+    public void updateHistoryInfo(History history) {
+        this.historyId = history.getId();
+        this.startStatus = history.getStartStatus();
+    }
 }

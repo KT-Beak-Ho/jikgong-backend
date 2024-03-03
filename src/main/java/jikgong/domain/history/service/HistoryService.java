@@ -28,10 +28,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -116,17 +114,9 @@ public class HistoryService {
         WorkDate workDate = workDateRepository.findById(workDateId)
                 .orElseThrow(() -> new CustomException(ErrorCode.WORK_DATE_NOT_FOUND));
 
-        // 출석한 member, 결근한 member ID를 저장 하는 Set 생성
-        Set<Long> startWorkMember = new HashSet<>();
-        Set<Long> notWorkMember = new HashSet<>();
-        List<History> workHistoryList = historyRepository.findHistoryAtStartWorkCheck(jobPost.getId(), workDate.getId(), WorkStatus.START_WORK);
-        List<History> NotworkHistoryList = historyRepository.findHistoryAtStartWorkCheck(jobPost.getId(), workDate.getId(), WorkStatus.NOT_WORK);
-        for (History history : workHistoryList) {
-            startWorkMember.add(history.getMember().getId());
-        }
-        for (History history : NotworkHistoryList) {
-            notWorkMember.add(history.getMember().getId());
-        }
+        // key: memberId  |  value: history
+        Map<Long, History> startWorkMember = createHistoryMap(jobPost.getId(), workDate.getId(), WorkStatus.START_WORK);
+        Map<Long, History> notWorkMember = createHistoryMap(jobPost.getId(), workDate.getId(), WorkStatus.NOT_WORK);
 
         List<Apply> applyList = applyRepository.findApplyAtStartWorkCheck(member.getId(), jobPost.getId(), workDate.getId(), ApplyStatus.ACCEPTED);
 
@@ -136,16 +126,19 @@ public class HistoryService {
 
         // 현재 출근, 결근, 출근 전 status 값 세팅
         for (MemberAcceptedResponse memberAcceptedResponse : memberAcceptedResponseList) {
-            if (startWorkMember.contains(memberAcceptedResponse.getMemberId())) {
-                memberAcceptedResponse.setStartStatus(WorkStatus.START_WORK);
-            } else if (notWorkMember.contains(memberAcceptedResponse.getMemberId())) {
-                memberAcceptedResponse.setStartStatus(WorkStatus.NOT_WORK);
-            } else {
-                memberAcceptedResponse.setStartStatus(null);
+            if (startWorkMember.containsKey(memberAcceptedResponse.getMemberId())) {
+                memberAcceptedResponse.updateHistoryInfo(startWorkMember.get(memberAcceptedResponse.getMemberId()));
+            } else if (notWorkMember.containsKey(memberAcceptedResponse.getMemberId())) {
+                memberAcceptedResponse.updateHistoryInfo(startWorkMember.get(memberAcceptedResponse.getMemberId()));
             }
         }
 
         return memberAcceptedResponseList;
+    }
+
+    private Map<Long, History> createHistoryMap(Long jobId, Long workDateId, WorkStatus status) {
+        return historyRepository.findHistoryAtStartWorkCheck(jobId, workDateId, status).stream()
+                .collect(Collectors.toMap(history -> history.getMember().getId(), Function.identity()));
     }
 
     public HistoryAtFinishResponse findHistoryAtFinish(Long memberId, Long jobPostId, Long workDateId) {
@@ -156,7 +149,6 @@ public class HistoryService {
         WorkDate workDate = workDateRepository.findById(workDateId)
                 .orElseThrow(() -> new CustomException(ErrorCode.WORK_DATE_NOT_FOUND));
 
-        // 퇴근한 member, 조퇴한 member ID를 저장 하는 Set 생성
         List<History> workHistoryList = historyRepository.findHistoryAtStartWorkCheck(jobPost.getId(), workDate.getId(), WorkStatus.START_WORK);
         List<History> notWorkHistoryList = historyRepository.findHistoryAtStartWorkCheck(jobPost.getId(), workDate.getId(), WorkStatus.NOT_WORK);
 
