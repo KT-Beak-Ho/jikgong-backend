@@ -1,6 +1,7 @@
 package jikgong.domain.notification.service;
 
 import jikgong.domain.notification.dtos.NotificationResponse;
+import jikgong.domain.notification.dtos.UnreadCountResponse;
 import jikgong.global.event.dtos.AlarmEvent;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
@@ -63,5 +64,13 @@ public class NotificationService {
                 .orElseThrow(() -> new CustomException(ErrorCode.NOTIFICATION_NOT_FOUND));
 
         notification.readNotification();
+    }
+
+    public UnreadCountResponse unreadNotification(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        int unreadCount = notificationRepository.countUnreadNotification(member.getId());
+        return UnreadCountResponse.builder().unreadCount(unreadCount).build();
     }
 }

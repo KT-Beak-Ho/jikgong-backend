@@ -2,6 +2,7 @@ package jikgong.domain.notification.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jikgong.domain.notification.dtos.NotificationResponse;
+import jikgong.domain.notification.dtos.UnreadCountResponse;
 import jikgong.domain.notification.service.NotificationService;
 import jikgong.global.dto.Response;
 import jikgong.global.security.principal.PrincipalDetails;
@@ -37,5 +38,10 @@ public class NotificationController {
         return ResponseEntity.ok(new Response("앍음 읽음 처리 완료"));
     }
 
-
+    @Operation(summary = "읽지 않은 알림 개수")
+    @GetMapping("/api/notification/unread-count")
+    public ResponseEntity<Response> unreadNotification(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        UnreadCountResponse unreadCountResponse = notificationService.unreadNotification(principalDetails.getMember().getId());
+        return ResponseEntity.ok(new Response(unreadCountResponse, "읽지 않은 알림 개수 반환"));
+    }
 }
