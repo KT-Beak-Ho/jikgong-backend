@@ -46,6 +46,7 @@ public class LoginService {
                 .rrn(request.getRrn())
                 .gender(request.getGender())
                 .nationality(request.getNationality())
+                .isNotification(request.getIsNotification())
                 .build();
         // 공통 부분
         Member member = Member.builder()
@@ -55,7 +56,6 @@ public class LoginService {
                 .bank(request.getBank())
                 .role(request.getRole())
                 .deviceToken(request.getDeviceToken())
-                .isNotification(request.getIsNotification())
                 .workerInfo(worker)
                 .build();
 
@@ -83,6 +83,7 @@ public class LoginService {
                 .email(request.getEmail())
                 .manager(request.getManager())
                 .requestContent(request.getRequestContent())
+                .isNotification(request.getIsNotification())
                 .build();
 
         // 공통 부분
@@ -93,7 +94,6 @@ public class LoginService {
                 .bank(request.getBank())
                 .role(request.getRole())
                 .deviceToken(request.getDeviceToken())
-                .isNotification(request.getIsNotification())
                 .companyInfo(company)
                 .build();
 

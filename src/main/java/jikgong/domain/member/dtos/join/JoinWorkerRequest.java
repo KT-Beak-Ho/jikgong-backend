@@ -3,10 +3,10 @@ package jikgong.domain.member.dtos.join;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jikgong.domain.member.entity.Gender;
 import jikgong.domain.member.entity.Role;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
+@AllArgsConstructor
+@Builder
 @NoArgsConstructor
 @Getter
 @ToString

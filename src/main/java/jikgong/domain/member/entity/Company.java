@@ -20,13 +20,17 @@ public class Company {
     @Column(columnDefinition = "TEXT")
     private String requestContent; // 문의 내용
 
+    private CompanyNotificationInfo companyNotificationInfo;
+
     @Builder
-    public Company(String businessNumber, String region, String companyName, String email, String manager, String requestContent) {
+    public Company(String businessNumber, String region, String companyName, String email, String manager, String requestContent, Boolean isNotification) {
         this.businessNumber = businessNumber;
         this.region = region;
         this.companyName = companyName;
         this.email = email;
         this.manager = manager;
         this.requestContent = requestContent;
+
+        this.companyNotificationInfo = new CompanyNotificationInfo(isNotification);
     }
 }

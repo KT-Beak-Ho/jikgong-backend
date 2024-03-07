@@ -1,6 +1,7 @@
 package jikgong.domain.member.entity;
 
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AccessLevel;
@@ -18,15 +19,20 @@ public class Worker {
     @Enumerated(value = EnumType.STRING)
     private Gender gender; // 성별
     private String nationality; // 국적
-    private Boolean isOpen; // 헤드헌팅 여부
+    private Boolean isOffer; // 헤드헌팅 여부
+
+    @Embedded
+    private WorkerNotificationInfo workerNotificationInfo;
+
 
     @Builder
-    public Worker(String workerName, String birth, String rrn, Gender gender, String nationality) {
+    public Worker(String workerName, String birth, String rrn, Gender gender, String nationality, Boolean isNotification) {
         this.workerName = workerName;
         this.brith = birth;
         this.rrn = rrn;
         this.gender = gender;
         this.nationality = nationality;
-        this.isOpen = true; // 기본 true
+        this.isOffer = true; // 기본 true
+        this.workerNotificationInfo = new WorkerNotificationInfo(isNotification);
     }
 }
