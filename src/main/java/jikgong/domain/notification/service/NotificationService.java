@@ -1,7 +1,13 @@
 package jikgong.domain.notification.service;
 
+import jikgong.domain.member.entity.CompanyNotificationInfo;
+import jikgong.domain.member.entity.Role;
+import jikgong.domain.member.entity.WorkerNotificationInfo;
+import jikgong.domain.notification.dtos.NotificationInfoResponse;
 import jikgong.domain.notification.dtos.NotificationResponse;
 import jikgong.domain.notification.dtos.UnreadCountResponse;
+import jikgong.domain.notification.dtos.company.CompanyNotificationInfoRequest;
+import jikgong.domain.notification.dtos.worker.WorkerNotificationInfoRequest;
 import jikgong.global.event.dtos.AlarmEvent;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
@@ -42,6 +48,7 @@ public class NotificationService {
         notificationRepository.save(notification);
 
         // todo: templateCode 변경
+        // todo: type에 따라 알람 수신 여부가 다를 것!
         publisher.publishEvent(new AlarmEvent(content, worker.getId(), worker.getPhone(), "code"));
     }
 
@@ -72,5 +79,38 @@ public class NotificationService {
 
         int unreadCount = notificationRepository.countUnreadNotification(member.getId());
         return UnreadCountResponse.builder().unreadCount(unreadCount).build();
+    }
+
+    public NotificationInfoResponse findNotificationInfo(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        // 기업일 경우
+        if (member.getRole() == Role.ROLE_COMPANY) {
+            CompanyNotificationInfo companyNotificationInfo = member.getCompanyInfo().getCompanyNotificationInfo();
+            return NotificationInfoResponse.from(companyNotificationInfo);
+        }
+        // 노동자일 경우
+        if(member.getRole() == Role.ROLE_WORKER) {
+            WorkerNotificationInfo workerNotificationInfo = member.getWorkerInfo().getWorkerNotificationInfo();
+            return NotificationInfoResponse.from(workerNotificationInfo);
+        }
+
+        // 특정할 수 없는 경우
+        throw new CustomException(ErrorCode.ROLE_NOT_FOUND);
+    }
+
+    public void updateNotificationInfoWorker(Long memberId, WorkerNotificationInfoRequest request) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        member.getWorkerInfo().getWorkerNotificationInfo().updateInfo(request);
+    }
+
+    public void updateNotificationInfoCompany(Long memberId, CompanyNotificationInfoRequest request) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        member.getCompanyInfo().getCompanyNotificationInfo().updateInfo(request);
     }
 }
