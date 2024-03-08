@@ -1,6 +1,7 @@
 package jikgong.domain.member.entity;
 
 import jakarta.persistence.Embeddable;
+import jikgong.domain.notification.dtos.worker.WorkerNotificationInfoRequest;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,5 +23,11 @@ public class WorkerNotificationInfo {
         this.workerOffer = isNotification;
         this.workerApplyDecision = isNotification;
         this.workerEvent = isNotification;
+    }
+
+    public void updateInfo(WorkerNotificationInfoRequest request) {
+        this.workerOffer = request.getWorkerOffer();
+        this.workerApplyDecision = request.getWorkerApplyDecision();
+        this.workerEvent = request.getWorkerEvent();
     }
 }
