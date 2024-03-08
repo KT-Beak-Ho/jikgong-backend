@@ -1,8 +1,11 @@
 package jikgong.domain.notification.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jikgong.domain.notification.dtos.NotificationInfoResponse;
 import jikgong.domain.notification.dtos.NotificationResponse;
 import jikgong.domain.notification.dtos.UnreadCountResponse;
+import jikgong.domain.notification.dtos.company.CompanyNotificationInfoRequest;
+import jikgong.domain.notification.dtos.worker.WorkerNotificationInfoRequest;
 import jikgong.domain.notification.service.NotificationService;
 import jikgong.global.dto.Response;
 import jikgong.global.security.principal.PrincipalDetails;
@@ -10,10 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -43,5 +43,28 @@ public class NotificationController {
     public ResponseEntity<Response> unreadNotification(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         UnreadCountResponse unreadCountResponse = notificationService.unreadNotification(principalDetails.getMember().getId());
         return ResponseEntity.ok(new Response(unreadCountResponse, "읽지 않은 알림 개수 반환"));
+    }
+
+    @Operation(summary = "알림 설정 정보 조회")
+    @GetMapping("/api/notification/setting")
+    public ResponseEntity<Response> findNotificationInfo(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        NotificationInfoResponse notificationInfoResponse = notificationService.findNotificationInfo(principalDetails.getMember().getId());
+        return ResponseEntity.ok(new Response(notificationInfoResponse, "알림 설정 정보 조회 완료"));
+    }
+
+    @Operation(summary = "노동자: 알림 설정 수정")
+    @PutMapping("/api/notification/worker/setting")
+    public ResponseEntity<Response> updateWorkerNotificationInfo(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                           @RequestBody WorkerNotificationInfoRequest request) {
+        notificationService.updateNotificationInfoWorker(principalDetails.getMember().getId(), request);
+        return ResponseEntity.ok(new Response("노동자: 알림 설정 수정 완료"));
+    }
+
+    @Operation(summary = "기업: 알림 설정 수정")
+    @PutMapping("/api/notification/company/setting")
+    public ResponseEntity<Response> updateCompanyNotificationInfo(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                           @RequestBody CompanyNotificationInfoRequest request) {
+        notificationService.updateNotificationInfoCompany(principalDetails.getMember().getId(), request);
+        return ResponseEntity.ok(new Response("기업: 알림 설정 수정 완료"));
     }
 }
