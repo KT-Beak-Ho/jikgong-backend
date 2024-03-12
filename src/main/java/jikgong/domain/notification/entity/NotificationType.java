@@ -4,7 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum NotificationType {
-    OFFER("헤드헌팅");
+    OFFER("헤드헌팅"),
+    APPLY_CANCEL("요청 취소");
 
     private final String description;
 

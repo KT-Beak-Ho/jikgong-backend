@@ -47,7 +47,8 @@ public enum ErrorCode {
     RESUME_NOT_FOUND(HttpStatus.NOT_FOUND, "이력서 정보가 없습니다."),
     WORK_DATE_NEED_TO_FUTURE(HttpStatus.BAD_REQUEST, "당일, 과거 날짜에 대한 일자리는 제안할 수 없습니다."),
     WORK_DATE_NOT_MATCH(HttpStatus.BAD_REQUEST, "요청한 workDate id 값이 jobPost와 연관되어있지 않습니다."),
-    ROLE_NOT_FOUND(HttpStatus.NOT_FOUND, "요청된 회원의 ROLE을 특정할 수 없습니다.");
+    ROLE_NOT_FOUND(HttpStatus.NOT_FOUND, "요청된 회원의 ROLE을 특정할 수 없습니다."),
+    SCHEDULER_INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "스케줄러 동작 중 에러가 발생했습니다.");
 
     private final HttpStatus status;
     private final String errorMessage;

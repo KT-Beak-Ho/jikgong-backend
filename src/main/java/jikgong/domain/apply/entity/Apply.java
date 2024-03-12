@@ -39,4 +39,9 @@ public class Apply extends BaseEntity {
         this.member = member;
         this.workDate = workDate;
     }
+
+    public void updateStatus(ApplyStatus status, LocalDateTime now) {
+        this.statusDecisionTime = now;
+        this.status = status;
+    }
 }
