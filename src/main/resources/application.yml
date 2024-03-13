@@ -8,6 +8,12 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      enabled: false # 시작과 동시에 실행되는 것 방지
+
 app:
   auth:
     secret-key: ${SECRET_KEY}
