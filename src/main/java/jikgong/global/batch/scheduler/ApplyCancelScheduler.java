@@ -22,9 +22,10 @@ public class ApplyCancelScheduler {
     private final JobLauncher jobLauncher;
     private final Job applyJobConfig;
 
-    @Scheduled(cron = "* 05 00 * * *") // 초, 분, 시, 일, 월, 주, 년(생략 가능)
-    @Scheduled(fixedDelay=10000) // 단위: ms
+    @Scheduled(cron = "0 05 00 * * *", zone = "Asia/Seoul") // 초, 분, 시, 일, 월, 주, 년(생략 가능)
+//    @Scheduled(fixedDelay=10000) // 단위: ms
     public void applyCancel() {
+        log.info("스케줄러 실행");
         // job parameter 설정
         Map<String, JobParameter<?>> confMap = new HashMap<>();
         confMap.put("time", new JobParameter(System.currentTimeMillis(), Long.class));

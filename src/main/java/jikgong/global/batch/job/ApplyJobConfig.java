@@ -48,7 +48,7 @@ public class ApplyJobConfig {
     @Bean
     public Step applyProcessStep(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
         return new StepBuilder("applyProcessStep", jobRepository)
-                .chunk(50, transactionManager)
+                .<Apply, Apply>chunk(50, transactionManager)
                 .reader(applyReader())
                 .processor(applyProcessor())
                 .writer(applyWriter())
