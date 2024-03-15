@@ -36,6 +36,8 @@ public class LoginService {
     private final RedisTemplate<String, String> redisTemplate;
 
     public Long joinWorkerMember(JoinWorkerRequest request) {
+        // loginId 중복 체크
+        validationLoginId(request.getLoginId());
         // 휴대폰 중복 체크
         validationPhone(request.getPhone());
 
@@ -73,6 +75,8 @@ public class LoginService {
     }
 
     public Long joinCompanyMember(JoinCompanyRequest request) {
+        // loginId 중복 체크
+        validationLoginId(request.getLoginId());
         // 휴대폰 중복 체크
         validationPhone(request.getPhone());
 
@@ -107,6 +111,13 @@ public class LoginService {
         Optional<Member> member = memberRepository.findByPhone(phone);
         if (member.isPresent()) {
             throw new CustomException(ErrorCode.MEMBER_PHONE_EXIST);
+        }
+    }
+
+    public void validationLoginId(String login) {
+        Optional<Member> member = memberRepository.findByLoginId(login);
+        if (member.isPresent()) {
+            throw new CustomException(ErrorCode.MEMBER_LOGIN_ID_EXIST);
         }
     }
 

@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "회원 정보가 없습니다."),
-    MEMBER_PHONE_EXIST(HttpStatus.CONFLICT, "이미 사용 핸드폰 입니다."),
+    MEMBER_PHONE_EXIST(HttpStatus.CONFLICT, "이미 등록된 핸드폰 번호입니다."),
     MEMBER_INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "비밀번호가 올바르지 않습니다."),
     REQUEST_INVALID(HttpStatus.BAD_REQUEST, "valid 옵션에 맞지 않는 형식입니다."),
     ACCESS_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "만료된 access token 입니다."),
@@ -48,7 +48,8 @@ public enum ErrorCode {
     WORK_DATE_NEED_TO_FUTURE(HttpStatus.BAD_REQUEST, "당일, 과거 날짜에 대한 일자리는 제안할 수 없습니다."),
     WORK_DATE_NOT_MATCH(HttpStatus.BAD_REQUEST, "요청한 workDate id 값이 jobPost와 연관되어있지 않습니다."),
     ROLE_NOT_FOUND(HttpStatus.NOT_FOUND, "요청된 회원의 ROLE을 특정할 수 없습니다."),
-    SCHEDULER_INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "스케줄러 동작 중 에러가 발생했습니다.");
+    SCHEDULER_INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "스케줄러 동작 중 에러가 발생했습니다."),
+    MEMBER_LOGIN_ID_EXIST(HttpStatus.CONFLICT, "이미 등록된 id입니다.");
 
     private final HttpStatus status;
     private final String errorMessage;
