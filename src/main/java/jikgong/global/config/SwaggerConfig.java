@@ -15,12 +15,12 @@ import java.util.Arrays;
 @OpenAPIDefinition(
         info = @Info(title = "jikgong API 명세서",
                 description = "기업 계정: 아래 1개   " +
-                        "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwaG9uZSI6IjAxMDEyMzQ1Njc4IiwiZXhwIjoxNzE1MDYzMDAyfQ.iCyhNWDzyP4pjGUaV37bV4jNY13QyFiigyBIn1I0jTs    " +
+                        "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZGVmZzAiLCJleHAiOjE3MTU2OTY0NDh9.KdnJdTOzOsCD_AJi8SJOpmiRaO4mrAXVPswvCCzRMoI    " +
                         "\n노동자 계정: 아래 4개    " +
-                        "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwaG9uZSI6IjAxMDExMTExMTExIiwiZXhwIjoxNzE1MDYyODAxfQ.mEyrVB4gvQb5fUgtB6Z8iFhYgdPyYENSmg8Y8FM8IXA    " +
-                        "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwaG9uZSI6IjAxMDIyMjIyMjIyIiwiZXhwIjoxNzE1MDYyODI3fQ.nwI6dub7Pv6e-k_jKiF62IjeeAVKavTnQRf8c2w9gAg    " +
-                        "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwaG9uZSI6IjAxMDMzMzMzMzMzIiwiZXhwIjoxNzE1MDYyODQwfQ.XlO3rkTM_loSw8QMvGGmr07N5UdUoLOEQ36QBthg1Q8    " +
-                        "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwaG9uZSI6IjAxMDQ0NDQ0NDQ0IiwiZXhwIjoxNzE1MDYyODcwfQ.-7Fe9BmZlx13GF_zgZOALJpwwXrpJpLhN76KcxLKmBA",
+                        "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZGVmZzEiLCJleHAiOjE3MTU2OTY0NzJ9.EcdUqjdAYuT_n_dMBzecHIg-ZhXl1g-LEb7ZRZtK4VA    " +
+                        "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZGVmZzIiLCJleHAiOjE3MTU2OTY0ODZ9.hwiv1cnkT_Juk502j_gkNK6BMsLXb3WuyO8Rqu0nrsk    " +
+                        "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZGVmZzMiLCJleHAiOjE3MTU2OTY0OTl9.oAawfLzQJWiu4YcmXyuisHctAZjIymp0PXEW6ie2rNw    " +
+                        "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZGVmZzQiLCJleHAiOjE3MTU2OTY1MTV9.rtKD3CCySX-ddS1xejyVlIn46cFTOVy4NbFfntPAefA",
                 version = "v1"))
 @Configuration
 public class SwaggerConfig {
