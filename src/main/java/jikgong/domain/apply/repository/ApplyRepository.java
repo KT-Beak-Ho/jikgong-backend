@@ -64,9 +64,4 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
 
     @Query("select a from Apply a join fetch a.workDate where a.member.id = :memberId and a.status = 'ACCEPTED'")
     List<Apply> findAllCantWorkDate(@Param("memberId") Long memberId);
-
-    // spring batch
-    @Query(value = "select a from Apply a join fetch a.workDate w join fetch a.member m join fetch a.workDate.jobPost j where w.workDate = :tomorrow",
-    countQuery = "select count(a) from Apply a join a.workDate w where w.workDate = :tomorrow")
-    Page<WorkDate> findNeedToCancel(@Param("tomorrow") LocalDate tomorrow, Pageable pageable);
 }

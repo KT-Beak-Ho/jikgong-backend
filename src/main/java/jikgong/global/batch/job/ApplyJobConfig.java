@@ -3,14 +3,13 @@ package jikgong.global.batch.job;
 import jakarta.persistence.EntityManagerFactory;
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.entity.ApplyStatus;
-import jikgong.domain.apply.repository.ApplyRepository;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.notification.entity.NotificationType;
 import jikgong.domain.notification.service.NotificationService;
 import jikgong.domain.workDate.entity.WorkDate;
-import jikgong.domain.workDate.repository.WorkDateRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -19,22 +18,20 @@ import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.data.builder.RepositoryItemReaderBuilder;
+import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.domain.Sort;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Configuration
 @RequiredArgsConstructor
+@Slf4j
 public class ApplyJobConfig {
-    private final ApplyRepository applyRepository;
     private final NotificationService notificationService;
     private final EntityManagerFactory entityManagerFactory;
 
@@ -48,7 +45,7 @@ public class ApplyJobConfig {
     @Bean
     public Step applyProcessStep(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
         return new StepBuilder("applyProcessStep", jobRepository)
-                .<Apply, Apply>chunk(50, transactionManager)
+                .<Apply, Apply>chunk(100, transactionManager)
                 .reader(applyReader())
                 .processor(applyProcessor())
                 .writer(applyWriter())
@@ -58,15 +55,30 @@ public class ApplyJobConfig {
     @Bean
     public ItemReader<Apply> applyReader() {
         LocalDate tomorrow = LocalDate.now().plusDays(1);
-        return new RepositoryItemReaderBuilder<Apply>()
-                .name("applyReader")
-                .repository(applyRepository)
-                .methodName("findNeedToCancel")
-                .pageSize(50)
-                .arguments(List.of(tomorrow))
-                .sorts(Collections.singletonMap("id", Sort.Direction.ASC)) // 필수
-                .build();
+        JpaPagingItemReader<Apply> reader = new JpaPagingItemReader<>() {
+            @Override
+            public int getPage() {
+                return 0;
+            }
+        };
+        reader.setName("applyReader");
+        reader.setPageSize(100);
+        reader.setEntityManagerFactory(entityManagerFactory);
+        reader.setQueryString("select a from Apply a join fetch a.workDate w join fetch a.member m join fetch a.workDate.jobPost j where w.workDate <= :tomorrow and a.status = 'PENDING'");
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("tomorrow", tomorrow);
+        reader.setParameterValues(parameters);
+        return reader;
     }
+//        return new RepositoryItemReaderBuilder<Apply>()
+//                .name("applyReader")
+//                .repository(applyRepository)
+//                .methodName("findNeedToCancel")
+//                .pageSize(1)
+//                .arguments(List.of(tomorrow))
+//                .sorts(Collections.singletonMap("id", Sort.Direction.ASC)) // 필수
+//                .build();
+//    }
 
     @Bean
     public ItemProcessor<Apply, Apply> applyProcessor() {
