@@ -33,7 +33,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtProvider;
-    private final MemberRepository memberRepository;
     private final ObjectMapper objectMapper;
     private final CustomUserDetailsService userDetailsService;
 
@@ -43,7 +42,7 @@ public class JwtFilter extends OncePerRequestFilter {
         try {
             String authorizationHeader = request.getHeader("Authorization");
             String token;
-            String phone;
+            String loginId;
             // 헤더가 null 이 아니고 올바른 토큰이라면
             if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ") && !request.getRequestURI().equals("/reissue")) {
                 // 토큰 추출
@@ -55,9 +54,9 @@ public class JwtFilter extends OncePerRequestFilter {
                 }
 
                 // claim 을 받아와 정보 추출
-                phone = (String) jwtProvider.get(token).get("phone");
+                loginId = (String) jwtProvider.get(token).get("loginId");
 
-                PrincipalDetails principalDetails = userDetailsService.loadUserByUsername(phone);
+                PrincipalDetails principalDetails = userDetailsService.loadUserByUsername(loginId);
 
                 // 인증 정보 생성
                 Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());

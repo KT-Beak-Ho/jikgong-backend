@@ -23,10 +23,10 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final MemberRepository memberRepository;
 
     @Override
-    @Cacheable(cacheNames = "loginMember", key = "#phone", condition = "#phone != null", cacheManager = "authCacheManager")
-    public PrincipalDetails loadUserByUsername(String phone) throws UsernameNotFoundException {
+    @Cacheable(cacheNames = "loginMember", key = "#loginId", condition = "#loginId != null", cacheManager = "authCacheManager")
+    public PrincipalDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
         log.info("loadUserByUsername 실행");
-        Member findMember = memberRepository.findByPhone(phone)
+        Member findMember = memberRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
         MemberDto memberDto = MemberDto.builder()
                 .id(findMember.getId())

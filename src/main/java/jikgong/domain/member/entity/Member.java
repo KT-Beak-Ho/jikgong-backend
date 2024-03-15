@@ -22,8 +22,10 @@ public class Member extends BaseEntity {
     @Column(name = "member_id")
     private Long id;
 
-    private String phone;
-    private String authCode; // 인증 코드 (비밀번호로 사용)
+    private String loginId; // 로그인 아이디
+    private String password; // 패스워드
+
+    private String phone; // 휴대폰 번호
 
     private String account; // 계좌
     private String bank; // 은행 종류
@@ -51,13 +53,14 @@ public class Member extends BaseEntity {
 
     @Override
     public String toString() {
-        return "{ phone=" + phone + ", role=" + role + " }";
+        return "{ loginId=" + loginId + ", role=" + role + " }";
     }
 
     @Builder
-    public Member(String phone, String authCode, String account, String bank, String deviceToken, Role role, Worker workerInfo, Company companyInfo, Certification certification) {
+    public Member(String loginId, String password, String phone, String account, String bank, String deviceToken, Role role, Worker workerInfo, Company companyInfo, Certification certification) {
+        this.loginId = loginId;
+        this.password = password;
         this.phone = phone;
-        this.authCode = authCode;
         this.account = account;
         this.bank = bank;
         this.deviceToken = deviceToken;

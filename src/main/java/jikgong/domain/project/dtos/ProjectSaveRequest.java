@@ -1,15 +1,14 @@
 package jikgong.domain.project.dtos;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @NoArgsConstructor
 @Getter
 @ToString
+@Builder @AllArgsConstructor // InitDB 에 사용
 public class ProjectSaveRequest {
     @Schema(description = "프로젝트 명", example = "사하구 낙동5블럭 낙동강 온도 측정 센터 신축공사 ")
     private String name; // 프로젝트 명

@@ -50,8 +50,9 @@ public class LoginService {
                 .build();
         // 공통 부분
         Member member = Member.builder()
+                .loginId(request.getLoginId())
+                .password(encoder.encode(request.getPassword()))
                 .phone(request.getPhone())
-                .authCode(encoder.encode(request.getAuthCode()))
                 .account(request.getAccount())
                 .bank(request.getBank())
                 .role(request.getRole())
@@ -88,8 +89,9 @@ public class LoginService {
 
         // 공통 부분
         Member member = Member.builder()
+                .loginId(request.getLoginId())
+                .password(encoder.encode(request.getPassword()))
                 .phone(request.getPhone())
-                .authCode(encoder.encode(request.getAuthCode()))
                 .account(request.getAccount())
                 .bank(request.getBank())
                 .role(request.getRole())
@@ -139,19 +141,18 @@ public class LoginService {
     }
 
     public LoginResponse login(LoginRequest request) {
-        // todo: 기업, 노동자 로그인 분리
         // id 체크
-        Member member = memberRepository.findByPhone(request.getPhone())
+        Member member = memberRepository.findByLoginId(request.getLoginId())
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
         // authCode 체크
-        if (!encoder.matches(request.getAuthCode(), member.getAuthCode())) {
+        if (!encoder.matches(request.getPassword(), member.getPassword())) {
             throw new CustomException(ErrorCode.MEMBER_INVALID_PASSWORD);
         }
 
         // accessToken & refreshToken 생성
-        String accessToken = jwtTokenProvider.createAccessToken(member.getPhone());
-        String refreshToken = jwtTokenProvider.createRefreshToken(member.getPhone());
+        String accessToken = jwtTokenProvider.createAccessToken(member.getLoginId());
+        String refreshToken = jwtTokenProvider.createRefreshToken(member.getLoginId());
 
         // device token update
         member.updateDeviceToken(request.getDeviceToken());
@@ -166,22 +167,21 @@ public class LoginService {
             throw new CustomException(ErrorCode.REFRESH_TOKEN_EXPIRED);
         }
 
-        String phone = (String) jwtTokenProvider.get(refreshToken).get("phone");
+        String loginId = (String) jwtTokenProvider.get(refreshToken).get("loginId");
 
-        Member member = memberRepository.findByPhone(phone)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND)
-                );
+        Member member = memberRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
         // phone 값으로 redis 에 저장된 refreshToken 추출
-        String findRefreshToken = redisTemplate.opsForValue().get(phone);
+        String findRefreshToken = redisTemplate.opsForValue().get(loginId);
         if (!refreshToken.equals(findRefreshToken)) {
             // 리프레쉬 토큰 두 개가 안 맞음
             throw new CustomException(ErrorCode.REFRESH_TOKEN_NOT_MATCH);
         }
 
         // 토큰 재발행
-        String new_refresh_token = jwtTokenProvider.createRefreshToken(phone);
-        String accessToken = jwtTokenProvider.createAccessToken(phone);
+        String new_refresh_token = jwtTokenProvider.createRefreshToken(loginId);
+        String accessToken = jwtTokenProvider.createAccessToken(loginId);
 
         return new LoginResponse(accessToken, new_refresh_token, member.getRole());
     }

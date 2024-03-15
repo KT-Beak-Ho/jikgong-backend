@@ -9,10 +9,10 @@ import lombok.ToString;
 @Getter
 @ToString
 public class LoginRequest {
-    @Schema(description = "휴대폰 번호", example = "01012345678")
-    private String phone;
-    @Schema(description = "인증 코드 6자리", example = "123456")
-    private String authCode;
+    @Schema(description = "로그인 아이디", example = "abcdefg1")
+    private String loginId; // 인증 코드
+    @Schema(description = "로그인 패스워드", example = "abcdefg1")
+    private String password; // 인증 코드
     @Schema(description = "device token")
     private String deviceToken;
 }

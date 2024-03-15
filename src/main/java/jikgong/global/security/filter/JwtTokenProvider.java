@@ -30,18 +30,18 @@ public class JwtTokenProvider {
         this.redisTemplate = redisTemplate;
     }
 
-    public String createAccessToken(String phone) {
+    public String createAccessToken(String loginId) {
         Map<String, Object> claim = new HashMap<>();
         // 토큰에 들어갈 정보 세팅
-        claim.put("phone", phone); // 사용자 휴대폰 번호
+        claim.put("loginId", loginId); // 사용자 휴대폰 번호
         return createJwt("ACCESS_TOKEN", ACCESS_TOKEN_EXPIRATION_TIME, claim);
     }
 
-    public String createRefreshToken(String phone) {
+    public String createRefreshToken(String loginId) {
         HashMap<String, Object> claim = new HashMap<>();
-        claim.put("phone", phone); // 사용자 휴대폰 번호
+        claim.put("loginId", loginId); // 사용자 휴대폰 번호
         String refreshToken = createJwt("REFRESH_TOKEN", REFRESH_TOKEN_EXPIRATION_TIME, claim);
-        saveRefreshTokenInRedis(phone, refreshToken);
+        saveRefreshTokenInRedis(loginId, refreshToken);
         return refreshToken;
     }
 
@@ -90,10 +90,10 @@ public class JwtTokenProvider {
         }
     }
 
-    public void saveRefreshTokenInRedis(String phone, String refreshToken) {
+    public void saveRefreshTokenInRedis(String loginId, String refreshToken) {
         // redis 에 저장
         redisTemplate.opsForValue().set(
-                phone,
+                loginId,
                 refreshToken,
                 REFRESH_TOKEN_EXPIRATION_TIME,
                 TimeUnit.MILLISECONDS

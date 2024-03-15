@@ -15,4 +15,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("select m from Member m where m.id in :memberIdList")
     List<Member> findByIdList(@Param("memberIdList") List<Long> memberIdList);
+
+    Optional<Member> findByLoginId(String loginId);
 }
