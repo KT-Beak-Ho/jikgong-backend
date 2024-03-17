@@ -1,19 +1,14 @@
 //package jikgong;
 //
 //import jakarta.annotation.PostConstruct;
-//import jakarta.persistence.EntityManager;
-//import jikgong.domain.common.Address;
-//import jikgong.domain.location.entity.Location;
 //import jikgong.domain.member.dtos.join.JoinCompanyRequest;
 //import jikgong.domain.member.dtos.join.JoinWorkerRequest;
 //import jikgong.domain.member.entity.*;
 //import jikgong.domain.member.service.LoginService;
 //import jikgong.domain.project.dtos.ProjectSaveRequest;
-//import jikgong.domain.project.entity.Project;
 //import jikgong.domain.project.service.ProjectService;
 //import lombok.RequiredArgsConstructor;
 //import lombok.extern.slf4j.Slf4j;
-//import org.springframework.security.crypto.password.PasswordEncoder;
 //import org.springframework.stereotype.Component;
 //import org.springframework.stereotype.Service;
 //import org.springframework.transaction.annotation.Transactional;
