@@ -1,4 +1,4 @@
-package jikgong.domain.offer.dtos;
+package jikgong.domain.offer.dtos.company;
 
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.history.entity.History;

@@ -1,8 +1,5 @@
-package jikgong.domain.offer.dtos;
+package jikgong.domain.offer.dtos.company;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.querydsl.core.annotations.QueryProjection;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.entity.Tech;
 import jikgong.domain.member.entity.Member;

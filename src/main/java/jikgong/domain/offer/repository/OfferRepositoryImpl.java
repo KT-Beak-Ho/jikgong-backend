@@ -1,5 +1,6 @@
 package jikgong.domain.offer.repository;
 
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jikgong.domain.offer.entity.Offer;
@@ -28,7 +29,10 @@ public class OfferRepositoryImpl implements OfferRepositoryCustom {
                 .join(offer.offerWorkDateList, offerWorkDate)
                 .join(offer.worker, member).fetchJoin()
                 .join(offer.jobPost, jobPost).fetchJoin()
-                .where(eqOfferStatus(offerStatus))
+                .where(
+                        eqCompany(companyId),
+                        eqOfferStatus(offerStatus)
+                )
                 .orderBy(offer.createdDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -37,10 +41,17 @@ public class OfferRepositoryImpl implements OfferRepositoryCustom {
         Long totalCount = queryFactory
                 .select(offer.count())
                 .from(offer)
-                .where(eqOfferStatus(offerStatus))
+                .where(
+                        eqCompany(companyId),
+                        eqOfferStatus(offerStatus)
+                )
                 .fetchOne();
 
         return new PageImpl<>(result, pageable, totalCount);
+    }
+
+    private BooleanExpression eqCompany(Long companyId) {
+        return offer.company.id.eq(companyId);
     }
 
     private BooleanExpression eqOfferStatus(OfferStatus offerStatus) {

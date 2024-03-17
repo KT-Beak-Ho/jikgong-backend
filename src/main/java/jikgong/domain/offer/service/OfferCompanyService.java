@@ -2,7 +2,7 @@ package jikgong.domain.offer.service;
 
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.repository.ApplyRepository;
-import jikgong.domain.offer.dtos.*;
+import jikgong.domain.offer.dtos.company.*;
 import jikgong.domain.offer.entity.OfferStatus;
 import jikgong.domain.offer.repository.OfferRepository;
 import jikgong.domain.offer.entity.Offer;
@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class OfferService {
+public class OfferCompanyService {
     private final MemberRepository memberRepository;
     private final ProjectRepository projectRepository;
     private final OfferRepository offerRepository;
