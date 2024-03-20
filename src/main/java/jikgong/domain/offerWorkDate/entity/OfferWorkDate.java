@@ -2,7 +2,6 @@ package jikgong.domain.offerWorkDate.entity;
 
 import jakarta.persistence.*;
 import jikgong.domain.offer.entity.Offer;
-import jikgong.domain.offer.entity.OfferStatus;
 import jikgong.domain.workDate.entity.WorkDate;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -22,7 +21,7 @@ public class OfferWorkDate {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private OfferWorkStatus offerWorkStatus;
+    private OfferWorkDateStatus offerWorkDateStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "offer_id")
@@ -33,8 +32,8 @@ public class OfferWorkDate {
     private WorkDate workDate;
 
     @Builder
-    public OfferWorkDate(OfferWorkStatus offerWorkStatus, Offer offer, WorkDate workDate) {
-        this.offerWorkStatus = offerWorkStatus;
+    public OfferWorkDate(OfferWorkDateStatus offerWorkDateStatus, Offer offer, WorkDate workDate) {
+        this.offerWorkDateStatus = offerWorkDateStatus;
         this.offer = offer;
         this.workDate = workDate;
     }
@@ -43,7 +42,7 @@ public class OfferWorkDate {
         List<OfferWorkDate> offerWorkDateList = new ArrayList<>();
         for (WorkDate workDate : workDateList) {
             OfferWorkDate offerWorkDate = OfferWorkDate.builder()
-                    .offerWorkStatus(OfferWorkStatus.OFFER_PENDING)
+                    .offerWorkDateStatus(OfferWorkDateStatus.OFFER_PENDING)
                     .offer(offer)
                     .workDate(workDate)
                     .build();

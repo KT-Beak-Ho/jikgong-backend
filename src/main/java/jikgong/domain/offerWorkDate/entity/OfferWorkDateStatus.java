@@ -3,7 +3,7 @@ package jikgong.domain.offerWorkDate.entity;
 import lombok.Getter;
 
 @Getter
-public enum OfferWorkStatus {
+public enum OfferWorkDateStatus {
     OFFER_ACCEPTED("제안 수락"),
     OFFER_REJECTED("제안 거절"),
     OFFER_PENDING("제안 대기"),
@@ -12,7 +12,7 @@ public enum OfferWorkStatus {
 
     private final String description;
 
-    OfferWorkStatus(String description) {
+    OfferWorkDateStatus(String description) {
         this.description = description;
     }
 }
