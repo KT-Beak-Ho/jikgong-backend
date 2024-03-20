@@ -5,6 +5,7 @@ import jikgong.domain.addressInfo.entity.AddressType;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.entity.Park;
 import jikgong.domain.jobPost.entity.Tech;
+import jikgong.domain.jobPostImage.entity.JobPostImage;
 import jikgong.domain.location.entity.Location;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.workDate.dtos.WorkDateResponse;
@@ -45,6 +46,8 @@ public class JobPostDetailResponse {
     private String manager; // 담당자
     private String phone; // 연락처
 
+    private List<String> imageUrls; // 이미지 정보
+
     public static JobPostDetailResponse from(JobPost jobPost, Location location) {
         Member member = jobPost.getMember();
 
@@ -57,6 +60,11 @@ public class JobPostDetailResponse {
         // 근무 날짜
         List<WorkDateResponse> workDateResponseList = jobPost.getWorkDateList().stream()
                 .map(WorkDateResponse::from)
+                .collect(Collectors.toList());
+
+        // 이미지 리스트
+        List<String> imageUrls = jobPost.getJobPostImageList().stream()
+                .map(JobPostImage::getS3Url)
                 .collect(Collectors.toList());
 
         return JobPostDetailResponse.builder()
@@ -81,6 +89,8 @@ public class JobPostDetailResponse {
                 .companyName(member.getCompanyInfo().getCompanyName())
                 .manager(member.getCompanyInfo().getManager())
                 .phone(member.getPhone())
+
+                .imageUrls(imageUrls)
 
                 .build();
     }
