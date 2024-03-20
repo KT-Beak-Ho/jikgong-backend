@@ -153,10 +153,27 @@ public class OfferCompanyService {
     }
 
     public Page<OfferHistoryResponse> findOfferHistory(Long companyId, OfferStatus offerStatus, Pageable pageable) {
+        Member company = memberRepository.findById(companyId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
         Page<Offer> offerHistoryPage = offerRepository.findOfferHistory(companyId, offerStatus, pageable);
         List<OfferHistoryResponse> offerHistoryResponseList = offerHistoryPage.getContent().stream()
                 .map(OfferHistoryResponse::from)
                 .collect(Collectors.toList());
         return new PageImpl<>(offerHistoryResponseList, pageable, offerHistoryPage.getTotalElements());
+    }
+
+    public void cancelOffer(Long companyId, Long offerId) {
+        Member company = memberRepository.findById(companyId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Offer offer = offerRepository.findById(offerId)
+                .orElseThrow(() -> new CustomException(ErrorCode.OFFER_NOT_FOUND));
+
+        // 제안 취소
+        offer.cancelOffer();
+
+        int canceledOfferWorkDate = offerWorkDateRepository.cancelOffer(offer.getId());
+        log.info("취소된 offerWorkDate 수: " + canceledOfferWorkDate);
     }
 }

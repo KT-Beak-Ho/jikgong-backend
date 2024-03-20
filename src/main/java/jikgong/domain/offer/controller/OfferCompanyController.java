@@ -59,11 +59,16 @@ public class OfferCompanyController {
                                                   @RequestParam(name = "offerStatus") OfferStatus offerStatus,
                                                   @RequestParam(name = "page", defaultValue = "0") int page,
                                                   @RequestParam(name = "size", defaultValue = "10") int size) {
-        // todo: 필터 추가
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdDate")));
         Page<OfferHistoryResponse> offerHistory = offerCompanyService.findOfferHistory(principalDetails.getMember().getId(), offerStatus, pageable);
         return ResponseEntity.ok(new Response(offerHistory, "제안 기록 조회 완료"));
     }
 
-
+    @Operation(summary = "기업: 제안 취소")
+    @DeleteMapping("/api/company/offer/{offerId}")
+    public ResponseEntity<Response> cancelOffer(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                @PathVariable("offerId") Long offerId) {
+        offerCompanyService.cancelOffer(principalDetails.getMember().getId(), offerId);
+        return ResponseEntity.ok(new Response("제안 취소 완료"));
+    }
 }
