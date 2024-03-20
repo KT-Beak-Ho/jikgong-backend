@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -22,8 +23,9 @@ public class OfferWorkerController {
 
     @Operation(summary = "노동자: 제안 받은 내역 조회")
     @GetMapping("/api/worker/offers")
-    public ResponseEntity<Response> findReceivedOffer(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        List<ReceivedOfferListResponse> receivedOfferListResponseList = offerWorkerService.findReceivedOffer(principalDetails.getMember().getId());
+    public ResponseEntity<Response> findReceivedOffer(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                      @RequestParam(name = "isPending") Boolean isPending) {
+        List<ReceivedOfferListResponse> receivedOfferListResponseList = offerWorkerService.findReceivedOffer(principalDetails.getMember().getId(), isPending);
         return ResponseEntity.ok(new Response(receivedOfferListResponseList, "노동자: 제안 받은 내역 조회 완료"));
     }
 }

@@ -6,6 +6,7 @@ import jikgong.domain.common.Address;
 import jikgong.domain.common.BaseEntity;
 import jikgong.domain.jobPost.dtos.company.JobPostSaveRequest;
 import jikgong.domain.jobPost.dtos.company.TemporarySaveRequest;
+import jikgong.domain.jobPostImage.entity.JobPostImage;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.project.entity.Project;
 import jikgong.domain.scrap.entity.Scrap;
@@ -63,6 +64,8 @@ public class JobPost extends BaseEntity {
     private List<AddressInfo> addressInfoList = new ArrayList<>();
     @OneToMany(mappedBy = "jobPost")
     private List<Scrap> scrapList = new ArrayList<>();
+    @OneToMany(mappedBy = "jobPost")
+    private List<JobPostImage> jobPostImageList = new ArrayList<>();
 
     @Builder
     public JobPost(String title, Tech tech, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, Integer recruitNum, Integer wage, String parkDetail, String preparation, LocalDateTime expirationTime, String managerName, String phone, Boolean isTemporary, AvailableInfo availableInfo, Address address, Member member, Project project) {
@@ -87,6 +90,7 @@ public class JobPost extends BaseEntity {
         this.workDateList = new ArrayList<>();
         this.addressInfoList = new ArrayList<>();
         this.scrapList = new ArrayList<>();
+        this.jobPostImageList = new ArrayList<>();
     }
 
     public static JobPost createEntityByTemporary(TemporarySaveRequest request, Member member, Project project) {

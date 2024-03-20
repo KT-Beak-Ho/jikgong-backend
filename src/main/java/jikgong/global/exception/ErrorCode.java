@@ -33,7 +33,7 @@ public enum ErrorCode {
     PROJECT_NOT_FOUND(HttpStatus.NOT_FOUND, "프로젝트 정보가 없습니다."),
     HISTORY_NOT_FOUND_APPLY(HttpStatus.NOT_FOUND, "일자리 공고에 신청한 내역이 없습니다."),
     HISTORY_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 동일한 출근, 결근 데이터가 있습니다."),
-    WORK_DATE_NOT_FOUND(HttpStatus.NOT_FOUND, "요청한 날짜는 모집 공고에 맞지 않는 날짜 입니다."),
+    WORK_DATE_NOT_FOUND(HttpStatus.NOT_FOUND, "날짜 엔티티가 존재하지 않습니다."),
     WORK_DATE_LIST_NOT_FOUND(HttpStatus.NOT_FOUND, "요청한 날짜 중 모집 공고에 맞지 않는 날짜가 있습니다."),
     APPLY_NOT_ACCEPTED(HttpStatus.BAD_REQUEST, "신청 내역이 아직 승인 되지 않았습니다."),
     APPLY_NEED_TO_PENDING(HttpStatus.BAD_REQUEST, "대기 중인 요청에 대해서만 처리할 수 있습니다."),
@@ -49,7 +49,8 @@ public enum ErrorCode {
     WORK_DATE_NOT_MATCH(HttpStatus.BAD_REQUEST, "요청한 workDate id 값이 jobPost와 연관되어있지 않습니다."),
     ROLE_NOT_FOUND(HttpStatus.NOT_FOUND, "요청된 회원의 ROLE을 특정할 수 없습니다."),
     SCHEDULER_INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "스케줄러 동작 중 에러가 발생했습니다."),
-    MEMBER_LOGIN_ID_EXIST(HttpStatus.CONFLICT, "이미 등록된 id입니다.");
+    MEMBER_LOGIN_ID_EXIST(HttpStatus.CONFLICT, "이미 등록된 id입니다."),
+    OFFER_NOT_FOUND(HttpStatus.NOT_FOUND, "제안 내역이 없습니다.");
 
     private final HttpStatus status;
     private final String errorMessage;
