@@ -12,6 +12,7 @@ import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
 import jikgong.domain.notification.entity.NotificationType;
 import jikgong.domain.offerWorkDate.entity.OfferWorkDate;
+import jikgong.domain.offerWorkDate.entity.OfferWorkDateStatus;
 import jikgong.domain.offerWorkDate.repository.OfferWorkDateRepository;
 import jikgong.domain.project.entity.Project;
 import jikgong.domain.project.repository.ProjectRepository;
@@ -173,7 +174,7 @@ public class OfferCompanyService {
         // 제안 취소
         offer.cancelOffer();
 
-        int canceledOfferWorkDate = offerWorkDateRepository.cancelOffer(offer.getId());
+        int canceledOfferWorkDate = offerWorkDateRepository.cancelOffer(offer.getId(), OfferWorkDateStatus.OFFER_CANCELED);
         log.info("취소된 offerWorkDate 수: " + canceledOfferWorkDate);
     }
 }

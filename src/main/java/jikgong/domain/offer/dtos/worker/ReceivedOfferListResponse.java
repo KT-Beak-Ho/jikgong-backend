@@ -2,10 +2,8 @@ package jikgong.domain.offer.dtos.worker;
 
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.entity.Tech;
-import jikgong.domain.offer.entity.Offer;
-import jikgong.domain.offer.entity.OfferStatus;
 import jikgong.domain.offerWorkDate.entity.OfferWorkDate;
-import jikgong.domain.offerWorkDate.entity.OfferWorkStatus;
+import jikgong.domain.offerWorkDate.entity.OfferWorkDateStatus;
 import jikgong.domain.workDate.entity.WorkDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,10 +16,11 @@ import java.time.LocalDate;
 @Builder
 public class ReceivedOfferListResponse {
     private Long offerWorkDateId;
+    private Long workDateId; //
     private Tech tech; // 직종
     private LocalDate workDate; // 근무 일짜
     private String title; // 공고 제목
-    private OfferWorkStatus status; // 제안 status
+    private OfferWorkDateStatus status; // 제안 status
 
     public static ReceivedOfferListResponse from(OfferWorkDate offerWorkDate) {
         JobPost jobPost = offerWorkDate.getOffer().getJobPost();
@@ -29,10 +28,11 @@ public class ReceivedOfferListResponse {
 
         return ReceivedOfferListResponse.builder()
                 .offerWorkDateId(offerWorkDate.getId())
+                .workDateId(workDate.getId())
                 .tech(jobPost.getTech())
                 .workDate(workDate.getWorkDate())
                 .title(jobPost.getTitle())
-                .status(offerWorkDate.getOfferWorkStatus())
+                .status(offerWorkDate.getOfferWorkDateStatus())
                 .build();
     }
 }

@@ -1,6 +1,7 @@
 package jikgong.domain.jobPost.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jikgong.domain.jobPost.dtos.offer.JobPostDetailResponseForOffer;
 import jikgong.domain.jobPost.dtos.worker.JobPostDetailResponse;
 import jikgong.domain.jobPost.dtos.worker.JobPostListResponse;
 import jikgong.domain.jobPost.entity.JobPost;
@@ -50,11 +51,19 @@ public class JobPostWorkerController {
         return ResponseEntity.ok(new Response(jobPostListResponsePage, "구직자 홈화면 정보 반환 완료"));
     }
 
-    @Operation(summary = "모집 공고 상세 화면")
+    @Operation(summary = "모집 공고 상세 화면 - 일반")
     @GetMapping("/api/worker/job-post/{jobPostId}")
     public ResponseEntity<Response> getJobPostDetail(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                      @PathVariable("jobPostId") Long jobPostId) {
         JobPostDetailResponse jobPostDetailResponse = jobPostWorkerService.getJobPostDetail(principalDetails.getMember().getId(), jobPostId);
-        return ResponseEntity.ok(new Response(jobPostDetailResponse, "모집 공고 상세 화면 반환 완료"));
+        return ResponseEntity.ok(new Response(jobPostDetailResponse, "모집 공고 상세 화면 - 일반 반환 완료"));
+    }
+
+    @Operation(summary = "모집 공고 상세 화면 - 제안 수락 시")
+    @GetMapping("/api/worker/job-post/before-offer-accepted/{workDateId}")
+    public ResponseEntity<Response> getJobPostDetailBeforeOfferAccepted(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                     @PathVariable("workDateId") Long workDateId) {
+        JobPostDetailResponseForOffer jobPostDetailResponseForOffer = jobPostWorkerService.getJobPostDetailForOffer(principalDetails.getMember().getId(), workDateId);
+        return ResponseEntity.ok(new Response(jobPostDetailResponseForOffer, "모집 공고 상세 화면 - 제안 수락 시 반환 완료"));
     }
 }
