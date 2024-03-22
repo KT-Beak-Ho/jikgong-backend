@@ -50,4 +50,8 @@ public class OfferWorkDate {
         }
         return offerWorkDateList;
     }
+
+    public void processOffer(Boolean isAccept) {
+        this.offerWorkDateStatus = isAccept ? OfferWorkDateStatus.OFFER_ACCEPTED : OfferWorkDateStatus.OFFER_REJECTED;
+    }
 }

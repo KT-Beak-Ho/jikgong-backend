@@ -64,4 +64,7 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
 
     @Query("select a from Apply a join fetch a.workDate where a.member.id = :memberId and a.status = 'ACCEPTED'")
     List<Apply> findAllCantWorkDate(@Param("memberId") Long memberId);
+
+    @Query("select count(a) from Apply a where a.member.id = :memberId and a.workDate.workDate = :workDate and a.status = 'ACCEPTED'")
+    int findAcceptedApplyByWorkDate(@Param("memberId") Long memberId, @Param("workDate") LocalDate workDate);
 }

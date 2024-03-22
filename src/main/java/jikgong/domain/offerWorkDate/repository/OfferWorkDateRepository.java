@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface OfferWorkDateRepository extends JpaRepository<OfferWorkDate, Long> {
@@ -25,4 +26,11 @@ public interface OfferWorkDateRepository extends JpaRepository<OfferWorkDate, Lo
     @Modifying
     @Query("update OfferWorkDate ow set ow.offerWorkDateStatus = :status where ow.offer.id = :offerId")
     int cancelOffer(@Param("offerId") Long offerId, @Param("status") OfferWorkDateStatus status);
+
+    @Query("select ow from OfferWorkDate ow join fetch ow.workDate w join fetch w.jobPost j join fetch j.member m " +
+            "where ow.id = :offerWorkDateId")
+    Optional<OfferWorkDate> findByIdAtProcessOffer(@Param("offerWorkDateId") Long offerWorkDateId);
+
+    @Query("select ow from OfferWorkDate ow join fetch ow.workDate w where ow.id = :offerWorkDateId")
+    Optional<OfferWorkDate> findByIdWithWorkDate(@Param("offerWorkDateId") Long offerWorkDateId);
 }

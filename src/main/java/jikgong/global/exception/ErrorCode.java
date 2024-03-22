@@ -38,7 +38,7 @@ public enum ErrorCode {
     APPLY_NOT_ACCEPTED(HttpStatus.BAD_REQUEST, "신청 내역이 아직 승인 되지 않았습니다."),
     APPLY_NEED_TO_PENDING(HttpStatus.BAD_REQUEST, "대기 중인 요청에 대해서만 처리할 수 있습니다."),
     APPLY_OVER_RECRUIT_NUM(HttpStatus.BAD_REQUEST, "모집 인원을 초과했습니다."),
-    APPLY_ALREADY_ACCEPTED_IN_WORKDATE(HttpStatus.CONFLICT, "선택 날짜 중 이미 신청이 승인된 날짜가 포함되어 있습니다."),
+    APPLY_ALREADY_ACCEPTED_IN_WORKDATE(HttpStatus.CONFLICT, "이미 승인된 지원 내역이 있습니다."),
     HISTORY_UPDATE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "출,퇴근 데이터 업데이트 중 에러가 발생했습니다."),
     SEARCH_LOG_NOT_EXIST(HttpStatus.NOT_FOUND, "Redis 에서 요청한 검색 기록을 찾을 수 없습니다."),
     HEAD_HUNTING_NOT_FOUND(HttpStatus.NOT_FOUND, "헤드 헌팅 등록한 정보가 없습니다."),
@@ -50,7 +50,9 @@ public enum ErrorCode {
     ROLE_NOT_FOUND(HttpStatus.NOT_FOUND, "요청된 회원의 ROLE을 특정할 수 없습니다."),
     SCHEDULER_INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "스케줄러 동작 중 에러가 발생했습니다."),
     MEMBER_LOGIN_ID_EXIST(HttpStatus.CONFLICT, "이미 등록된 id입니다."),
-    OFFER_NOT_FOUND(HttpStatus.NOT_FOUND, "제안 내역이 없습니다.");
+    OFFER_NOT_FOUND(HttpStatus.NOT_FOUND, "제안 내역이 없습니다."),
+    OFFER_WORK_DATE_NOT_FOUND(HttpStatus.NOT_FOUND, "제안 내역이 없습니다."),
+    OFFER_PROCESS_NEED_TO_ONE_DAY_AGO(HttpStatus.BAD_REQUEST, "제안 수락은 출역일 하루 전 날까지 가능합니다.");
 
     private final HttpStatus status;
     private final String errorMessage;
