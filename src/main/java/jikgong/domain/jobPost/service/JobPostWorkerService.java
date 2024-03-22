@@ -12,6 +12,8 @@ import jikgong.domain.location.entity.Location;
 import jikgong.domain.location.repository.LocationRepository;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
+import jikgong.domain.offerWorkDate.entity.OfferWorkDate;
+import jikgong.domain.offerWorkDate.repository.OfferWorkDateRepository;
 import jikgong.domain.workDate.entity.WorkDate;
 import jikgong.domain.workDate.repository.WorkDateRepository;
 import jikgong.global.exception.CustomException;
@@ -36,6 +38,7 @@ public class JobPostWorkerService {
     private final MemberRepository memberRepository;
     private final LocationRepository locationRepository;
     private final WorkDateRepository workDateRepository;
+    private final OfferWorkDateRepository offerWorkDateRepository;
 
     public Page<JobPostListResponse> getMainPage(Long memberId, Tech tech, List<LocalDate> workDateList, Boolean scrap, Boolean meal, Park park, SortType sortType, Pageable pageable) {
         Member member = memberRepository.findById(memberId)
@@ -62,16 +65,16 @@ public class JobPostWorkerService {
         return JobPostDetailResponse.from(jobPost, location);
     }
 
-    public JobPostDetailResponseForOffer getJobPostDetailForOffer(Long memberId, Long workDateId) {
+    public JobPostDetailResponseForOffer getJobPostDetailForOffer(Long memberId, Long offerWorkDateId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        WorkDate workDate = workDateRepository.findByIdWithMember(workDateId)
-                .orElseThrow(() -> new CustomException(ErrorCode.WORK_DATE_NOT_FOUND));
+        OfferWorkDate offerWorkDate = offerWorkDateRepository.findByIdAtProcessOffer(offerWorkDateId)
+                .orElseThrow(() -> new CustomException(ErrorCode.OFFER_WORK_DATE_NOT_FOUND));
 
         Location location = locationRepository.findMainLocationByMemberId(member.getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.LOCATION_NOT_FOUND));
 
-        return JobPostDetailResponseForOffer.from(workDate, location);
+        return JobPostDetailResponseForOffer.from(offerWorkDate, location);
     }
 }

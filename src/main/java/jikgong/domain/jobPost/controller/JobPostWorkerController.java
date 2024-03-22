@@ -60,10 +60,10 @@ public class JobPostWorkerController {
     }
 
     @Operation(summary = "모집 공고 상세 화면 - 제안 수락 시")
-    @GetMapping("/api/worker/job-post/before-offer-accepted/{workDateId}")
-    public ResponseEntity<Response> getJobPostDetailBeforeOfferAccepted(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                     @PathVariable("workDateId") Long workDateId) {
-        JobPostDetailResponseForOffer jobPostDetailResponseForOffer = jobPostWorkerService.getJobPostDetailForOffer(principalDetails.getMember().getId(), workDateId);
+    @GetMapping("/api/worker/job-post/process-offer/{offerWorkDateId}")
+    public ResponseEntity<Response> getJobPostDetailBeforeOfferProcess(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                     @PathVariable("offerWorkDateId") Long offerWorkDateId) {
+        JobPostDetailResponseForOffer jobPostDetailResponseForOffer = jobPostWorkerService.getJobPostDetailForOffer(principalDetails.getMember().getId(), offerWorkDateId);
         return ResponseEntity.ok(new Response(jobPostDetailResponseForOffer, "모집 공고 상세 화면 - 제안 수락 시 반환 완료"));
     }
 }

@@ -8,6 +8,7 @@ import jikgong.domain.jobPost.entity.Tech;
 import jikgong.domain.jobPostImage.entity.JobPostImage;
 import jikgong.domain.location.entity.Location;
 import jikgong.domain.member.entity.Member;
+import jikgong.domain.offerWorkDate.entity.OfferWorkDate;
 import jikgong.domain.workDate.dtos.WorkDateResponse;
 import jikgong.domain.workDate.entity.WorkDate;
 import jikgong.global.utils.DistanceCal;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 @Getter
 @Builder
 public class JobPostDetailResponseForOffer {
+    private Long offerWorkDateId;
     private Long jobPostId;
     private String title; // 제목
     private Tech tech; // 직종
@@ -48,7 +50,8 @@ public class JobPostDetailResponseForOffer {
 
     private List<String> imageUrls; // 이미지 정보
 
-    public static JobPostDetailResponseForOffer from(WorkDate workDate, Location location) {
+    public static JobPostDetailResponseForOffer from(OfferWorkDate offerWorkDate, Location location) {
+        WorkDate workDate = offerWorkDate.getWorkDate();
         JobPost jobPost = workDate.getJobPost();
         Member member = jobPost.getMember();
 
@@ -64,6 +67,7 @@ public class JobPostDetailResponseForOffer {
                 .collect(Collectors.toList());
 
         return JobPostDetailResponseForOffer.builder()
+                .offerWorkDateId(offerWorkDate.getId())
                 .jobPostId(jobPost.getId())
                 .title(jobPost.getTitle())
                 .tech(jobPost.getTech())
