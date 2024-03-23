@@ -1,11 +1,11 @@
-package jikgong.domain.wage.entity;
+package jikgong.domain.profit.entity;
 
 
 import jakarta.persistence.*;
 import jikgong.domain.jobPost.entity.Tech;
 import jikgong.domain.member.entity.Member;
-import jikgong.domain.wage.dtos.history.WageModifyRequest;
-import jikgong.domain.wage.dtos.history.WageSaveRequest;
+import jikgong.domain.profit.dtos.history.ProfitModifyRequest;
+import jikgong.domain.profit.dtos.history.ProfitSaveRequest;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,58 +17,58 @@ import java.time.LocalTime;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Wage {
+public class Profit {
     @Id @GeneratedValue
-    @Column(name = "wage_id")
+    @Column(name = "profit_id")
     private Long id;
 
     private String title;
-    private LocalDate workDate; // 근무 날짜
+    private LocalDate date; // 근무 날짜
     private LocalTime startTime; // 근무 시작 시간
     private LocalTime endTime; // 근무 종료 시간
-    private Integer dailyWage; // 하루 임금
+    private Integer wage; // 하루 임금
     private Tech tech; // 직종
 
     @Enumerated(EnumType.STRING)
-    private WageType wageType; // 입력 타입
+    private ProfitType profitType; // 입력 타입
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
     @Builder
-    public Wage(String title, LocalDate workDate, LocalTime startTime, LocalTime endTime, Integer dailyWage, Tech tech, Member member, WageType wageType) {
+    public Profit(String title, LocalDate date, LocalTime startTime, LocalTime endTime, Integer wage, Tech tech, Member member, ProfitType profitType) {
         this.title = title;
-        this.workDate = workDate;
+        this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.dailyWage = dailyWage;
+        this.wage = wage;
         this.tech = tech;
-        this.wageType = wageType;
+        this.profitType = profitType;
         this.member = member;
     }
 
-    public static Wage createEntity(WageSaveRequest request, Member member) {
-        return Wage.builder()
+    public static Profit createEntity(ProfitSaveRequest request, Member member) {
+        return Profit.builder()
                 .title(request.getTitle())
-                .workDate(request.getWorkDate())
+                .date(request.getDate())
                 .startTime(request.getStartTime())
                 .endTime(request.getEndTime())
-                .dailyWage(request.getDailyWage())
+                .wage(request.getWage())
                 .tech(request.getTech())
-                .wageType(request.getWageType())
+                .profitType(request.getWageType())
                 .member(member)
                 .build();
     }
 
     // 임금 지급 내역 수정
-    public void modifyWage(WageModifyRequest request) {
+    public void modifyProfit(ProfitModifyRequest request) {
         this.title = request.getTitle();
-        this.workDate = request.getWorkDate();
+        this.date = request.getDate();
         this.startTime = request.getStartTime();
         this.endTime = request.getEndTime();
-        this.dailyWage = request.getDailyWage();
+        this.wage = request.getWage();
         this.tech = request.getTech();
-        this.wageType = request.getWageType();
+        this.profitType = request.getProfitType();
     }
 }

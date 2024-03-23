@@ -1,13 +1,13 @@
-package jikgong.domain.wage.service;
+package jikgong.domain.profit.service;
 
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
-import jikgong.domain.wage.dtos.graph.DailyGraphResponse;
-import jikgong.domain.wage.dtos.graph.MonthlyGraphResponse;
-import jikgong.domain.wage.dtos.graph.WorkTimeGraphResponse;
-import jikgong.domain.wage.dtos.history.*;
-import jikgong.domain.wage.entity.Wage;
-import jikgong.domain.wage.repository.WageRepository;
+import jikgong.domain.profit.dtos.graph.DailyGraphResponse;
+import jikgong.domain.profit.dtos.graph.MonthlyGraphResponse;
+import jikgong.domain.profit.dtos.graph.WorkTimeGraphResponse;
+import jikgong.domain.profit.dtos.history.*;
+import jikgong.domain.profit.entity.Profit;
+import jikgong.domain.profit.repository.ProfitRepository;
 import jikgong.global.exception.CustomException;
 import jikgong.global.exception.ErrorCode;
 import jikgong.global.utils.TimeTransfer;
@@ -26,29 +26,29 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class WageService {
-    private final WageRepository wageRepository;
+public class ProfitService {
+    private final ProfitRepository profitRepository;
     private final MemberRepository memberRepository;
 
-    public Long saveWageHistory(Long memberId, WageSaveRequest request) {
+    public Long saveProfitHistory(Long memberId, ProfitSaveRequest request) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-        return wageRepository.save(Wage.createEntity(request, member)).getId();
+        return profitRepository.save(Profit.createEntity(request, member)).getId();
     }
 
     @Transactional(readOnly = true)
-    public List<DailyWageResponse> findDailyWageHistory(Long memberId, LocalDate selectDay) {
+    public List<DailyProfitResponse> findDailyProfitHistory(Long memberId, LocalDate selectDate) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 일일 임금 지급 리스트
-        return wageRepository.findBySelectDay(member.getId(), selectDay).stream()
-                .map(DailyWageResponse::from)
+        return profitRepository.findBySelectDate(member.getId(), selectDate).stream()
+                .map(DailyProfitResponse::from)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public MonthlyWageResponse findMonthlyWageHistoryCalendar(Long memberId, LocalDate selectMonth) {
+    public MonthlyProfitResponse findMonthlyProfitHistoryCalendar(Long memberId, LocalDate selectMonth) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
@@ -56,69 +56,69 @@ public class WageService {
         LocalDate monthEnd = TimeTransfer.getLastDayOfMonth(selectMonth);
 
         // 해당 달의 임금 합
-        Integer wageInMonth = wageRepository.findTotalMonthlyWage(member.getId(), monthStart, monthEnd);
+        Integer wageInMonth = profitRepository.findTotalMonthlyWage(member.getId(), monthStart, monthEnd);
 
         // 해당 달의 근무 시간 합
-        Integer workTimeInMonth = wageRepository.findWorkTimeInMonth(member.getId(), monthStart, monthEnd);
+        Integer workTimeInMonth = profitRepository.findWorkTimeInMonth(member.getId(), monthStart, monthEnd);
 
-        List<Wage> wageHistoryMonth = wageRepository.findWageInMonth(member.getId(), monthStart, monthEnd);
+        List<Profit> profitHistoryMonth = profitRepository.findProfitInMonth(member.getId(), monthStart, monthEnd);
 
-        List<DailyWageResponse> dailyWageResponseList = wageHistoryMonth.stream()
-                .map(DailyWageResponse::from)
+        List<DailyProfitResponse> dailyProfitResponseList = profitHistoryMonth.stream()
+                .map(DailyProfitResponse::from)
                 .collect(Collectors.toList());
 
         // 월별 일한 날짜 리스트
-        List<LocalDate> workDayList = wageHistoryMonth.stream()
-                .map(Wage::getWorkDate)
+        List<LocalDate> workDateList = profitHistoryMonth.stream()
+                .map(Profit::getDate)
                 .distinct()
                 .collect(Collectors.toList());
 
-        return MonthlyWageResponse.builder()
+        return MonthlyProfitResponse.builder()
                 .wageInMonth(wageInMonth)
                 .workTimeInMonth(TimeTransfer.getHourMinute(workTimeInMonth))
-                .workDayList(workDayList)
-                .wageResponseList(dailyWageResponseList)
+                .workDateList(workDateList)
+                .profitResponseList(dailyProfitResponseList)
                 .build();
     }
 
 
-    public void deleteWageHistory(Long memberId, Long wageId) {
+    public void deleteProfitHistory(Long memberId, Long profitId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Wage wage = wageRepository.findByMemberIdAndWageId(member.getId(), wageId);
+        Profit profit = profitRepository.findByMemberAndProfit(member.getId(), profitId);
 
-        wageRepository.delete(wage);
+        profitRepository.delete(profit);
     }
 
-    public void modifyWageHistory(Long memberId, WageModifyRequest request) {
+    public void modifyProfitHistory(Long memberId, ProfitModifyRequest request) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Wage wage = wageRepository.findById(request.getWageId())
-                .orElseThrow(() -> new CustomException(ErrorCode.WAGE_NOT_FOUND));
+        Profit profit = profitRepository.findById(request.getProfitId())
+                .orElseThrow(() -> new CustomException(ErrorCode.PROFIT_NOT_FOUND));
 
         // update
-        wage.modifyWage(request);
+        profit.modifyProfit(request);
     }
 
-    public List<DailyWageResponse> findWageHistoryList(Long memberId) {
+    public List<DailyProfitResponse> findProfitHistoryList(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        return wageRepository.findByMember(member.getId()).stream()
-                .map(DailyWageResponse::from)
+        return profitRepository.findByMember(member.getId()).stream()
+                .map(DailyProfitResponse::from)
                 .collect(Collectors.toList());
     }
 
-    public WageSummaryInfoResponse findSummaryInfo(Long memberId) {
+    public ProfitSummaryInfoResponse findSummaryInfo(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Integer totalWorkTime = wageRepository.findTotalWorkTimeByMember(member.getId());
-        Integer totalWage = wageRepository.findTotalWageByMember(member.getId());
+        Integer totalWorkTime = profitRepository.findTotalWorkTimeByMember(member.getId());
+        Integer totalWage = profitRepository.findTotalWageByMember(member.getId());
 
-        return WageSummaryInfoResponse.builder()
+        return ProfitSummaryInfoResponse.builder()
                 .totalWorkTime(totalWorkTime)
                 .totalWage(totalWage)
                 .build();
@@ -129,24 +129,24 @@ public class WageService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        List<Object[]> totalWagePerDay = wageRepository.getTotalWagePerDay(selectMonth.getYear(), selectMonth.getMonth().getValue());
+        List<Object[]> totalWagePerDay = profitRepository.getTotalWagePerDay(selectMonth.getYear(), selectMonth.getMonth().getValue());
 
-        List<Wage> wageInMonth = wageRepository.findWageInMonth(
+        List<Profit> profitInMonth = profitRepository.findProfitInMonth(
                 member.getId(),
                 TimeTransfer.getFirstDayOfMonth(selectMonth),
                 TimeTransfer.getLastDayOfMonth(selectMonth));
 
         Map<LocalDate, WorkTimeGraphResponse> totalWorkTimePerDay = new HashMap<>();
-        for (Wage wage : wageInMonth) {
-            if (totalWorkTimePerDay.containsKey(wage.getWorkDate())) {
-                WorkTimeGraphResponse workTimeGraphResponse = totalWorkTimePerDay.get(wage.getWorkDate());
+        for (Profit profit : profitInMonth) {
+            if (totalWorkTimePerDay.containsKey(profit.getDate())) {
+                WorkTimeGraphResponse workTimeGraphResponse = totalWorkTimePerDay.get(profit.getDate());
 
-                workTimeGraphResponse.plusTime(wage.getStartTime(), wage.getEndTime());
-                workTimeGraphResponse.addWorkTime(wage.getStartTime(), wage.getEndTime());
+                workTimeGraphResponse.plusTime(profit.getStartTime(), profit.getEndTime());
+                workTimeGraphResponse.addWorkTime(profit.getStartTime(), profit.getEndTime());
 
-                totalWorkTimePerDay.put(wage.getWorkDate(), workTimeGraphResponse);
+                totalWorkTimePerDay.put(profit.getDate(), workTimeGraphResponse);
             } else {
-                totalWorkTimePerDay.put(wage.getWorkDate(), WorkTimeGraphResponse.createDto(wage.getStartTime(), wage.getEndTime()));
+                totalWorkTimePerDay.put(profit.getDate(), WorkTimeGraphResponse.createDto(profit.getStartTime(), profit.getEndTime()));
             }
         }
 
@@ -160,7 +160,7 @@ public class WageService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        List<Object[]> totalWageAndWorkTimePerMonth = wageRepository.getTotalWageAndWorkTimePerMonth(selectYear.getYear());
+        List<Object[]> totalWageAndWorkTimePerMonth = profitRepository.getTotalWageAndWorkTimePerMonth(selectYear.getYear());
 
         return MonthlyGraphResponse
                 .builder()

@@ -10,7 +10,7 @@ import jikgong.domain.jobPostImage.service.JobPostImageService;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
 import jikgong.domain.pickup.entity.Pickup;
-import jikgong.domain.pickup.repository.AddressInfoRepository;
+import jikgong.domain.pickup.repository.PickupRepository;
 import jikgong.domain.project.entity.Project;
 import jikgong.domain.project.repository.ProjectRepository;
 import jikgong.domain.workDate.entity.WorkDate;
@@ -42,7 +42,7 @@ public class JobPostCompanyService {
     private final JobPostImageRepository jobPostImageRepository;
     private final JobPostImageService jobPostImageService;
     private final MemberRepository memberRepository;
-    private final AddressInfoRepository addressInfoRepository;
+    private final PickupRepository pickupRepository;
     private final WorkDateRepository workDateRepository;
     private final S3Handler s3Handler;
     private final ProjectRepository projectRepository;
@@ -64,7 +64,7 @@ public class JobPostCompanyService {
             List<Pickup> pickupLocationList = request.getPickupList().stream()
                     .map(address -> new Pickup(address, savedJobPost))
                     .collect(Collectors.toList());
-            addressInfoRepository.saveAll(pickupLocationList);
+            pickupRepository.saveAll(pickupLocationList);
         }
 
         // 날짜 정보 저장
@@ -174,7 +174,7 @@ public class JobPostCompanyService {
                 List<Pickup> pickupLocationList = request.getPickupList().stream()
                         .map(address -> new Pickup(address, savedJobPost))
                         .collect(Collectors.toList());
-                addressInfoRepository.saveAll(pickupLocationList);
+                pickupRepository.saveAll(pickupLocationList);
             }
         }
 

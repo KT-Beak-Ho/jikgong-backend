@@ -1,4 +1,4 @@
-package jikgong.domain.wage.dtos.history;
+package jikgong.domain.profit.dtos.history;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,9 +10,9 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Builder
-public class MonthlyWageResponse {
+public class MonthlyProfitResponse {
     private Integer wageInMonth; // 한달 임금 합
     private String workTimeInMonth; // 한달 근무 시간 합
-    private List<LocalDate> workDayList; // 해당 월 일한 날짜
-    private List<DailyWageResponse> wageResponseList; // 수익 내역 리스트
+    private List<LocalDate> workDateList; // 해당 월 일한 날짜
+    private List<DailyProfitResponse> profitResponseList; // 수익 내역 리스트
 }

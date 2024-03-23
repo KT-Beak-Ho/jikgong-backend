@@ -1,4 +1,4 @@
-package jikgong.domain.wage.dtos.history;
+package jikgong.domain.profit.dtos.history;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 @Builder
-public class WageSummaryInfoResponse {
+public class ProfitSummaryInfoResponse {
     private Integer totalWorkTime;
     private Integer totalWage;
 }

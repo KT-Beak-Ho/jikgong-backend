@@ -1,4 +1,4 @@
-package jikgong.domain.wage.dtos.graph;
+package jikgong.domain.profit.dtos.graph;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
