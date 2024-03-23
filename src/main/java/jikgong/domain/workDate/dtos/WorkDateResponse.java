@@ -4,7 +4,6 @@ import jikgong.domain.workDate.entity.WorkDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.ToString;
 
 import java.time.LocalDate;
 
@@ -13,12 +12,12 @@ import java.time.LocalDate;
 @Builder
 public class WorkDateResponse {
     private Long workDateId;
-    private LocalDate workDate;
+    private LocalDate date;
 
     public static WorkDateResponse from(WorkDate workDate) {
         return WorkDateResponse.builder()
                 .workDateId(workDate.getId())
-                .workDate(workDate.getWorkDate())
+                .date(workDate.getDate())
                 .build();
     }
 }

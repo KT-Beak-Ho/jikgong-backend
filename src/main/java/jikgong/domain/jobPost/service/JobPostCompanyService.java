@@ -9,9 +9,8 @@ import jikgong.domain.jobPostImage.repository.JobPostImageRepository;
 import jikgong.domain.jobPostImage.service.JobPostImageService;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
-import jikgong.domain.addressInfo.entity.AddressInfo;
-import jikgong.domain.addressInfo.entity.AddressType;
-import jikgong.domain.addressInfo.repository.AddressInfoRepository;
+import jikgong.domain.pickup.entity.Pickup;
+import jikgong.domain.pickup.repository.AddressInfoRepository;
 import jikgong.domain.project.entity.Project;
 import jikgong.domain.project.repository.ProjectRepository;
 import jikgong.domain.workDate.entity.WorkDate;
@@ -62,8 +61,8 @@ public class JobPostCompanyService {
 
         // 픽업 정보 저장
         if (request.getPickup()) {
-            List<AddressInfo> pickupLocationList = request.getPickupList().stream()
-                    .map(address -> new AddressInfo(address, AddressType.PICK_UP, savedJobPost))
+            List<Pickup> pickupLocationList = request.getPickupList().stream()
+                    .map(address -> new Pickup(address, savedJobPost))
                     .collect(Collectors.toList());
             addressInfoRepository.saveAll(pickupLocationList);
         }
@@ -172,8 +171,8 @@ public class JobPostCompanyService {
         // 픽업 정보 저장
         if (request.getPickup()) {
             if (request.getPickupList() != null) {
-                List<AddressInfo> pickupLocationList = request.getPickupList().stream()
-                        .map(address -> new AddressInfo(address, AddressType.PICK_UP, savedJobPost))
+                List<Pickup> pickupLocationList = request.getPickupList().stream()
+                        .map(address -> new Pickup(address, savedJobPost))
                         .collect(Collectors.toList());
                 addressInfoRepository.saveAll(pickupLocationList);
             }

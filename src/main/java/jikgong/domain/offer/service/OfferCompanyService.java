@@ -84,10 +84,10 @@ public class OfferCompanyService {
                 throw new CustomException(ErrorCode.WORK_DATE_NOT_MATCH);
             }
             for (WorkDate workDate : workDateEntityList) {
-                if (!LocalDate.now().isBefore(workDate.getWorkDate())) {
+                if (!LocalDate.now().isBefore(workDate.getDate())) {
                     throw new CustomException(ErrorCode.WORK_DATE_NEED_TO_FUTURE);
                 }
-                LocalDateList.add(workDate.getWorkDate());
+                LocalDateList.add(workDate.getDate());
             }
 
             // offer 엔티티 생성
@@ -144,7 +144,7 @@ public class OfferCompanyService {
 
 
         List<LocalDate> cantWorkDate = applyRepository.findAllCantWorkDate(worker.getId()).stream()
-                .map(apply -> apply.getWorkDate().getWorkDate())
+                .map(apply -> apply.getWorkDate().getDate())
                 .collect(Collectors.toList());
         Set<LocalDate> cantWorkDateSet = new HashSet<>(cantWorkDate);
 

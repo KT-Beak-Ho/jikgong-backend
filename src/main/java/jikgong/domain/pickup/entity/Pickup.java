@@ -1,4 +1,4 @@
-package jikgong.domain.addressInfo.entity;
+package jikgong.domain.pickup.entity;
 
 import jakarta.persistence.*;
 import jikgong.domain.jobPost.entity.JobPost;
@@ -10,24 +10,21 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class AddressInfo {
+public class Pickup {
 
     @Id @GeneratedValue
-    @Column(name = "address_info_id")
+    @Column(name = "pickup_id")
     private Long id;
 
     private String address; // 픽업 도로명 주소
-    @Enumerated(EnumType.STRING)
-    private AddressType addressType;
 
     @ManyToOne
     @JoinColumn(name = "job_post_id")
     private JobPost jobPost;
 
     @Builder
-    public AddressInfo(String address, AddressType addressType, JobPost jobPost) {
+    public Pickup(String address, JobPost jobPost) {
         this.address = address;
-        this.addressType = addressType;
         this.jobPost = jobPost;
     }
 }

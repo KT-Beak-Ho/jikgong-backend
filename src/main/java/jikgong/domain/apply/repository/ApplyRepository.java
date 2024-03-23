@@ -25,11 +25,11 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
 
 
     @Query("select a from Apply a join fetch a.workDate w join fetch a.workDate.jobPost j " +
-            "where a.member.id = :memberId and w.workDate = :workDate and a.status = :applyStatus")
-    List<Apply> findApplyPerDay(@Param("memberId") Long memberId, @Param("workDate") LocalDate workDate, @Param("applyStatus") ApplyStatus applyStatus);
+            "where a.member.id = :memberId and w.date = :date and a.status = :applyStatus")
+    List<Apply> findApplyPerDay(@Param("memberId") Long memberId, @Param("date") LocalDate date, @Param("applyStatus") ApplyStatus applyStatus);
 
     @Query("select a from Apply a join fetch a.workDate w " +
-            "where a.member.id = :memberId and w.workDate between :monthStart and :monthEnd")
+            "where a.member.id = :memberId and w.date between :monthStart and :monthEnd")
     List<Apply> findApplyPerMonth(@Param("memberId") Long memberId, @Param("monthStart") LocalDate monthStart, @Param("monthEnd") LocalDate monthEnd);
 
 
@@ -43,10 +43,10 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
     @Query("select a from Apply a join fetch a.member m where a.id in :applyIdList and a.workDate.id = :workDateId and a.workDate.jobPost.id = :jobPostId")
     List<Apply> findByIdList(@Param("applyIdList") List<Long> applyIdList, @Param("workDateId") Long workDateId, @Param("jobPostId") Long jobPostId);
 
-    @Query("select a from Apply a where a.workDate.workDate = :workDate and a.member.id in :memberIdList and a.id not in :applyIdList")
-    List<Apply> deleteOtherApplyByWorkDate(@Param("workDate") LocalDate workDate, @Param("applyIdList") List<Long> applyIdList, @Param("memberIdList") List<Long> memberIdList);
+    @Query("select a from Apply a where a.workDate.date = :date and a.member.id in :memberIdList and a.id not in :applyIdList")
+    List<Apply> deleteOtherApplyByWorkDate(@Param("date") LocalDate date, @Param("applyIdList") List<Long> applyIdList, @Param("memberIdList") List<Long> memberIdList);
 
-    @Query("select a from Apply a where a.member.id = :memberId and a.workDate.workDate in :workDateList and a.status = 'ACCEPTED'")
+    @Query("select a from Apply a where a.member.id = :memberId and a.workDate.date in :workDateList and a.status = 'ACCEPTED'")
     List<Apply> checkAcceptedApply(@Param("memberId") Long memberId, @Param("workDateList") List<LocalDate> workDateList);
 
     @Query(value = "select a from Apply a join fetch a.workDate w join fetch w.jobPost j where a.member.id = :memberId and a.status = 'PENDING'",
@@ -59,12 +59,12 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
     @Query(value = "select a from Apply a join fetch a.member m where a.workDate.jobPost.member.id = :memberId and a.workDate.jobPost.id = :jobPostId and a.status = :status and a.workDate.id = :workDateId")
     List<Apply> findApplyAtStartWorkCheck(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId, @Param("workDateId") Long workDateId, @Param("status") ApplyStatus status);
 
-    @Query("select a from Apply a join fetch a.workDate where a.member.id = :memberId and a.workDate.workDate between :firstDayOfMonth and :lastDayOfMonth and a.status = 'ACCEPTED'")
+    @Query("select a from Apply a join fetch a.workDate where a.member.id = :memberId and a.workDate.date between :firstDayOfMonth and :lastDayOfMonth and a.status = 'ACCEPTED'")
     List<Apply> findCantWorkDate(@Param("memberId") Long memberId, @Param("firstDayOfMonth") LocalDate firstDayOfMonth, @Param("lastDayOfMonth") LocalDate lastDayOfMonth);
 
     @Query("select a from Apply a join fetch a.workDate where a.member.id = :memberId and a.status = 'ACCEPTED'")
     List<Apply> findAllCantWorkDate(@Param("memberId") Long memberId);
 
-    @Query("select count(a) from Apply a where a.member.id = :memberId and a.workDate.workDate = :workDate and a.status = 'ACCEPTED'")
-    int findAcceptedApplyByWorkDate(@Param("memberId") Long memberId, @Param("workDate") LocalDate workDate);
+    @Query("select count(a) from Apply a where a.member.id = :memberId and a.workDate.date = :date and a.status = 'ACCEPTED'")
+    int findAcceptedApplyByWorkDate(@Param("memberId") Long memberId, @Param("date") LocalDate date);
 }

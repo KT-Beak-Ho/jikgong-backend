@@ -30,7 +30,7 @@ public class ReceivedOfferListResponse {
                 .offerWorkDateId(offerWorkDate.getId())
                 .workDateId(workDate.getId())
                 .tech(jobPost.getTech())
-                .workDate(workDate.getWorkDate())
+                .workDate(workDate.getDate())
                 .title(jobPost.getTitle())
                 .status(offerWorkDate.getOfferWorkDateStatus())
                 .build();

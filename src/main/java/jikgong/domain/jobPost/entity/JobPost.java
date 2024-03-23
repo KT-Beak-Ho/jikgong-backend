@@ -1,7 +1,7 @@
 package jikgong.domain.jobPost.entity;
 
 import jakarta.persistence.*;
-import jikgong.domain.addressInfo.entity.AddressInfo;
+import jikgong.domain.pickup.entity.Pickup;
 import jikgong.domain.common.Address;
 import jikgong.domain.common.BaseEntity;
 import jikgong.domain.jobPost.dtos.company.JobPostSaveRequest;
@@ -61,7 +61,7 @@ public class JobPost extends BaseEntity {
     @OneToMany(mappedBy = "jobPost", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WorkDate> workDateList = new ArrayList<>();
     @OneToMany(mappedBy = "jobPost", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AddressInfo> addressInfoList = new ArrayList<>();
+    private List<Pickup> pickupList = new ArrayList<>();
     @OneToMany(mappedBy = "jobPost")
     private List<Scrap> scrapList = new ArrayList<>();
     @OneToMany(mappedBy = "jobPost")
@@ -88,7 +88,7 @@ public class JobPost extends BaseEntity {
         this.project = project;
 
         this.workDateList = new ArrayList<>();
-        this.addressInfoList = new ArrayList<>();
+        this.pickupList = new ArrayList<>();
         this.scrapList = new ArrayList<>();
         this.jobPostImageList = new ArrayList<>();
     }
@@ -153,6 +153,6 @@ public class JobPost extends BaseEntity {
         // 근무 날짜 정보 삭제
         jobPost.getWorkDateList().clear();
         // 위치 관련 정보 삭제
-        jobPost.getAddressInfoList().clear();
+        jobPost.getPickupList().clear();
     }
 }

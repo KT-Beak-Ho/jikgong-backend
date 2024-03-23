@@ -31,7 +31,7 @@ public class SelectOfferJobPostResponse {
             for (WorkDate jobPostWorkDate : jobPostWorkDateList) {
                 // 노동자가 이미 일하는 날짜를 제외
                 // 당일, 과거 날짜 제외
-                if (!cantWorkDateSet.contains(jobPostWorkDate.getWorkDate()) && jobPostWorkDate.getWorkDate().isAfter(now)) {
+                if (!cantWorkDateSet.contains(jobPostWorkDate.getDate()) && jobPostWorkDate.getDate().isAfter(now)) {
                     availableDate.add(WorkDateResponse.from(jobPostWorkDate));
                 }
             }

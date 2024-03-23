@@ -7,8 +7,6 @@ import jikgong.domain.apply.dtos.worker.ApplySaveRequest;
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.apply.repository.ApplyRepository;
-import jikgong.domain.history.repository.HistoryRepository;
-import jikgong.domain.history.service.HistoryService;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.repository.JobPostRepository;
 import jikgong.domain.member.entity.Member;
@@ -28,7 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -70,7 +67,7 @@ public class ApplyWorkerService {
     }
 
     private void checkAcceptedApply(List<WorkDate> workDateList, Member member) {
-        List<LocalDate> dateList = workDateList.stream().map(WorkDate::getWorkDate).collect(Collectors.toList());
+        List<LocalDate> dateList = workDateList.stream().map(WorkDate::getDate).collect(Collectors.toList());
         List<Apply> acceptedApplyInWorkDateList = applyRepository.checkAcceptedApply(member.getId(), dateList);
         if (!acceptedApplyInWorkDateList.isEmpty()) {
             throw new CustomException(ErrorCode.APPLY_ALREADY_ACCEPTED_IN_WORKDATE);
@@ -86,7 +83,7 @@ public class ApplyWorkerService {
 
     private void validateTwoDaysBefore(List<WorkDate> workDateList) {
         LocalDate minWorkDate = workDateList.stream()
-                .map(WorkDate::getWorkDate)
+                .map(WorkDate::getDate)
                 .min(LocalDate::compareTo)
                 .orElseThrow(() -> new CustomException(ErrorCode.EMPTY_WORK_DATE_LIST));
         LocalDate twoDaysInFuture = LocalDate.now().plusDays(2);
@@ -139,7 +136,7 @@ public class ApplyWorkerService {
         Map<LocalDate, ApplyStatus> workDateMap = new HashMap<>();
 
         for (Apply apply : applyList) {
-            LocalDate applyDate = apply.getWorkDate().getWorkDate();
+            LocalDate applyDate = apply.getWorkDate().getDate();
             ApplyStatus currentStatus = apply.getStatus();
 
             // 매핑된 날짜가 있을 때 -> 수락된 게 있다면 수락 으로 update

@@ -45,7 +45,7 @@ public class OfferHistoryResponse {
                 .title(jobPost.getTitle())
                 .workerName(worker.getWorkerInfo().getWorkerName())
                 .tech(jobPost.getTech())
-                .workDateList(workDateList.stream().map(WorkDate::getWorkDate).collect(Collectors.toList()))
+                .workDateList(workDateList.stream().map(WorkDate::getDate).collect(Collectors.toList()))
                 .startTime(jobPost.getStartTime())
                 .endTime(jobPost.getEndTime())
                 .wage(jobPost.getWage())

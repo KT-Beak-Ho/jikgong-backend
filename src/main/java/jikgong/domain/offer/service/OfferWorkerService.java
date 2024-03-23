@@ -1,12 +1,10 @@
 package jikgong.domain.offer.service;
 
 import jikgong.domain.apply.repository.ApplyRepository;
-import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
 import jikgong.domain.offer.dtos.worker.OfferProcessRequest;
 import jikgong.domain.offer.dtos.worker.ReceivedOfferListResponse;
-import jikgong.domain.offer.repository.OfferRepository;
 import jikgong.domain.offerWorkDate.entity.OfferWorkDate;
 import jikgong.domain.offerWorkDate.repository.OfferWorkDateRepository;
 import jikgong.domain.workDate.entity.WorkDate;
@@ -18,8 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,11 +58,11 @@ public class OfferWorkerService {
             }
 
             // 출역일 1일 전까지 수락 가능
-            if (!workDate.getWorkDate().isAfter(LocalDate.now())) {
+            if (!workDate.getDate().isAfter(LocalDate.now())) {
                 throw new CustomException(ErrorCode.OFFER_PROCESS_NEED_TO_ONE_DAY_AGO);
             }
 
-            int cntAcceptedApply = applyRepository.findAcceptedApplyByWorkDate(worker.getId(), workDate.getWorkDate());
+            int cntAcceptedApply = applyRepository.findAcceptedApplyByWorkDate(worker.getId(), workDate.getDate());
             if (cntAcceptedApply != 0) {
                 throw new CustomException(ErrorCode.APPLY_ALREADY_ACCEPTED_IN_WORKDATE);
             }

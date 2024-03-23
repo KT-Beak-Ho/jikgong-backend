@@ -88,7 +88,7 @@ public class ApplyJobConfig {
             JobPost jobPost = workDate.getJobPost();
 
             // 알림 전송
-            String content = workDate.getWorkDate().toString() + ", " + jobPost.getTitle() + " 현장 지원이 자동 취소되었습니다.";
+            String content = workDate.getDate().toString() + ", " + jobPost.getTitle() + " 현장 지원이 자동 취소되었습니다.";
             String url = "/api/worker/job-post/" + jobPost.getId();
             notificationService.saveNotification(member.getId(), NotificationType.APPLY_CANCEL, content, url);
 

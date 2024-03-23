@@ -70,7 +70,7 @@ public class WorkerInfoResponse {
 
         // 이미 일하는 날짜
         List<LocalDate> cantWorkDateList = findCantWorkDate.stream()
-                .map(apply -> apply.getWorkDate().getWorkDate())
+                .map(apply -> apply.getWorkDate().getDate())
                 .collect(Collectors.toList());
 
         return WorkerInfoResponse.builder()

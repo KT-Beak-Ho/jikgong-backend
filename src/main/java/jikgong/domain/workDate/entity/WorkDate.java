@@ -21,7 +21,7 @@ public class WorkDate {
     @Column(name = "work_date_id")
     private Long id;
 
-    private LocalDate workDate;
+    private LocalDate date;
     private Integer recruitNum; // 모집 인원
     private Integer registeredNum; // 모집된 인원
 
@@ -34,8 +34,8 @@ public class WorkDate {
     private List<Apply> applyList = new ArrayList<>();
 
     @Builder
-    public WorkDate(LocalDate workDate, Integer recruitNum, JobPost jobPost) {
-        this.workDate = workDate;
+    public WorkDate(LocalDate date, Integer recruitNum, JobPost jobPost) {
+        this.date = date;
         this.recruitNum = recruitNum;
         this.registeredNum = 0;
         this.jobPost = jobPost;

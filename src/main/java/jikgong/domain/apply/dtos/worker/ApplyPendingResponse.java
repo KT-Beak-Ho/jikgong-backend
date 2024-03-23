@@ -26,7 +26,7 @@ public class ApplyPendingResponse {
                 .applyId(apply.getId())
                 .status(apply.getStatus())
                 .applyTime(apply.getCreatedDate().toLocalDate())
-                .workDate(apply.getWorkDate().getWorkDate())
+                .workDate(apply.getWorkDate().getDate())
                 .applyNum(apply.getWorkDate().getApplyList().size())
                 .jobPostResponse(JobPostResponseForPendingApply.from(apply.getWorkDate().getJobPost()))
                 .build();

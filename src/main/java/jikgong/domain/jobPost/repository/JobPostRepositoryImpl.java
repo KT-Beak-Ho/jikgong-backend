@@ -36,7 +36,7 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<JobPostListResponse> getMainPage(Long memberId, Tech tech, List<LocalDate> workDateList, Boolean isScrap, Boolean meal, Park park, Location location, SortType sortType, Pageable pageable) {
+    public Page<JobPostListResponse> getMainPage(Long memberId, Tech tech, List<LocalDate> dateList, Boolean isScrap, Boolean meal, Park park, Location location, SortType sortType, Pageable pageable) {
         List<JobPostListResponse> jobPostList = queryFactory
                 .select(Projections.constructor(JobPostListResponse.class,
                         jobPost.id,
@@ -59,7 +59,7 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
                 .leftJoin(jobPost.member, member)
                 .where(
                         eqTech(tech),
-                        eqWorkDate(workDateList),
+                        eqWorkDate(dateList),
                         eqScrap(memberId, isScrap),
                         eqMeal(meal),
                         eqPark(park)
@@ -74,7 +74,7 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
                 .from(jobPost)
                 .where(
                         eqTech(tech),
-                        eqWorkDate(workDateList),
+                        eqWorkDate(dateList),
                         eqScrap(memberId, isScrap),
                         eqMeal(meal),
                         eqPark(park)
@@ -135,8 +135,8 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
         return tech == null ? null : jobPost.tech.eq(tech);
     }
 
-    private BooleanExpression eqWorkDate(List<LocalDate> workDateList) {
-        return workDateList == null ? null : jobPost.workDateList.any().workDate.in(workDateList);
+    private BooleanExpression eqWorkDate(List<LocalDate> dateList) {
+        return dateList == null ? null : jobPost.workDateList.any().date.in(dateList);
     }
 
     private BooleanExpression eqScrap(Long memberId, Boolean scrap) {

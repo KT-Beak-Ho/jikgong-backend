@@ -5,13 +5,10 @@ import jikgong.domain.apply.dtos.company.ApplyProcessRequest;
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.apply.repository.ApplyRepository;
-import jikgong.domain.history.entity.History;
-import jikgong.domain.history.entity.WorkStatus;
 import jikgong.domain.history.repository.HistoryRepository;
 import jikgong.domain.history.service.HistoryService;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.repository.JobPostRepository;
-import jikgong.domain.member.dtos.MemberAcceptedResponse;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
 import jikgong.domain.workDate.entity.WorkDate;
@@ -20,7 +17,6 @@ import jikgong.global.exception.CustomException;
 import jikgong.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -28,9 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -129,7 +123,7 @@ public class ApplyCompanyService {
 
     private void cancelAnotherApply(ApplyProcessRequest request, List<Apply> applyList, WorkDate workDate) {
         List<Long> memberIdList = applyList.stream().map(apply -> apply.getMember().getId()).collect(Collectors.toList());
-        List<Apply> deleteApply = applyRepository.deleteOtherApplyByWorkDate(workDate.getWorkDate(), request.getApplyIdList(), memberIdList);
+        List<Apply> deleteApply = applyRepository.deleteOtherApplyByWorkDate(workDate.getDate(), request.getApplyIdList(), memberIdList);
         List<Long> cancelApplyIdList = deleteApply.stream().map(Apply::getId).collect(Collectors.toList());
         int canceledCount = applyRepository.updateApplyStatus(cancelApplyIdList, ApplyStatus.CANCELED, LocalDateTime.now());
         log.info("취소된 요청 횟수: " + canceledCount);

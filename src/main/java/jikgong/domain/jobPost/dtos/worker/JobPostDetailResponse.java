@@ -1,7 +1,6 @@
 package jikgong.domain.jobPost.dtos.worker;
 
-import jikgong.domain.addressInfo.entity.AddressInfo;
-import jikgong.domain.addressInfo.entity.AddressType;
+import jikgong.domain.pickup.entity.Pickup;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.entity.Park;
 import jikgong.domain.jobPost.entity.Tech;
@@ -9,13 +8,11 @@ import jikgong.domain.jobPostImage.entity.JobPostImage;
 import jikgong.domain.location.entity.Location;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.workDate.dtos.WorkDateResponse;
-import jikgong.domain.workDate.entity.WorkDate;
 import jikgong.global.utils.DistanceCal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,9 +49,8 @@ public class JobPostDetailResponse {
         Member member = jobPost.getMember();
 
         // 픽업 장소 리스트
-        List<String> pickupAddressList = jobPost.getAddressInfoList().stream()
-                .filter(addressInfo -> addressInfo.getAddressType() == AddressType.PICK_UP)
-                .map(AddressInfo::getAddress)
+        List<String> pickupAddressList = jobPost.getPickupList().stream()
+                .map(Pickup::getAddress)
                 .collect(Collectors.toList());
 
         // 근무 날짜

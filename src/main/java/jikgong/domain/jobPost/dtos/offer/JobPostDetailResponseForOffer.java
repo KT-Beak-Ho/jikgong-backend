@@ -1,7 +1,6 @@
 package jikgong.domain.jobPost.dtos.offer;
 
-import jikgong.domain.addressInfo.entity.AddressInfo;
-import jikgong.domain.addressInfo.entity.AddressType;
+import jikgong.domain.pickup.entity.Pickup;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.entity.Park;
 import jikgong.domain.jobPost.entity.Tech;
@@ -16,7 +15,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,9 +54,8 @@ public class JobPostDetailResponseForOffer {
         Member member = jobPost.getMember();
 
         // 픽업 장소 리스트
-        List<String> pickupAddressList = jobPost.getAddressInfoList().stream()
-                .filter(addressInfo -> addressInfo.getAddressType() == AddressType.PICK_UP)
-                .map(AddressInfo::getAddress)
+        List<String> pickupAddressList = jobPost.getPickupList().stream()
+                .map(Pickup::getAddress)
                 .collect(Collectors.toList());
 
         // 이미지 리스트
