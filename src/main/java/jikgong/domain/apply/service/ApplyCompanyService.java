@@ -41,15 +41,20 @@ public class ApplyCompanyService {
     private final HistoryService historyService;
 
     // 인력 관리: 인부 신청 현황 조회 (회사)
-    public Page<ApplyResponseForCompany> findPendingApplyHistoryCompany(Long memberId, Long jobPostId, Long workDateId, Pageable pageable) {
-        Member member = memberRepository.findById(memberId)
+
+    /**
+     * 인력 관리
+     * 지원자 목록 조회
+     */
+    public Page<ApplyResponseForCompany> findPendingApplyHistoryCompany(Long companyId, Long jobPostId, Long workDateId, Pageable pageable) {
+        Member member = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
         JobPost jobPost = jobPostRepository.findById(jobPostId)
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
         WorkDate workDate = workDateRepository.findById(workDateId)
                 .orElseThrow(() -> new CustomException(ErrorCode.WORK_DATE_NOT_FOUND));
 
-        Page<Apply> applyPage = applyRepository.findByMemberAndJobPostAndWorkDate(member.getId(), jobPost.getId(), workDate.getId(), ApplyStatus.PENDING, pageable);
+        Page<Apply> applyPage = applyRepository.findApplyForCompanyByApplyStatus(member.getId(), jobPost.getId(), workDate.getId(), ApplyStatus.PENDING, pageable);
 
         List<ApplyResponseForCompany> applyResponseForCompanyList = applyPage.getContent().stream()
                 .map(ApplyResponseForCompany::from)
@@ -58,16 +63,19 @@ public class ApplyCompanyService {
         return new PageImpl<>(applyResponseForCompanyList, pageable, applyPage.getTotalElements());
     }
 
-    // 인력 관리: 확정 인부 조회 (회사)
-    public Page<ApplyResponseForCompany> findAcceptedHistoryCompany(Long memberId, Long jobPostId, Long workDateId, Pageable pageable) {
-        Member member = memberRepository.findById(memberId)
+    /**
+     * 인력 관리
+     * 확정 인부 조회
+     */
+    public Page<ApplyResponseForCompany> findAcceptedHistoryCompany(Long companyId, Long jobPostId, Long workDateId, Pageable pageable) {
+        Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
         JobPost jobPost = jobPostRepository.findById(jobPostId)
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
         WorkDate workDate = workDateRepository.findById(workDateId)
                 .orElseThrow(() -> new CustomException(ErrorCode.WORK_DATE_NOT_FOUND));
 
-        Page<Apply> applyPage = applyRepository.findByMemberAndJobPostAndWorkDate(member.getId(), jobPost.getId(), workDate.getId(), ApplyStatus.ACCEPTED, pageable);
+        Page<Apply> applyPage = applyRepository.findApplyForCompanyByApplyStatus(company.getId(), jobPost.getId(), workDate.getId(), ApplyStatus.ACCEPTED, pageable);
 
         List<ApplyResponseForCompany> applyResponseForCompanyList = applyPage.getContent().stream()
                 .map(ApplyResponseForCompany::from)
@@ -76,9 +84,13 @@ public class ApplyCompanyService {
         return new PageImpl<>(applyResponseForCompanyList, pageable, applyPage.getTotalElements());
     }
 
-    // 인력 관리: 인부 요청 처리
-    public void processApply(Long memberId, ApplyProcessRequest request) {
-        Member member = memberRepository.findById(memberId)
+    /**
+     * 인력 관리
+     * 인부 지원 요청 처리 (수락, 거절)
+     * apply status 갱신 후 같은 날 다른 공고에 대한 지원 취소
+     */
+    public void processApply(Long companyId, ApplyProcessRequest request) {
+        Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
         JobPost jobPost = jobPostRepository.findById(request.getJobPostId())
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
@@ -89,7 +101,7 @@ public class ApplyCompanyService {
         List<Apply> applyList = checkPendingApply(request, workDate, jobPost);
 
         // 모집 인원 초과 체크
-        checkRegisteredNum(workDate, applyList);
+        checkRegisteredNumOver(workDate, applyList);
 
         // applyStatus 갱신
         List<Long> updateApplyIdList = applyList.stream().map(Apply::getId).collect(Collectors.toList());
@@ -105,12 +117,14 @@ public class ApplyCompanyService {
         }
     }
 
-    private void checkRegisteredNum(WorkDate workDate, List<Apply> applyList) {
+    // 모집 인원 초과 체크
+    private void checkRegisteredNumOver(WorkDate workDate, List<Apply> applyList) {
         if (workDate.getRegisteredNum() + applyList.size() > workDate.getRecruitNum()) {
             throw new CustomException(ErrorCode.APPLY_OVER_RECRUIT_NUM);
         }
     }
 
+    // 대기 중인 요청인지 체크
     private List<Apply> checkPendingApply(ApplyProcessRequest request, WorkDate workDate, JobPost jobPost) {
         List<Apply> applyList = applyRepository.findByIdList(request.getApplyIdList(), workDate.getId(), jobPost.getId());
         for (Apply apply : applyList) {
@@ -121,6 +135,7 @@ public class ApplyCompanyService {
         return applyList;
     }
 
+    // 수락 하려는 회원이 같은 날 다른 공고에 지원 했던 요청 취소
     private void cancelAnotherApply(ApplyProcessRequest request, List<Apply> applyList, WorkDate workDate) {
         List<Long> memberIdList = applyList.stream().map(apply -> apply.getMember().getId()).collect(Collectors.toList());
         List<Apply> deleteApply = applyRepository.deleteOtherApplyByWorkDate(workDate.getDate(), request.getApplyIdList(), memberIdList);

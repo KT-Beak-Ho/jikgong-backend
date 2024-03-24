@@ -30,9 +30,9 @@ public class CertificationController {
     }
 
     @Operation(summary = "회원의 경력 증명서 조회")
-    @GetMapping("/api/certification")
-    public ResponseEntity<Response> findCertification(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        CertificationResponse certificationResponse = certificationService.findCertification(principalDetails.getMember().getId());
+    @GetMapping("/api/certification/{workerId}")
+    public ResponseEntity<Response> findCertification(@PathVariable("workerId") Long workerId) {
+        CertificationResponse certificationResponse = certificationService.findCertification(workerId);
         return ResponseEntity.ok(new Response(certificationResponse, "경력 증명서 등록 완료"));
     }
 

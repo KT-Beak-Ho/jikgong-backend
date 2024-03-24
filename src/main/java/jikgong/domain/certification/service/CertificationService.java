@@ -26,8 +26,12 @@ public class CertificationService {
     private final S3Handler s3Handler;
     private final MemberRepository memberRepository;
 
-    public Long saveCertification(Long memberId, MultipartFile file) {
-        Member member = memberRepository.findById(memberId)
+    /**
+     * 경력 인증서 저장
+     * s3 업로드 후 저장
+     */
+    public Long saveCertification(Long workerId, MultipartFile file) {
+        Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
         ImageDto imageDto = s3Handler.uploadImage(file);
@@ -38,17 +42,20 @@ public class CertificationService {
         Certification savedCertification = certificationRepository.save(certification);
 
         // 회원 엔티티와 연관 관계 세팅
-        member.setCertification(certification);
+        worker.setCertification(certification);
 
         return savedCertification.getId();
     }
 
 
-    public CertificationResponse findCertification(Long memberId) {
-        Member member = memberRepository.findById(memberId)
+    /**
+     * 경력 인증서 조회
+     */
+    public CertificationResponse findCertification(Long workerId) {
+        Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Certification certification = member.getCertification();
+        Certification certification = worker.getCertification();
 
         if (certification == null) {
             throw new CustomException(ErrorCode.CERTIFICATION_NOT_FOUND);
@@ -57,14 +64,17 @@ public class CertificationService {
         return CertificationResponse.from(certification);
     }
 
-    public void checkAndDeleteCertification(Long memberId) {
-        Member member = memberRepository.findById(memberId)
+    /**
+     * 경력 증명서 제거
+     */
+    public void checkAndDeleteCertification(Long workerId) {
+        Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Certification certification = member.getCertification();
+        Certification certification = worker.getCertification();
 
         if (certification != null) {
-            member.setCertification(null);
+            worker.setCertification(null);
             s3Handler.deleteImage(List.of(certification.getStoreImgName()));
             log.info("기존에 있던 경력 증명서 제거");
         }
