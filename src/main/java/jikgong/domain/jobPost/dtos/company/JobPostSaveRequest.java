@@ -54,7 +54,7 @@ public class JobPostSaveRequest {
     // 리스트 정보
     @NotEmpty(message = "일하는 날짜 리스트는 최소한 하나의 날짜가 필요합니다.")
     @Schema(description = "일하는 날짜 리스트", example = "[\"2024-01-01\", \"2024-01-02\"]")
-    private List<LocalDate> workDateList;
+    private List<LocalDate> dateList;
     @Schema(description = "픽업 주소 리스트", example = "[\"부산광역시 사하구 낙동대로 550번길 37\", \"대한민국 부산광역시 서구 구덕로 225\"]")
     private List<String> pickupList;
 

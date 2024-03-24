@@ -52,7 +52,8 @@ public enum ErrorCode {
     MEMBER_LOGIN_ID_EXIST(HttpStatus.CONFLICT, "이미 등록된 id입니다."),
     OFFER_NOT_FOUND(HttpStatus.NOT_FOUND, "제안 내역이 없습니다."),
     OFFER_WORK_DATE_NOT_FOUND(HttpStatus.NOT_FOUND, "제안 내역이 없습니다."),
-    OFFER_PROCESS_NEED_TO_ONE_DAY_AGO(HttpStatus.BAD_REQUEST, "제안 수락은 출역일 하루 전 날까지 가능합니다.");
+    OFFER_PROCESS_NEED_TO_ONE_DAY_AGO(HttpStatus.BAD_REQUEST, "제안 수락은 출역일 하루 전 날까지 가능합니다."),
+    LOCATION_ALREADY_MAIN(HttpStatus.CONFLICT, "이미 메인 위치로 등록된 위치입니다.");
 
     private final HttpStatus status;
     private final String errorMessage;

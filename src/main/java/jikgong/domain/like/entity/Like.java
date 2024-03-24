@@ -33,4 +33,11 @@ public class Like extends BaseEntity {
         this.sender = sender;
         this.receiver = receiver;
     }
+
+    public static Like createEntity(Member sender, Member receiver) {
+        return Like.builder()
+                .sender(sender)
+                .receiver(receiver)
+                .build();
+    }
 }

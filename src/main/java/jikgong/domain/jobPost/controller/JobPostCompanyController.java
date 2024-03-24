@@ -76,13 +76,8 @@ public class JobPostCompanyController {
 
     @Operation(summary = "임시 저장: 조회")
     @GetMapping("/api/company/job-posts/temporary")
-    public ResponseEntity<Response> findTemporaryJobPosts(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                          @RequestParam(name = "page", defaultValue = "0") int page,
-                                                          @RequestParam(name = "size", defaultValue = "10") int size) {
-        // 페이징 처리
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdDate")));
-        Page<TemporaryListResponse> temporaryJobPostPage =
-                jobPostCompanyService.findTemporaryJobPosts(principalDetails.getMember().getId(), pageable);
+    public ResponseEntity<Response> findTemporaryJobPosts(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        List<TemporaryListResponse> temporaryJobPostPage = jobPostCompanyService.findTemporaryJobPosts(principalDetails.getMember().getId());
         return ResponseEntity.ok(new Response(temporaryJobPostPage, "임시 등록한 모집 공고 리스트 반환"));
     }
 

@@ -30,13 +30,16 @@ public class LocationService {
     private final LocationRepository locationRepository;
     private final MemberRepository memberRepository;
 
-    public Long saveLocation(Long memberId, LocationSaveRequest request) {
-        Member member = memberRepository.findById(memberId)
+    /**
+     * 위치 정보 등록
+     */
+    public Long saveLocation(Long workerId, LocationSaveRequest request) {
+        Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 기존 main location 이 있다면 해지
         if (request.getIsMain()) {
-            Optional<Location> mainLocation = locationRepository.findMainLocationByMemberId(memberId);
+            Optional<Location> mainLocation = locationRepository.findMainLocationByMemberId(worker.getId());
             if (mainLocation.isPresent()) {
                 mainLocation.get().changeMainLocation(false);
             }
@@ -45,12 +48,15 @@ public class LocationService {
         Location location = Location.builder()
                 .address(new Address(request.getAddress(), request.getLatitude(), request.getLongitude()))
                 .isMain(request.getIsMain())
-                .member(member)
+                .member(worker)
                 .build();
 
         return locationRepository.save(location).getId();
     }
 
+    /**
+     * 등록된 위치 조회
+     */
     @Transactional(readOnly = true)
     public List<LocationResponse> findLocationByMember(Long memberId) {
         Member member = memberRepository.findById(memberId)
@@ -63,7 +69,9 @@ public class LocationService {
         return locationResponseList;
     }
 
-    // 대표 위치 변경
+    /**
+     * 대표 위치 변경
+     */
     public void changeMainLocation(Long memberId, Long locationId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -72,7 +80,7 @@ public class LocationService {
                 .orElseThrow(() -> new CustomException(ErrorCode.LOCATION_NOT_FOUND));
 
         // 요청한 locationId 가 이미 main 이라면
-        if (location.getIsMain()) return;
+        if (location.getIsMain()) throw new CustomException(ErrorCode.LOCATION_ALREADY_MAIN);
 
         Optional<Location> mainLocation = locationRepository.findMainLocationByMemberId(memberId);
         if (mainLocation.isPresent()) {
@@ -81,6 +89,9 @@ public class LocationService {
         location.changeMainLocation(true);  // 신규 main location
     }
 
+    /**
+     * 위치 수정
+     */
     public void updateLocation(Long memberId, LocationUpdateRequest request) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -91,15 +102,19 @@ public class LocationService {
         location.updateLocation(request);
     }
 
-    // 단일 삭제
+    /**
+     * 위치 단일 삭제
+     */
     public void deleteLocation(Long memberId, Long locationId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        locationRepository.deleteByLocationIdAndMemberId(member.getId(), locationId);
+        locationRepository.deleteById(member.getId(), locationId);
     }
 
-    // 복수 삭제
+    /**
+     * 위치 복수 삭제
+     */
     public void deleteLocations(Long memberId, LocationDeleteRequest request) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));

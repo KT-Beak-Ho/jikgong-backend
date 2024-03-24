@@ -12,9 +12,15 @@ import java.util.Optional;
 
 @Repository
 public interface LocationRepository extends JpaRepository<Location, Long> {
+    /**
+     * 위치 팬
+     */
     @Query("select l from Location l where l.member.id = :memberId")
     List<Location> findByMemberId(@Param("memberId") Long memberId);
 
+    /**
+     * 메인 위치 정보 조회
+     */
     @Query("select l from Location l where l.member.id = :memberId and l.isMain = true")
     Optional<Location> findMainLocationByMemberId(@Param("memberId") Long memberId);
 
@@ -23,7 +29,7 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
 
     @Modifying
     @Query("delete from Location l where l.member.id = :memberId and l.id = :locationId")
-    void deleteByLocationIdAndMemberId(@Param("memberId") Long memberId, @Param("locationId") Long locationId);
+    void deleteById(@Param("memberId") Long memberId, @Param("locationId") Long locationId);
 
     @Modifying
     @Query("delete from Location l where l.member.id = :memberId and l.id in :locationIdList")

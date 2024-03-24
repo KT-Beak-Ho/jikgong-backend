@@ -54,7 +54,7 @@ public class LocationController {
     }
 
     @Operation(summary = "위치 삭제 (복수)")
-    @DeleteMapping("/api/locations/")
+    @DeleteMapping("/api/locations")
     public ResponseEntity<Response> deleteLocations(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                     @RequestBody LocationDeleteRequest request) {
         locationService.deleteLocations(principalDetails.getMember().getId(), request);
@@ -63,8 +63,8 @@ public class LocationController {
 
     @Operation(summary = "대표 위치 변경 및 설정", description = "기존에 대표 위치로 설정 해둔게 있다면 변경, 없다면 설정")
     @PostMapping("/api/location/representative/{locationId}")
-    public ResponseEntity<Response> changeMainLocation(@PathVariable("locationId") Long locationId,
-                                                       @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseEntity<Response> changeMainLocation(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                       @PathVariable("locationId") Long locationId) {
         locationService.changeMainLocation(principalDetails.getMember().getId(), locationId);
         return ResponseEntity.ok(new Response("대표 위치 변경 완료"));
     }

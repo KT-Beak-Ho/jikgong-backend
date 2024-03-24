@@ -17,19 +17,4 @@ import java.util.stream.Collectors;
 @Transactional
 @Slf4j
 public class JobPostImageService {
-    private final JobPostImageRepository jobPostImageRepository;
-    private final S3Handler s3Handler;
-
-    public void deleteEntityAndS3(Long memberId, Long jobPostId) {
-        List<JobPostImage> jobPostImageList = jobPostImageRepository.findByMemberAndJobPost(memberId, jobPostId);
-
-        // s3 이미지 삭제
-        List<String> storedImgList = jobPostImageList.stream()
-                .map(JobPostImage::getStoreImgName)
-                .collect(Collectors.toList());
-        s3Handler.deleteImage(storedImgList);
-
-        jobPostImageRepository.deleteAll(jobPostImageList);
-        log.info("image 엔티티 " + jobPostImageList.size() + "개 삭제 완료");
-    }
 }

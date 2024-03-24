@@ -22,6 +22,9 @@ public class LikeService {
     private final LikeRepository likeRepository;
     private final MemberRepository memberRepository;
 
+    /**
+     * 좋아요 등록
+     */
     public Long saveLike(Long senderId, Long receiverId) {
         Optional<Like> existLike = likeRepository.findBySenderIdAndReceiverId(senderId, receiverId);
 
@@ -40,13 +43,12 @@ public class LikeService {
             throw new CustomException(ErrorCode.LIKE_REQUEST_INVALID);
         }
 
-        Like like = Like.builder()
-                .sender(sender)
-                .receiver(receiver)
-                .build();
-        return likeRepository.save(like).getId();
+        return likeRepository.save(Like.createEntity(sender, receiver)).getId();
     }
 
+    /**
+     * 좋아요 취소
+     */
     public void deleteLike(Long senderId, Long receiverId) {
         Member sender = memberRepository.findById(senderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));

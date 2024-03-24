@@ -10,6 +10,4 @@ import java.util.List;
 
 @Repository
 public interface JobPostImageRepository extends JpaRepository<JobPostImage, Long> {
-    @Query("select j from JobPostImage j where j.jobPost.member.id = :memberId and j.jobPost.id = :jobPostId")
-    List<JobPostImage> findByMemberAndJobPost(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId);
 }

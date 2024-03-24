@@ -40,39 +40,51 @@ public class JobPostWorkerService {
     private final WorkDateRepository workDateRepository;
     private final OfferWorkDateRepository offerWorkDateRepository;
 
-    public Page<JobPostListResponse> getMainPage(Long memberId, Tech tech, List<LocalDate> workDateList, Boolean scrap, Boolean meal, Park park, SortType sortType, Pageable pageable) {
-        Member member = memberRepository.findById(memberId)
+    /**
+     * 메인 페이지 조회
+     * 필터: 직종, 날짜, 스크랩, 식사 제공, 주차 여부, 정렬 기준
+     */
+    public Page<JobPostListResponse> getMainPage(Long workerId, Tech tech, List<LocalDate> workDateList, Boolean scrap, Boolean meal, Park park, SortType sortType, Pageable pageable) {
+        Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Location location = locationRepository.findMainLocationByMemberId(member.getId())
+        Location location = locationRepository.findMainLocationByMemberId(worker.getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.LOCATION_NOT_FOUND));
 
-        Page<JobPostListResponse> jobPostPage = jobPostRepository.getMainPage(member.getId(), tech, workDateList, scrap, meal, park, location, sortType, pageable);
+        // querydsl
+        Page<JobPostListResponse> jobPostPage = jobPostRepository.getMainPage(worker.getId(), tech, workDateList, scrap, meal, park, location, sortType, pageable);
 
         return jobPostPage;
     }
 
-    public JobPostDetailResponse getJobPostDetail(Long memberId, Long jobPostId) {
-        Member member = memberRepository.findById(memberId)
+    /**
+     * 모집 공고 상세 화면
+     */
+    public JobPostDetailResponse getJobPostDetail(Long workerId, Long jobPostId) {
+        Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
         JobPost jobPost = jobPostRepository.findByIdWithMember(jobPostId)
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
 
-        Location location = locationRepository.findMainLocationByMemberId(member.getId())
+        Location location = locationRepository.findMainLocationByMemberId(worker.getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.LOCATION_NOT_FOUND));
 
         return JobPostDetailResponse.from(jobPost, location);
     }
 
-    public JobPostDetailResponseForOffer getJobPostDetailForOffer(Long memberId, Long offerWorkDateId) {
-        Member member = memberRepository.findById(memberId)
+    /**
+     * 모집 공고 상세 화면
+     * 일자리 제안 시 보여 줄 상세 화면
+     */
+    public JobPostDetailResponseForOffer getJobPostDetailForOffer(Long workerId, Long offerWorkDateId) {
+        Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
         OfferWorkDate offerWorkDate = offerWorkDateRepository.findByIdAtProcessOffer(offerWorkDateId)
                 .orElseThrow(() -> new CustomException(ErrorCode.OFFER_WORK_DATE_NOT_FOUND));
 
-        Location location = locationRepository.findMainLocationByMemberId(member.getId())
+        Location location = locationRepository.findMainLocationByMemberId(worker.getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.LOCATION_NOT_FOUND));
 
         return JobPostDetailResponseForOffer.from(offerWorkDate, location);

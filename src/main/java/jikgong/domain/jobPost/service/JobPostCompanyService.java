@@ -47,16 +47,19 @@ public class JobPostCompanyService {
     private final S3Handler s3Handler;
     private final ProjectRepository projectRepository;
 
-    // 모집 공고: 저장
-    public Long saveJobPost(Long memberId, JobPostSaveRequest request, List<MultipartFile> imageList) {
-        Member member = memberRepository.findById(memberId)
+    /**
+     * 모집 공고 등록
+     * pickup, workDate, image 저장
+     */
+    public Long saveJobPost(Long companyId, JobPostSaveRequest request, List<MultipartFile> imageList) {
+        Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
         Project project = projectRepository.findById(request.getProjectId())
                 .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_FOUND));
 
         // 모집 공고 저장
-        JobPost jobPost = JobPost.createEntityByJobPost(request, member, project);
+        JobPost jobPost = JobPost.createEntityByJobPost(request, company, project);
         JobPost savedJobPost = jobPostRepository.save(jobPost);
 
         // 픽업 정보 저장
@@ -68,8 +71,8 @@ public class JobPostCompanyService {
         }
 
         // 날짜 정보 저장
-        List<WorkDate> workDateList = request.getWorkDateList().stream()
-                .map(workDate -> new WorkDate(workDate, request.getRecruitNum(), savedJobPost))
+        List<WorkDate> workDateList = request.getDateList().stream()
+                .map(date -> new WorkDate(date, request.getRecruitNum(), savedJobPost))
                 .collect(Collectors.toList());
         workDateRepository.saveAll(workDateList);
 
@@ -84,8 +87,13 @@ public class JobPostCompanyService {
     }
 
     // 모집 공고: 조회 with 프로젝트
-    public List<JobPostListResponse> findJobPostsByMemberAndProject(Long memberId, JobPostStatus jobPostStatus, Long projectId, Pageable pageable) {
-        Member member = memberRepository.findById(memberId)
+
+    /**
+     * 프로젝트 별 모집 공고 조회
+     * 필터: 완료됨 / 진행 중 / 예정
+     */
+    public List<JobPostListResponse> findJobPostsByMemberAndProject(Long companyId, JobPostStatus jobPostStatus, Long projectId, Pageable pageable) {
+        Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
         Project project = projectRepository.findById(projectId)
@@ -95,11 +103,11 @@ public class JobPostCompanyService {
         List<JobPost> jobPostList = new ArrayList<>();
 
         if (jobPostStatus == JobPostStatus.COMPLETED) {
-            jobPostList = jobPostRepository.findCompletedJobPostByMemberAndProject(member.getId(), now, project.getId(), pageable);
+            jobPostList = jobPostRepository.findCompletedJobPostByMemberAndProject(company.getId(), now, project.getId(), pageable);
         } else if (jobPostStatus == JobPostStatus.IN_PROGRESS) {
-            jobPostList = jobPostRepository.findInProgressJobPostByMemberAndProject(member.getId(), now, project.getId(), pageable);
+            jobPostList = jobPostRepository.findInProgressJobPostByMemberAndProject(company.getId(), now, project.getId(), pageable);
         } else if (jobPostStatus == JobPostStatus.PLANNED) {
-            jobPostList = jobPostRepository.findPlannedJobPostByMemberAndProject(member.getId(), now, project.getId(), pageable);
+            jobPostList = jobPostRepository.findPlannedJobPostByMemberAndProject(company.getId(), now, project.getId(), pageable);
         }
 
         List<JobPostListResponse> jobPostListResponseList = jobPostList.stream()
@@ -109,7 +117,9 @@ public class JobPostCompanyService {
         return jobPostListResponseList;
     }
 
-    // 인력 관리: 모집 공고 정보 조회
+    /**
+     * 인력 관리 화면에서 모집 공고 정보 일부 반환
+     */
     public JobPostManageResponse findJobPostForManage(Long jobPostId) {
         JobPost jobPost = jobPostRepository.findById(jobPostId)
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
@@ -117,45 +127,50 @@ public class JobPostCompanyService {
         return JobPostManageResponse.from(jobPost);
     }
 
-    // 임시 저장: 목록 조회
-    public Page<TemporaryListResponse> findTemporaryJobPosts(Long memberId, Pageable pageable) {
-        Member member = memberRepository.findById(memberId)
+    /**
+     * 임시 저장 조회
+     */
+    public List<TemporaryListResponse> findTemporaryJobPosts(Long companyId) {
+        Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Page<JobPost> temporaryJobPostPage = jobPostRepository.findTemporaryJobPostByMemberId(member.getId(), pageable);
 
-        List<TemporaryListResponse> temporaryJobPostList = temporaryJobPostPage.getContent().stream()
+        return jobPostRepository.findTemporaryJobPostByMemberId(company.getId()).stream()
                 .map(TemporaryListResponse::from)
                 .collect(Collectors.toList());
-
-        return new PageImpl<>(temporaryJobPostList, pageable, temporaryJobPostPage.getTotalElements());
     }
 
-    // 임시 저장: 삭제
-    public void deleteTemporaryJobPost(Long memberId, Long jobPostId) {
-        Member member = memberRepository.findById(memberId)
+    /**
+     * 임시 저장 삭제
+     */
+    public void deleteTemporaryJobPost(Long companyId, Long jobPostId) {
+        Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-        JobPost jobPost = jobPostRepository.findJobPostByIdAndMemberAndTemporary(member.getId(), jobPostId, true)
+        JobPost jobPost = jobPostRepository.findTemporaryForDelete(company.getId(), jobPostId, true)
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
 
-        // 이미지 관련 정보 삭제
-        jobPostImageService.deleteEntityAndS3(member.getId(), jobPost.getId());
         // 관련 엔티티 삭제 (WorkDate, AddressInfo)
-        jobPost.deleteChildeEntity(jobPost);
+        jobPost.deleteChildEntity(jobPost);
 
         // 임시 저장 삭제
         jobPostRepository.delete(jobPost);
     }
 
-    // 임시 저장: 업데이트
-    public void updateTemporaryJobPost(Long memberId, TemporaryUpdateRequest request) {
-        deleteTemporaryJobPost(memberId, request.getJobPostId());
-        saveTemporary(memberId, TemporarySaveRequest.from(request));
+    /**
+     * 임시 저장 업데이트
+     * 기존 데이터 삭제 후 다시 저장
+     */
+    public void updateTemporaryJobPost(Long companyId, TemporaryUpdateRequest request) {
+        deleteTemporaryJobPost(companyId, request.getJobPostId());
+        saveTemporary(companyId, TemporarySaveRequest.from(request));
     }
 
-    // 임시 저장: 저장
-    public Long saveTemporary(Long memberId, TemporarySaveRequest request) {
-        Member member = memberRepository.findById(memberId)
+    /**
+     * 임시 저장 등록
+     * 임지 저장 등록 시 이미지에 대한 정보는 저장 x
+     */
+    public Long saveTemporary(Long companyId, TemporarySaveRequest request) {
+        Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
         Project project = null;
@@ -165,7 +180,7 @@ public class JobPostCompanyService {
         }
 
         // 모집 공고 저장
-        JobPost jobPost = JobPost.createEntityByTemporary(request, member, project);
+        JobPost jobPost = JobPost.createEntityByTemporary(request, company, project);
         JobPost savedJobPost = jobPostRepository.save(jobPost);
 
         // 픽업 정보 저장

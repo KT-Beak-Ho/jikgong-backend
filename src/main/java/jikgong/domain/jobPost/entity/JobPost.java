@@ -149,7 +149,7 @@ public class JobPost extends BaseEntity {
                 .build();
     }
 
-    public void deleteChildeEntity(JobPost jobPost) {
+    public void deleteChildEntity(JobPost jobPost) {
         // 근무 날짜 정보 삭제
         jobPost.getWorkDateList().clear();
         // 위치 관련 정보 삭제
