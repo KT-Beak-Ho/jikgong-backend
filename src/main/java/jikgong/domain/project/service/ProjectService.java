@@ -29,6 +29,9 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final MemberRepository memberRepository;
 
+    /**
+     * 프로젝트 등록
+     */
     public Long saveProject(Long memberId, ProjectSaveRequest request) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -38,7 +41,10 @@ public class ProjectService {
         return projectRepository.save(project).getId();
     }
 
-
+    /**
+     * 프로젝트 목록 조회
+     * 필터: 완료됨, 진행 중, 예정
+     */
     @Transactional(readOnly = true)
     public List<ProjectListResponse> findProjects(Long memberId, ProjectStatus projectStatus) {
         Member member = memberRepository.findById(memberId)
@@ -64,6 +70,9 @@ public class ProjectService {
         return projectListResponseList;
     }
 
+    /**
+     * 프로젝트 수정
+     */
     public void updateProject(Long memberId, ProjectUpdateRequest request) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));

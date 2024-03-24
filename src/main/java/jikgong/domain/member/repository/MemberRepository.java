@@ -11,10 +11,17 @@ import java.util.Optional;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
+    /**
+     * 회원 가입
+     */
+    Optional<Member> findByLoginId(String loginId);
     Optional<Member> findByPhone(String username);
 
+
+
+    /**
+     * history service (1차 캐싱)
+     */
     @Query("select m from Member m where m.id in :memberIdList")
     List<Member> findByIdList(@Param("memberIdList") List<Long> memberIdList);
-
-    Optional<Member> findByLoginId(String loginId);
 }

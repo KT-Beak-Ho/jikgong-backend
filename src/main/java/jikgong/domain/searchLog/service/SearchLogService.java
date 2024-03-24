@@ -20,6 +20,9 @@ public class SearchLogService {
     private final RedisTemplate<String, SearchLog> redisTemplate;
     private final MemberRepository memberRepository;
 
+    /**
+     * 검색 기록 저장
+     */
     public void saveRecentSearchLog(Long memberId, SearchLogSaveRequest request) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -40,6 +43,10 @@ public class SearchLogService {
         redisTemplate.opsForList().leftPush(key, value);
     }
 
+    /**
+     * 검색 기록 조회
+     * 최대 10개
+     */
     public List<SearchLog> findRecentSearchLogs(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -51,6 +58,9 @@ public class SearchLogService {
         return logs;
     }
 
+    /**
+     * 검색 기록 삭제
+     */
     public void deleteRecentSearchLog(Long memberId, SearchLogDeleteRequest request) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));

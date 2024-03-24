@@ -34,11 +34,14 @@ public class ResumeService {
     private final SkillRepository skillRepository;
     private final ProjectRepository projectRepository;
 
-    public void saveResume(Long memberId, ResumeSaveRequest request) {
-        Member member = memberRepository.findById(memberId)
+    /**
+     * 이력서 등록
+     */
+    public void saveResume(Long workerId, ResumeSaveRequest request) {
+        Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Resume resume = Resume.createEntity(request, member);
+        Resume resume = Resume.createEntity(request, worker);
 
         resumeRepository.save(resume);
 
@@ -50,8 +53,11 @@ public class ResumeService {
         skillRepository.saveAll(skillList);
     }
 
-    public Page<ResumeListResponse> findResumeList(Long memberId, Long projectId, Tech tech, Float bound, SortType sortType, Pageable pageable) {
-        Member member = memberRepository.findById(memberId)
+    /**
+     * 일자리 제안 시 이력서 조회
+     */
+    public Page<ResumeListResponse> findResumeList(Long companyId, Long projectId, Tech tech, Float bound, SortType sortType, Pageable pageable) {
+        Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
         Project project = projectRepository.findById(projectId)

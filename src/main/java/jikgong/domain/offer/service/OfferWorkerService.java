@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +29,10 @@ public class OfferWorkerService {
     private final OfferWorkDateRepository offerWorkDateRepository;
     private final ApplyRepository applyRepository;
 
+    /**
+     * 받은 제안 목록 조회
+     * 필터: 대기 중, 마감
+     */
     public List<ReceivedOfferListResponse> findReceivedOffer(Long workerId, Boolean isPending) {
         Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -42,6 +47,10 @@ public class OfferWorkerService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * 제안 수락, 거절
+     * 수락일 경우 출역일 전인지 체크
+     */
     public void processOffer(Long workerId, OfferProcessRequest request) {
         Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -57,13 +66,16 @@ public class OfferWorkerService {
                 throw new CustomException(ErrorCode.RECRUITMENT_FULL);
             }
 
-            // 출역일 1일 전까지 수락 가능
-            if (!workDate.getDate().isAfter(LocalDate.now())) {
-                throw new CustomException(ErrorCode.OFFER_PROCESS_NEED_TO_ONE_DAY_AGO);
+            // 출역일 전 인지 체크
+            if (LocalDate.now().isAfter(workDate.getDate())) {
+                throw new CustomException(ErrorCode.WORK_DATE_NEED_TO_FUTURE);
+            }
+            if (LocalDate.now().isEqual(workDate.getDate()) && LocalTime.now().isAfter(workDate.getJobPost().getStartTime())) {
+                throw new CustomException(ErrorCode.WORK_DATE_NEED_TO_FUTURE);
             }
 
-            int cntAcceptedApply = applyRepository.findAcceptedApplyByWorkDate(worker.getId(), workDate.getDate());
-            if (cntAcceptedApply != 0) {
+            // 수락 하려는 날짜에 출역 날짜가 확정된 기록이 있는지 체크
+            if (applyRepository.findAcceptedApplyByWorkDate(worker.getId(), workDate.getDate()) != 0) {
                 throw new CustomException(ErrorCode.APPLY_ALREADY_ACCEPTED_IN_WORKDATE);
             }
         }

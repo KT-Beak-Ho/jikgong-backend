@@ -114,7 +114,9 @@ public class LoginService {
         return memberRepository.save(member).getId(); // 회원 저장
     }
 
-    // 휴대폰 중복 체크
+    /**
+     * 휴대폰 중복 체크
+     */
     public void validationPhone(String phone) {
         Optional<Member> member = memberRepository.findByPhone(phone);
         if (member.isPresent()) {
@@ -143,6 +145,7 @@ public class LoginService {
         return new VerificationSmsResponse(authCode);
     }
 
+    // 6자리 랜덤 코드 생성
     private static String createAuthCode() {
         String characters = "0123456789";
 
@@ -158,6 +161,9 @@ public class LoginService {
         return codeBuilder.toString();
     }
 
+    /**
+     * 계좌 인증
+     */
     public VerificationAccountResponse verificationAccount(VerificationAccountRequest request) {
 
         // todo: 계좌 인증
@@ -165,6 +171,10 @@ public class LoginService {
         return new VerificationAccountResponse("52");
     }
 
+    /**
+     * 로그인
+     * device Token 변경 시 update
+     */
     public LoginResponse login(LoginRequest request) {
         // id 체크
         Member member = memberRepository.findByLoginId(request.getLoginId())
@@ -185,6 +195,9 @@ public class LoginService {
         return new LoginResponse(accessToken, refreshToken, member.getRole());
     }
 
+    /**
+     * refresh token 으로 access token 재발행
+     */
     public LoginResponse regenerateToken(RefreshTokenRequest request) {
         String refreshToken = request.getRefreshToken();
         // Refresh Token 검증

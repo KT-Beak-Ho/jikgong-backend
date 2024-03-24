@@ -32,7 +32,7 @@ public class ResumeController {
     }
 
     @Operation(summary = "기업: 이력서 목록 조회 (헤드헌팅)")
-    @GetMapping("/api/head-hunting/workers")
+    @GetMapping("/api/resumes")
     public ResponseEntity<Response> findResumeList(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                         @RequestParam(name = "projectId") Long projectId,
                                                         @RequestParam(name = "tech", required = false) Tech tech,

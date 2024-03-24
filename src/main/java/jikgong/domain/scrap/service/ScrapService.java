@@ -30,24 +30,28 @@ public class ScrapService {
     private final MemberRepository memberRepository;
     private final JobPostRepository jobPostRepository;
     private final ScrapRepository scrapRepository;
-    private final LocationRepository locationRepository;
 
-    public Boolean saveScrap(Long memberId, Long jobPostId) {
-        Member member = memberRepository.findById(memberId)
+    /**
+     * 스크랩 저장
+     * 이미 스크랩 된 공고 글 이라면 취소
+     * 그렇지 않다면 저장
+     */
+    public Boolean saveScrap(Long workerId, Long jobPostId) {
+        Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
         JobPost jobPost = jobPostRepository.findById(jobPostId)
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
 
-        // 이미 스크랩한 경우 취소
+        // 이미 스크랩 한 경우 취소
         // 그렇지 않다면 스크랩
-        Optional<Scrap> findScrap = scrapRepository.findByMemberAndJobPost(member.getId(), jobPost.getId());
+        Optional<Scrap> findScrap = scrapRepository.findByMemberAndJobPost(worker.getId(), jobPost.getId());
         if (findScrap.isPresent()) {
             scrapRepository.delete(findScrap.get());
             log.info("스크랩 취소");
             return false;
         } else {
-            Scrap scrap = Scrap.createEntity(member, jobPost);
+            Scrap scrap = Scrap.createEntity(worker, jobPost);
             scrapRepository.save(scrap);
             log.info("스크랩 저장");
             return true;

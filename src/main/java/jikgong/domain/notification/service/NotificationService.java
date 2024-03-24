@@ -34,6 +34,12 @@ public class NotificationService {
     private final MemberRepository memberRepository;
     private final ApplicationEventPublisher publisher;
 
+    /**
+     * 알림 생성
+     * spring event 발행
+     * 1. FCM push alarm
+     * 2. kakao 알림톡
+     */
     public void saveNotification(Long receiverId, NotificationType type, String content, String url) {
         Member worker = memberRepository.findById(receiverId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -52,6 +58,9 @@ public class NotificationService {
         publisher.publishEvent(new AlarmEvent(content, worker.getId(), worker.getPhone(), "code"));
     }
 
+    /**
+     * 알림 목록 조회
+     */
     public List<NotificationResponse> findNotifications(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -63,6 +72,9 @@ public class NotificationService {
         return notificationResponseList;
     }
 
+    /**
+     * 알림 읽음 처리
+     */
     public void readNotification(Long memberId, Long notificationId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -70,9 +82,13 @@ public class NotificationService {
         Notification notification = notificationRepository.findById(notificationId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOTIFICATION_NOT_FOUND));
 
+        // 읽음 처리
         notification.readNotification();
     }
 
+    /**
+     * 읽지 않은 알림 개수 조회
+     */
     public UnreadCountResponse unreadNotification(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -81,6 +97,10 @@ public class NotificationService {
         return UnreadCountResponse.builder().unreadCount(unreadCount).build();
     }
 
+    /**
+     * 알림 설정 정보 조회
+     * 노동자일 경우 / 기업일 경우
+     */
     public NotificationInfoResponse findNotificationInfo(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -100,17 +120,23 @@ public class NotificationService {
         throw new CustomException(ErrorCode.ROLE_NOT_FOUND);
     }
 
-    public void updateNotificationInfoWorker(Long memberId, WorkerNotificationInfoRequest request) {
-        Member member = memberRepository.findById(memberId)
+    /**
+     * 노동자 알림 정보 업데이트
+     */
+    public void updateNotificationInfoWorker(Long workerId, WorkerNotificationInfoRequest request) {
+        Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        member.getWorkerInfo().getWorkerNotificationInfo().updateInfo(request);
+        worker.getWorkerInfo().getWorkerNotificationInfo().updateInfo(request);
     }
 
-    public void updateNotificationInfoCompany(Long memberId, CompanyNotificationInfoRequest request) {
-        Member member = memberRepository.findById(memberId)
+    /**
+     * 기업 알림 정보 업데이트
+     */
+    public void updateNotificationInfoCompany(Long companyId, CompanyNotificationInfoRequest request) {
+        Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        member.getCompanyInfo().getCompanyNotificationInfo().updateInfo(request);
+        company.getCompanyInfo().getCompanyNotificationInfo().updateInfo(request);
     }
 }

@@ -10,6 +10,9 @@ import java.util.Optional;
 
 @Repository
 public interface ResumeRepository extends JpaRepository<Resume, Long>, ResumeRepositoryCustom {
+    /**
+     * 일자리 제안
+     */
     @Query("select r from Resume r join fetch r.member m where r.id = :resumeId")
     Optional<Resume> findByIdWithMember(@Param("resumeId") Long resumeId);
 }

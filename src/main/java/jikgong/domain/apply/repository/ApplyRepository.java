@@ -70,14 +70,18 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
     List<Apply> findApplyAtStartWorkCheck(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId, @Param("workDateId") Long workDateId, @Param("status") ApplyStatus status);
 
 
-
-
+    /**
+     * 일자리 제안
+     */
     @Query("select a from Apply a join fetch a.workDate where a.member.id = :memberId and a.workDate.date between :firstDayOfMonth and :lastDayOfMonth and a.status = 'ACCEPTED'")
     List<Apply> findCantWorkDate(@Param("memberId") Long memberId, @Param("firstDayOfMonth") LocalDate firstDayOfMonth, @Param("lastDayOfMonth") LocalDate lastDayOfMonth);
-
     @Query("select a from Apply a join fetch a.workDate where a.member.id = :memberId and a.status = 'ACCEPTED'")
     List<Apply> findAllCantWorkDate(@Param("memberId") Long memberId);
 
+
+    /**
+     * 받은 일자리 제안
+     */
     @Query("select count(a) from Apply a where a.member.id = :memberId and a.workDate.date = :date and a.status = 'ACCEPTED'")
     int findAcceptedApplyByWorkDate(@Param("memberId") Long memberId, @Param("date") LocalDate date);
 }

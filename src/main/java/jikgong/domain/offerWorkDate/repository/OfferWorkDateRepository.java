@@ -15,22 +15,27 @@ import java.util.Optional;
 
 @Repository
 public interface OfferWorkDateRepository extends JpaRepository<OfferWorkDate, Long> {
+    /**
+     * 받은 일자리 제안
+     */
     @Query("select ow from OfferWorkDate ow join fetch ow.offer.jobPost j join fetch ow.offer o join fetch ow.workDate w " +
             "where o.worker.id = :workerId and ow.offerWorkDateStatus = 'OFFER_PENDING' and o.offerStatus = 'OFFER'")
     List<OfferWorkDate> findReceivedPendingOffer(@Param("workerId") Long workerId);
-
     @Query("select ow from OfferWorkDate ow join fetch ow.offer.jobPost j join fetch ow.offer o join fetch ow.workDate w " +
             "where o.worker.id = :workerId and ow.offerWorkDateStatus != 'OFFER_PENDING'")
     List<OfferWorkDate> findReceivedClosedOffer(@Param("workerId") Long workerId);
-
-    @Modifying
-    @Query("update OfferWorkDate ow set ow.offerWorkDateStatus = :status where ow.offer.id = :offerId")
-    int cancelOffer(@Param("offerId") Long offerId, @Param("status") OfferWorkDateStatus status);
-
     @Query("select ow from OfferWorkDate ow join fetch ow.workDate w join fetch w.jobPost j join fetch j.member m " +
             "where ow.id = :offerWorkDateId")
     Optional<OfferWorkDate> findByIdAtProcessOffer(@Param("offerWorkDateId") Long offerWorkDateId);
-
     @Query("select ow from OfferWorkDate ow join fetch ow.workDate w where ow.id = :offerWorkDateId")
     Optional<OfferWorkDate> findByIdWithWorkDate(@Param("offerWorkDateId") Long offerWorkDateId);
+
+
+
+    /**
+     * 일자리 제안
+     */
+    @Modifying
+    @Query("update OfferWorkDate ow set ow.offerWorkDateStatus = :status where ow.offer.id = :offerId")
+    int cancelOffer(@Param("offerId") Long offerId, @Param("status") OfferWorkDateStatus status);
 }
