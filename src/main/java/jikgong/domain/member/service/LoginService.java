@@ -35,6 +35,10 @@ public class LoginService {
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate<String, String> redisTemplate;
 
+    /**
+     * 노동자 회원가입
+     * 위치 정보 저장
+     */
     public Long joinWorkerMember(JoinWorkerRequest request) {
         // loginId 중복 체크
         validationLoginId(request.getLoginId());
@@ -74,6 +78,9 @@ public class LoginService {
         return savedMember.getId();
     }
 
+    /**
+     * 노동자 회원가입
+     */
     public Long joinCompanyMember(JoinCompanyRequest request) {
         // loginId 중복 체크
         validationLoginId(request.getLoginId());
@@ -107,6 +114,7 @@ public class LoginService {
         return memberRepository.save(member).getId(); // 회원 저장
     }
 
+    // 휴대폰 중복 체크
     public void validationPhone(String phone) {
         Optional<Member> member = memberRepository.findByPhone(phone);
         if (member.isPresent()) {
@@ -114,6 +122,9 @@ public class LoginService {
         }
     }
 
+    /**
+     * loginId 중복 체크
+     */
     public void validationLoginId(String login) {
         Optional<Member> member = memberRepository.findByLoginId(login);
         if (member.isPresent()) {
@@ -121,6 +132,9 @@ public class LoginService {
         }
     }
 
+    /**
+     * 휴대폰 인증
+     */
     public VerificationSmsResponse verificationSms(VerificationSmsRequest request) {
         String authCode = createAuthCode();
 

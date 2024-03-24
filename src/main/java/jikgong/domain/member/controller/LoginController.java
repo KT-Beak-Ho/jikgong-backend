@@ -34,11 +34,18 @@ public class LoginController {
         return ResponseEntity.ok(new Response("기업 회원 가입 완료"));
     }
 
+    @Operation(summary = "회원 가입: 아이디 중복 체크")
+    @PostMapping("/api/member/validation-loginId")
+    public ResponseEntity<Response> validationPhone(@RequestBody ValidationLoginIdRequest request) {
+        loginService.validationLoginId(request.getLoginId());
+        return ResponseEntity.ok(new Response("사용 가능한 아이디 입니다."));
+    }
+
     @Operation(summary = "회원 가입: 휴대폰 중복 체크")
     @PostMapping("/api/member/validation-phone")
-    public ResponseEntity<Response> validationPhone(@RequestBody ValidationUsernameRequest request) {
+    public ResponseEntity<Response> validationPhone(@RequestBody ValidationPhoneRequest request) {
         loginService.validationPhone(request.getPhone());
-        return ResponseEntity.ok(new Response("사용 가능한 아이디 입니다."));
+        return ResponseEntity.ok(new Response("사용 가능한 휴대폰 입니다."));
     }
 
     @Operation(summary = "회원 가입: 휴대폰 인증")
