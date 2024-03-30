@@ -1,5 +1,7 @@
 package jikgong.domain.jobPost.service;
 
+import jikgong.domain.apply.entity.Apply;
+import jikgong.domain.apply.repository.ApplyRepository;
 import jikgong.domain.jobPost.dtos.offer.JobPostDetailResponseForOffer;
 import jikgong.domain.jobPost.dtos.worker.JobPostDetailResponse;
 import jikgong.domain.jobPost.dtos.worker.JobPostListResponse;
@@ -37,7 +39,7 @@ public class JobPostWorkerService {
     private final JobPostRepository jobPostRepository;
     private final MemberRepository memberRepository;
     private final LocationRepository locationRepository;
-    private final WorkDateRepository workDateRepository;
+    private final ApplyRepository applyRepository;
     private final OfferWorkDateRepository offerWorkDateRepository;
 
     /**
@@ -84,9 +86,12 @@ public class JobPostWorkerService {
         OfferWorkDate offerWorkDate = offerWorkDateRepository.findByIdAtProcessOffer(offerWorkDateId)
                 .orElseThrow(() -> new CustomException(ErrorCode.OFFER_WORK_DATE_NOT_FOUND));
 
+        WorkDate workDate = offerWorkDate.getWorkDate();
+        List<Apply> acceptedApply = applyRepository.checkAcceptedApplyForOffer(worker.getId(), workDate.getDate());
+
         Location location = locationRepository.findMainLocationByMemberId(worker.getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.LOCATION_NOT_FOUND));
 
-        return JobPostDetailResponseForOffer.from(offerWorkDate, location);
+        return JobPostDetailResponseForOffer.from(offerWorkDate, acceptedApply, location);
     }
 }

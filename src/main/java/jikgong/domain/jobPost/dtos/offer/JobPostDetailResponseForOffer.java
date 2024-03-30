@@ -1,5 +1,6 @@
 package jikgong.domain.jobPost.dtos.offer;
 
+import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.pickup.entity.Pickup;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.entity.Park;
@@ -48,7 +49,10 @@ public class JobPostDetailResponseForOffer {
 
     private List<String> imageUrls; // 이미지 정보
 
-    public static JobPostDetailResponseForOffer from(OfferWorkDate offerWorkDate, Location location) {
+    private Boolean recruitmentFull; // 모집 인원 꽉 찼는지 여부
+    private Boolean acceptedApplyOnDate; // 해당 날짜에 확정된 출역 건이 있는지 여부
+
+    public static JobPostDetailResponseForOffer from(OfferWorkDate offerWorkDate, List<Apply> acceptedApply, Location location) {
         WorkDate workDate = offerWorkDate.getWorkDate();
         JobPost jobPost = workDate.getJobPost();
         Member member = jobPost.getMember();
@@ -62,6 +66,11 @@ public class JobPostDetailResponseForOffer {
         List<String> imageUrls = jobPost.getJobPostImageList().stream()
                 .map(JobPostImage::getS3Url)
                 .collect(Collectors.toList());
+
+        // 인원이 꽉 찼을 경우 true
+        Boolean recruitmentFull = workDate.getRecruitNum() <= workDate.getRegisteredNum();
+        // 이미 확정된 내역이 있으면 true
+        Boolean acceptedApplyOnDate = !acceptedApply.isEmpty();
 
         return JobPostDetailResponseForOffer.builder()
                 .offerWorkDateId(offerWorkDate.getId())
@@ -88,6 +97,9 @@ public class JobPostDetailResponseForOffer {
                 .phone(member.getPhone())
 
                 .imageUrls(imageUrls)
+
+                .recruitmentFull(recruitmentFull)
+                .acceptedApplyOnDate(acceptedApplyOnDate)
 
                 .build();
     }

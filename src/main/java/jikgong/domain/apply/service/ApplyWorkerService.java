@@ -75,7 +75,7 @@ public class ApplyWorkerService {
     // 선택한 날 중 이미 승인된 날이 있는 경우 체크
     private void checkAcceptedApply(List<WorkDate> workDateList, Member member) {
         List<LocalDate> dateList = workDateList.stream().map(WorkDate::getDate).collect(Collectors.toList());
-        List<Apply> acceptedApplyInWorkDateList = applyRepository.checkAcceptedApplyBeforeSave(member.getId(), dateList);
+        List<Apply> acceptedApplyInWorkDateList = applyRepository.checkAcceptedApplyForApply(member.getId(), dateList);
         if (!acceptedApplyInWorkDateList.isEmpty()) {
             throw new CustomException(ErrorCode.APPLY_ALREADY_ACCEPTED_IN_WORKDATE);
         }
