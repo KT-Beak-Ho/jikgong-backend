@@ -46,4 +46,8 @@ public class WorkDate {
     public void plusRegisteredNum(Integer updateCount) {
         this.registeredNum += updateCount;
     }
+
+    public void minusRegisterNum() {
+        this.registeredNum -= 1;
+    }
 }
