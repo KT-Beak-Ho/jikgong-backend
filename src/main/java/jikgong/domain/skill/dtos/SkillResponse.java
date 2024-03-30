@@ -1,0 +1,22 @@
+package jikgong.domain.skill.dtos;
+
+import jikgong.domain.jobPost.entity.Tech;
+import jikgong.domain.skill.entity.Skill;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
+@Builder
+public class SkillResponse {
+    private Tech tech; // 직종
+    private Integer skillPeriod; // 스킬 경력 기간 (월)
+
+    public static SkillResponse from(Skill skill) {
+        return SkillResponse.builder()
+                .tech(skill.getTech())
+                .skillPeriod(skill.getSkillPeriod())
+                .build();
+    }
+}

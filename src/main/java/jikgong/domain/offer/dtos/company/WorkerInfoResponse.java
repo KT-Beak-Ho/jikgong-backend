@@ -8,6 +8,7 @@ import jikgong.domain.location.entity.Location;
 import jikgong.domain.member.entity.Gender;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.resume.entity.Resume;
+import jikgong.domain.skill.dtos.SkillResponse;
 import jikgong.global.utils.AgeTransfer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,16 +24,17 @@ import java.util.stream.Collectors;
 @Getter
 @Builder
 public class WorkerInfoResponse {
+    private Long resumeId;
     private Long memberId;
     private String workerName; // 이름
     private Integer age; // 나이
     private Gender gender; // 성별
     private Integer career; // 경력
+    private List<SkillResponse> skillResponseList; // 경력 상세 정보
 
     private String address; // 위치
     private Integer workTimes; // 출역 횟수
     private Float participationRate; // 참여율
-    private List<String> skillList; // 가능 직종
 
     private LocalTime preferTimeStart;
     private LocalTime preferTimeEnd;
@@ -42,9 +44,7 @@ public class WorkerInfoResponse {
     private Boolean pickup; // 픽업 여부
     private Park park; // 주차 가능 여부
 
-    private List<LocalDate> cantWorkDateList;
-
-    public static WorkerInfoResponse from(Resume resume, List<Apply> findCantWorkDate) {
+    public static WorkerInfoResponse from(Resume resume) {
         Member member = resume.getMember();
 
         // 대표 위치
@@ -64,16 +64,12 @@ public class WorkerInfoResponse {
         }
 
         // skill 리스트
-        List<String> skillList = resume.getSkillList().stream()
-                .map(skill -> skill.getTech().getDescription())
-                .collect(Collectors.toList());
-
-        // 이미 일하는 날짜
-        List<LocalDate> cantWorkDateList = findCantWorkDate.stream()
-                .map(apply -> apply.getWorkDate().getDate())
+        List<SkillResponse> skillResponseList = resume.getSkillList().stream()
+                .map(SkillResponse::from)
                 .collect(Collectors.toList());
 
         return WorkerInfoResponse.builder()
+                .resumeId(resume.getId())
                 .memberId(member.getId())
                 .workerName(member.getWorkerInfo().getWorkerName())
                 .age(AgeTransfer.getAgeByBirth(member.getWorkerInfo().getBrith()))
@@ -83,7 +79,7 @@ public class WorkerInfoResponse {
                 .address(mainLocation.map(location -> location.getAddress().getAddress()).orElse(null))
                 .workTimes(workTimes)
                 .participationRate(participationRate)
-                .skillList(skillList)
+                .skillResponseList(skillResponseList)
 
                 .preferTimeStart(resume.getPreferTimeStart())
                 .preferTimeEnd(resume.getPreferTimeEnd())
@@ -92,7 +88,6 @@ public class WorkerInfoResponse {
                 .pickup(resume.getAvailableInfo().getPickup())
                 .park(resume.getAvailableInfo().getPark())
 
-                .cantWorkDateList(cantWorkDateList)
                 .build();
     }
 }

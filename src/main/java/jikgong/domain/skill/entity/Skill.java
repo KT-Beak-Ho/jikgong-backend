@@ -20,7 +20,7 @@ public class Skill {
 
     @Enumerated(EnumType.STRING)
     private Tech tech;
-    private Integer skillPeriod; // 스킬 경력 기간 (달)
+    private Integer skillPeriod; // 스킬 경력 기간 (월)
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "resume_id")
