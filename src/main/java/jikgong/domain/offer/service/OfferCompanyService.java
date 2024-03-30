@@ -1,6 +1,5 @@
 package jikgong.domain.offer.service;
 
-import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.repository.ApplyRepository;
 import jikgong.domain.offer.dtos.company.*;
 import jikgong.domain.offer.entity.OfferStatus;
@@ -23,7 +22,6 @@ import jikgong.domain.workDate.repository.WorkDateRepository;
 import jikgong.global.event.dtos.NotificationEvent;
 import jikgong.global.exception.CustomException;
 import jikgong.global.exception.ErrorCode;
-import jikgong.global.utils.TimeTransfer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -34,7 +32,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -145,27 +142,27 @@ public class OfferCompanyService {
     /**
      * 제안 시 노동자 상세 정보 조회
      */
-    public WorkerInfoResponse findWorkerInfo(Long companyId, Long resumeId, LocalDate selectMonth) {
+    public WorkerInfoResponse findWorkerInfo(Long companyId, Long resumeId) {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
         Resume resume = resumeRepository.findByIdWithMember(resumeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.RESUME_NOT_FOUND));
 
-        // 이미 확정된 apply 월별 조회
-        List<Apply> findCantWorkDate = applyRepository.findCantWorkDate(
-                resume.getMember().getId(),
-                TimeTransfer.getFirstDayOfMonth(selectMonth),
-                TimeTransfer.getLastDayOfMonth(selectMonth));
+//        // 이미 확정된 apply 월별 조회
+//        List<Apply> findCantWorkDate = applyRepository.findCantWorkDate(
+//                resume.getMember().getId(),
+//                TimeTransfer.getFirstDayOfMonth(selectMonth),
+//                TimeTransfer.getLastDayOfMonth(selectMonth));
 
-        return WorkerInfoResponse.from(resume, findCantWorkDate);
+        return WorkerInfoResponse.from(resume);
     }
 
     /**
      * 제안 시 프로젝트 선택
      * 선택 후 제안 가능한 공고 조회
      */
-    public SelectOfferJobPostResponse findAvailableJobPosts(Long companyId, Long workerId, Long projectId) {
+    public JobPostResponseForOffer findAvailableJobPosts(Long companyId, Long workerId, Long projectId) {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
@@ -184,7 +181,7 @@ public class OfferCompanyService {
 
         List<JobPost> jobPostList = jobPostRepository.findByProject(project.getId());
 
-        return SelectOfferJobPostResponse.from(jobPostList, worker);
+        return JobPostResponseForOffer.from(jobPostList, worker);
     }
 
     /**

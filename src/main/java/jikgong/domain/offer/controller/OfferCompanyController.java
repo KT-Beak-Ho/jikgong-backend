@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jikgong.domain.offer.dtos.company.OfferHistoryResponse;
 import jikgong.domain.offer.dtos.company.WorkerInfoResponse;
 import jikgong.domain.offer.dtos.company.OfferRequest;
-import jikgong.domain.offer.dtos.company.SelectOfferJobPostResponse;
+import jikgong.domain.offer.dtos.company.JobPostResponseForOffer;
 import jikgong.domain.offer.entity.OfferStatus;
 import jikgong.domain.offer.service.OfferCompanyService;
 import jikgong.global.dto.Response;
@@ -19,8 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -30,9 +28,8 @@ public class OfferCompanyController {
     @Operation(summary = "기업: 노동자 상세 정보")
     @GetMapping("/api/company/offer/worker-detail/{resumeId}")
     public ResponseEntity<Response> findWorkerInfo(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                   @PathVariable("resumeId") Long resumeId,
-                                                   @RequestParam(name = "selectMonth") LocalDate selectMonth) {
-        WorkerInfoResponse workerInfoResponse = offerCompanyService.findWorkerInfo(principalDetails.getMember().getId(), resumeId, selectMonth);
+                                                   @PathVariable("resumeId") Long resumeId) {
+        WorkerInfoResponse workerInfoResponse = offerCompanyService.findWorkerInfo(principalDetails.getMember().getId(), resumeId);
         return ResponseEntity.ok(new Response(workerInfoResponse, "기업: 노동자 상세 정보 조회 완료"));
     }
 
@@ -41,7 +38,7 @@ public class OfferCompanyController {
     public ResponseEntity<Response> findAvailableJobPosts(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                           @RequestParam(name = "memberId") Long memberId,
                                                           @RequestParam(name = "projectId") Long projectId) {
-        SelectOfferJobPostResponse selectOfferJobPostResponse = offerCompanyService.findAvailableJobPosts(principalDetails.getMember().getId(), memberId, projectId);
+        JobPostResponseForOffer selectOfferJobPostResponse = offerCompanyService.findAvailableJobPosts(principalDetails.getMember().getId(), memberId, projectId);
         return ResponseEntity.ok(new Response(selectOfferJobPostResponse, "기업: 출역 가능한 현장 목록 반환 완료"));
     }
 

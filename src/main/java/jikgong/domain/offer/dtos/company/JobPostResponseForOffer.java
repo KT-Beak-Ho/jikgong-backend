@@ -17,11 +17,11 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Builder
-public class SelectOfferJobPostResponse {
+public class JobPostResponseForOffer {
     private String workerName;
     private List<JobPostListResponse> jobPostListResponseList;
 
-    public static SelectOfferJobPostResponse from(List<JobPost> jobPostList, Member member) {
+    public static JobPostResponseForOffer from(List<JobPost> jobPostList, Member member) {
         List<JobPostListResponse> jobPostListResponseList = new ArrayList<>();
         LocalDate now = LocalDate.now();
 
@@ -39,21 +39,21 @@ public class SelectOfferJobPostResponse {
                 if (now.isAfter(workDate.getDate())) {
                     pastDate.add(WorkDateResponse.from(workDate));
                 }
-                if (now.isEqual(workDate.getDate()) && LocalTime.now().isAfter(jobPost.getStartTime())) {
+                else if (now.isEqual(workDate.getDate()) && LocalTime.now().isAfter(jobPost.getStartTime())) {
                     pastDate.add(WorkDateResponse.from(workDate));
                 }
 
                 // 모집된 인원이 전부 찼는지 체크
-                if (workDate.getRegisteredNum() >= workDate.getRegisteredNum()) {
+                else if (workDate.getRegisteredNum() >= workDate.getRecruitNum()) {
                     fullCapacityDate.add(WorkDateResponse.from(workDate));
                 }
 
-                availableDate.add(WorkDateResponse.from(workDate));
+                else availableDate.add(WorkDateResponse.from(workDate));
             }
             jobPostListResponseList.add(JobPostListResponse.from(jobPost, availableDate, fullCapacityDate, pastDate));
         }
 
-        return SelectOfferJobPostResponse.builder()
+        return JobPostResponseForOffer.builder()
                 .workerName(member.getWorkerInfo().getWorkerName())
                 .jobPostListResponseList(jobPostListResponseList)
                 .build();
