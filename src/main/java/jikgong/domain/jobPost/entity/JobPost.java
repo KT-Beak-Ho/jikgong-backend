@@ -68,7 +68,7 @@ public class JobPost extends BaseEntity {
     private List<JobPostImage> jobPostImageList = new ArrayList<>();
 
     @Builder
-    public JobPost(String title, Tech tech, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, Integer recruitNum, Integer wage, String parkDetail, String preparation, LocalDateTime expirationTime, String managerName, String phone, Boolean isTemporary, AvailableInfo availableInfo, Address address, Member member, Project project) {
+    public JobPost(String title, Tech tech, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, Integer recruitNum, Integer wage, String parkDetail, String preparation, String managerName, String phone, Boolean isTemporary, AvailableInfo availableInfo, Address address, Member member, Project project) {
         this.title = title;
         this.tech = tech;
         this.startDate = startDate;
@@ -125,9 +125,9 @@ public class JobPost extends BaseEntity {
 
     public static JobPost createEntityByJobPost(JobPostSaveRequest request, Member member, Project project) {
         // 가장 빠른 날짜 찾기
-        LocalDate minDate = Collections.min(request.getWorkDateList());
+        LocalDate minDate = Collections.min(request.getDateList());
         // 가장 느린 날짜 찾기
-        LocalDate maxDate = Collections.max(request.getWorkDateList());
+        LocalDate maxDate = Collections.max(request.getDateList());
         return JobPost.builder()
                 .title(request.getTitle())
                 .tech(request.getTech())

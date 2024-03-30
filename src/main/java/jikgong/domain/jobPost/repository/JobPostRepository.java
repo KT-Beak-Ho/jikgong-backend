@@ -31,7 +31,7 @@ public interface JobPostRepository extends JpaRepository<JobPost, Long>, JobPost
      * 임시 저장
      */
     @Query("select j from JobPost j where j.member.id = :memberId and j.isTemporary = true order by j.createdDate")
-    Page<JobPost> findTemporaryJobPostByMemberId(@Param("memberId") Long memberId);
+    List<JobPost> findTemporaryJobPostByMemberId(@Param("memberId") Long memberId);
     @Query("select j from JobPost j where j.member.id = :memberId and j.id = :jobPostId and j.isTemporary = :isTemporary")
     Optional<JobPost> findTemporaryForDelete(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId, @Param("isTemporary") Boolean isTemporary);
 
