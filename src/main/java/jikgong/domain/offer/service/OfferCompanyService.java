@@ -176,14 +176,15 @@ public class OfferCompanyService {
                 .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_FOUND));
 
 
-        List<LocalDate> cantWorkDate = applyRepository.findAllCantWorkDate(worker.getId()).stream()
-                .map(apply -> apply.getWorkDate().getDate())
-                .collect(Collectors.toList());
-        Set<LocalDate> cantWorkDateSet = new HashSet<>(cantWorkDate);
+//        // 노동자 작업 불가능한 날짜 조회
+//        List<LocalDate> cantWorkDate = applyRepository.findAllCantWorkDate(worker.getId()).stream()
+//                .map(apply -> apply.getWorkDate().getDate())
+//                .collect(Collectors.toList());
+//        Set<LocalDate> cantWorkDateSet = new HashSet<>(cantWorkDate);
 
         List<JobPost> jobPostList = jobPostRepository.findByProject(project.getId());
 
-        return SelectOfferJobPostResponse.from(jobPostList, worker, cantWorkDateSet);
+        return SelectOfferJobPostResponse.from(jobPostList, worker);
     }
 
     /**
@@ -193,7 +194,7 @@ public class OfferCompanyService {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Page<Offer> offerHistoryPage = offerRepository.findOfferHistory(companyId, offerStatus, pageable);
+        Page<Offer> offerHistoryPage = offerRepository.findOfferHistory(company.getId(), offerStatus, pageable);
         List<OfferHistoryResponse> offerHistoryResponseList = offerHistoryPage.getContent().stream()
                 .map(OfferHistoryResponse::from)
                 .collect(Collectors.toList());

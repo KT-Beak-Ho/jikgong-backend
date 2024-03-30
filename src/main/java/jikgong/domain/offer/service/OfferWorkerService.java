@@ -49,7 +49,7 @@ public class OfferWorkerService {
 
     /**
      * 제안 수락, 거절
-     * 수락일 경우 출역일 전인지 체크
+     * 수락일 경우 출역일 전인지 체크 & 중복 출역 여부 체크
      */
     public void processOffer(Long workerId, OfferProcessRequest request) {
         Member worker = memberRepository.findById(workerId)
