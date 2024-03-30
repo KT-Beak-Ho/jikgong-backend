@@ -6,6 +6,7 @@ import jikgong.domain.member.repository.MemberRepository;
 import jikgong.domain.offer.entity.SortType;
 import jikgong.domain.project.entity.Project;
 import jikgong.domain.project.repository.ProjectRepository;
+import jikgong.domain.resume.dtos.CareerDetailRequest;
 import jikgong.domain.resume.dtos.ResumeListResponse;
 import jikgong.domain.resume.dtos.ResumeSaveRequest;
 import jikgong.domain.resume.entity.Resume;
@@ -45,10 +46,10 @@ public class ResumeService {
 
         resumeRepository.save(resume);
 
-        List<Tech> techList = request.getTechList();
+        List<CareerDetailRequest> careerDetailRequestList = request.getCareerDetailRequestList();
         List<Skill> skillList = new ArrayList<>();
-        for (Tech tech : techList) {
-            skillList.add(Skill.createEntity(tech, resume));
+        for (CareerDetailRequest careerDetailRequest : careerDetailRequestList) {
+            skillList.add(Skill.createEntity(careerDetailRequest, resume));
         }
         skillRepository.saveAll(skillList);
     }

@@ -2,6 +2,7 @@ package jikgong.domain.skill.entity;
 
 import jakarta.persistence.*;
 import jikgong.domain.jobPost.entity.Tech;
+import jikgong.domain.resume.dtos.CareerDetailRequest;
 import jikgong.domain.resume.entity.Resume;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -19,20 +20,23 @@ public class Skill {
 
     @Enumerated(EnumType.STRING)
     private Tech tech;
+    private Integer skillPeriod; // 스킬 경력 기간 (달)
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "resume_id")
     private Resume resume;
 
     @Builder
-    public Skill(Tech tech, Resume resume) {
+    public Skill(Tech tech, Integer skillPeriod, Resume resume) {
         this.tech = tech;
+        this.skillPeriod = skillPeriod;
         this.resume = resume;
     }
 
-    public static Skill createEntity(Tech tech, Resume resume) {
+    public static Skill createEntity(CareerDetailRequest request, Resume resume) {
         return Skill.builder()
-                .tech(tech)
+                .tech(request.getTech())
+                .skillPeriod(request.getSkillPeriod())
                 .resume(resume)
                 .build();
     }
