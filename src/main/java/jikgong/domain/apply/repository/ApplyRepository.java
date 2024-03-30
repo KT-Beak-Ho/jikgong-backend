@@ -2,7 +2,6 @@ package jikgong.domain.apply.repository;
 
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.entity.ApplyStatus;
-import jikgong.domain.workDate.entity.WorkDate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,8 +17,6 @@ import java.util.Optional;
 
 @Repository
 public interface ApplyRepository extends JpaRepository<Apply, Long> {
-    // fetch join 시 count query 별도 지정 필요
-
     /**
      * 인력 관리
      */
@@ -46,19 +43,21 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
     @Query("select a from Apply a join fetch a.workDate w " +
             "where a.member.id = :memberId and w.date between :monthStart and :monthEnd")
     List<Apply> findApplyPerMonth(@Param("memberId") Long memberId, @Param("monthStart") LocalDate monthStart, @Param("monthEnd") LocalDate monthEnd);
-    @Query(value = "select a from Apply a join fetch a.workDate w join fetch w.jobPost j where a.member.id = :memberId and a.status = 'PENDING'",
-            countQuery = "select a from Apply a where a.member.id = :memberId and a.status = 'PENDING'")
-    Page<Apply> findPendingApply(@Param("memberId") Long memberId, Pageable pageable);
+    @Query("select a from Apply a join fetch a.workDate w join fetch w.jobPost j where a.member.id = :memberId and a.status = 'PENDING' order by a.createdDate")
+    List<Apply> findPendingApply(@Param("memberId") Long memberId);
 
 
 
     /**
-     * 일자리 지원
+     * 일자리 지원 및 취소
      */
     @Query("select a from Apply a where a.member.id = :memberId and a.workDate.date in :workDateList and a.status = 'ACCEPTED'")
     List<Apply> checkAcceptedApplyBeforeSave(@Param("memberId") Long memberId, @Param("workDateList") List<LocalDate> workDateList);
     @Query("select a from Apply a where a.member.id = :memberId and a.workDate.jobPost.id = :jobPostId and a.workDate.id in :workDateList")
     List<Apply> checkDuplication(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId, @Param("workDateList") List<Long> workDateList);
+    @Query("select a from Apply a join fetch a.workDate.jobPost j where a.member.id = :memberId and a.id = :applyId")
+    Optional<Apply> findCancelApply(@Param("memberId") Long memberId, @Param("applyId") Long applyId);
+
 
 
     /**

@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -152,7 +153,7 @@ public class ApplyWorkerService {
         return applyResponseMonthlyList;
     }
 
-    @NotNull
+    // 지원 날짜와 지원 결과가 담긴 map
     private Map<LocalDate, ApplyStatus> getWorkDateMap(List<Apply> applyList) {
         Map<LocalDate, ApplyStatus> workDateMap = new HashMap<>();
 
@@ -174,16 +175,55 @@ public class ApplyWorkerService {
     /**
      * 신청 진행 중인 내역 조회
      */
-    public Page<ApplyPendingResponse> findPendingApply(Long workerId, Pageable pageable) {
+    public List<ApplyPendingResponse> findPendingApply(Long workerId) {
         Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Page<Apply> pendingApplyPage = applyRepository.findPendingApply(worker.getId(), pageable);
+        applyRepository.findPendingApply(worker.getId());
 
-        List<ApplyPendingResponse> pendingApplyList = pendingApplyPage.getContent().stream()
+        return applyRepository.findPendingApply(worker.getId()).stream()
                 .map(ApplyPendingResponse::from)
                 .collect(Collectors.toList());
+    }
 
-        return new PageImpl<>(pendingApplyList, pageable, pendingApplyPage.getTotalElements());
+    /**
+     * apply -> workDate -> jobPost
+     * 요청 취소
+     * 요청 취소 가능 조건
+     * 1. 확정된 지 24시간 (이내 or 이후)  미확정
+     * 2. 출역 3일 전
+     * 3. 수락 전인 요청 (대기 중)
+     */
+    public void cancelApply(Long workerId, Long applyId) {
+        Member worker = memberRepository.findById(workerId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Apply apply = applyRepository.findCancelApply(worker.getId(), applyId)
+                .orElseThrow(() -> new CustomException(ErrorCode.APPLY_NOT_FOUND));
+
+        // jobPost 조회
+        JobPost jobPost = apply.getWorkDate().getJobPost();
+
+        if (apply.getStatus() == ApplyStatus.ACCEPTED) {
+            // 수락된 경우 확정 난지 24시간 후 가능
+            if (LocalDateTime.now().isBefore(apply.getStatusDecisionTime().plusDays(1L))) {
+                throw new CustomException(ErrorCode.APPLY_CANCEL_IMPOSSIBLE);
+            }
+
+            // 5일이 출역일이라면
+            // 2일: 취소 가능  |  3일: 취소 불가
+            if (LocalDate.now().isAfter(jobPost.getStartDate().minusDays(3L))) {
+                throw new CustomException(ErrorCode.APPLY_CANCEL_IMPOSSIBLE);
+            }
+        }
+
+        if (apply.getStatus() != ApplyStatus.PENDING && apply.getStatus() != ApplyStatus.ACCEPTED) {
+            throw new CustomException(ErrorCode.APPLY_CANCEL_IMPOSSIBLE);
+        }
+
+        // status 업데이트
+        apply.updateStatus(ApplyStatus.CANCELED, LocalDateTime.now());
+
+        apply.getWorkDate().minusRegisterNum();
     }
 }

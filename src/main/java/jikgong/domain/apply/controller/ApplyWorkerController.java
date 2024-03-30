@@ -26,7 +26,7 @@ public class ApplyWorkerController {
     private final ApplyWorkerService applyWorkerService;
 
     @Operation(summary = "노동자: 일자리 신청")
-    @PostMapping("/api/apply")
+    @PostMapping("/api/apply/worker")
     public ResponseEntity<Response> saveApply(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                               @RequestBody ApplySaveRequest request) {
         applyWorkerService.saveApply(principalDetails.getMember().getId(), request);
@@ -51,13 +51,17 @@ public class ApplyWorkerController {
 
     @Operation(summary = "노동자: 신청 내역 조회 - 진행 중")
     @GetMapping("/api/apply/worker/pending")
-    public ResponseEntity<Response> findPendingApply(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                     @RequestParam(name = "page", defaultValue = "0") int page,
-                                                     @RequestParam(name = "size", defaultValue = "10") int size) {
-        // 페이징 처리 (먼저 요청한 순)
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdDate")));
-        Page<ApplyPendingResponse> pendingApplyPage = applyWorkerService.findPendingApply(principalDetails.getMember().getId(), pageable);
-        return ResponseEntity.ok(new Response(pendingApplyPage, "일자리 신청 내역 조회 완료"));
+    public ResponseEntity<Response> findPendingApply(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        List<ApplyPendingResponse> applyPendingResponseList = applyWorkerService.findPendingApply(principalDetails.getMember().getId());
+        return ResponseEntity.ok(new Response(applyPendingResponseList, "일자리 신청 내역 조회 완료"));
+    }
+
+    @Operation(summary = "노동자: 일자리 취소")
+    @DeleteMapping("/api/apply/worker/{applyId}")
+    public ResponseEntity<Response> cancelApply(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                @PathVariable("applyId") Long applyId) {
+        applyWorkerService.cancelApply(principalDetails.getMember().getId(), applyId);
+        return ResponseEntity.ok(new Response("일자리 취소 완료"));
     }
 
 
