@@ -81,5 +81,8 @@ public class OfferWorkerService {
         }
         // 수락, 거부 처리
         offerWorkDate.processOffer(request.getIsAccept());
+
+        // 같은 날 다른 공고에 지원 했던 대기중인 요청 취소
+        applyRepository.deleteOtherApplyOnDate(worker.getId(), offerWorkDate.getWorkDate().getDate());
     }
 }

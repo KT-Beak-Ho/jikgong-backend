@@ -28,8 +28,8 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
     int updateApplyStatus(@Param("applyIdList") List<Long> applyIdList, @Param("applyStatus") ApplyStatus applyStatus, @Param("now") LocalDateTime now);
     @Query("select a from Apply a join fetch a.member m where a.id in :applyIdList and a.workDate.id = :workDateId and a.workDate.jobPost.id = :jobPostId")
     List<Apply> findByIdList(@Param("applyIdList") List<Long> applyIdList, @Param("workDateId") Long workDateId, @Param("jobPostId") Long jobPostId);
-    @Query("select a from Apply a where a.workDate.date = :date and a.member.id in :memberIdList and a.id not in :applyIdList")
-    List<Apply> deleteOtherApplyByWorkDate(@Param("date") LocalDate date, @Param("applyIdList") List<Long> applyIdList, @Param("memberIdList") List<Long> memberIdList);
+    @Query("select a from Apply a where a.workDate.date = :date and a.member.id in :memberIdList and a.status = 'PENDING'")
+    List<Apply> deleteOtherApplyOnDate(@Param("memberIdList") List<Long> memberIdList, @Param("date") LocalDate date);
 
 
 
@@ -52,7 +52,7 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
      * 일자리 지원 및 취소
      */
     @Query("select a from Apply a where a.member.id = :memberId and a.workDate.date in :workDateList and a.status = 'ACCEPTED'")
-    List<Apply> checkAcceptedApplyBeforeSave(@Param("memberId") Long memberId, @Param("workDateList") List<LocalDate> workDateList);
+    List<Apply> checkAcceptedApplyForApply(@Param("memberId") Long memberId, @Param("workDateList") List<LocalDate> workDateList);
     @Query("select a from Apply a where a.member.id = :memberId and a.workDate.jobPost.id = :jobPostId and a.workDate.id in :workDateList")
     List<Apply> checkDuplication(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId, @Param("workDateList") List<Long> workDateList);
     @Query("select a from Apply a join fetch a.workDate.jobPost j where a.member.id = :memberId and a.id = :applyId")
@@ -83,4 +83,9 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
      */
     @Query("select count(a) from Apply a where a.member.id = :memberId and a.workDate.date = :date and a.status = 'ACCEPTED'")
     int findAcceptedApplyByWorkDate(@Param("memberId") Long memberId, @Param("date") LocalDate date);
+    @Query("select a from Apply a where a.member.id = :memberId and a.workDate.date = :date and a.status = 'ACCEPTED'")
+    List<Apply> checkAcceptedApplyForOffer(@Param("memberId") Long memberId, @Param("date") LocalDate date);
+    @Query("select a from Apply a where a.workDate.date = :date and a.member.id = :memberId and a.status = 'PENDING'")
+    List<Apply> deleteOtherApplyOnDate(@Param("memberId") Long memberId, @Param("date") LocalDate date);
+
 }
