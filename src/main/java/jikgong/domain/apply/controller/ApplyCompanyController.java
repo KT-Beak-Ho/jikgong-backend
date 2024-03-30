@@ -22,9 +22,6 @@ import org.springframework.web.bind.annotation.*;
 public class ApplyCompanyController {
     private final ApplyCompanyService applyCompanyService;
 
-    // todo: 일자리 신청 취소 프로세스 확정 안 남
-    // todo: 기한이 지났을 경우 자동으로 신청 취소되게 하는 기능도 개발해야 함
-
     @Operation(summary = "인력 관리: 대기 중인 노동자 조회")
     @GetMapping("/api/apply/company/pending/{jobPostId}/{workDateId}")
     public ResponseEntity<Response> findPendingApplyCompany(@AuthenticationPrincipal PrincipalDetails principalDetails,
