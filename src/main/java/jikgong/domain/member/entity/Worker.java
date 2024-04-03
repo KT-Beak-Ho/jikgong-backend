@@ -22,7 +22,7 @@ public class Worker {
     private Boolean isOffer; // 헤드헌팅 여부
 
     @Embedded
-    private WorkerNotificationInfo workerNotificationInfo;
+    private WorkerNotificationInfo workerNotificationInfo; // 노동자 알림 정보
 
 
     @Builder
