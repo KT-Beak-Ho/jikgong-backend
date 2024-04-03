@@ -24,7 +24,17 @@ public class PaymentMemberInfo {
 
     public static PaymentMemberInfo from(History history) {
         Member member = history.getMember();
-        int payment = history.getStartStatus() == WorkStatus.NOT_WORK ? 0 : history.getWorkDate().getJobPost().getWage();
+        WorkStatus workStatus = history.getStartStatus();
+        int payment = 0;
+
+        // 출근 기록만 있는 경우 or 결근일 경우 => 0원
+        if (workStatus == WorkStatus.START_WORK || workStatus == WorkStatus.NOT_WORK) {
+            payment = 0;
+        }
+        // 퇴근, 조퇴일 경우 => 임금 지급
+        if (workStatus == WorkStatus.FINISH_WORK || workStatus == WorkStatus.EARLY_LEAVE) {
+            payment = history.getWorkDate().getJobPost().getWage();
+        }
         return PaymentMemberInfo.builder()
                 .memberId(member.getId())
                 .workerName(member.getWorkerInfo().getWorkerName())
