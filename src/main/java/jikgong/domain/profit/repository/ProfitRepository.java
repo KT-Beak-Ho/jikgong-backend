@@ -8,9 +8,18 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProfitRepository extends JpaRepository<Profit, Long> {
+    /**
+     * find by id and member
+     */
+    @Query("select p from Profit p where p.id = :profitId and p.member.id = :memberId")
+    Optional<Profit> findByIdAndMember(@Param("memberId") Long memberId, @Param("profitId") Long profitId);
+
+
+
     /**
      * 수익 내역 (캘린더 형식)
      */
@@ -42,18 +51,10 @@ public interface ProfitRepository extends JpaRepository<Profit, Long> {
     @Query("select p.date as workDate, SUM(p.wage) as totalWage from Profit p " +
             "where year(p.date) = :year AND month(p.date) = :month group by p.date")
     List<Object[]> getTotalWagePerDay(@Param("year") int year, @Param("month") int month);
-    @Query("select p.date as month, sum (p.wage) as totalWage, " +
+    @Query("select month(p.date) as month, sum (p.wage) as totalWage, " +
             "sum(FUNCTION('TIMESTAMPDIFF', MINUTE, p.startTime, p.endTime)) as totalWorkMinutes " +
             "from Profit p where p.member.id = :memberId and year(p.date) = :year group by month(p.date)")
     List<Object[]> getTotalWageAndWorkTimePerMonth(@Param("memberId") Long memberId, @Param("year") int year);
-
-
-
-    /**
-     * 수익 내역 삭제
-     */
-    @Query("select p from Profit p where p.id = :profitId and p.member.id = :memberId")
-    Profit findByMemberAndProfit(@Param("memberId") Long memberId, @Param("profitId") Long profitId);
 
 
 
