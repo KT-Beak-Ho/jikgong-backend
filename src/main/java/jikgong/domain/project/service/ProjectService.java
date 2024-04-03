@@ -32,11 +32,11 @@ public class ProjectService {
     /**
      * 프로젝트 등록
      */
-    public Long saveProject(Long memberId, ProjectSaveRequest request) {
-        Member member = memberRepository.findById(memberId)
+    public Long saveProject(Long companyId, ProjectSaveRequest request) {
+        Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Project project = Project.createEntity(request, member);
+        Project project = Project.createEntity(request, company);
 
         return projectRepository.save(project).getId();
     }
@@ -46,21 +46,21 @@ public class ProjectService {
      * 필터: 완료됨, 진행 중, 예정
      */
     @Transactional(readOnly = true)
-    public List<ProjectListResponse> findProjects(Long memberId, ProjectStatus projectStatus) {
-        Member member = memberRepository.findById(memberId)
+    public List<ProjectListResponse> findProjects(Long companyId, ProjectStatus projectStatus) {
+        Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
         LocalDate now = LocalDate.now();
         List<Project> projectList = new ArrayList<>();
 
         if (projectStatus == ProjectStatus.COMPLETED) {
-            projectList = projectRepository.findCompletedProject(member.getId(), now);
+            projectList = projectRepository.findCompletedProject(company.getId(), now);
         }
         else if (projectStatus == ProjectStatus.IN_PROGRESS) {
-            projectList = projectRepository.findInProgressProject(member.getId(), now);
+            projectList = projectRepository.findInProgressProject(company.getId(), now);
         }
         else if (projectStatus == ProjectStatus.PLANNED) {
-            projectList = projectRepository.findPlannedProject(member.getId(), now);
+            projectList = projectRepository.findPlannedProject(company.getId(), now);
         }
 
         List<ProjectListResponse> projectListResponseList = projectList.stream()
@@ -73,11 +73,11 @@ public class ProjectService {
     /**
      * 프로젝트 수정
      */
-    public void updateProject(Long memberId, ProjectUpdateRequest request) {
-        Member member = memberRepository.findById(memberId)
+    public void updateProject(Long companyId, ProjectUpdateRequest request) {
+        Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Project project = projectRepository.findById(request.getProjectId())
+        Project project = projectRepository.findByIdAndMember(company.getId(), request.getProjectId())
                 .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_FOUND));
 
         project.updateProject(request);
