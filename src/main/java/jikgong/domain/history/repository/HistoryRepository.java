@@ -25,15 +25,15 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
 
     // 퇴근, 조퇴 결과 갱신
     @Modifying
-    @Query("update History h set h.endStatus = :status where h.id in :finishWorkList and h.startStatus != 'NOT_WORK'")
-    int updateHistoryByIdList(@Param("finishWorkList") List<Long> finishWorkList, @Param("status") WorkStatus status);
+    @Query("update History h set h.endStatus = :status where h.workDate.id = :workDateId and h.id in :workerIdList and h.startStatus != 'NOT_WORK'")
+    int updateHistoryByIdList(@Param("workDateId") Long workDateId, @Param("workerIdList") List<Long> workerIdList, @Param("status") WorkStatus status);
 
     // 출근, 결근 조회
-    @Query("select h from History h join fetch h.member m where h.workDate.jobPost.id = :jobPostId and h.workDate.id = :workDateId and h.startStatus = :status")
-    List<History> findHistoryAtStartWorkCheck(@Param("jobPostId") Long jobPostId, @Param("workDateId") Long workDateId, @Param("status") WorkStatus status);
+    @Query("select h from History h join fetch h.member m where h.workDate.id = :workDateId and h.startStatus = :status")
+    List<History> findHistoryAtStartWorkCheck(@Param("workDateId") Long workDateId, @Param("status") WorkStatus status);
 
     // 지급 내역서 조회
     @Query("select h from History h join fetch h.member m join fetch h.workDate.jobPost j " +
-            "where j.id = :jobPostId and h.workDate.id = :workDateId")
-    List<History> findPaymentStatementInfo(@Param("jobPostId") Long jobPostId, @Param("workDateId") Long workDateId);
+            "where h.workDate.id = :workDateId")
+    List<History> findPaymentStatementInfo(@Param("workDateId") Long workDateId);
 }

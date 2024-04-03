@@ -55,7 +55,7 @@ public class JobPostCompanyService {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Project project = projectRepository.findById(request.getProjectId())
+        Project project = projectRepository.findByIdAndMember(company.getId(), request.getProjectId())
                 .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_FOUND));
 
         // 모집 공고 저장
@@ -86,35 +86,31 @@ public class JobPostCompanyService {
         return savedJobPost.getId();
     }
 
-    // 모집 공고: 조회 with 프로젝트
-
     /**
      * 프로젝트 별 모집 공고 조회
-     * 필터: 완료됨 / 진행 중 / 예정
+     * 필터: 완료됨 | 진행 중 | 예정
      */
     public List<JobPostListResponse> findJobPostsByMemberAndProject(Long companyId, JobPostStatus jobPostStatus, Long projectId, Pageable pageable) {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Project project = projectRepository.findById(projectId)
+        Project project = projectRepository.findByIdAndMember(company.getId(), projectId)
                 .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_FOUND));
 
         LocalDate now = LocalDate.now();
         List<JobPost> jobPostList = new ArrayList<>();
 
         if (jobPostStatus == JobPostStatus.COMPLETED) {
-            jobPostList = jobPostRepository.findCompletedJobPostByMemberAndProject(company.getId(), now, project.getId(), pageable);
+            jobPostList = jobPostRepository.findCompletedJobPostByMemberAndProject(now, project.getId(), pageable);
         } else if (jobPostStatus == JobPostStatus.IN_PROGRESS) {
-            jobPostList = jobPostRepository.findInProgressJobPostByMemberAndProject(company.getId(), now, project.getId(), pageable);
+            jobPostList = jobPostRepository.findInProgressJobPostByMemberAndProject(now, project.getId(), pageable);
         } else if (jobPostStatus == JobPostStatus.PLANNED) {
-            jobPostList = jobPostRepository.findPlannedJobPostByMemberAndProject(company.getId(), now, project.getId(), pageable);
+            jobPostList = jobPostRepository.findPlannedJobPostByMemberAndProject(now, project.getId(), pageable);
         }
 
-        List<JobPostListResponse> jobPostListResponseList = jobPostList.stream()
+        return jobPostList.stream()
                 .map(JobPostListResponse::from)
                 .collect(Collectors.toList());
-
-        return jobPostListResponseList;
     }
 
     /**
@@ -134,7 +130,6 @@ public class JobPostCompanyService {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-
         return jobPostRepository.findTemporaryJobPostByMemberId(company.getId()).stream()
                 .map(TemporaryListResponse::from)
                 .collect(Collectors.toList());
@@ -148,6 +143,8 @@ public class JobPostCompanyService {
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
         JobPost jobPost = jobPostRepository.findTemporaryForDelete(company.getId(), jobPostId, true)
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
+
+        // todo: cascade 빼고 delete 쿼리 날리는 방향으로 생각 해보자
 
         // 관련 엔티티 삭제 (WorkDate, AddressInfo)
         jobPost.deleteChildEntity(jobPost);

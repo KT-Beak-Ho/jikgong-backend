@@ -16,7 +16,11 @@ import java.util.Optional;
 
 @Repository
 public interface WorkDateRepository extends JpaRepository<WorkDate, Long> {
-    // 지원 시 유효한 workDate 에 대한 요청인지 체크
+    /**
+     * find by id and JobPost
+     */
+    @Query("select w from WorkDate w where w.jobPost = :jobPostid and w.id = :workDateId")
+    Optional<WorkDate> findByIdAndJobPost(@Param("jobPostId") Long jobPostId, @Param("workDateId") Long workDateId);
 
     /**
      * 일자리 지원

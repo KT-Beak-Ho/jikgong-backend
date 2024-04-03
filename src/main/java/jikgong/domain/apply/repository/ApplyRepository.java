@@ -63,8 +63,8 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
     /**
      * History 로직에서 사용
      */
-    @Query("select a from Apply a where a.workDate.jobPost.id = :jobPostId and a.workDate.id = :workDateId and (a.member.id in :startWorkMemberList or a.member.id in :notWorkMemberList) and a.status = :status")
-    List<Apply> checkApplyBeforeSaveHistory(@Param("jobPostId") Long jobPostId, @Param("workDateId") Long workDateId, @Param("startWorkMemberList") List<Long> startWorkMemberList, @Param("notWorkMemberList") List<Long> notWorkMemberList, @Param("status") ApplyStatus status);
+    @Query("select a from Apply a where a.workDate.id = :workDateId and (a.member.id in :startWorkMemberList or a.member.id in :notWorkMemberList) and a.status = :status")
+    List<Apply> checkApplyBeforeSaveHistory(@Param("workDateId") Long workDateId, @Param("startWorkMemberList") List<Long> startWorkMemberList, @Param("notWorkMemberList") List<Long> notWorkMemberList, @Param("status") ApplyStatus status);
     @Query(value = "select a from Apply a join fetch a.member m where a.workDate.jobPost.member.id = :memberId and a.workDate.jobPost.id = :jobPostId and a.status = :status and a.workDate.id = :workDateId")
     List<Apply> findApplyAtStartWorkCheck(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId, @Param("workDateId") Long workDateId, @Param("status") ApplyStatus status);
 

@@ -36,25 +36,21 @@ public class ApplyCompanyService {
     private final ApplyRepository applyRepository;
     private final MemberRepository memberRepository;
     private final JobPostRepository jobPostRepository;
-    private final HistoryRepository historyRepository;
     private final WorkDateRepository workDateRepository;
-    private final HistoryService historyService;
-
-    // 인력 관리: 인부 신청 현황 조회 (회사)
 
     /**
      * 인력 관리
      * 지원자 목록 조회
      */
     public Page<ApplyResponseForCompany> findPendingApplyHistoryCompany(Long companyId, Long jobPostId, Long workDateId, Pageable pageable) {
-        Member member = memberRepository.findById(companyId)
+        Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-        JobPost jobPost = jobPostRepository.findById(jobPostId)
+        JobPost jobPost = jobPostRepository.findByIdAndMember(company.getId(), jobPostId)
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
         WorkDate workDate = workDateRepository.findById(workDateId)
                 .orElseThrow(() -> new CustomException(ErrorCode.WORK_DATE_NOT_FOUND));
 
-        Page<Apply> applyPage = applyRepository.findApplyForCompanyByApplyStatus(member.getId(), jobPost.getId(), workDate.getId(), ApplyStatus.PENDING, pageable);
+        Page<Apply> applyPage = applyRepository.findApplyForCompanyByApplyStatus(company.getId(), jobPost.getId(), workDate.getId(), ApplyStatus.PENDING, pageable);
 
         List<ApplyResponseForCompany> applyResponseForCompanyList = applyPage.getContent().stream()
                 .map(ApplyResponseForCompany::from)
@@ -70,7 +66,7 @@ public class ApplyCompanyService {
     public Page<ApplyResponseForCompany> findAcceptedHistoryCompany(Long companyId, Long jobPostId, Long workDateId, Pageable pageable) {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-        JobPost jobPost = jobPostRepository.findById(jobPostId)
+        JobPost jobPost = jobPostRepository.findByIdAndMember(company.getId(), jobPostId)
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
         WorkDate workDate = workDateRepository.findById(workDateId)
                 .orElseThrow(() -> new CustomException(ErrorCode.WORK_DATE_NOT_FOUND));
@@ -92,7 +88,7 @@ public class ApplyCompanyService {
     public void processApply(Long companyId, ApplyProcessRequest request) {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-        JobPost jobPost = jobPostRepository.findById(request.getJobPostId())
+        JobPost jobPost = jobPostRepository.findByIdAndMember(company.getId(), request.getJobPostId())
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
         WorkDate workDate = workDateRepository.findById(request.getWorkDateId())
                 .orElseThrow(() -> new CustomException(ErrorCode.WORK_DATE_NOT_FOUND));

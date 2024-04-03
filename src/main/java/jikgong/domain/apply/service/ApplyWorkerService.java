@@ -179,8 +179,6 @@ public class ApplyWorkerService {
         Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        applyRepository.findPendingApply(worker.getId());
-
         return applyRepository.findPendingApply(worker.getId()).stream()
                 .map(ApplyPendingResponse::from)
                 .collect(Collectors.toList());
@@ -217,6 +215,7 @@ public class ApplyWorkerService {
             }
         }
 
+        // 수락, 거절 상태일때만 취소 가능
         if (apply.getStatus() != ApplyStatus.PENDING && apply.getStatus() != ApplyStatus.ACCEPTED) {
             throw new CustomException(ErrorCode.APPLY_CANCEL_IMPOSSIBLE);
         }
@@ -224,6 +223,7 @@ public class ApplyWorkerService {
         // status 업데이트
         apply.updateStatus(ApplyStatus.CANCELED, LocalDateTime.now());
 
+        // 모집된 인원 업데이트
         apply.getWorkDate().minusRegisterNum();
     }
 }

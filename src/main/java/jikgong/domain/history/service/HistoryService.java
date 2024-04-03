@@ -43,13 +43,13 @@ public class HistoryService {
     public int saveHistoryAtStart(Long companyId, HistoryStartSaveRequest request) {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-        JobPost jobPost = jobPostRepository.findById(request.getJobPostId())
+        JobPost jobPost = jobPostRepository.findByIdAndMember(company.getId(), request.getJobPostId())
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
-        WorkDate workDate = workDateRepository.findById(request.getWorkDateId())
+        WorkDate workDate = workDateRepository.findByIdAndJobPost(jobPost.getId(), request.getWorkDateId())
                 .orElseThrow(() -> new CustomException(ErrorCode.WORK_DATE_NOT_FOUND));
 
-        // 지원한 데이터에 대한 처리인지 체크
-        List<Apply> applyList =   applyRepository.checkApplyBeforeSaveHistory(jobPost.getId(), workDate.getId(), request.getStartWorkMemberIdList(), request.getNotWorkMemberIdList(), ApplyStatus.ACCEPTED);
+        // 승인된 지원인지 체크
+        List<Apply> applyList =   applyRepository.checkApplyBeforeSaveHistory(workDate.getId(), request.getStartWorkMemberIdList(), request.getNotWorkMemberIdList(), ApplyStatus.ACCEPTED);
         if (applyList.size() != request.getStartWorkMemberIdList().size() + request.getNotWorkMemberIdList().size()) {
             throw new CustomException(ErrorCode.HISTORY_NOT_FOUND_APPLY);
         }
@@ -65,16 +65,16 @@ public class HistoryService {
 
         // 출근 history
         for (Long targetMemberId : request.getStartWorkMemberIdList()) {
-            Member targetMember = memberRepository.findById(targetMemberId)
+            Member worker = memberRepository.findById(targetMemberId)
                     .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-            saveHistoryList.add(History.createEntity(WorkStatus.START_WORK, targetMember, workDate));
+            saveHistoryList.add(History.createEntity(WorkStatus.START_WORK, worker, workDate));
         }
 
         // 결근 history
         for (Long targetMemberId : request.getNotWorkMemberIdList()) {
-            Member targetMember = memberRepository.findById(targetMemberId)
+            Member worker = memberRepository.findById(targetMemberId)
                     .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-            saveHistoryList.add(History.createEntity(WorkStatus.NOT_WORK, targetMember, workDate));
+            saveHistoryList.add(History.createEntity(WorkStatus.NOT_WORK, worker, workDate));
         }
 
         return historyRepository.saveAll(saveHistoryList).size();
@@ -94,17 +94,17 @@ public class HistoryService {
     public int updateHistoryAtFinish(Long companyId, HistoryFinishSaveRequest request) {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-        JobPost jobPost = jobPostRepository.findById(request.getJobPostId())
+        JobPost jobPost = jobPostRepository.findByIdAndMember(company.getId(), request.getJobPostId())
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
-        WorkDate workDate = workDateRepository.findById(request.getWorkDateId())
+        WorkDate workDate = workDateRepository.findByIdAndJobPost(jobPost.getId(), request.getWorkDateId())
                 .orElseThrow(() -> new CustomException(ErrorCode.WORK_DATE_NOT_FOUND));
 
         // 퇴근
-        int updateFinishWork = historyRepository.updateHistoryByIdList(request.getFinishWorkHistoryIdList(), WorkStatus.FINISH_WORK);
+        int updateFinishWork = historyRepository.updateHistoryByIdList(workDate.getId(), request.getFinishWorkHistoryIdList(), WorkStatus.FINISH_WORK);
         log.info("퇴근 처리된 데이터: " + updateFinishWork);
 
         // 조퇴
-        int updateEarlyLeave = historyRepository.updateHistoryByIdList(request.getEarlyLeaveHistoryIdList(), WorkStatus.EARLY_LEAVE);
+        int updateEarlyLeave = historyRepository.updateHistoryByIdList(workDate.getId(), request.getEarlyLeaveHistoryIdList(), WorkStatus.EARLY_LEAVE);
         log.info("조퇴 처리된 데이터: " + updateFinishWork);
 
         // 요청한 데이터와 업데이트한 데이터 비교
@@ -118,19 +118,21 @@ public class HistoryService {
     /**
      * 출근, 결근 조회
      * 지원한 목록 조회 후
-     * 출근, 결근, 출근 전 으로 status 분류
+     * 해당 일짜에 이미 history 있는 지원자일 경우으로 status 분류
+     * status: [출근, 결근, 출근 전]
+     * 지원이 확정된 사람 중, 몇몇은 이미 history 데이터가 있을 것이고, 몇몇은 없기 때문에 위와 같이 작성
      */
     public List<MemberAcceptedResponse> findApplyWithHistoryAtStart(Long companyId, Long jobPostId, Long workDateId) {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
         JobPost jobPost = jobPostRepository.findById(jobPostId)
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
-        WorkDate workDate = workDateRepository.findById(workDateId)
+        WorkDate workDate = workDateRepository.findByIdAndJobPost(jobPost.getId(), workDateId)
                 .orElseThrow(() -> new CustomException(ErrorCode.WORK_DATE_NOT_FOUND));
 
         // key: memberId  |  value: history
-        Map<Long, History> startWorkMember = createHistoryMap(jobPost.getId(), workDate.getId(), WorkStatus.START_WORK);
-        Map<Long, History> notWorkMember = createHistoryMap(jobPost.getId(), workDate.getId(), WorkStatus.NOT_WORK);
+        Map<Long, History> startWorkMember = createHistoryMap(workDate.getId(), WorkStatus.START_WORK);
+        Map<Long, History> notWorkMember = createHistoryMap(workDate.getId(), WorkStatus.NOT_WORK);
 
         List<Apply> applyList = applyRepository.findApplyAtStartWorkCheck(company.getId(), jobPost.getId(), workDate.getId(), ApplyStatus.ACCEPTED);
 
@@ -151,24 +153,25 @@ public class HistoryService {
     }
 
     // key: memberId  |  value: history  map 생성
-    private Map<Long, History> createHistoryMap(Long jobId, Long workDateId, WorkStatus status) {
-        return historyRepository.findHistoryAtStartWorkCheck(jobId, workDateId, status).stream()
+    private Map<Long, History> createHistoryMap(Long workDateId, WorkStatus status) {
+        return historyRepository.findHistoryAtStartWorkCheck(workDateId, status).stream()
                 .collect(Collectors.toMap(history -> history.getMember().getId(), Function.identity()));
     }
 
     /**
+     * 출근, 결근 기록이 있는 노동자 기록만 조회
      * 퇴근, 조퇴 조회
      */
     public HistoryAtFinishResponse findHistoryAtFinish(Long companyId, Long jobPostId, Long workDateId) {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-        JobPost jobPost = jobPostRepository.findById(jobPostId)
+        JobPost jobPost = jobPostRepository.findByIdAndMember(company.getId(), jobPostId)
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
-        WorkDate workDate = workDateRepository.findById(workDateId)
+        WorkDate workDate = workDateRepository.findByIdAndJobPost(jobPost.getId(), workDateId)
                 .orElseThrow(() -> new CustomException(ErrorCode.WORK_DATE_NOT_FOUND));
 
-        List<History> workHistoryList = historyRepository.findHistoryAtStartWorkCheck(jobPost.getId(), workDate.getId(), WorkStatus.START_WORK);
-        List<History> notWorkHistoryList = historyRepository.findHistoryAtStartWorkCheck(jobPost.getId(), workDate.getId(), WorkStatus.NOT_WORK);
+        List<History> workHistoryList = historyRepository.findHistoryAtStartWorkCheck(workDate.getId(), WorkStatus.START_WORK);
+        List<History> notWorkHistoryList = historyRepository.findHistoryAtStartWorkCheck(workDate.getId(), WorkStatus.NOT_WORK);
 
         List<MemberAcceptedResponse> workMemberResponse = workHistoryList.stream()
                 .map(MemberAcceptedResponse::from)
@@ -185,16 +188,17 @@ public class HistoryService {
 
     /**
      * 지급 내역서 확인
+     * 해당 일짜의 지급 내역서 확인
      */
     public PaymentStatementResponse findPaymentStatement(Long companyId, Long jobPostId, Long workDateId) {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-        JobPost jobPost = jobPostRepository.findById(jobPostId)
+        JobPost jobPost = jobPostRepository.findByIdAndMember(company.getId(), jobPostId)
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
-        WorkDate workDate = workDateRepository.findById(workDateId)
+        WorkDate workDate = workDateRepository.findByIdAndJobPost(jobPost.getId(), workDateId)
                 .orElseThrow(() -> new CustomException(ErrorCode.WORK_DATE_NOT_FOUND));
 
-        List<PaymentMemberInfo> paymentMemberInfoList = historyRepository.findPaymentStatementInfo(jobPost.getId(), workDate.getId()).stream()
+        List<PaymentMemberInfo> paymentMemberInfoList = historyRepository.findPaymentStatementInfo(workDate.getId()).stream()
                 .map(PaymentMemberInfo::from)
                 .collect(Collectors.toList());
 
