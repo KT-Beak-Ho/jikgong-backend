@@ -32,6 +32,7 @@ public class LocationService {
 
     /**
      * 위치 정보 등록
+     * 등록하며 메인 위치로 설정 가능
      */
     public Long saveLocation(Long workerId, LocationSaveRequest request) {
         Member worker = memberRepository.findById(workerId)
@@ -76,7 +77,7 @@ public class LocationService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Location location = locationRepository.findByLocationIdAndMemberId(member.getId(), locationId)
+        Location location = locationRepository.findByIdAndMember(member.getId(), locationId)
                 .orElseThrow(() -> new CustomException(ErrorCode.LOCATION_NOT_FOUND));
 
         // 요청한 locationId 가 이미 main 이라면
@@ -96,7 +97,7 @@ public class LocationService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Location location = locationRepository.findByLocationIdAndMemberId(member.getId(), request.getLocationId())
+        Location location = locationRepository.findByIdAndMember(member.getId(), request.getLocationId())
                 .orElseThrow(() -> new CustomException(ErrorCode.LOCATION_NOT_FOUND));
 
         location.updateLocation(request);

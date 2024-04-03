@@ -25,7 +25,7 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
     Optional<Location> findMainLocationByMemberId(@Param("memberId") Long memberId);
 
     @Query("select l from Location l where l.member.id = :memberId and l.id = :locationId")
-    Optional<Location> findByLocationIdAndMemberId(@Param("memberId") Long memberId, @Param("locationId") Long locationId);
+    Optional<Location> findByIdAndMember(@Param("memberId") Long memberId, @Param("locationId") Long locationId);
 
     @Modifying
     @Query("delete from Location l where l.member.id = :memberId and l.id = :locationId")

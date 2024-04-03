@@ -23,13 +23,18 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
     @Query(value = "select a from Apply a join fetch a.member m where a.workDate.jobPost.member.id = :memberId and a.workDate.jobPost.id = :jobPostId and a.status = :status and a.workDate.id = :workDateId",
             countQuery = "select a from Apply a where a.workDate.jobPost.member.id = :memberId and a.workDate.jobPost.id = :jobPostId and a.status = :status and a.workDate.id = :workDateId")
     Page<Apply> findApplyForCompanyByApplyStatus(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId, @Param("workDateId") Long workDateId, @Param("status") ApplyStatus status, Pageable pageable);
+    @Query("select a from Apply a join fetch a.member m where a.id in :applyIdList and a.workDate.id = :workDateId and a.workDate.jobPost.id = :jobPostId")
+    List<Apply> findByIdList(@Param("applyIdList") List<Long> applyIdList, @Param("workDateId") Long workDateId, @Param("jobPostId") Long jobPostId);
+    @Query("select a.id from Apply a where a.workDate.date = :date and a.member.id in :memberIdList and a.status = 'PENDING'")
+    List<Long> deleteOtherApplyOnDate(@Param("memberIdList") List<Long> memberIdList, @Param("date") LocalDate date);
+
+
+    /**
+     * 확정 시 다른 지원 취소
+     */
     @Modifying
     @Query("update Apply a set a.status = :applyStatus, a.statusDecisionTime = :now where a.id in :applyIdList")
     int updateApplyStatus(@Param("applyIdList") List<Long> applyIdList, @Param("applyStatus") ApplyStatus applyStatus, @Param("now") LocalDateTime now);
-    @Query("select a from Apply a join fetch a.member m where a.id in :applyIdList and a.workDate.id = :workDateId and a.workDate.jobPost.id = :jobPostId")
-    List<Apply> findByIdList(@Param("applyIdList") List<Long> applyIdList, @Param("workDateId") Long workDateId, @Param("jobPostId") Long jobPostId);
-    @Query("select a from Apply a where a.workDate.date = :date and a.member.id in :memberIdList and a.status = 'PENDING'")
-    List<Apply> deleteOtherApplyOnDate(@Param("memberIdList") List<Long> memberIdList, @Param("date") LocalDate date);
 
 
 
@@ -85,7 +90,7 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
     int findAcceptedApplyByWorkDate(@Param("memberId") Long memberId, @Param("date") LocalDate date);
     @Query("select a from Apply a where a.member.id = :memberId and a.workDate.date = :date and a.status = 'ACCEPTED'")
     List<Apply> checkAcceptedApplyForOffer(@Param("memberId") Long memberId, @Param("date") LocalDate date);
-    @Query("select a from Apply a where a.workDate.date = :date and a.member.id = :memberId and a.status = 'PENDING'")
-    List<Apply> deleteOtherApplyOnDate(@Param("memberId") Long memberId, @Param("date") LocalDate date);
+    @Query("select a.id from Apply a where a.workDate.date = :date and a.member.id = :memberId and a.status = 'PENDING'")
+    List<Long> deleteOtherApplyOnDate(@Param("memberId") Long memberId, @Param("date") LocalDate date);
 
 }

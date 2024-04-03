@@ -65,11 +65,9 @@ public class NotificationService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        List<NotificationResponse> notificationResponseList = notificationRepository.findByMember(member.getId()).stream()
+        return notificationRepository.findByMember(member.getId()).stream()
                 .map(NotificationResponse::from)
                 .collect(Collectors.toList());
-
-        return notificationResponseList;
     }
 
     /**
@@ -79,7 +77,7 @@ public class NotificationService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Notification notification = notificationRepository.findById(notificationId)
+        Notification notification = notificationRepository.findByIdAndMember(member.getId(), notificationId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOTIFICATION_NOT_FOUND));
 
         // 읽음 처리

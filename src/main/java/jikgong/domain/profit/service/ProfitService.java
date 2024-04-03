@@ -33,22 +33,22 @@ public class ProfitService {
     /**
      * 수익 내역 저장
      */
-    public Long saveProfitHistory(Long memberId, ProfitSaveRequest request) {
-        Member member = memberRepository.findById(memberId)
+    public Long saveProfitHistory(Long workerId, ProfitSaveRequest request) {
+        Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-        return profitRepository.save(Profit.createEntity(request, member)).getId();
+        return profitRepository.save(Profit.createEntity(request, worker)).getId();
     }
 
     /**
      * 수익 내역 일별 조회 (캘린더 형식)
      */
     @Transactional(readOnly = true)
-    public List<DailyProfitResponse> findDailyProfitHistory(Long memberId, LocalDate selectDate) {
-        Member member = memberRepository.findById(memberId)
+    public List<DailyProfitResponse> findDailyProfitHistory(Long workerId, LocalDate selectDate) {
+        Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 일일 임금 지급 리스트
-        return profitRepository.findBySelectDate(member.getId(), selectDate).stream()
+        return profitRepository.findBySelectDate(worker.getId(), selectDate).stream()
                 .map(DailyProfitResponse::from)
                 .collect(Collectors.toList());
     }
@@ -58,21 +58,21 @@ public class ProfitService {
      * 임금 합, 근무 시간 합, 수익 정보 리스트, 출역 날짜 리스트
      */
     @Transactional(readOnly = true)
-    public MonthlyProfitResponse findMonthlyProfitHistoryCalendar(Long memberId, LocalDate selectMonth) {
-        Member member = memberRepository.findById(memberId)
+    public MonthlyProfitResponse findMonthlyProfitHistoryCalendar(Long workerId, LocalDate selectMonth) {
+        Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
         LocalDate monthStart = TimeTransfer.getFirstDayOfMonth(selectMonth);
         LocalDate monthEnd = TimeTransfer.getLastDayOfMonth(selectMonth);
 
         // 해당 달의 임금 합
-        Integer wageInMonth = profitRepository.findTotalMonthlyWage(member.getId(), monthStart, monthEnd);
+        Integer wageInMonth = profitRepository.findTotalMonthlyWage(worker.getId(), monthStart, monthEnd);
 
         // 해당 달의 근무 시간 합
-        Integer workTimeInMonth = profitRepository.findWorkTimeInMonth(member.getId(), monthStart, monthEnd);
+        Integer workTimeInMonth = profitRepository.findWorkTimeInMonth(worker.getId(), monthStart, monthEnd);
 
         // 한달 간의 수익 데이터
-        List<Profit> profitHistoryMonth = profitRepository.findProfitInMonth(member.getId(), monthStart, monthEnd);
+        List<Profit> profitHistoryMonth = profitRepository.findProfitInMonth(worker.getId(), monthStart, monthEnd);
 
         List<DailyProfitResponse> dailyProfitResponseList = profitHistoryMonth.stream()
                 .map(DailyProfitResponse::from)
@@ -96,11 +96,12 @@ public class ProfitService {
     /**
      * 수익 내역 삭제
      */
-    public void deleteProfitHistory(Long memberId, Long profitId) {
-        Member member = memberRepository.findById(memberId)
+    public void deleteProfitHistory(Long workerId, Long profitId) {
+        Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Profit profit = profitRepository.findByMemberAndProfit(member.getId(), profitId);
+        Profit profit = profitRepository.findByIdAndMember(worker.getId(), profitId)
+                        .orElseThrow(() -> new CustomException(ErrorCode.PROFIT_NOT_FOUND));
 
         profitRepository.delete(profit);
     }
@@ -108,11 +109,11 @@ public class ProfitService {
     /**
      * 수익 내역 수정
      */
-    public void modifyProfitHistory(Long memberId, ProfitModifyRequest request) {
-        Member member = memberRepository.findById(memberId)
+    public void modifyProfitHistory(Long workerId, ProfitModifyRequest request) {
+        Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Profit profit = profitRepository.findById(request.getProfitId())
+        Profit profit = profitRepository.findByIdAndMember(worker.getId(), request.getProfitId())
                 .orElseThrow(() -> new CustomException(ErrorCode.PROFIT_NOT_FOUND));
 
         // update
@@ -122,11 +123,11 @@ public class ProfitService {
     /**
      * 수익 내역 (리스트 형식)
      */
-    public List<DailyProfitResponse> findProfitHistoryList(Long memberId) {
-        Member member = memberRepository.findById(memberId)
+    public List<DailyProfitResponse> findProfitHistoryList(Long workerId) {
+        Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        return profitRepository.findByMember(member.getId()).stream()
+        return profitRepository.findByMember(worker.getId()).stream()
                 .map(DailyProfitResponse::from)
                 .collect(Collectors.toList());
     }
@@ -135,12 +136,12 @@ public class ProfitService {
      * 수익 관리 메인 페이지
      * 총 수입, 총 근무 시간
      */
-    public ProfitSummaryInfoResponse findSummaryInfo(Long memberId) {
-        Member member = memberRepository.findById(memberId)
+    public ProfitSummaryInfoResponse findSummaryInfo(Long workerId) {
+        Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Integer totalWorkTime = profitRepository.findTotalWorkTimeByMember(member.getId());
-        Integer totalWage = profitRepository.findTotalWageByMember(member.getId());
+        Integer totalWorkTime = profitRepository.findTotalWorkTimeByMember(worker.getId());
+        Integer totalWage = profitRepository.findTotalWageByMember(worker.getId());
 
         return ProfitSummaryInfoResponse.builder()
                 .totalWorkTime(totalWorkTime)
@@ -151,15 +152,15 @@ public class ProfitService {
     /**
      * 수익 일별 그래프 정보
      */
-    public DailyGraphResponse findDailyGraphInfo(Long memberId, LocalDate selectMonth) {
-        Member member = memberRepository.findById(memberId)
+    public DailyGraphResponse findDailyGraphInfo(Long workerId, LocalDate selectMonth) {
+        Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
         // [출역 날짜, 일한 시간] 으로 그룹핑
         List<Object[]> totalWagePerDay = profitRepository.getTotalWagePerDay(selectMonth.getYear(), selectMonth.getMonth().getValue());
 
         List<Profit> profitInMonth = profitRepository.findProfitInMonth(
-                member.getId(),
+                worker.getId(),
                 TimeTransfer.getFirstDayOfMonth(selectMonth),
                 TimeTransfer.getLastDayOfMonth(selectMonth));
 
@@ -197,6 +198,7 @@ public class ProfitService {
         Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
+        // month:
         List<Object[]> totalWageAndWorkTimePerMonth = profitRepository.getTotalWageAndWorkTimePerMonth(worker.getId(), selectYear.getYear());
 
         return MonthlyGraphResponse

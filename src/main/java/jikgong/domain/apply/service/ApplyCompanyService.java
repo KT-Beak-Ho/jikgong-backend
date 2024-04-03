@@ -134,8 +134,7 @@ public class ApplyCompanyService {
     // 같은 날 다른 공고에 지원 했던 대기중인 요청 취소
     private void cancelAnotherApply(List<Apply> applyList, WorkDate workDate) {
         List<Long> memberIdList = applyList.stream().map(apply -> apply.getMember().getId()).collect(Collectors.toList());
-        List<Apply> deleteApply = applyRepository.deleteOtherApplyOnDate(memberIdList, workDate.getDate());
-        List<Long> cancelApplyIdList = deleteApply.stream().map(Apply::getId).collect(Collectors.toList());
+        List<Long> cancelApplyIdList = applyRepository.deleteOtherApplyOnDate(memberIdList, workDate.getDate());
         int canceledCount = applyRepository.updateApplyStatus(cancelApplyIdList, ApplyStatus.CANCELED, LocalDateTime.now());
         log.info("취소된 요청 횟수: " + canceledCount);
     }

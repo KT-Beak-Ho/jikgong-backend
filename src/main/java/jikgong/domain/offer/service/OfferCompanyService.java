@@ -44,14 +44,11 @@ public class OfferCompanyService {
     private final MemberRepository memberRepository;
     private final ProjectRepository projectRepository;
     private final OfferRepository offerRepository;
-    private final ApplyRepository applyRepository;
     private final ApplicationEventPublisher publisher;
     private final JobPostRepository jobPostRepository;
     private final ResumeRepository resumeRepository;
     private final WorkDateRepository workDateRepository;
     private final OfferWorkDateRepository offerWorkDateRepository;
-
-    // todo: 기획 변경 요청 해볼까?
 
     /**
      * 일자리 제안
@@ -60,7 +57,7 @@ public class OfferCompanyService {
     public void offerJobPost(Long companyId, OfferRequest request) {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-        Resume resume = resumeRepository.findByIdWithMember(request.getResumeId())
+        Resume resume = resumeRepository.findByIdWithMember(company.getId(), request.getResumeId())
                 .orElseThrow(() -> new CustomException(ErrorCode.RESUME_NOT_FOUND));
         Member worker = resume.getMember();
 
@@ -146,7 +143,7 @@ public class OfferCompanyService {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Resume resume = resumeRepository.findByIdWithMember(resumeId)
+        Resume resume = resumeRepository.findByIdWithMember(company.getId(), resumeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.RESUME_NOT_FOUND));
 
 //        // 이미 확정된 apply 월별 조회
@@ -169,7 +166,7 @@ public class OfferCompanyService {
         Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Project project = projectRepository.findById(projectId)
+        Project project = projectRepository.findByIdAndMember(company.getId(), projectId)
                 .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_FOUND));
 
 
@@ -186,6 +183,7 @@ public class OfferCompanyService {
 
     /**
      * 제안 기록 조회
+     * 필터: 제안됨 or 제안 취소
      */
     public Page<OfferHistoryResponse> findOfferHistory(Long companyId, OfferStatus offerStatus, Pageable pageable) {
         Member company = memberRepository.findById(companyId)
@@ -205,13 +203,10 @@ public class OfferCompanyService {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Offer offer = offerRepository.findById(offerId)
+        Offer offer = offerRepository.findByIdAndMember(company.getId(), offerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.OFFER_NOT_FOUND));
 
         // 제안 취소 (status 값 변경)
         offer.cancelOffer();
-
-        int canceledOfferWorkDate = offerWorkDateRepository.cancelOffer(offer.getId(), OfferWorkDateStatus.OFFER_CANCELED);
-        log.info("취소된 offerWorkDate 수: " + canceledOfferWorkDate);
     }
 }
