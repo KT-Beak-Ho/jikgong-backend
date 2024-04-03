@@ -1,5 +1,6 @@
 package jikgong.domain.offer.service;
 
+import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.apply.repository.ApplyRepository;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,8 +40,10 @@ public class OfferWorkerService {
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
         List<OfferWorkDate> offerWorkDateList;
         if (isPending) {
+            // 대기 중인 제안 목록
             offerWorkDateList = offerWorkDateRepository.findReceivedPendingOffer(worker.getId());
         } else {
+            // 처리된 제안 목록
             offerWorkDateList = offerWorkDateRepository.findReceivedClosedOffer(worker.getId());
         }
         return offerWorkDateList.stream()
@@ -50,6 +54,7 @@ public class OfferWorkerService {
     /**
      * 제안 수락, 거절
      * 수락일 경우 출역일 전인지 체크 & 중복 출역 여부 체크
+     * 제안을 수락하는 경우는 출역 시간 직전까지 수락 가능
      */
     public void processOffer(Long workerId, OfferProcessRequest request) {
         Member worker = memberRepository.findById(workerId)
@@ -62,6 +67,7 @@ public class OfferWorkerService {
         if (request.getIsAccept()) {
             WorkDate workDate = offerWorkDate.getWorkDate();
 
+            // 인원 마감 체크
             if (workDate.getRecruitNum() <= workDate.getRegisteredNum()) {
                 throw new CustomException(ErrorCode.RECRUITMENT_FULL);
             }
@@ -83,6 +89,8 @@ public class OfferWorkerService {
         offerWorkDate.processOffer(request.getIsAccept());
 
         // 같은 날 다른 공고에 지원 했던 대기중인 요청 취소
-        applyRepository.deleteOtherApplyOnDate(worker.getId(), offerWorkDate.getWorkDate().getDate());
+        List<Long> cancelApplyIdList = applyRepository.deleteOtherApplyOnDate(worker.getId(), offerWorkDate.getWorkDate().getDate());
+        int canceledCount = applyRepository.updateApplyStatus(cancelApplyIdList, ApplyStatus.CANCELED, LocalDateTime.now());
+        log.info("취소된 요청 횟수: " + canceledCount);
     }
 }
