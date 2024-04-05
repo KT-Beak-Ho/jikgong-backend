@@ -36,17 +36,24 @@ jobs:
           arguments: clean bootJar -Pspring.profiles.active=prod
           options: '--no-build-cache'
 
-      - name: docker image build
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/jikgong .
-
       - name: docker login
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: docker Hub push
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/jikgong
+      # 무중단 배포 시 기존 이미지로 실행되는 것을 막기 위해 a, b로 나눔
+      - name: Build jikgong-a Docker Image
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/jikgong-a .
+
+      - name: Push jikgong-a Docker Image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/jikgong-a
+
+      - name: Build jikgong-b Docker Image
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/jikgong-b .
+
+      - name: Push jikgong-b Docker Image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/jikgong-b
 
   cd-pipeline:
     needs: ci-pipeline

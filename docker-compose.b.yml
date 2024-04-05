@@ -2,7 +2,7 @@ version: "3.8"
 services:
   jikgong-b:
     container_name: jikgong-b
-    image: ${DOCKERHUB_USERNAME}/jikgong
+    image: ${DOCKERHUB_USERNAME}/jikgong-b
     volumes:
       - ./logs:/logs
     env_file:
