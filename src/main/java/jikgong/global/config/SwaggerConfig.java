@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 @OpenAPIDefinition(
         info = @Info(title = "jikgong API 명세서",
-                description = "**기업 계정: 아래 1개   " +
+                description = "기업 계정: 아래 1개   " +
                         "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZGVmZzAiLCJleHAiOjE3MTU2OTY0NDh9.KdnJdTOzOsCD_AJi8SJOpmiRaO4mrAXVPswvCCzRMoI    " +
                         "\n노동자 계정: 아래 4개    " +
                         "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZGVmZzEiLCJleHAiOjE3MTU2OTY0NzJ9.EcdUqjdAYuT_n_dMBzecHIg-ZhXl1g-LEb7ZRZtK4VA    " +
