@@ -9,6 +9,10 @@ import jikgong.global.dto.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -64,9 +68,12 @@ public class ProfitController {
 
     @Operation(summary = "수익금 내역 (리스트)")
     @GetMapping("/api/profits/list")
-    public ResponseEntity<Response> findProfitHistoryList(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        List<DailyProfitResponse> dailyProfitResponseList = profitService.findProfitHistoryList(principalDetails.getMember().getId());
-        return ResponseEntity.ok(new Response(dailyProfitResponseList, "수익금 내역 (리스트) 반환 완료"));
+    public ResponseEntity<Response> findProfitHistoryList(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                          @RequestParam(name = "page", defaultValue = "0") int page,
+                                                          @RequestParam(name = "size", defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("date")));
+        Page<DailyProfitResponse> dailyProfitResponsePage = profitService.findProfitHistoryList(principalDetails.getMember().getId(), pageable);
+        return ResponseEntity.ok(new Response(dailyProfitResponsePage, "수익금 내역 (리스트) 반환 완료"));
     }
 
     @Operation(summary = "총 수익금 및 근무시간")
