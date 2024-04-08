@@ -51,6 +51,7 @@ public class CertificationService {
     /**
      * 경력 인증서 조회
      */
+    @Transactional(readOnly = true)
     public CertificationResponse findCertification(Long workerId) {
         Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));

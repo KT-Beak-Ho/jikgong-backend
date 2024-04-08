@@ -101,12 +101,13 @@ public class ApplyWorkerService {
         // 1일날 2일 공고를 신청했을 경우 불가능
         LocalDate twoDaysInFuture = LocalDate.now().plusDays(2);
         if (twoDaysInFuture.isAfter(minWorkDate)) {
-            throw new CustomException(ErrorCode.JOB_POST_EXPIRED);
+            throw new CustomException(ErrorCode.APPLY_CAN_TWO_DAYS_AGO);
         }
     }
 
+    // 신청할 날짜 validation 체크
     private List<WorkDate> validateWorkDate(ApplySaveRequest request, JobPost jobPost) {
-        List<WorkDate> workDateList = workDateRepository.findAllByWorkDateAndJobPost(jobPost.getId(), request.getWorkDateList());
+        List<WorkDate> workDateList = workDateRepository.checkWorkDateBeforeApply(jobPost.getId(), request.getWorkDateList());
         if (workDateList.size() != request.getWorkDateList().size()) {
             throw new CustomException(ErrorCode.WORK_DATE_LIST_NOT_FOUND);
         }
@@ -117,6 +118,7 @@ public class ApplyWorkerService {
      * 내 일자리
      * 확정된 내역 일별 조회
      */
+    @Transactional(readOnly = true)
     public List<ApplyResponseForWorker> findAcceptedApplyWorker(Long workerId, LocalDate date) {
         Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -134,6 +136,7 @@ public class ApplyWorkerService {
      * 확정된 날짜: 초록으로 표시
      * 신청한 날짜: 회색으로 표시
      */
+    @Transactional(readOnly = true)
     public List<ApplyResponseMonthly> findAcceptedApplyWorkerMonthly(Long workerId, LocalDate workMonth) {
         Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -146,11 +149,9 @@ public class ApplyWorkerService {
         // 지원 날짜와 지원 결과가 담긴 map
         Map<LocalDate, ApplyStatus> workDateMap = getWorkDateMap(applyList);
 
-        List<ApplyResponseMonthly> applyResponseMonthlyList = workDateMap.entrySet().stream()
+        return workDateMap.entrySet().stream()
                 .map(entry -> ApplyResponseMonthly.from(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
-
-        return applyResponseMonthlyList;
     }
 
     // 지원 날짜와 지원 결과가 담긴 map
@@ -175,6 +176,7 @@ public class ApplyWorkerService {
     /**
      * 신청 진행 중인 내역 조회
      */
+    @Transactional(readOnly = true)
     public List<ApplyPendingResponse> findPendingApply(Long workerId) {
         Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -185,7 +187,6 @@ public class ApplyWorkerService {
     }
 
     /**
-     * apply -> workDate -> jobPost
      * 요청 취소
      * 요청 취소 가능 조건
      * 1. 확정된 지 24시간 (이내 or 이후)  미확정
@@ -199,7 +200,7 @@ public class ApplyWorkerService {
         Apply apply = applyRepository.findCancelApply(worker.getId(), applyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.APPLY_NOT_FOUND));
 
-        // jobPost 조회
+        // jobPost 조회 (fetch join)
         JobPost jobPost = apply.getWorkDate().getJobPost();
 
         if (apply.getStatus() == ApplyStatus.ACCEPTED) {
@@ -215,7 +216,7 @@ public class ApplyWorkerService {
             }
         }
 
-        // 수락, 거절 상태일때만 취소 가능
+        // 수락, 대기 상태일때만 취소 가능
         if (apply.getStatus() != ApplyStatus.PENDING && apply.getStatus() != ApplyStatus.ACCEPTED) {
             throw new CustomException(ErrorCode.APPLY_CANCEL_IMPOSSIBLE);
         }
@@ -223,7 +224,9 @@ public class ApplyWorkerService {
         // status 업데이트
         apply.updateStatus(ApplyStatus.CANCELED, LocalDateTime.now());
 
-        // 모집된 인원 업데이트
-        apply.getWorkDate().minusRegisterNum();
+        // 수락이었을 경우 모집된 인원 업데이트
+        if (apply.getStatus() == ApplyStatus.ACCEPTED) {
+            apply.getWorkDate().minusRegisterNum();
+        }
     }
 }

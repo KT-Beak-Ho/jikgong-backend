@@ -90,6 +90,7 @@ public class JobPostCompanyService {
      * 프로젝트 별 모집 공고 조회
      * 필터: 완료됨 | 진행 중 | 예정
      */
+    @Transactional(readOnly = true)
     public List<JobPostListResponse> findJobPostsByMemberAndProject(Long companyId, JobPostStatus jobPostStatus, Long projectId, Pageable pageable) {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -116,6 +117,7 @@ public class JobPostCompanyService {
     /**
      * 인력 관리 화면에서 모집 공고 정보 일부 반환
      */
+    @Transactional(readOnly = true)
     public JobPostManageResponse findJobPostForManage(Long jobPostId) {
         JobPost jobPost = jobPostRepository.findById(jobPostId)
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
@@ -126,6 +128,7 @@ public class JobPostCompanyService {
     /**
      * 임시 저장 조회
      */
+    @Transactional(readOnly = true)
     public List<TemporaryListResponse> findTemporaryJobPosts(Long companyId) {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -170,11 +173,8 @@ public class JobPostCompanyService {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Project project = null;
-        if (request.getProjectId() != null) {
-            project = projectRepository.findById(request.getProjectId())
+        Project project = projectRepository.findByIdAndMember(company.getId(), request.getProjectId())
                     .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_FOUND));
-        }
 
         // 모집 공고 저장
         JobPost jobPost = JobPost.createEntityByTemporary(request, company, project);

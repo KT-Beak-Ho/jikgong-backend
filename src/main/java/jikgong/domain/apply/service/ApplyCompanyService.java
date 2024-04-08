@@ -42,6 +42,7 @@ public class ApplyCompanyService {
      * 인력 관리
      * 지원자 목록 조회
      */
+    @Transactional(readOnly = true)
     public Page<ApplyResponseForCompany> findPendingApplyHistoryCompany(Long companyId, Long jobPostId, Long workDateId, Pageable pageable) {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -63,6 +64,7 @@ public class ApplyCompanyService {
      * 인력 관리
      * 확정 인부 조회
      */
+    @Transactional(readOnly = true)
     public Page<ApplyResponseForCompany> findAcceptedHistoryCompany(Long companyId, Long jobPostId, Long workDateId, Pageable pageable) {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));

@@ -35,6 +35,7 @@ public class OfferWorkerService {
      * 받은 제안 목록 조회
      * 필터: 대기 중, 마감
      */
+    @Transactional(readOnly = true)
     public List<ReceivedOfferListResponse> findReceivedOffer(Long workerId, Boolean isPending) {
         Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));

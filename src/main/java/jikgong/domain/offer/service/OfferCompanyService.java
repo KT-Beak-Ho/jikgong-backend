@@ -53,16 +53,17 @@ public class OfferCompanyService {
     /**
      * 일자리 제안
      * 한 노동자에게 A공고의 여러 날짜, B공고의 여러 날짜 제안 가능
+     * notifiaction event 발행
      */
     public void offerJobPost(Long companyId, OfferRequest request) {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-        Resume resume = resumeRepository.findByIdWithMember(company.getId(), request.getResumeId())
+        Resume resume = resumeRepository.findByIdWithMember(request.getResumeId())
                 .orElseThrow(() -> new CustomException(ErrorCode.RESUME_NOT_FOUND));
         Member worker = resume.getMember();
 
-        List<Long> jobPostIdList = new ArrayList<>();
-        List<Long> workDateIdList = new ArrayList<>();
+        List<Long> jobPostIdList = new ArrayList<>(); // 제안할 모집공고 id 리스트
+        List<Long> workDateIdList = new ArrayList<>(); // 제안할 날짜 id 리스트
 
         for (OfferJobPostRequest offerJobPostRequest : request.getOfferJobPostRequest()) {
             jobPostIdList.add(offerJobPostRequest.getJobPostId());
@@ -86,6 +87,7 @@ public class OfferCompanyService {
             List<WorkDate> workDateEntityList = workDateMap.get(jobPost.getId());
 
             // 예외 체크 및 dateList 에 date 추가
+            // 제안은 출역날 출역 시간 직전까지 가능
             validationAndAddDateList(offerJobPostRequest, workDateEntityList, dateList);
 
             // offer 엔티티 생성
@@ -93,6 +95,8 @@ public class OfferCompanyService {
             Offer offer = Offer.createEntity(company, worker, jobPost);
             offerList.add(offer);
             offerWorkDateList.addAll(OfferWorkDate.createEntityList(offer, workDateEntityList));
+
+            // notification event 발행
             publisher.publishEvent(new NotificationEvent(company.getCompanyInfo().getCompanyName(), dateList, offerJobPostRequest.getJobPostId(), NotificationType.OFFER, worker.getId()));
         }
 
@@ -101,13 +105,14 @@ public class OfferCompanyService {
     }
 
     // 예외 체크 및 dateList 에 date 추가
-    private static void validationAndAddDateList(OfferJobPostRequest offerJobPostRequest, List<WorkDate> workDateEntityList, List<LocalDate> dateList) {
+    private void validationAndAddDateList(OfferJobPostRequest offerJobPostRequest, List<WorkDate> workDateEntityList, List<LocalDate> dateList) {
         // 캐시 map 에서 조회한 workDateList 와 요청한 workDateIdList 와 크기가 다를 때
         if (workDateEntityList.size() != offerJobPostRequest.getWorkDateIdList().size()) {
             throw new CustomException(ErrorCode.WORK_DATE_NOT_MATCH);
         }
 
         // 이미 지난 공고 인지 체크
+        // 제안은 출역날 출역 시간 직전까지 가능
         for (WorkDate workDate : workDateEntityList) {
             if (LocalDate.now().isAfter(workDate.getDate())) {
                 throw new CustomException(ErrorCode.WORK_DATE_NEED_TO_FUTURE);
@@ -139,11 +144,12 @@ public class OfferCompanyService {
     /**
      * 제안 시 노동자 상세 정보 조회
      */
+    @Transactional(readOnly = true)
     public WorkerInfoResponse findWorkerInfo(Long companyId, Long resumeId) {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Resume resume = resumeRepository.findByIdWithMember(company.getId(), resumeId)
+        Resume resume = resumeRepository.findByIdWithMember(resumeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.RESUME_NOT_FOUND));
 
 //        // 이미 확정된 apply 월별 조회
@@ -158,7 +164,9 @@ public class OfferCompanyService {
     /**
      * 제안 시 프로젝트 선택
      * 선택 후 제안 가능한 공고 조회
+     * 각 모집 공고엔 [제안 가능 날짜], [인원 마감된 날짜], [출역일 지난 날짜] 반환
      */
+    @Transactional(readOnly = true)
     public JobPostResponseForOffer findAvailableJobPosts(Long companyId, Long workerId, Long projectId) {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -185,6 +193,7 @@ public class OfferCompanyService {
      * 제안 기록 조회
      * 필터: 제안됨 or 제안 취소
      */
+    @Transactional(readOnly = true)
     public Page<OfferHistoryResponse> findOfferHistory(Long companyId, OfferStatus offerStatus, Pageable pageable) {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -196,6 +205,7 @@ public class OfferCompanyService {
         return new PageImpl<>(offerHistoryResponseList, pageable, offerHistoryPage.getTotalElements());
     }
 
+    
     /**
      * 제안 취소
      */
@@ -205,6 +215,15 @@ public class OfferCompanyService {
 
         Offer offer = offerRepository.findByIdAndMember(company.getId(), offerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.OFFER_NOT_FOUND));
+
+        List<OfferWorkDate> offerWorkDateList = offer.getOfferWorkDateList();
+
+        // 제안 날짜 중 제안 대기중이지 않은 날짜가 있는지 체크
+        for (OfferWorkDate offerWorkDate : offerWorkDateList) {
+            if (offerWorkDate.getOfferWorkDateStatus() != OfferWorkDateStatus.OFFER_PENDING) {
+                throw new CustomException(ErrorCode.OFFER_CANT_CANCEL);
+            }
+        }
 
         // 제안 취소 (status 값 변경)
         offer.cancelOffer();

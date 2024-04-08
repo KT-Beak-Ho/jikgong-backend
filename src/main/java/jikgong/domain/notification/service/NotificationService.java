@@ -61,6 +61,7 @@ public class NotificationService {
     /**
      * 알림 목록 조회
      */
+    @Transactional(readOnly = true)
     public List<NotificationResponse> findNotifications(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -87,6 +88,7 @@ public class NotificationService {
     /**
      * 읽지 않은 알림 개수 조회
      */
+    @Transactional(readOnly = true)
     public UnreadCountResponse unreadNotification(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -97,8 +99,9 @@ public class NotificationService {
 
     /**
      * 알림 설정 정보 조회
-     * 노동자일 경우 / 기업일 경우
+     * 노동자일 경우, 기업일 경우
      */
+    @Transactional(readOnly = true)
     public NotificationInfoResponse findNotificationInfo(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));

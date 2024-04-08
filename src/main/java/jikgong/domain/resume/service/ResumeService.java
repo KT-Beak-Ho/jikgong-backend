@@ -59,6 +59,7 @@ public class ResumeService {
      * 기업
      * 일자리 제안 시 이력서 조회
      */
+    @Transactional(readOnly = true)
     public Page<ResumeListResponse> findResumeList(Long companyId, Long projectId, Tech tech, Float bound, SortType sortType, Pageable pageable) {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -66,6 +67,7 @@ public class ResumeService {
         Project project = projectRepository.findByIdAndMember(company.getId(), projectId)
                 .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_FOUND));
 
+        // querydsl
         return resumeRepository.findHeadHuntingMemberList(project.getAddress(), tech, bound, sortType, pageable);
     }
 }

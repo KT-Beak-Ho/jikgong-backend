@@ -46,6 +46,7 @@ public class JobPostWorkerService {
      * 메인 페이지 조회
      * 필터: 직종, 날짜, 스크랩, 식사 제공, 주차 여부, 정렬 기준
      */
+    @Transactional(readOnly = true)
     public Page<JobPostListResponse> getMainPage(Long workerId, Tech tech, List<LocalDate> workDateList, Boolean scrap, Boolean meal, Park park, SortType sortType, Pageable pageable) {
         Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -62,6 +63,7 @@ public class JobPostWorkerService {
     /**
      * 모집 공고 상세 화면
      */
+    @Transactional(readOnly = true)
     public JobPostDetailResponse getJobPostDetail(Long workerId, Long jobPostId) {
         Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -79,6 +81,7 @@ public class JobPostWorkerService {
      * 모집 공고 상세 화면
      * 일자리 제안 시 보여 줄 상세 화면
      */
+    @Transactional(readOnly = true)
     public JobPostDetailResponseForOffer getJobPostDetailForOffer(Long workerId, Long offerWorkDateId) {
         Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -87,8 +90,11 @@ public class JobPostWorkerService {
                 .orElseThrow(() -> new CustomException(ErrorCode.OFFER_WORK_DATE_NOT_FOUND));
 
         WorkDate workDate = offerWorkDate.getWorkDate();
+
+        // 제안 날 확정된 지원 내역 조회
         List<Apply> acceptedApply = applyRepository.checkAcceptedApplyForOffer(worker.getId(), workDate.getDate());
 
+        // 대표 위치 조회
         Location location = locationRepository.findMainLocationByMemberId(worker.getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.LOCATION_NOT_FOUND));
 

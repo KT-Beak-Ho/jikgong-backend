@@ -30,7 +30,7 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
 
     // 출근, 결근 조회
     @Query("select h from History h join fetch h.member m where h.workDate.id = :workDateId and h.startStatus = :status")
-    List<History> findHistoryAtStartWorkCheck(@Param("workDateId") Long workDateId, @Param("status") WorkStatus status);
+    List<History> findHistoryBeforeProcess(@Param("workDateId") Long workDateId, @Param("status") WorkStatus status);
 
     // 지급 내역서 조회
     @Query("select h from History h join fetch h.member m join fetch h.workDate.jobPost j " +
