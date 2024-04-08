@@ -63,12 +63,12 @@ public enum ErrorCode {
     APPLY_NOT_ACCEPTED(HttpStatus.BAD_REQUEST, "신청 내역이 아직 승인 되지 않았습니다."),
     APPLY_NOT_FOUND(HttpStatus.NOT_FOUND, "요청 정보가 없습니다."),
     APPLY_CANCEL_IMPOSSIBLE(HttpStatus.BAD_REQUEST, "신청 취소가 불가능합니다."),
+    APPLY_CAN_TWO_DAYS_AGO(HttpStatus.BAD_REQUEST, "일자리 신청은 출역일 기준 2일 전까지 가능합니다."),
 
     /**
      * 모집 공고
      */
     JOB_POST_NOT_FOUND(HttpStatus.NOT_FOUND, "모집 공고 정보가 없습니다."),
-    JOB_POST_EXPIRED(HttpStatus.BAD_REQUEST, "모집 기한이 지난 공고입니다."),
     RECRUITMENT_FULL(HttpStatus.BAD_REQUEST, "이미 모집 인원이 충족되었습니다."),
     WORK_DATE_NEED_TO_FUTURE(HttpStatus.BAD_REQUEST, "당일, 과거 날짜에 대한 일자리는 제안할 수 없습니다."),
     WORK_DATE_NOT_MATCH(HttpStatus.BAD_REQUEST, "요청한 workDate id 값이 jobPost와 연관되어있지 않습니다."),
@@ -95,6 +95,7 @@ public enum ErrorCode {
     OFFER_NOT_FOUND(HttpStatus.NOT_FOUND, "제안 내역이 없습니다."),
     OFFER_WORK_DATE_NOT_FOUND(HttpStatus.NOT_FOUND, "제안 내역이 없습니다."),
     OFFER_PROCESS_NEED_TO_ONE_DAY_AGO(HttpStatus.BAD_REQUEST, "제안 수락은 출역일 하루 전 날까지 가능합니다."),
+    OFFER_CANT_CANCEL(HttpStatus.BAD_REQUEST, "노동자가 처리하지 않은 제안에 대해서만 취소할 수 있습니다."),
 
     /**
      * 최근 기록
