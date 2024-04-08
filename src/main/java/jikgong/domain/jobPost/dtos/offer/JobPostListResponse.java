@@ -17,9 +17,9 @@ public class JobPostListResponse {
     private Long jobPostId;
     private Tech tech; // 타입
     private String title; // 모집 공고 제목
-    List<WorkDateResponse> availableDate; // 제안 가능 날짜 리스트
-    List<WorkDateResponse> fullCapacityDate; // 제안 불가능 날짜 (인원 마감)
-    List<WorkDateResponse> pastDate; // 제안 불가능 날짜 (날짜 지남)
+    private List<WorkDateResponse> availableDate; // 제안 가능 날짜 리스트
+    private List<WorkDateResponse> fullCapacityDate; // 제안 불가능 날짜 (인원 마감)
+    private List<WorkDateResponse> pastDate; // 제안 불가능 날짜 (날짜 지남)
     private LocalTime startTime; // 시작 시간
     private LocalTime endTime; // 종료 시간
     private Integer wage; // 임금

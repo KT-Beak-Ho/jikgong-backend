@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Builder
 public class JobPostManageResponse {
     private Long jobPostId;
-    private Tech tech;
+    private Tech tech; // 인부 타입
     private Integer recruitNum;
     private LocalDate startDate; // 시작 날짜
     private LocalDate endDate; // 종료 날짜
