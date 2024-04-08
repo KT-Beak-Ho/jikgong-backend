@@ -82,7 +82,7 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
                 .fetchOne();
 
         List<Long> scrapJobPostId = queryFactory
-                .select(jobPost.id)
+                .select(scrap.jobPost.id)
                 .from(scrap)
                 .leftJoin(scrap.jobPost, jobPost)
                 .where(scrap.member.id.eq(memberId))

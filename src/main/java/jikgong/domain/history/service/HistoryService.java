@@ -122,19 +122,22 @@ public class HistoryService {
      * status: [출근, 결근, 출근 전]
      * 지원이 확정된 사람 중, 몇몇은 이미 history 데이터가 있을 것이고, 몇몇은 없기 때문에 위와 같이 작성
      */
+    @Transactional(readOnly = true)
     public List<MemberAcceptedResponse> findApplyWithHistoryAtStart(Long companyId, Long jobPostId, Long workDateId) {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-        JobPost jobPost = jobPostRepository.findById(jobPostId)
+        JobPost jobPost = jobPostRepository.findByIdAndMember(company.getId(), jobPostId)
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
         WorkDate workDate = workDateRepository.findByIdAndJobPost(jobPost.getId(), workDateId)
                 .orElseThrow(() -> new CustomException(ErrorCode.WORK_DATE_NOT_FOUND));
 
         // key: memberId  |  value: history
+        // 출근 기록된 member, 결근 기록된 member
         Map<Long, History> startWorkMember = createHistoryMap(workDate.getId(), WorkStatus.START_WORK);
         Map<Long, History> notWorkMember = createHistoryMap(workDate.getId(), WorkStatus.NOT_WORK);
 
-        List<Apply> applyList = applyRepository.findApplyAtStartWorkCheck(company.getId(), jobPost.getId(), workDate.getId(), ApplyStatus.ACCEPTED);
+        // 지원 내역 조회
+        List<Apply> applyList = applyRepository.findApplyBeforeHistoryProcess(workDate.getId(), ApplyStatus.ACCEPTED);
 
         List<MemberAcceptedResponse> memberAcceptedResponseList = applyList.stream()
                 .map(MemberAcceptedResponse::from)
@@ -154,7 +157,7 @@ public class HistoryService {
 
     // key: memberId  |  value: history  map 생성
     private Map<Long, History> createHistoryMap(Long workDateId, WorkStatus status) {
-        return historyRepository.findHistoryAtStartWorkCheck(workDateId, status).stream()
+        return historyRepository.findHistoryBeforeProcess(workDateId, status).stream()
                 .collect(Collectors.toMap(history -> history.getMember().getId(), Function.identity()));
     }
 
@@ -162,6 +165,7 @@ public class HistoryService {
      * 출근, 결근 기록이 있는 노동자 기록만 조회
      * 퇴근, 조퇴 조회
      */
+    @Transactional(readOnly = true)
     public HistoryAtFinishResponse findHistoryAtFinish(Long companyId, Long jobPostId, Long workDateId) {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -170,8 +174,9 @@ public class HistoryService {
         WorkDate workDate = workDateRepository.findByIdAndJobPost(jobPost.getId(), workDateId)
                 .orElseThrow(() -> new CustomException(ErrorCode.WORK_DATE_NOT_FOUND));
 
-        List<History> workHistoryList = historyRepository.findHistoryAtStartWorkCheck(workDate.getId(), WorkStatus.START_WORK);
-        List<History> notWorkHistoryList = historyRepository.findHistoryAtStartWorkCheck(workDate.getId(), WorkStatus.NOT_WORK);
+        // 출근한 기록, 결근한 기록 조회
+        List<History> workHistoryList = historyRepository.findHistoryBeforeProcess(workDate.getId(), WorkStatus.START_WORK);
+        List<History> notWorkHistoryList = historyRepository.findHistoryBeforeProcess(workDate.getId(), WorkStatus.NOT_WORK);
 
         List<MemberAcceptedResponse> workMemberResponse = workHistoryList.stream()
                 .map(MemberAcceptedResponse::from)
@@ -190,6 +195,7 @@ public class HistoryService {
      * 지급 내역서 확인
      * 해당 일짜의 지급 내역서 확인
      */
+    @Transactional(readOnly = true)
     public PaymentStatementResponse findPaymentStatement(Long companyId, Long jobPostId, Long workDateId) {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));

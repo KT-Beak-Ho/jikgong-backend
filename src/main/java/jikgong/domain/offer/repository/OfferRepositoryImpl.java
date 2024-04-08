@@ -26,7 +26,6 @@ public class OfferRepositoryImpl implements OfferRepositoryCustom {
         List<Offer> result = queryFactory
                 .select(offer)
                 .from(offer)
-                .join(offer.offerWorkDateList, offerWorkDate)
                 .join(offer.worker, member).fetchJoin()
                 .join(offer.jobPost, jobPost).fetchJoin()
                 .where(

@@ -13,6 +13,9 @@ import jikgong.global.exception.ErrorCode;
 import jikgong.global.utils.TimeTransfer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,13 +69,13 @@ public class ProfitService {
         LocalDate monthEnd = TimeTransfer.getLastDayOfMonth(selectMonth);
 
         // 해당 달의 임금 합
-        Integer wageInMonth = profitRepository.findTotalMonthlyWage(worker.getId(), monthStart, monthEnd);
+        Integer wageInMonth = profitRepository.findTotalMonthlyWage(worker.getId(), selectMonth);
 
         // 해당 달의 근무 시간 합
-        Integer workTimeInMonth = profitRepository.findWorkTimeInMonth(worker.getId(), monthStart, monthEnd);
+        Integer workTimeInMonth = profitRepository.findWorkTimeInMonth(worker.getId(), selectMonth);
 
         // 한달 간의 수익 데이터
-        List<Profit> profitHistoryMonth = profitRepository.findProfitInMonth(worker.getId(), monthStart, monthEnd);
+        List<Profit> profitHistoryMonth = profitRepository.findProfitInMonth(worker.getId(), selectMonth);
 
         List<DailyProfitResponse> dailyProfitResponseList = profitHistoryMonth.stream()
                 .map(DailyProfitResponse::from)
@@ -101,7 +104,7 @@ public class ProfitService {
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
         Profit profit = profitRepository.findByIdAndMember(worker.getId(), profitId)
-                        .orElseThrow(() -> new CustomException(ErrorCode.PROFIT_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.PROFIT_NOT_FOUND));
 
         profitRepository.delete(profit);
     }
@@ -123,19 +126,25 @@ public class ProfitService {
     /**
      * 수익 내역 (리스트 형식)
      */
-    public List<DailyProfitResponse> findProfitHistoryList(Long workerId) {
+    @Transactional(readOnly = true)
+    public Page<DailyProfitResponse> findProfitHistoryList(Long workerId, Pageable pageable) {
         Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        return profitRepository.findByMember(worker.getId()).stream()
+        // 수익 내역 페이징
+        Page<Profit> profitPage = profitRepository.findByMember(worker.getId(), pageable);
+
+        List<DailyProfitResponse> profitResponseList = profitPage.getContent().stream()
                 .map(DailyProfitResponse::from)
                 .collect(Collectors.toList());
+        return new PageImpl<>(profitResponseList, pageable, profitPage.getTotalElements());
     }
 
     /**
      * 수익 관리 메인 페이지
      * 총 수입, 총 근무 시간
      */
+    @Transactional(readOnly = true)
     public ProfitSummaryInfoResponse findSummaryInfo(Long workerId) {
         Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -152,6 +161,7 @@ public class ProfitService {
     /**
      * 수익 일별 그래프 정보
      */
+    @Transactional(readOnly = true)
     public DailyGraphResponse findDailyGraphInfo(Long workerId, LocalDate selectMonth) {
         Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -159,24 +169,23 @@ public class ProfitService {
         // [출역 날짜, 일한 시간] 으로 그룹핑
         List<Object[]> totalWagePerDay = profitRepository.getTotalWagePerDay(selectMonth.getYear(), selectMonth.getMonth().getValue());
 
-        List<Profit> profitInMonth = profitRepository.findProfitInMonth(
-                worker.getId(),
-                TimeTransfer.getFirstDayOfMonth(selectMonth),
-                TimeTransfer.getLastDayOfMonth(selectMonth));
+        List<Profit> profitInMonth = profitRepository.findProfitInMonth(worker.getId(), selectMonth);
 
         // key: 날짜  |  value: 일한 시간 합, 시간 정보(시작, 종료)
+        // 예시
+        // 9시간
+        // 06:00 ~ 15:00
+        // -------------
+        // 12시간
+        // 06:00 ~ 15:00
+        // 16:00 ~ 17:00
         Map<LocalDate, WorkTimeGraphResponse> totalWorkTimePerDay = new HashMap<>();
         for (Profit profit : profitInMonth) {
             if (totalWorkTimePerDay.containsKey(profit.getDate())) {
                 WorkTimeGraphResponse workTimeGraphResponse = totalWorkTimePerDay.get(profit.getDate());
-
-                // 9시간
-                // 06:00 ~ 15:00
-                // or
-                // 12시간
-                // 06:00 ~ 15:00
-                // 16:00 ~ 17:00
+                // 근무 총 시간 더함
                 workTimeGraphResponse.plusTime(profit.getStartTime(), profit.getEndTime());
+                // 근무 시간 더함
                 workTimeGraphResponse.addWorkTime(profit.getStartTime(), profit.getEndTime());
 
                 totalWorkTimePerDay.put(profit.getDate(), workTimeGraphResponse);
@@ -194,11 +203,12 @@ public class ProfitService {
     /**
      * 수익 월별 그래프 정보
      */
+    @Transactional(readOnly = true)
     public MonthlyGraphResponse findMonthlyGraphInfo(Long workerId, LocalDate selectYear) {
         Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        // month:
+        // [월, 일한 시간, 총 수익]
         List<Object[]> totalWageAndWorkTimePerMonth = profitRepository.getTotalWageAndWorkTimePerMonth(worker.getId(), selectYear.getYear());
 
         return MonthlyGraphResponse
