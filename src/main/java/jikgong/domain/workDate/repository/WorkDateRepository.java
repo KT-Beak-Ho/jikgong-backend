@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,4 +29,10 @@ public interface WorkDateRepository extends JpaRepository<WorkDate, Long> {
      */
     @Query("select w from WorkDate w join fetch w.jobPost p where w.id in :workDateList")
     List<WorkDate> findByIdList(@Param("workDateList") List<Long> workDateIdList);
+
+    /**
+     * 프로젝트 상세보기
+     */
+    @Query("select w from WorkDate w join fetch w.jobPost j join fetch w.jobPost.member m where w.jobPost.project.id = :projectId and w.date >= :now")
+    List<WorkDate> findByProject(@Param("projectId") Long projectId, @Param("now") LocalDate now);
 }

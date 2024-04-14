@@ -1,6 +1,7 @@
 package jikgong.domain.project.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jikgong.domain.project.dtos.ProjectDetailResponse;
 import jikgong.domain.project.dtos.ProjectListResponse;
 import jikgong.domain.project.dtos.ProjectSaveRequest;
 import jikgong.domain.project.dtos.ProjectUpdateRequest;
@@ -44,5 +45,19 @@ public class ProjectController {
                                                  @RequestBody ProjectUpdateRequest request) {
         projectService.updateProject(principalDetails.getMember().getId(), request);
         return ResponseEntity.ok(new Response("프로젝트 조회"));
+    }
+
+    @Operation(summary = "기업 검색: 기업이 등록한 프로젝트 조회")
+    @GetMapping("/api/projects/{companyId}")
+    public ResponseEntity<Response> findProjects(@PathVariable(name = "companyId") Long companyId) {
+        List<ProjectListResponse> projectListResponseList = projectService.findProjectAtSearch(companyId);
+        return ResponseEntity.ok(new Response(projectListResponseList, "기업이 등록한 프로젝트 조회 완료"));
+    }
+
+    @Operation(summary = "기업 검색: 프로젝트 상세 정보", description = "현장정보, 건설 시공정보, 현장에 등록된 일자리 조회")
+    @GetMapping("/api/project/company/{projectId}")
+    public ResponseEntity<Response> getProjectDetail(@PathVariable(name = "projectId") Long projectId) {
+        ProjectDetailResponse projectDetailResponse = projectService.getProjectDetail(projectId);
+        return ResponseEntity.ok(new Response(projectDetailResponse, "기업이 등록한 프로젝트 상세 조회 완료"));
     }
 }

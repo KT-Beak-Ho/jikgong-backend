@@ -1,14 +1,18 @@
 package jikgong.domain.project.service;
 
+import jikgong.domain.jobPost.dtos.project.JobPostListResponse;
 import jikgong.domain.jobPost.entity.JobPostStatus;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
+import jikgong.domain.project.dtos.ProjectDetailResponse;
 import jikgong.domain.project.dtos.ProjectListResponse;
 import jikgong.domain.project.dtos.ProjectSaveRequest;
 import jikgong.domain.project.dtos.ProjectUpdateRequest;
 import jikgong.domain.project.entity.Project;
 import jikgong.domain.project.entity.ProjectStatus;
 import jikgong.domain.project.repository.ProjectRepository;
+import jikgong.domain.workDate.entity.WorkDate;
+import jikgong.domain.workDate.repository.WorkDateRepository;
 import jikgong.global.exception.CustomException;
 import jikgong.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +32,7 @@ import java.util.stream.Collectors;
 public class ProjectService {
     private final ProjectRepository projectRepository;
     private final MemberRepository memberRepository;
+    private final WorkDateRepository workDateRepository;
 
     /**
      * 프로젝트 등록
@@ -81,5 +86,42 @@ public class ProjectService {
                 .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_FOUND));
 
         project.updateProject(request);
+    }
+
+    /**
+     * 기업 검색
+     * 기업 선택 시 등록한 프로젝트 리스트 조회
+     */
+    @Transactional(readOnly = true)
+    public List<ProjectListResponse> findProjectAtSearch(Long companyId) {
+        Member company = memberRepository.findById(companyId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        // 준공일이 지나지 않은 project 조회
+        return projectRepository.findNotCompletedProject(company.getId(), LocalDate.now()).stream()
+                .map(ProjectListResponse::from)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 기업 검색
+     * 기업 검색 시 기업의 프로젝트 상세 조회
+     */
+    @Transactional(readOnly = true)
+    public ProjectDetailResponse getProjectDetail(Long projectId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_FOUND));
+
+        // 프로젝트에 해당하는 workDate 조회
+        List<JobPostListResponse> jobPostListResponseList = workDateRepository.findByProject(project.getId(), LocalDate.now()).stream()
+                .map(JobPostListResponse::from)
+                .collect(Collectors.toList());
+
+        ProjectDetailResponse projectDetailResponse = ProjectDetailResponse.from(project);
+
+        // 일별 일자리 정보 세팅
+        projectDetailResponse.setJobPostListResponseList(jobPostListResponseList);
+
+        return projectDetailResponse;
     }
 }
