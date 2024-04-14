@@ -10,8 +10,8 @@ import java.time.LocalDate;
 @ToString
 @Builder @AllArgsConstructor // InitDB 에 사용
 public class ProjectSaveRequest {
-    @Schema(description = "프로젝트 명", example = "사하구 낙동5블럭 낙동강 온도 측정 센터 신축공사 ")
-    private String name; // 프로젝트 명
+    @Schema(description = "프로젝트 명", example = "사하구 낙동5블럭 낙동강 온도 측정 센터 신축공사")
+    private String projectName; // 프로젝트 명
     @Schema(description = "프로젝트 착공일", example = "2024-01-01")
     private LocalDate startDate; // 착공일
     @Schema(description = "프로젝트 준공일", example = "2024-03-01")

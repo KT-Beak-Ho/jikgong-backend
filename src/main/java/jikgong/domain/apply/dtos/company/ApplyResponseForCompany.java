@@ -1,7 +1,7 @@
 package jikgong.domain.apply.dtos.company;
 
 import jikgong.domain.apply.entity.Apply;
-import jikgong.domain.member.dtos.MemberResponseForApplyHistory;
+import jikgong.domain.member.dtos.apply.MemberResponseForApplyHistory;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

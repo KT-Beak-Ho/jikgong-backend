@@ -20,7 +20,6 @@ public class JobPostListResponse {
     private LocalDateTime createdDate;
     private Integer applyNum;
     private Integer acceptedNum;
-    // todo: 지원자, 확정자 수
 
 
     public static JobPostListResponse from(JobPost jobPost) {

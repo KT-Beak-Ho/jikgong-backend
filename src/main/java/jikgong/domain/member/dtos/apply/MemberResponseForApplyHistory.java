@@ -1,8 +1,7 @@
-package jikgong.domain.member.dtos;
+package jikgong.domain.member.dtos.apply;
 
 import jikgong.domain.history.entity.History;
 import jikgong.domain.history.entity.WorkStatus;
-import jikgong.domain.location.entity.Location;
 import jikgong.domain.member.entity.Gender;
 import jikgong.domain.member.entity.Member;
 import jikgong.global.utils.AgeTransfer;
@@ -10,9 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor

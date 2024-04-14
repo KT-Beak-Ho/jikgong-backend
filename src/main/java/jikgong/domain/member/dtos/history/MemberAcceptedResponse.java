@@ -1,6 +1,5 @@
-package jikgong.domain.member.dtos;
+package jikgong.domain.member.dtos.history;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import jikgong.domain.history.entity.History;
 import jikgong.domain.history.entity.WorkStatus;
 import jikgong.domain.apply.entity.Apply;

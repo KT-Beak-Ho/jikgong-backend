@@ -6,7 +6,7 @@ import jikgong.domain.history.dtos.HistoryFinishSaveRequest;
 import jikgong.domain.history.dtos.HistoryStartSaveRequest;
 import jikgong.domain.history.dtos.PaymentStatementResponse;
 import jikgong.domain.history.service.HistoryService;
-import jikgong.domain.member.dtos.MemberAcceptedResponse;
+import jikgong.domain.member.dtos.history.MemberAcceptedResponse;
 import jikgong.global.dto.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;

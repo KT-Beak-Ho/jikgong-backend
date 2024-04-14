@@ -1,11 +1,10 @@
 package jikgong.domain.history.dtos;
 
-import jikgong.domain.member.dtos.MemberAcceptedResponse;
+import jikgong.domain.member.dtos.history.MemberAcceptedResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
-import org.springframework.data.domain.Page;
 
 import java.util.List;
 

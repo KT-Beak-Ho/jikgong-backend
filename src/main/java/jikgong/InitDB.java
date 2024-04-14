@@ -45,7 +45,7 @@
 //
 //        private ProjectSaveRequest createProjectSaveRequest() {
 //            return ProjectSaveRequest.builder()
-//                    .name("사하구 낙동5블럭 낙동강 온도 측정 센터 신축공사")
+//                    .projectName("사하구 낙동5블럭 낙동강 온도 측정 센터 신축공사")
 //                    .startDate(LocalDate.of(2024, 3, 1))
 //                    .endDate(LocalDate.of(2024, 5, 1))
 //                    .address("부산광역시 사하구 낙동대로 550번길 37")

@@ -9,7 +9,7 @@ import jikgong.domain.history.entity.WorkStatus;
 import jikgong.domain.history.repository.HistoryRepository;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.repository.JobPostRepository;
-import jikgong.domain.member.dtos.MemberAcceptedResponse;
+import jikgong.domain.member.dtos.history.MemberAcceptedResponse;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
 import jikgong.domain.workDate.entity.WorkDate;

@@ -22,7 +22,7 @@ public class Project extends BaseEntity {
     @Column(name = "project_id")
     private Long id;
 
-    private String name; // 프로젝트 명
+    private String projectName; // 프로젝트 명
     private LocalDate startDate; // 착공일
     private LocalDate endDate; // 준공일
     @Embedded
@@ -33,8 +33,8 @@ public class Project extends BaseEntity {
     private Member member;
 
     @Builder
-    public Project(String name, LocalDate startDate, LocalDate endDate, Address address, Member member) {
-        this.name = name;
+    public Project(String projectName, LocalDate startDate, LocalDate endDate, Address address, Member member) {
+        this.projectName = projectName;
         this.startDate = startDate;
         this.endDate = endDate;
         this.address = address;
@@ -43,7 +43,7 @@ public class Project extends BaseEntity {
 
     public static Project createEntity(ProjectSaveRequest request, Member member) {
         return Project.builder()
-                .name(request.getName())
+                .projectName(request.getProjectName())
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
                 .address(new Address(request.getAddress(), request.getLatitude(), request.getLongitude()))
@@ -52,7 +52,7 @@ public class Project extends BaseEntity {
     }
 
     public void updateProject(ProjectUpdateRequest request) {
-        this.name = request.getName();
+        this.projectName = request.getName();
         this.startDate = request.getStartDate();
         this.endDate = request.getEndDate();
         this.address = new Address(request.getAddress(), request.getLatitude(), request.getLongitude());
