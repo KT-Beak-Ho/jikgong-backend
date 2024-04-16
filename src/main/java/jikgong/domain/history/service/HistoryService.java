@@ -9,7 +9,7 @@ import jikgong.domain.history.entity.WorkStatus;
 import jikgong.domain.history.repository.HistoryRepository;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.repository.JobPostRepository;
-import jikgong.domain.member.dtos.history.MemberAcceptedResponse;
+import jikgong.domain.history.dtos.HistoryManageResponse;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
 import jikgong.domain.workDate.entity.WorkDate;
@@ -123,7 +123,7 @@ public class HistoryService {
      * 지원이 확정된 사람 중, 몇몇은 이미 history 데이터가 있을 것이고, 몇몇은 없기 때문에 위와 같이 작성
      */
     @Transactional(readOnly = true)
-    public List<MemberAcceptedResponse> findApplyWithHistoryAtStart(Long companyId, Long jobPostId, Long workDateId) {
+    public List<HistoryManageResponse> findHistoryAtStart(Long companyId, Long jobPostId, Long workDateId) {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
         JobPost jobPost = jobPostRepository.findByIdAndMember(company.getId(), jobPostId)
@@ -139,20 +139,21 @@ public class HistoryService {
         // 지원 내역 조회
         List<Apply> applyList = applyRepository.findApplyBeforeHistoryProcess(workDate.getId(), ApplyStatus.ACCEPTED);
 
-        List<MemberAcceptedResponse> memberAcceptedResponseList = applyList.stream()
-                .map(MemberAcceptedResponse::from)
+        List<HistoryManageResponse> historyManageResponseList = applyList.stream()
+                .map(HistoryManageResponse::from)
                 .collect(Collectors.toList());
 
         // 현재 출근, 결근, 출근 전 status 값 세팅
-        for (MemberAcceptedResponse memberAcceptedResponse : memberAcceptedResponseList) {
-            if (startWorkMember.containsKey(memberAcceptedResponse.getMemberId())) {
-                memberAcceptedResponse.updateHistoryInfo(startWorkMember.get(memberAcceptedResponse.getMemberId()));
-            } else if (notWorkMember.containsKey(memberAcceptedResponse.getMemberId())) {
-                memberAcceptedResponse.updateHistoryInfo(notWorkMember.get(memberAcceptedResponse.getMemberId()));
+        for (HistoryManageResponse historyManageResponse : historyManageResponseList) {
+            HistoryManageResponse.MemberResponse memberResponse = historyManageResponse.getMemberResponse();
+            if (startWorkMember.containsKey(memberResponse.getMemberId())) {
+                historyManageResponse.updateHistoryInfo(startWorkMember.get(memberResponse.getMemberId()));
+            } else if (notWorkMember.containsKey(memberResponse.getMemberId())) {
+                historyManageResponse.updateHistoryInfo(notWorkMember.get(memberResponse.getMemberId()));
             }
         }
 
-        return memberAcceptedResponseList;
+        return historyManageResponseList;
     }
 
     // key: memberId  |  value: history  map 생성
@@ -164,6 +165,7 @@ public class HistoryService {
     /**
      * 출근, 결근 기록이 있는 노동자 기록만 조회
      * 퇴근, 조퇴 조회
+     * 퇴근, 조퇴 조회지만 결근했던 노동자도 함께 반환
      */
     @Transactional(readOnly = true)
     public HistoryAtFinishResponse findHistoryAtFinish(Long companyId, Long jobPostId, Long workDateId) {
@@ -178,11 +180,11 @@ public class HistoryService {
         List<History> workHistoryList = historyRepository.findHistoryBeforeProcess(workDate.getId(), WorkStatus.START_WORK);
         List<History> notWorkHistoryList = historyRepository.findHistoryBeforeProcess(workDate.getId(), WorkStatus.NOT_WORK);
 
-        List<MemberAcceptedResponse> workMemberResponse = workHistoryList.stream()
-                .map(MemberAcceptedResponse::from)
+        List<HistoryManageResponse> workMemberResponse = workHistoryList.stream()
+                .map(HistoryManageResponse::from)
                 .collect(Collectors.toList());
-        List<MemberAcceptedResponse> notWorkMemberResponse = notWorkHistoryList.stream()
-                .map(MemberAcceptedResponse::from)
+        List<HistoryManageResponse> notWorkMemberResponse = notWorkHistoryList.stream()
+                .map(HistoryManageResponse::from)
                 .collect(Collectors.toList());
 
         return HistoryAtFinishResponse.builder()

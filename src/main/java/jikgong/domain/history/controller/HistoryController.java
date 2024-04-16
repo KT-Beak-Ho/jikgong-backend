@@ -6,7 +6,7 @@ import jikgong.domain.history.dtos.HistoryFinishSaveRequest;
 import jikgong.domain.history.dtos.HistoryStartSaveRequest;
 import jikgong.domain.history.dtos.PaymentStatementResponse;
 import jikgong.domain.history.service.HistoryService;
-import jikgong.domain.member.dtos.history.MemberAcceptedResponse;
+import jikgong.domain.history.dtos.HistoryManageResponse;
 import jikgong.global.dto.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +44,7 @@ public class HistoryController {
     public ResponseEntity<Response> findHistoryAtStart(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                        @PathVariable("jobPostId") Long jobPostId,
                                                        @PathVariable("workDateId") Long workDateId) {
-        List<MemberAcceptedResponse> memberAcceptedResponsePage = historyService.findApplyWithHistoryAtStart(principalDetails.getMember().getId(), jobPostId, workDateId);
+        List<HistoryManageResponse> memberAcceptedResponsePage = historyService.findHistoryAtStart(principalDetails.getMember().getId(), jobPostId, workDateId);
         return ResponseEntity.ok(new Response(memberAcceptedResponsePage, "출근 / 결근 조회 결과 반환 완료"));
     }
 

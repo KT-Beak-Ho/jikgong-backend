@@ -13,8 +13,8 @@ import java.util.List;
 @Builder
 public class PaymentStatementResponse {
     private Integer totalPayment; // 지급 총액
-    private List<PaymentMemberInfo> paymentMemberList;
-    private List<PaymentMemberInfo> notPaymentMemberList;
+    private List<PaymentMemberInfo> paymentMemberList; // 지급할 노동자 리스트
+    private List<PaymentMemberInfo> notPaymentMemberList; // 결근 노동자 리스트
 
 
     public static PaymentStatementResponse from(List<PaymentMemberInfo> paymentMemberInfoList) {
@@ -23,11 +23,11 @@ public class PaymentStatementResponse {
                 .sum();
         List<PaymentMemberInfo> paymentMemberList = new ArrayList<>();
         List<PaymentMemberInfo> notPaymentMemberList = new ArrayList<>();
-        for (PaymentMemberInfo i : paymentMemberInfoList) {
-            if(i.getStartStatus() == WorkStatus.NOT_WORK) {
-                notPaymentMemberList.add(i);
+        for (PaymentMemberInfo paymentMemberInfo : paymentMemberInfoList) {
+            if(paymentMemberInfo.getStartStatus() == WorkStatus.NOT_WORK) {
+                notPaymentMemberList.add(paymentMemberInfo);
             } else {
-                paymentMemberList.add(i);
+                paymentMemberList.add(paymentMemberInfo);
             }
         }
         return PaymentStatementResponse.builder()
