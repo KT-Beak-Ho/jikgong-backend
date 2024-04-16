@@ -1,12 +1,10 @@
 package jikgong.domain.apply.service;
 
-import jikgong.domain.apply.dtos.company.ApplyResponseForCompany;
+import jikgong.domain.apply.dtos.company.ApplicantResponse;
 import jikgong.domain.apply.dtos.company.ApplyProcessRequest;
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.apply.repository.ApplyRepository;
-import jikgong.domain.history.repository.HistoryRepository;
-import jikgong.domain.history.service.HistoryService;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.repository.JobPostRepository;
 import jikgong.domain.member.entity.Member;
@@ -43,7 +41,7 @@ public class ApplyCompanyService {
      * 지원자 목록 조회
      */
     @Transactional(readOnly = true)
-    public Page<ApplyResponseForCompany> findPendingApplyHistoryCompany(Long companyId, Long jobPostId, Long workDateId, Pageable pageable) {
+    public Page<ApplicantResponse> findPendingApplyHistoryCompany(Long companyId, Long jobPostId, Long workDateId, Pageable pageable) {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
         JobPost jobPost = jobPostRepository.findByIdAndMember(company.getId(), jobPostId)
@@ -53,8 +51,8 @@ public class ApplyCompanyService {
 
         Page<Apply> applyPage = applyRepository.findApplyForCompanyByApplyStatus(company.getId(), jobPost.getId(), workDate.getId(), ApplyStatus.PENDING, pageable);
 
-        List<ApplyResponseForCompany> applyResponseForCompanyList = applyPage.getContent().stream()
-                .map(ApplyResponseForCompany::from)
+        List<ApplicantResponse> applyResponseForCompanyList = applyPage.getContent().stream()
+                .map(ApplicantResponse::from)
                 .collect(Collectors.toList());
 
         return new PageImpl<>(applyResponseForCompanyList, pageable, applyPage.getTotalElements());
@@ -65,7 +63,7 @@ public class ApplyCompanyService {
      * 확정 인부 조회
      */
     @Transactional(readOnly = true)
-    public Page<ApplyResponseForCompany> findAcceptedHistoryCompany(Long companyId, Long jobPostId, Long workDateId, Pageable pageable) {
+    public Page<ApplicantResponse> findAcceptedHistoryCompany(Long companyId, Long jobPostId, Long workDateId, Pageable pageable) {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
         JobPost jobPost = jobPostRepository.findByIdAndMember(company.getId(), jobPostId)
@@ -75,8 +73,8 @@ public class ApplyCompanyService {
 
         Page<Apply> applyPage = applyRepository.findApplyForCompanyByApplyStatus(company.getId(), jobPost.getId(), workDate.getId(), ApplyStatus.ACCEPTED, pageable);
 
-        List<ApplyResponseForCompany> applyResponseForCompanyList = applyPage.getContent().stream()
-                .map(ApplyResponseForCompany::from)
+        List<ApplicantResponse> applyResponseForCompanyList = applyPage.getContent().stream()
+                .map(ApplicantResponse::from)
                 .collect(Collectors.toList());
 
         return new PageImpl<>(applyResponseForCompanyList, pageable, applyPage.getTotalElements());

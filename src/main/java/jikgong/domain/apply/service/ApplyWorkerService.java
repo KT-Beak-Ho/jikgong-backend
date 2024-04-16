@@ -1,7 +1,7 @@
 package jikgong.domain.apply.service;
 
 import jikgong.domain.apply.dtos.worker.ApplyPendingResponse;
-import jikgong.domain.apply.dtos.worker.ApplyResponseForWorker;
+import jikgong.domain.apply.dtos.worker.ApplyHistoryResponse;
 import jikgong.domain.apply.dtos.worker.ApplyResponseMonthly;
 import jikgong.domain.apply.dtos.worker.ApplySaveRequest;
 import jikgong.domain.apply.entity.Apply;
@@ -18,10 +18,6 @@ import jikgong.global.exception.ErrorCode;
 import jikgong.global.utils.TimeTransfer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -119,12 +115,12 @@ public class ApplyWorkerService {
      * 확정된 내역 일별 조회
      */
     @Transactional(readOnly = true)
-    public List<ApplyResponseForWorker> findAcceptedApplyWorker(Long workerId, LocalDate date) {
+    public List<ApplyHistoryResponse> findApplyHistoryPerDay(Long workerId, LocalDate date) {
         Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        List<ApplyResponseForWorker> applyResponseList = applyRepository.findApplyPerDay(worker.getId(), date, ApplyStatus.ACCEPTED).stream()
-                .map(ApplyResponseForWorker::from)
+        List<ApplyHistoryResponse> applyResponseList = applyRepository.findApplyPerDay(worker.getId(), date, ApplyStatus.ACCEPTED).stream()
+                .map(ApplyHistoryResponse::from)
                 .collect(Collectors.toList());
 
         return applyResponseList;
@@ -137,7 +133,7 @@ public class ApplyWorkerService {
      * 신청한 날짜: 회색으로 표시
      */
     @Transactional(readOnly = true)
-    public List<ApplyResponseMonthly> findAcceptedApplyWorkerMonthly(Long workerId, LocalDate workMonth) {
+    public List<ApplyResponseMonthly> findApplyHistoryPerMonth(Long workerId, LocalDate workMonth) {
         Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 

@@ -7,7 +7,6 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 
-@AllArgsConstructor
 @Getter
 @Builder
 public class ApplyResponseMonthly {

@@ -2,7 +2,7 @@ package jikgong.domain.apply.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jikgong.domain.apply.dtos.company.ApplyProcessRequest;
-import jikgong.domain.apply.dtos.company.ApplyResponseForCompany;
+import jikgong.domain.apply.dtos.company.ApplicantResponse;
 import jikgong.domain.apply.service.ApplyCompanyService;
 import jikgong.global.dto.Response;
 import jikgong.global.security.principal.PrincipalDetails;
@@ -31,7 +31,7 @@ public class ApplyCompanyController {
                                                             @RequestParam(name = "size", defaultValue = "10") int size) {
         // 페이징 처리 (먼저 요청한 순)
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("createdDate")));
-        Page<ApplyResponseForCompany> applyResponseForCompanyPage =
+        Page<ApplicantResponse> applyResponseForCompanyPage =
                 applyCompanyService.findPendingApplyHistoryCompany(principalDetails.getMember().getId(), jobPostId, workDateId, pageable);
         return ResponseEntity.ok(new Response(applyResponseForCompanyPage, "공고 글에 신청된 내역 조회 완료"));
     }
@@ -45,7 +45,7 @@ public class ApplyCompanyController {
                                                              @RequestParam(name = "size", defaultValue = "10") int size) {
         // 페이징 처리 (이름 순)
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("m.workerInfo.workerName")));
-        Page<ApplyResponseForCompany> applyResponseForCompanyPage =
+        Page<ApplicantResponse> applyResponseForCompanyPage =
                 applyCompanyService.findAcceptedHistoryCompany(principalDetails.getMember().getId(), jobPostId, workDateId, pageable);
         return ResponseEntity.ok(new Response(applyResponseForCompanyPage, "공고 글에 확정된 노동자 조회"));
     }
