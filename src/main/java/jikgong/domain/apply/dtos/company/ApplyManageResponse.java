@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 
 @Getter
 @Builder
-@ToString
 public class ApplyManageResponse {
     /**
      * 인력 관리: 대기 중인 인부 조회
