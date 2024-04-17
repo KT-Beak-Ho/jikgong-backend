@@ -1,11 +1,15 @@
 package jikgong.domain.offer.service;
 
+import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.apply.repository.ApplyRepository;
+import jikgong.domain.location.entity.Location;
+import jikgong.domain.location.repository.LocationRepository;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
+import jikgong.domain.offer.dtos.worker.OfferJobPostResponse;
 import jikgong.domain.offer.dtos.worker.OfferProcessRequest;
-import jikgong.domain.offer.dtos.worker.ReceivedOfferListResponse;
+import jikgong.domain.offer.dtos.worker.ReceivedOfferResponse;
 import jikgong.domain.offerWorkDate.entity.OfferWorkDate;
 import jikgong.domain.offerWorkDate.repository.OfferWorkDateRepository;
 import jikgong.domain.workDate.entity.WorkDate;
@@ -30,13 +34,14 @@ public class OfferWorkerService {
     private final MemberRepository memberRepository;
     private final OfferWorkDateRepository offerWorkDateRepository;
     private final ApplyRepository applyRepository;
+    private final LocationRepository locationRepository;
 
     /**
      * 받은 제안 목록 조회
      * 필터: 대기 중, 마감
      */
     @Transactional(readOnly = true)
-    public List<ReceivedOfferListResponse> findReceivedOffer(Long workerId, Boolean isPending) {
+    public List<ReceivedOfferResponse> findReceivedOffer(Long workerId, Boolean isPending) {
         Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
         List<OfferWorkDate> offerWorkDateList;
@@ -48,7 +53,7 @@ public class OfferWorkerService {
             offerWorkDateList = offerWorkDateRepository.findReceivedClosedOffer(worker.getId());
         }
         return offerWorkDateList.stream()
-                .map(ReceivedOfferListResponse::from)
+                .map(ReceivedOfferResponse::from)
                 .collect(Collectors.toList());
     }
 
@@ -73,11 +78,11 @@ public class OfferWorkerService {
                 throw new CustomException(ErrorCode.RECRUITMENT_FULL);
             }
 
-            // 출역일 전 인지 체크
+            // 출역 시각 3시간 전까지 처리 가능
             if (LocalDate.now().isAfter(workDate.getDate())) {
                 throw new CustomException(ErrorCode.WORK_DATE_NEED_TO_FUTURE);
             }
-            if (LocalDate.now().isEqual(workDate.getDate()) && LocalTime.now().isAfter(workDate.getJobPost().getStartTime())) {
+            if (LocalDate.now().isEqual(workDate.getDate()) && LocalTime.now().plusHours(3L).isAfter(workDate.getJobPost().getStartTime())) {
                 throw new CustomException(ErrorCode.WORK_DATE_NEED_TO_FUTURE);
             }
 
@@ -93,5 +98,29 @@ public class OfferWorkerService {
         List<Long> cancelApplyIdList = applyRepository.deleteOtherApplyOnDate(worker.getId(), offerWorkDate.getWorkDate().getDate());
         int canceledCount = applyRepository.updateApplyStatus(cancelApplyIdList, ApplyStatus.CANCELED, LocalDateTime.now());
         log.info("취소된 요청 횟수: " + canceledCount);
+    }
+
+    /**
+     * 모집 공고 상세 화면
+     * 일자리 제안 시 보여 줄 상세 화면
+     */
+    @Transactional(readOnly = true)
+    public OfferJobPostResponse getJobPostDetailForOffer(Long workerId, Long offerWorkDateId) {
+        Member worker = memberRepository.findById(workerId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        OfferWorkDate offerWorkDate = offerWorkDateRepository.findByIdAtProcessOffer(offerWorkDateId)
+                .orElseThrow(() -> new CustomException(ErrorCode.OFFER_WORK_DATE_NOT_FOUND));
+
+        WorkDate workDate = offerWorkDate.getWorkDate();
+
+        // 제안 날 확정된 지원 내역 조회
+        List<Apply> acceptedApply = applyRepository.checkAcceptedApplyForOffer(worker.getId(), workDate.getDate());
+
+        // 대표 위치 조회
+        Location location = locationRepository.findMainLocationByMemberId(worker.getId())
+                .orElseThrow(() -> new CustomException(ErrorCode.LOCATION_NOT_FOUND));
+
+        return OfferJobPostResponse.from(offerWorkDate, acceptedApply, location);
     }
 }

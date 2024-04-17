@@ -1,6 +1,5 @@
 package jikgong.domain.offer.service;
 
-import jikgong.domain.apply.repository.ApplyRepository;
 import jikgong.domain.offer.dtos.company.*;
 import jikgong.domain.offer.entity.OfferStatus;
 import jikgong.domain.offer.repository.OfferRepository;
@@ -112,12 +111,12 @@ public class OfferCompanyService {
         }
 
         // 이미 지난 공고 인지 체크
-        // 제안은 출역날 출역 시간 직전까지 가능
+        // 출역 시각 3시간 전까지 처리 가능
         for (WorkDate workDate : workDateEntityList) {
             if (LocalDate.now().isAfter(workDate.getDate())) {
                 throw new CustomException(ErrorCode.WORK_DATE_NEED_TO_FUTURE);
             }
-            if (LocalDate.now().isEqual(workDate.getDate()) && LocalTime.now().isAfter(workDate.getJobPost().getStartTime())) {
+            if (LocalDate.now().isEqual(workDate.getDate()) && LocalTime.now().plusHours(3L).isAfter(workDate.getJobPost().getStartTime())) {
                 throw new CustomException(ErrorCode.WORK_DATE_NEED_TO_FUTURE);
             }
             dateList.add(workDate.getDate());
@@ -139,54 +138,6 @@ public class OfferCompanyService {
             innerList.add(workDate);
         }
         return workDateMap;
-    }
-
-    /**
-     * 제안 시 노동자 상세 정보 조회
-     */
-    @Transactional(readOnly = true)
-    public WorkerInfoResponse findWorkerInfo(Long companyId, Long resumeId) {
-        Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-
-        Resume resume = resumeRepository.findByIdWithMember(resumeId)
-                .orElseThrow(() -> new CustomException(ErrorCode.RESUME_NOT_FOUND));
-
-//        // 이미 확정된 apply 월별 조회
-//        List<Apply> findCantWorkDate = applyRepository.findCantWorkDate(
-//                resume.getMember().getId(),
-//                TimeTransfer.getFirstDayOfMonth(selectMonth),
-//                TimeTransfer.getLastDayOfMonth(selectMonth));
-
-        return WorkerInfoResponse.from(resume);
-    }
-
-    /**
-     * 제안 시 프로젝트 선택
-     * 선택 후 제안 가능한 공고 조회
-     * 각 모집 공고엔 [제안 가능 날짜], [인원 마감된 날짜], [출역일 지난 날짜] 반환
-     */
-    @Transactional(readOnly = true)
-    public JobPostResponseForOffer findAvailableJobPosts(Long companyId, Long workerId, Long projectId) {
-        Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-
-        Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-
-        Project project = projectRepository.findByIdAndMember(company.getId(), projectId)
-                .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_FOUND));
-
-
-//        // 노동자 작업 불가능한 날짜 조회
-//        List<LocalDate> cantWorkDate = applyRepository.findAllCantWorkDate(worker.getId()).stream()
-//                .map(apply -> apply.getWorkDate().getDate())
-//                .collect(Collectors.toList());
-//        Set<LocalDate> cantWorkDateSet = new HashSet<>(cantWorkDate);
-
-        List<JobPost> jobPostList = jobPostRepository.findByProject(project.getId());
-
-        return JobPostResponseForOffer.from(jobPostList, worker);
     }
 
     /**
