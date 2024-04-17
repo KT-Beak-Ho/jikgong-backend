@@ -8,7 +8,6 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
 @Getter
 @Builder
 public class PaymentStatementResponse {

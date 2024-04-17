@@ -47,8 +47,8 @@ public class HistoryManageResponse {
         this.endStatus = history.getEndStatus();
     }
 
-    @Builder
     @Getter
+    @Builder
     public static class MemberResponse {
         private Long memberId;
         private String workerName; // 노동자 이름

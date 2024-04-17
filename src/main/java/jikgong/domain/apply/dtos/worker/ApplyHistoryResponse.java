@@ -11,7 +11,6 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-@AllArgsConstructor
 @Getter
 @Builder
 public class ApplyHistoryResponse {
@@ -35,7 +34,6 @@ public class ApplyHistoryResponse {
                 .build();
     }
 
-    @AllArgsConstructor
     @Getter
     @Builder
     public static class JobPostResponse {

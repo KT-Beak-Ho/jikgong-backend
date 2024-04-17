@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-@AllArgsConstructor
 @Getter
 @Builder
 public class PaymentMemberInfo {
@@ -40,7 +39,7 @@ public class PaymentMemberInfo {
                 .build();
     }
 
-
+    @Getter
     @Builder
     public static class MemberResponse {
         private Long memberId;

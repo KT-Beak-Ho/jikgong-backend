@@ -30,7 +30,7 @@ public class ApplyManageResponse {
                 .build();
     }
 
-
+    @Getter
     @Builder
     public static class MemberResponse {
         private Long memberId;

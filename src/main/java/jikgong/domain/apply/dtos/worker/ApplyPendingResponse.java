@@ -32,6 +32,7 @@ public class ApplyPendingResponse {
                 .build();
     }
 
+    @Getter
     @Builder
     public static class JobPostResponse {
         /**
