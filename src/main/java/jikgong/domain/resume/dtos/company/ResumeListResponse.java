@@ -1,4 +1,4 @@
-package jikgong.domain.resume.dtos;
+package jikgong.domain.resume.dtos.company;
 
 import jikgong.domain.common.Address;
 import jikgong.domain.history.entity.History;

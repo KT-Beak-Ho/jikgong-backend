@@ -3,12 +3,13 @@ package jikgong.domain.resume.service;
 import jikgong.domain.jobPost.entity.Tech;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
+import jikgong.domain.resume.dtos.company.ResumeDetailResponse;
 import jikgong.domain.offer.entity.SortType;
 import jikgong.domain.project.entity.Project;
 import jikgong.domain.project.repository.ProjectRepository;
-import jikgong.domain.resume.dtos.CareerDetailRequest;
-import jikgong.domain.resume.dtos.ResumeListResponse;
-import jikgong.domain.resume.dtos.ResumeSaveRequest;
+import jikgong.domain.resume.dtos.worker.CareerDetailRequest;
+import jikgong.domain.resume.dtos.company.ResumeListResponse;
+import jikgong.domain.resume.dtos.worker.ResumeSaveRequest;
 import jikgong.domain.resume.entity.Resume;
 import jikgong.domain.resume.repository.ResumeRepository;
 import jikgong.domain.skill.entity.Skill;
@@ -29,31 +30,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class ResumeService {
+public class ResumeCompanyService {
     private final MemberRepository memberRepository;
     private final ResumeRepository resumeRepository;
-    private final SkillRepository skillRepository;
     private final ProjectRepository projectRepository;
 
-    /**
-     * 노동자
-     * 이력서 등록
-     */
-    public void saveResume(Long workerId, ResumeSaveRequest request) {
-        Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-
-        Resume resume = Resume.createEntity(request, worker);
-
-        resumeRepository.save(resume);
-
-        List<CareerDetailRequest> careerDetailRequestList = request.getCareerDetailRequestList();
-        List<Skill> skillList = new ArrayList<>();
-        for (CareerDetailRequest careerDetailRequest : careerDetailRequestList) {
-            skillList.add(Skill.createEntity(careerDetailRequest, resume));
-        }
-        skillRepository.saveAll(skillList);
-    }
 
     /**
      * 기업
@@ -69,5 +50,26 @@ public class ResumeService {
 
         // querydsl
         return resumeRepository.findHeadHuntingMemberList(project.getAddress(), tech, bound, sortType, pageable);
+    }
+
+    /**
+     * 기업
+     * 제안 시 노동자 상세 정보 조회
+     */
+    @Transactional(readOnly = true)
+    public ResumeDetailResponse findResumeDetail(Long companyId, Long resumeId) {
+        Member company = memberRepository.findById(companyId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Resume resume = resumeRepository.findByIdWithMember(resumeId)
+                .orElseThrow(() -> new CustomException(ErrorCode.RESUME_NOT_FOUND));
+
+//        // 이미 확정된 apply 월별 조회
+//        List<Apply> findCantWorkDate = applyRepository.findCantWorkDate(
+//                resume.getMember().getId(),
+//                TimeTransfer.getFirstDayOfMonth(selectMonth),
+//                TimeTransfer.getLastDayOfMonth(selectMonth));
+
+        return ResumeDetailResponse.from(resume);
     }
 }
