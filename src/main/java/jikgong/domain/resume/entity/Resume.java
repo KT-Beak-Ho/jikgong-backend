@@ -3,7 +3,7 @@ package jikgong.domain.resume.entity;
 import jakarta.persistence.*;
 import jikgong.domain.jobPost.entity.AvailableInfo;
 import jikgong.domain.member.entity.Member;
-import jikgong.domain.resume.dtos.ResumeSaveRequest;
+import jikgong.domain.resume.dtos.worker.ResumeSaveRequest;
 import jikgong.domain.skill.entity.Skill;
 import lombok.AccessLevel;
 import lombok.Builder;

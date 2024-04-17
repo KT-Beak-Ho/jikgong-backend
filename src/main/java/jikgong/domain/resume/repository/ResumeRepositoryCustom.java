@@ -1,7 +1,7 @@
 package jikgong.domain.resume.repository;
 
 import jikgong.domain.common.Address;
-import jikgong.domain.resume.dtos.ResumeListResponse;
+import jikgong.domain.resume.dtos.company.ResumeListResponse;
 import jikgong.domain.offer.entity.SortType;
 import jikgong.domain.jobPost.entity.Tech;
 import org.springframework.data.domain.Page;

@@ -2,7 +2,7 @@ package jikgong.domain.skill.entity;
 
 import jakarta.persistence.*;
 import jikgong.domain.jobPost.entity.Tech;
-import jikgong.domain.resume.dtos.CareerDetailRequest;
+import jikgong.domain.resume.dtos.worker.CareerDetailRequest;
 import jikgong.domain.resume.entity.Resume;
 import lombok.AccessLevel;
 import lombok.Builder;
