@@ -9,6 +9,7 @@ import jikgong.domain.jobPostImage.repository.JobPostImageRepository;
 import jikgong.domain.jobPostImage.service.JobPostImageService;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
+import jikgong.domain.jobPost.dtos.company.JobPostResponseForOffer;
 import jikgong.domain.pickup.entity.Pickup;
 import jikgong.domain.pickup.repository.PickupRepository;
 import jikgong.domain.project.entity.Project;
@@ -21,8 +22,6 @@ import jikgong.global.handler.ImageDto;
 import jikgong.global.handler.S3Handler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -201,5 +200,34 @@ public class JobPostCompanyService {
         // 이미지 업로드 및 저장은 x
 
         return savedJobPost.getId();
+    }
+
+
+    /**
+     * 제안 시 프로젝트 선택
+     * 선택 후 제안 가능한 공고 조회
+     * 각 모집 공고엔 [제안 가능 날짜], [인원 마감된 날짜], [출역일 지난 날짜] 반환
+     */
+    @Transactional(readOnly = true)
+    public JobPostResponseForOffer findAvailableJobPosts(Long companyId, Long workerId, Long projectId) {
+        Member company = memberRepository.findById(companyId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Member worker = memberRepository.findById(workerId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Project project = projectRepository.findByIdAndMember(company.getId(), projectId)
+                .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_FOUND));
+
+
+//        // 노동자 작업 불가능한 날짜 조회
+//        List<LocalDate> cantWorkDate = applyRepository.findAllCantWorkDate(worker.getId()).stream()
+//                .map(apply -> apply.getWorkDate().getDate())
+//                .collect(Collectors.toList());
+//        Set<LocalDate> cantWorkDateSet = new HashSet<>(cantWorkDate);
+
+        List<JobPost> jobPostList = jobPostRepository.findByProject(project.getId());
+
+        return JobPostResponseForOffer.from(jobPostList, worker);
     }
 }

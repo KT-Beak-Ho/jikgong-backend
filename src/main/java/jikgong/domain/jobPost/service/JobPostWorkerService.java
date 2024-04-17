@@ -1,8 +1,6 @@
 package jikgong.domain.jobPost.service;
 
-import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.repository.ApplyRepository;
-import jikgong.domain.jobPost.dtos.offer.JobPostDetailResponseForOffer;
 import jikgong.domain.jobPost.dtos.worker.JobPostDetailResponse;
 import jikgong.domain.jobPost.dtos.worker.JobPostListResponse;
 import jikgong.domain.jobPost.entity.JobPost;
@@ -14,10 +12,7 @@ import jikgong.domain.location.entity.Location;
 import jikgong.domain.location.repository.LocationRepository;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
-import jikgong.domain.offerWorkDate.entity.OfferWorkDate;
 import jikgong.domain.offerWorkDate.repository.OfferWorkDateRepository;
-import jikgong.domain.workDate.entity.WorkDate;
-import jikgong.domain.workDate.repository.WorkDateRepository;
 import jikgong.global.exception.CustomException;
 import jikgong.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -75,29 +70,5 @@ public class JobPostWorkerService {
                 .orElseThrow(() -> new CustomException(ErrorCode.LOCATION_NOT_FOUND));
 
         return JobPostDetailResponse.from(jobPost, location);
-    }
-
-    /**
-     * 모집 공고 상세 화면
-     * 일자리 제안 시 보여 줄 상세 화면
-     */
-    @Transactional(readOnly = true)
-    public JobPostDetailResponseForOffer getJobPostDetailForOffer(Long workerId, Long offerWorkDateId) {
-        Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-
-        OfferWorkDate offerWorkDate = offerWorkDateRepository.findByIdAtProcessOffer(offerWorkDateId)
-                .orElseThrow(() -> new CustomException(ErrorCode.OFFER_WORK_DATE_NOT_FOUND));
-
-        WorkDate workDate = offerWorkDate.getWorkDate();
-
-        // 제안 날 확정된 지원 내역 조회
-        List<Apply> acceptedApply = applyRepository.checkAcceptedApplyForOffer(worker.getId(), workDate.getDate());
-
-        // 대표 위치 조회
-        Location location = locationRepository.findMainLocationByMemberId(worker.getId())
-                .orElseThrow(() -> new CustomException(ErrorCode.LOCATION_NOT_FOUND));
-
-        return JobPostDetailResponseForOffer.from(offerWorkDate, acceptedApply, location);
     }
 }

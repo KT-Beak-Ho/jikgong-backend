@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jikgong.domain.jobPost.dtos.company.*;
 import jikgong.domain.jobPost.entity.JobPostStatus;
 import jikgong.domain.jobPost.service.JobPostCompanyService;
+import jikgong.domain.jobPost.dtos.company.JobPostResponseForOffer;
 import jikgong.global.dto.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
@@ -87,5 +88,14 @@ public class JobPostCompanyController {
                                                            @PathVariable("jobPostId") Long jobPostId) {
         jobPostCompanyService.deleteTemporaryJobPost(principalDetails.getMember().getId(), jobPostId);
         return ResponseEntity.ok(new Response("임시 저장 게시물 삭제 완료"));
+    }
+
+    @Operation(summary = "일자리 제안: 출역 가능한 현장 목록")
+    @GetMapping("/api/company/offer/available-jobPosts")
+    public ResponseEntity<Response> findAvailableJobPosts(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                          @RequestParam(name = "memberId") Long memberId,
+                                                          @RequestParam(name = "projectId") Long projectId) {
+        JobPostResponseForOffer selectOfferJobPostResponse = jobPostCompanyService.findAvailableJobPosts(principalDetails.getMember().getId(), memberId, projectId);
+        return ResponseEntity.ok(new Response(selectOfferJobPostResponse, "기업: 출역 가능한 현장 목록 반환 완료"));
     }
 }

@@ -1,10 +1,8 @@
 package jikgong.domain.jobPost.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jikgong.domain.jobPost.dtos.offer.JobPostDetailResponseForOffer;
 import jikgong.domain.jobPost.dtos.worker.JobPostDetailResponse;
 import jikgong.domain.jobPost.dtos.worker.JobPostListResponse;
-import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.entity.Park;
 import jikgong.domain.jobPost.entity.SortType;
 import jikgong.domain.jobPost.entity.Tech;
@@ -57,13 +55,5 @@ public class JobPostWorkerController {
                                                      @PathVariable("jobPostId") Long jobPostId) {
         JobPostDetailResponse jobPostDetailResponse = jobPostWorkerService.getJobPostDetail(principalDetails.getMember().getId(), jobPostId);
         return ResponseEntity.ok(new Response(jobPostDetailResponse, "모집 공고 상세 화면 - 일반 반환 완료"));
-    }
-
-    @Operation(summary = "모집 공고 상세 화면 - 제안 수락 시")
-    @GetMapping("/api/worker/job-post/process-offer/{offerWorkDateId}")
-    public ResponseEntity<Response> getJobPostDetailBeforeOfferProcess(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                     @PathVariable("offerWorkDateId") Long offerWorkDateId) {
-        JobPostDetailResponseForOffer jobPostDetailResponseForOffer = jobPostWorkerService.getJobPostDetailForOffer(principalDetails.getMember().getId(), offerWorkDateId);
-        return ResponseEntity.ok(new Response(jobPostDetailResponseForOffer, "모집 공고 상세 화면 - 제안 수락 시 반환 완료"));
     }
 }
