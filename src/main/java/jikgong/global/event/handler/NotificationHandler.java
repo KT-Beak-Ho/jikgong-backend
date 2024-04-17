@@ -26,7 +26,7 @@ public class NotificationHandler {
                 .collect(Collectors.joining(", "));
 
         String content = "[" + event.getCompanyName() + "] 에서 " + dateList + "에 일자리를 제안했습니다.";
-        String url = "/api/worker/job-post/" + event.getJobPostId();
+        String url = null; // 제안 내역으로 이동시키면 될 것 같음
         notificationService.saveNotification(event.getReceiverId(), event.getNotificationType(), content, url);
     }
 }

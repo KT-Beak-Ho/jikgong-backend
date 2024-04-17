@@ -70,7 +70,7 @@ public enum ErrorCode {
      */
     JOB_POST_NOT_FOUND(HttpStatus.NOT_FOUND, "모집 공고 정보가 없습니다."),
     RECRUITMENT_FULL(HttpStatus.BAD_REQUEST, "이미 모집 인원이 충족되었습니다."),
-    WORK_DATE_NEED_TO_FUTURE(HttpStatus.BAD_REQUEST, "당일, 과거 날짜에 대한 일자리는 제안할 수 없습니다."),
+    WORK_DATE_NEED_TO_FUTURE(HttpStatus.BAD_REQUEST, "출역시간 기준 3시간 이내로 남은 일자리에 대해선 처리할 수 없습니다."),
     WORK_DATE_NOT_MATCH(HttpStatus.BAD_REQUEST, "요청한 workDate id 값이 jobPost와 연관되어있지 않습니다."),
     WORK_DATE_NOT_FOUND(HttpStatus.NOT_FOUND, "날짜 엔티티가 존재하지 않습니다."),
     WORK_DATE_LIST_NOT_FOUND(HttpStatus.NOT_FOUND, "요청한 날짜 중 모집 공고에 맞지 않는 날짜가 있습니다."),
