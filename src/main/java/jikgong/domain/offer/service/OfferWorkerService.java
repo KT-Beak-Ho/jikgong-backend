@@ -61,6 +61,7 @@ public class OfferWorkerService {
      * 제안 수락, 거절
      * 수락일 경우 출역일 전인지 체크 & 중복 출역 여부 체크
      * 제안을 수락하는 경우는 출역 시간 직전까지 수락 가능
+     * 모집된 인원 증가
      */
     public void processOffer(Long workerId, OfferProcessRequest request) {
         Member worker = memberRepository.findById(workerId)
@@ -72,7 +73,6 @@ public class OfferWorkerService {
         // 수락일 때
         if (request.getIsAccept()) {
             WorkDate workDate = offerWorkDate.getWorkDate();
-
             // 인원 마감 체크
             if (workDate.getRecruitNum() <= workDate.getRegisteredNum()) {
                 throw new CustomException(ErrorCode.RECRUITMENT_FULL);
@@ -90,6 +90,9 @@ public class OfferWorkerService {
             if (applyRepository.findAcceptedApplyByWorkDate(worker.getId(), workDate.getDate()) != 0) {
                 throw new CustomException(ErrorCode.APPLY_ALREADY_ACCEPTED_IN_WORKDATE);
             }
+
+            // 모집된 인원 증가
+            workDate.plusRegisteredNum(1);
         }
         // 수락, 거부 처리
         offerWorkDate.processOffer(request.getIsAccept());
