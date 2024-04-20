@@ -27,6 +27,8 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
     List<Apply> findByIdList(@Param("applyIdList") List<Long> applyIdList, @Param("workDateId") Long workDateId, @Param("jobPostId") Long jobPostId);
     @Query("select a.id from Apply a where a.workDate.date = :date and a.member.id in :memberIdList and a.status = 'PENDING'")
     List<Long> deleteOtherApplyOnDate(@Param("memberIdList") List<Long> memberIdList, @Param("date") LocalDate date);
+    @Query("select a from Apply a join fetch a.member m where a.member.id in :memberIdList and a.workDate.date = :date and a.status = 'ACCEPTED'")
+    List<Apply> findAcceptedMember(@Param("memberIdList") List<Long> memberIdList, @Param("date") LocalDate date);
 
 
     /**

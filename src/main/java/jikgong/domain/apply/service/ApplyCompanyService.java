@@ -18,10 +18,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -96,25 +99,59 @@ public class ApplyCompanyService {
         // 대기 중인 요청인지 체크
         List<Apply> applyList = checkPendingApply(request, workDate, jobPost);
 
-        // 모집 인원 초과 체크
-        checkRegisteredNumOver(workDate, applyList);
-
-        // applyStatus 갱신
-        List<Long> updateApplyIdList = applyList.stream().map(Apply::getId).collect(Collectors.toList());
-        ApplyStatus applyStatus = request.getIsAccept() ? ApplyStatus.ACCEPTED : ApplyStatus.REJECTED;
-        int updatedCount = applyRepository.updateApplyStatus(updateApplyIdList, applyStatus, LocalDateTime.now());
-
-        // 모집된 인원 갱신
-        workDate.plusRegisteredNum(updatedCount);
-
-        // 수락 하려는 회원이 같은 날 다른 공고에 지원 했던 요청 취소
+        // 수락인 경우
         if (request.getIsAccept()) {
+            // 이미 다른 일자리에 승인된 노동자가 있는지 체크
+            checkAcceptedWorker(applyList, workDate);
+
+            // 모집 인원 및 날짜 체크
+            checkRegisteredNumAndDate(workDate, applyList);
+
+            // applyStatus 갱신
+            int updatedCount = updateApplyStatus(ApplyStatus.ACCEPTED, applyList);
+
+            // 모집된 인원 갱신
+            workDate.plusRegisteredNum(updatedCount);
+
+            // 회원들의 같은 날 다른 공고에 지원 했던 대기중인 요청 취소
             cancelAnotherApply(applyList, workDate);
+        }
+
+        // 거절인 경우
+        if (!request.getIsAccept()) {
+            // applyStatus 갱신
+            updateApplyStatus(ApplyStatus.REJECTED, applyList);
         }
     }
 
-    // 모집 인원 초과 체크
-    private void checkRegisteredNumOver(WorkDate workDate, List<Apply> applyList) {
+    // applyStatus 갱신
+    private int updateApplyStatus(ApplyStatus status, List<Apply> applyList) {
+        List<Long> updateApplyIdList = applyList.stream().map(Apply::getId).collect(Collectors.toList());
+        return applyRepository.updateApplyStatus(updateApplyIdList, status, LocalDateTime.now());
+    }
+
+    // 이미 다른 일자리에 승인된 노동자가 있는지 체크
+    private void checkAcceptedWorker(List<Apply> applyList, WorkDate workDate) {
+        List<Long> workerIdList = applyList.stream().map(apply -> apply.getMember().getId()).collect(Collectors.toList());
+        List<Apply> acceptedApply = applyRepository.findAcceptedMember(workerIdList, workDate.getDate());
+        if (!acceptedApply.isEmpty()) {
+            String acceptedWorkerNames = acceptedApply.stream()
+                    .map(worker -> worker.getMember().getWorkerInfo().getWorkerName())
+                    .collect(Collectors.joining(", "));
+            throw new CustomException(HttpStatus.BAD_REQUEST, acceptedWorkerNames + " 은 이미 확정된 일자리가 있습니다.");
+        }
+    }
+
+    // 모집 인원 및 날짜 체크
+    private void checkRegisteredNumAndDate(WorkDate workDate, List<Apply> applyList) {
+        // 출역일 2일 전까지 수락 가능
+        // 5일이 출역일이면
+        // 3일 수락 가능  |  4일 수락 불가능
+        if (LocalDate.now().isAfter(workDate.getDate().minusDays(2))) {
+            throw new CustomException(ErrorCode.WORK_DATE_NEED_TO_FUTURE);
+        }
+
+        // 모집 인원 체크
         if (workDate.getRegisteredNum() + applyList.size() > workDate.getRecruitNum()) {
             throw new CustomException(ErrorCode.APPLY_OVER_RECRUIT_NUM);
         }
