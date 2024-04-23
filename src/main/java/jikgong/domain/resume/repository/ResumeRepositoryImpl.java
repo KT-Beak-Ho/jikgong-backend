@@ -45,6 +45,8 @@ public class ResumeRepositoryImpl implements ResumeRepositoryCustom {
         Long totalCount = queryFactory
                 .select(resume.count())
                 .from(resume)
+                .leftJoin(resume.member, member)
+                .leftJoin(member.locationList, location).on(location.isMain.isTrue())
                 .where(
                         containTech(tech),
                         ltBound(bound, projectAddress, location)
