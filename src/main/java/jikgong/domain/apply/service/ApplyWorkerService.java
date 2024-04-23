@@ -63,7 +63,7 @@ public class ApplyWorkerService {
 
         ArrayList<Apply> applyList = new ArrayList<>();
         for (WorkDate workDate : workDateList) {
-            applyList.add(new Apply(worker, workDate));
+            applyList.add(new Apply(ApplyStatus.PENDING, worker, workDate));
         }
         applyRepository.saveAll(applyList);
     }

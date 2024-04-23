@@ -1,5 +1,7 @@
 package jikgong.domain.offer.service;
 
+import jikgong.domain.apply.entity.Apply;
+import jikgong.domain.apply.repository.ApplyRepository;
 import jikgong.domain.offer.dtos.company.*;
 import jikgong.domain.offer.entity.OfferStatus;
 import jikgong.domain.offer.repository.OfferRepository;
@@ -12,8 +14,6 @@ import jikgong.domain.notification.entity.NotificationType;
 import jikgong.domain.offerWorkDate.entity.OfferWorkDate;
 import jikgong.domain.offerWorkDate.entity.OfferWorkDateStatus;
 import jikgong.domain.offerWorkDate.repository.OfferWorkDateRepository;
-import jikgong.domain.project.entity.Project;
-import jikgong.domain.project.repository.ProjectRepository;
 import jikgong.domain.resume.entity.Resume;
 import jikgong.domain.resume.repository.ResumeRepository;
 import jikgong.domain.workDate.entity.WorkDate;
@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class OfferCompanyService {
     private final MemberRepository memberRepository;
-    private final ProjectRepository projectRepository;
+    private final ApplyRepository applyRepository;
     private final OfferRepository offerRepository;
     private final ApplicationEventPublisher publisher;
     private final JobPostRepository jobPostRepository;
@@ -52,6 +52,7 @@ public class OfferCompanyService {
     /**
      * 일자리 제안
      * 한 노동자에게 A공고의 여러 날짜, B공고의 여러 날짜 제안 가능
+     * 제안을 하며 status가 OFFERED인 Apply 데이터 생성
      * notifiaction event 발행
      */
     public void offerJobPost(Long companyId, OfferRequest request) {
@@ -75,6 +76,7 @@ public class OfferCompanyService {
 
         List<Offer> offerList = new ArrayList<>();
         List<OfferWorkDate> offerWorkDateList = new ArrayList<>();
+        List<Apply> applyList = new ArrayList<>();
 
         for (OfferJobPostRequest offerJobPostRequest : request.getOfferJobPostRequest()) {
             JobPost jobPost = jobPostRepository.findById(offerJobPostRequest.getJobPostId())
@@ -95,12 +97,16 @@ public class OfferCompanyService {
             offerList.add(offer);
             offerWorkDateList.addAll(OfferWorkDate.createEntityList(offer, workDateEntityList));
 
+            // apply 엔티티 리스트 생성
+            applyList.addAll(Apply.createEntityList(worker, workDateEntityList));
+
             // notification event 발행
             publisher.publishEvent(new NotificationEvent(company.getCompanyInfo().getCompanyName(), dateList, offerJobPostRequest.getJobPostId(), NotificationType.OFFER, worker.getId()));
         }
 
         offerRepository.saveAll(offerList);
         offerWorkDateRepository.saveAll(offerWorkDateList);
+        applyRepository.saveAll(applyList);
     }
 
     // 예외 체크 및 dateList 에 date 추가

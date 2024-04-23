@@ -10,7 +10,9 @@ import jikgong.domain.member.repository.MemberRepository;
 import jikgong.domain.offer.dtos.worker.OfferJobPostResponse;
 import jikgong.domain.offer.dtos.worker.OfferProcessRequest;
 import jikgong.domain.offer.dtos.worker.ReceivedOfferResponse;
+import jikgong.domain.offer.entity.OfferStatus;
 import jikgong.domain.offerWorkDate.entity.OfferWorkDate;
+import jikgong.domain.offerWorkDate.entity.OfferWorkDateStatus;
 import jikgong.domain.offerWorkDate.repository.OfferWorkDateRepository;
 import jikgong.domain.workDate.entity.WorkDate;
 import jikgong.global.exception.CustomException;
@@ -59,8 +61,8 @@ public class OfferWorkerService {
 
     /**
      * 제안 수락, 거절
-     * 수락일 경우 출역일 전인지 체크 & 중복 출역 여부 체크
-     * 제안을 수락하는 경우는 출역 시간 직전까지 수락 가능
+     * 수락일 경우 날짜 & 중복 출역 여부 체크, Apply status 값 업데이트: OFFERED(제안됨) => ACCEPTED(승인됨)
+     * 거절일 경우 Offered Apply 제거
      * 모집된 인원 증가
      */
     public void processOffer(Long workerId, OfferProcessRequest request) {
@@ -70,37 +72,55 @@ public class OfferWorkerService {
         OfferWorkDate offerWorkDate = offerWorkDateRepository.findByIdWithWorkDate(request.getOfferWorkDateId())
                 .orElseThrow(() -> new CustomException(ErrorCode.OFFER_WORK_DATE_NOT_FOUND));
 
+        // workDate 조회
+        WorkDate workDate = offerWorkDate.getWorkDate();
+
+        // 요청에 따라 Apply 삭제 or status 업데이트
+        Apply offeredApply = applyRepository.findOfferedApply(worker.getId(), workDate.getId())
+                .orElseThrow(() -> new CustomException(ErrorCode.APPLY_OFFERED_NOT_FOUND));
+
         // 수락일 때
         if (request.getIsAccept()) {
-            WorkDate workDate = offerWorkDate.getWorkDate();
-            // 인원 마감 체크
-            if (workDate.getRecruitNum() <= workDate.getRegisteredNum()) {
-                throw new CustomException(ErrorCode.RECRUITMENT_FULL);
-            }
-
-            // 출역 시각 3시간 전까지 처리 가능
-            if (LocalDate.now().isAfter(workDate.getDate())) {
-                throw new CustomException(ErrorCode.WORK_DATE_NEED_TO_FUTURE);
-            }
-            if (LocalDate.now().isEqual(workDate.getDate()) && LocalTime.now().plusHours(3L).isAfter(workDate.getJobPost().getStartTime())) {
-                throw new CustomException(ErrorCode.WORK_DATE_NEED_TO_FUTURE);
-            }
-
-            // 수락 하려는 날짜에 출역 날짜가 확정된 기록이 있는지 체크
-            if (applyRepository.findAcceptedApplyByWorkDate(worker.getId(), workDate.getDate()) != 0) {
-                throw new CustomException(ErrorCode.APPLY_ALREADY_ACCEPTED_IN_WORKDATE);
-            }
+            // 수락 시 조건에 맞는지 확인
+            validationBeforeProcessOffer(workDate, worker);
 
             // 모집된 인원 증가
             workDate.plusRegisteredNum(1);
-        }
-        // 수락, 거부 처리
-        offerWorkDate.processOffer(request.getIsAccept());
 
-        // 같은 날 다른 공고에 지원 했던 대기중인 요청 취소
-        List<Long> cancelApplyIdList = applyRepository.deleteOtherApplyOnDate(worker.getId(), offerWorkDate.getWorkDate().getDate());
-        int canceledCount = applyRepository.updateApplyStatus(cancelApplyIdList, ApplyStatus.CANCELED, LocalDateTime.now());
-        log.info("취소된 요청 횟수: " + canceledCount);
+            // 제안 받으며 자동으로 생긴 지원 기록 승인 처리
+            offeredApply.updateStatus(ApplyStatus.ACCEPTED, LocalDateTime.now());
+
+            // 같은 날 다른 공고에 지원 했던 대기중인 요청 취소
+            List<Long> cancelApplyIdList = applyRepository.deleteOtherApplyOnDate(worker.getId(), offerWorkDate.getWorkDate().getDate());
+            int canceledCount = applyRepository.updateApplyStatus(cancelApplyIdList, ApplyStatus.CANCELED, LocalDateTime.now());
+            log.info("취소된 요청 횟수: " + canceledCount);
+        }
+        // 거절일 때
+        else {
+            // 제안 받으며 자동으로 생긴 지원 기록 제거
+            applyRepository.delete(offeredApply);
+        }
+
+        // 수락 or 거부 처리
+        offerWorkDate.processOffer(request.getIsAccept());
+    }
+
+    // 수락 시 조건에 맞는지 확인
+    private void validationBeforeProcessOffer(WorkDate workDate, Member worker) {
+        // 인원 마감 체크
+        if (workDate.getRecruitNum() <= workDate.getRegisteredNum()) {
+            throw new CustomException(ErrorCode.RECRUITMENT_FULL);
+        }
+
+        // 출역일 최소 2일전 승인
+        if (LocalDate.now().isAfter(workDate.getDate().minusDays(2L))) {
+            throw new CustomException(ErrorCode.WORK_DATE_NEED_TO_FUTURE);
+        }
+
+        // 수락 하려는 날짜에 출역 날짜가 확정된 기록이 있는지 체크
+        if (applyRepository.findAcceptedApplyByWorkDate(worker.getId(), workDate.getDate()) != 0) {
+            throw new CustomException(ErrorCode.APPLY_ALREADY_ACCEPTED_IN_WORKDATE);
+        }
     }
 
     /**

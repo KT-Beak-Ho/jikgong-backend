@@ -11,6 +11,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -34,10 +36,26 @@ public class Apply extends BaseEntity {
     private WorkDate workDate;
 
     @Builder
-    public Apply(Member member, WorkDate workDate) {
-        this.status = ApplyStatus.PENDING;
+    public Apply(ApplyStatus status, Member member, WorkDate workDate) {
+        this.status = status;
         this.member = member;
         this.workDate = workDate;
+    }
+
+
+    // 제안 시 offered apply 엔티티 리스트 생성
+    public static List<Apply> createEntityList(Member member, List<WorkDate> workDateList) {
+        List<Apply> applyList = new ArrayList<>();
+
+        for (WorkDate workDate : workDateList) {
+            Apply apply = Apply.builder()
+                    .status(ApplyStatus.OFFERED)
+                    .member(member)
+                    .workDate(workDate)
+                    .build();
+            applyList.add(apply);
+        }
+        return applyList;
     }
 
     public void updateStatus(ApplyStatus status, LocalDateTime now) {
