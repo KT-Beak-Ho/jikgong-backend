@@ -64,6 +64,7 @@ public enum ErrorCode {
     APPLY_NOT_FOUND(HttpStatus.NOT_FOUND, "요청 정보가 없습니다."),
     APPLY_CANCEL_IMPOSSIBLE(HttpStatus.BAD_REQUEST, "신청 취소가 불가능합니다."),
     APPLY_CAN_TWO_DAYS_AGO(HttpStatus.BAD_REQUEST, "일자리 신청은 출역일 기준 2일 전까지 가능합니다."),
+    APPLY_OFFERED_NOT_FOUND(HttpStatus.BAD_REQUEST, "제안받으며 자동으로 생성된 지원 내역이 없습니다."),
 
     /**
      * 모집 공고

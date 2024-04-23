@@ -24,7 +24,7 @@ public class ExceptionController {
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<?> handleCustomException(CustomException e, Model model) {
         log.info("핸들링한 에러 발생");
-        return ResponseEntity.status(e.getErrorCode().getStatus()).body(new Response<String>(e.getMessage(), "커스텀 예외 반환"));
+        return ResponseEntity.status(e.getStatus()).body(new Response<String>(e.getMessage(), "커스텀 예외 반환"));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -43,7 +43,7 @@ public class ExceptionController {
         }
         log.info("valid 검사 에러 발생: " + builder);
         CustomException e = new CustomException(ErrorCode.REQUEST_INVALID);
-        return ResponseEntity.status(e.getErrorCode().getStatus()).body(new Response(e.getMessage(), builder.toString()));
+        return ResponseEntity.status(e.getStatus()).body(new Response(e.getMessage(), builder.toString()));
     }
 
 //    @ExceptionHandler(Exception.class)

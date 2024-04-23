@@ -76,7 +76,7 @@ public class JwtFilter extends OncePerRequestFilter {
             if (e.getMessage().equalsIgnoreCase("만료된 access token 입니다.")) {
                 writeErrorLogs("EXPIRED_ACCESS_TOKEN", e.getMessage(), e.getStackTrace());
                 // 응값 코드 세팅
-                response.setStatus(e.getErrorCode().getStatus().value());
+                response.setStatus(e.getStatus().value());
                 response.getWriter().write(objectMapper.writeValueAsString(new Response<String>("만료된 access token 입니다.")));
                 response.getWriter().flush();
                 response.getWriter().close();
@@ -84,7 +84,7 @@ public class JwtFilter extends OncePerRequestFilter {
             // DB 에 없는 유저라면
             else if (e.getMessage().equalsIgnoreCase("회원 정보가 없습니다.")) {
                 writeErrorLogs("CANNOT_FOUND_USER", e.getMessage(), e.getStackTrace());
-                response.setStatus(e.getErrorCode().getStatus().value());
+                response.setStatus(e.getStatus().value());
                 response.getWriter().write(objectMapper.writeValueAsString(new Response<String>("회원 정보가 없습니다.")));
                 response.getWriter().flush();
                 response.getWriter().close();
