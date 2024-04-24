@@ -206,8 +206,8 @@ public class ApplyWorkerService {
             }
 
             // 5일이 출역일이라면
-            // 2일: 취소 가능  |  3일: 취소 불가
-            if (LocalDate.now().isAfter(jobPost.getStartDate().minusDays(3L))) {
+            // 3일: 취소 가능  |  4일: 취소 불가
+            if (LocalDate.now().isAfter(jobPost.getStartDate().minusDays(2L))) {
                 throw new CustomException(ErrorCode.APPLY_CANCEL_IMPOSSIBLE);
             }
         }
@@ -222,7 +222,7 @@ public class ApplyWorkerService {
 
         // 수락이었을 경우 모집된 인원 업데이트
         if (apply.getStatus() == ApplyStatus.ACCEPTED) {
-            apply.getWorkDate().minusRegisterNum();
+            apply.getWorkDate().minusRegisteredNum();
         }
     }
 }

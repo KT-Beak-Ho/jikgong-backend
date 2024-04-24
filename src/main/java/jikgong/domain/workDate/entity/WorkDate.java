@@ -43,11 +43,11 @@ public class WorkDate {
         this.applyList = new ArrayList<>();
     }
 
-    public void plusRegisteredNum(Integer updateCount) {
+    public synchronized void plusRegisteredNum(Integer updateCount) {
         this.registeredNum += updateCount;
     }
 
-    public void minusRegisterNum() {
+    public synchronized void minusRegisteredNum() {
         this.registeredNum -= 1;
     }
 }
