@@ -75,6 +75,9 @@ public class OfferWorkerService {
         // workDate 조회
         WorkDate workDate = offerWorkDate.getWorkDate();
 
+        // 동시성 문제를 해결하기 위한 Lock 쿼리
+        applyRepository.findWorkerApplyForLock(worker.getId());
+
         // 요청에 따라 Apply 삭제 or status 업데이트
         Apply offeredApply = applyRepository.findOfferedApply(worker.getId(), workDate.getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.APPLY_OFFERED_NOT_FOUND));

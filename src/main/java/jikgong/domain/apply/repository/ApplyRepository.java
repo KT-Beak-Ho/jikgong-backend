@@ -1,10 +1,12 @@
 package jikgong.domain.apply.repository;
 
+import jakarta.persistence.LockModeType;
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.entity.ApplyStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -96,5 +98,8 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
     List<Long> deleteOtherApplyOnDate(@Param("memberId") Long memberId, @Param("date") LocalDate date);
     @Query("select a from Apply a where a.member.id = :memberId and a.workDate.id = :workDateId and a.status = 'OFFERED'")
     Optional<Apply> findOfferedApply(@Param("memberId") Long memberId, @Param("workDateId") Long workDateId);
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select a from Apply a where a.member.id = :memberId")
+    List<Apply> findWorkerApplyForLock(@Param("memberId") Long memberId);
 
 }
