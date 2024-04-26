@@ -101,3 +101,8 @@ tasks.named('test') {
 jar {
 	enabled = false
 }
+
+// commons-logging 모듈이 포함되지 않도록 제외
+configurations.all {
+	exclude group: 'commons-logging', module: 'commons-logging'
+}
