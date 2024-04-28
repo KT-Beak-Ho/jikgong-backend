@@ -29,7 +29,7 @@ public class SlackService {
     public void sendMessage(String title, HashMap<String, String> data) {
         try {
             slackClient.send(SLACK_WEBHOOK_URL, payload(p -> p
-                    .text(title) // 메시지 제목
+                    .text("*" + title + "*") // 볼드 처리
                     .attachments(List.of(
                             Attachment.builder().color(Color.GREEN.toString()) // 메시지 색상
                                     .fields( // 메시지 본문 내용

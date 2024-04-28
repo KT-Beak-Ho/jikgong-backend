@@ -12,6 +12,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 @ControllerAdvice
@@ -23,7 +25,7 @@ public class ExceptionController {
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<?> handleCustomException(CustomException e, Model model) {
-        log.info("핸들링한 에러 발생");
+        log.error("핸들링한 에러 발생");
         return ResponseEntity.status(e.getStatus()).body(new Response<String>(e.getMessage(), "커스텀 예외 반환"));
     }
 
@@ -41,19 +43,39 @@ public class ExceptionController {
             builder.append(fieldError.getRejectedValue());
             builder.append("]");
         }
-        log.info("valid 검사 에러 발생: " + builder);
+        log.error("valid 검사 에러 발생: " + builder);
         CustomException e = new CustomException(ErrorCode.REQUEST_INVALID);
         return ResponseEntity.status(e.getStatus()).body(new Response(e.getMessage(), builder.toString()));
     }
 
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<?> handleCustomException(Exception e, Model model) {
-//        log.info("핸들링하지 않은 에러 발생");
-//        log.info("exception: " + e);
-//        HashMap<String, String> data = new HashMap<>();
-//        data.put("에러 내용", e.getMessage());
-//        // Slack 메시지 전송
-//        slackService.sendMessage("핸들링하지 않은 에러 발생", data);
-//        return ResponseEntity.badRequest().body(new Response(e.getMessage()));
-//    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> unHandledException(Exception e) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentTime = sdf.format(new Date());
+
+        // 에러 발생 위치 추출
+        StackTraceElement[] stackTrace = e.getStackTrace();
+        String errorLocation = "";
+        if (stackTrace.length > 0) {
+            StackTraceElement element = stackTrace[0];
+            errorLocation = element.getClassName() + " at line " + element.getLineNumber();
+        }
+
+        // 로그에 에러 정보 기록
+        log.error("핸들링하지 않은 에러 발생");
+        log.info("발생 시각" + currentTime);
+        log.info("에러 위치: " + errorLocation);
+        log.info("에러 내용: " + e.getMessage());
+
+
+        // Slack 메시지와 데이터에 추가 정보를 포함
+        HashMap<String, String> data = new HashMap<>();
+        data.put("에러 내용", e.getMessage());
+        data.put("발생 시각", currentTime);
+        data.put("에러 위치", errorLocation);
+        slackService.sendMessage("Unhandled exception occurred", data);
+
+
+        return ResponseEntity.badRequest().body(new Response(e.getMessage()));
+    }
 }
