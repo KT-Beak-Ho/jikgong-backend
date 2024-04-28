@@ -3,7 +3,7 @@ package jikgong.domain.jobPostImage.entity;
 
 import jakarta.persistence.*;
 import jikgong.domain.jobPost.entity.JobPost;
-import jikgong.global.handler.ImageDto;
+import jikgong.global.s3.ImageDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

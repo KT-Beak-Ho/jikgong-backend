@@ -1,4 +1,4 @@
-package jikgong.global.handler;
+package jikgong.global.s3;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
