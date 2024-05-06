@@ -26,11 +26,12 @@ public interface JobPostRepository extends JpaRepository<JobPost, Long>, JobPost
      */
     @Query("select j from JobPost j where j.endDate < :now and j.isTemporary = false and j.project.id = :projectId")
     List<JobPost> findCompletedJobPostByMemberAndProject(@Param("now") LocalDate now, @Param("projectId") Long projectId, Pageable pageable);
+
     @Query("select j from JobPost j where j.startDate < :now and j.endDate > :now and j.isTemporary = false and j.project.id = :projectId")
     List<JobPost> findInProgressJobPostByMemberAndProject(@Param("now") LocalDate now, @Param("projectId") Long projectId, Pageable pageable);
+
     @Query("select j from JobPost j where j.startDate > :now and j.isTemporary = false and j.project.id = :projectId")
     List<JobPost> findPlannedJobPostByMemberAndProject(@Param("now") LocalDate now, @Param("projectId") Long projectId, Pageable pageable);
-
 
 
     /**
@@ -38,9 +39,9 @@ public interface JobPostRepository extends JpaRepository<JobPost, Long>, JobPost
      */
     @Query("select j from JobPost j where j.member.id = :memberId and j.isTemporary = true order by j.createdDate")
     List<JobPost> findTemporaryJobPostByMemberId(@Param("memberId") Long memberId);
+
     @Query("select j from JobPost j where j.member.id = :memberId and j.id = :jobPostId and j.isTemporary = :isTemporary")
     Optional<JobPost> findTemporaryForDelete(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId, @Param("isTemporary") Boolean isTemporary);
-
 
 
     /**
@@ -50,15 +51,14 @@ public interface JobPostRepository extends JpaRepository<JobPost, Long>, JobPost
     Optional<JobPost> findNotTemporaryJobPost(@Param("jobPostId") Long jobPostId, @Param("isTemporary") Boolean isTemporary);
 
 
-
     /**
      * 일자리 제안
      */
     @Query("select j from JobPost j where j.project.id = :projectId")
     List<JobPost> findByProject(@Param("projectId") Long projectId);
+
     @Query("select j from JobPost j where j.id in :jobPostIdList")
     List<JobPost> findByIdList(@Param("jobPostIdList") List<Long> jobPostIdList);
-
 
 
     /**

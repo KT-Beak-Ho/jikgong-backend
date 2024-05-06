@@ -3,6 +3,7 @@ package jikgong.domain.jobPost.service;
 import jikgong.domain.apply.repository.ApplyRepository;
 import jikgong.domain.jobPost.dtos.worker.JobPostDetailResponse;
 import jikgong.domain.jobPost.dtos.worker.JobPostListResponse;
+import jikgong.domain.jobPost.dtos.worker.JobPostMapResponse;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.entity.Park;
 import jikgong.domain.jobPost.entity.SortType;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +44,7 @@ public class JobPostWorkerService {
      * 필터: 직종, 날짜, 스크랩, 식사 제공, 주차 여부, 정렬 기준
      */
     @Transactional(readOnly = true)
-    public Page<JobPostListResponse> getMainPage(Long workerId, Tech tech, List<LocalDate> workDateList, Boolean scrap, Boolean meal, Park park, SortType sortType, Pageable pageable) {
+    public Page<JobPostListResponse> getMainPage(Long workerId, List<Tech> techList, List<LocalDate> workDateList, Boolean scrap, Boolean meal, Park park, SortType sortType, Pageable pageable) {
         Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
@@ -50,7 +52,7 @@ public class JobPostWorkerService {
                 .orElseThrow(() -> new CustomException(ErrorCode.LOCATION_NOT_FOUND));
 
         // querydsl
-        Page<JobPostListResponse> jobPostPage = jobPostRepository.getMainPage(worker.getId(), tech, workDateList, scrap, meal, park, location, sortType, pageable);
+        Page<JobPostListResponse> jobPostPage = jobPostRepository.getMainPage(worker.getId(), techList, workDateList, scrap, meal, park, location, sortType, pageable);
 
         return jobPostPage;
     }
@@ -70,5 +72,18 @@ public class JobPostWorkerService {
                 .orElseThrow(() -> new CustomException(ErrorCode.LOCATION_NOT_FOUND));
 
         return JobPostDetailResponse.from(jobPost, location);
+    }
+
+    /**
+     * 모집 공고 지도에서 조회
+     */
+    @Transactional(readOnly = true)
+    public List<JobPostMapResponse> findJobPostsOnMap(Long workerId, Float northEastLat, Float northEastLng, Float southWestLat, Float southWestLng, List<Tech> techList, List<LocalDate> dateList, Boolean scrap) {
+        Member worker = memberRepository.findById(workerId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        return jobPostRepository.findJobPostOnMap(worker.getId(), northEastLat, northEastLng, southWestLat, southWestLng, techList, dateList, scrap).stream()
+                .map(JobPostMapResponse::from)
+                .collect(Collectors.toList());
     }
 }

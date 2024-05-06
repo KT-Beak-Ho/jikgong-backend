@@ -3,6 +3,7 @@ package jikgong.domain.jobPost.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import jikgong.domain.jobPost.dtos.worker.JobPostDetailResponse;
 import jikgong.domain.jobPost.dtos.worker.JobPostListResponse;
+import jikgong.domain.jobPost.dtos.worker.JobPostMapResponse;
 import jikgong.domain.jobPost.entity.Park;
 import jikgong.domain.jobPost.entity.SortType;
 import jikgong.domain.jobPost.entity.Tech;
@@ -35,17 +36,17 @@ public class JobPostWorkerController {
     @Operation(summary = "구직자 홈화면")
     @GetMapping("/api/worker/job-posts")
     public ResponseEntity<Response> getMainPage(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                @RequestParam(name = "tech", required = false) Tech tech,
-                                                @RequestParam(name = "workDateList", required = false)List<LocalDate> workDateList,
+                                                @RequestParam(name = "tech", required = false) List<Tech> techList,
+                                                @RequestParam(name = "workDateList", required = false) List<LocalDate> workDateList,
                                                 @RequestParam(name = "scrap", required = false) Boolean scrap,
                                                 @RequestParam(name = "meal", required = false) Boolean meal,
-                                                @RequestParam(name = "park", required = false)Park park,
+                                                @RequestParam(name = "park", required = false) Park park,
                                                 @RequestParam(name = "sortType", required = false, defaultValue = "DISTANCE") SortType sortType,
                                                 @RequestParam(name = "page", defaultValue = "0") int page,
                                                 @RequestParam(name = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdDate")));
         Page<JobPostListResponse> jobPostListResponsePage =
-                jobPostWorkerService.getMainPage(principalDetails.getMember().getId(), tech, workDateList, scrap, meal, park, sortType, pageable);
+                jobPostWorkerService.getMainPage(principalDetails.getMember().getId(), techList, workDateList, scrap, meal, park, sortType, pageable);
         return ResponseEntity.ok(new Response(jobPostListResponsePage, "구직자 홈화면 정보 반환 완료"));
     }
 
@@ -55,5 +56,19 @@ public class JobPostWorkerController {
                                                      @PathVariable("jobPostId") Long jobPostId) {
         JobPostDetailResponse jobPostDetailResponse = jobPostWorkerService.getJobPostDetail(principalDetails.getMember().getId(), jobPostId);
         return ResponseEntity.ok(new Response(jobPostDetailResponse, "모집 공고 상세 화면 - 일반 반환 완료"));
+    }
+
+    @Operation(summary = "지도에서 모집 공고 조회")
+    @GetMapping("/api/worker/job-post/map")
+    public ResponseEntity<Response> getJobPostOnMap(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                    @RequestParam(name = "northEastLat") Float northEastLat,
+                                                    @RequestParam(name = "northEastLng") Float northEastLng,
+                                                    @RequestParam(name = "southWestLat") Float southWestLat,
+                                                    @RequestParam(name = "southWestLng") Float southWestLng,
+                                                    @RequestParam(name = "tech", required = false) List<Tech> techList,
+                                                    @RequestParam(name = "workDateList", required = false) List<LocalDate> dateList,
+                                                    @RequestParam(name = "scrap", required = false) Boolean scrap) {
+        List<JobPostMapResponse> jobPostsOnMap = jobPostWorkerService.findJobPostsOnMap(principalDetails.getMember().getId(), northEastLat, northEastLng, southWestLat, southWestLng, techList, dateList, scrap);
+        return ResponseEntity.ok(new Response(jobPostsOnMap, "지도에서 경계 안에 속한 모집 공고 조회 완료"));
     }
 }

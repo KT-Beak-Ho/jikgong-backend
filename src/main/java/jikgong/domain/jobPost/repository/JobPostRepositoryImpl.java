@@ -7,10 +7,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jikgong.domain.jobPost.dtos.worker.JobPostListResponse;
-import jikgong.domain.jobPost.entity.JobPost;
-import jikgong.domain.jobPost.entity.Park;
-import jikgong.domain.jobPost.entity.SortType;
-import jikgong.domain.jobPost.entity.Tech;
+import jikgong.domain.jobPost.entity.*;
 import jikgong.domain.location.entity.Location;
 import jikgong.domain.scrap.entity.QScrap;
 import jikgong.domain.scrap.entity.Scrap;
@@ -36,7 +33,7 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<JobPostListResponse> getMainPage(Long memberId, Tech tech, List<LocalDate> dateList, Boolean isScrap, Boolean meal, Park park, Location location, SortType sortType, Pageable pageable) {
+    public Page<JobPostListResponse> getMainPage(Long memberId, List<Tech> techList, List<LocalDate> dateList, Boolean isScrap, Boolean meal, Park park, Location location, SortType sortType, Pageable pageable) {
         List<JobPostListResponse> jobPostList = queryFactory
                 .select(Projections.constructor(JobPostListResponse.class,
                         jobPost.id,
@@ -58,7 +55,7 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
                 .from(jobPost)
                 .leftJoin(jobPost.member, member)
                 .where(
-                        eqTech(tech),
+                        eqTech(techList),
                         eqWorkDate(dateList),
                         eqScrap(memberId, isScrap),
                         eqMeal(meal),
@@ -73,7 +70,7 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
                 .select(jobPost.count())
                 .from(jobPost)
                 .where(
-                        eqTech(tech),
+                        eqTech(techList),
                         eqWorkDate(dateList),
                         eqScrap(memberId, isScrap),
                         eqMeal(meal),
@@ -98,6 +95,19 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
         }
 
         return new PageImpl<>(jobPostList, pageable, totalCount);
+    }
+
+    @Override
+    public List<JobPost> findJobPostOnMap(Long memberId, Float northEastLat, Float northEastLng, Float southWestLat, Float southWestLng, List<Tech> techList, List<LocalDate> dateList, Boolean scrap) {
+        return queryFactory
+                .selectFrom(jobPost)
+                .where(
+                        jobPost.address.latitude.between(southWestLat, northEastLat).and(jobPost.address.longitude.between(southWestLng, northEastLng)),
+                        eqTech(techList),
+                        eqWorkDate(dateList),
+                        eqScrap(memberId, scrap)
+                )
+                .fetch();
     }
 
     private NumberExpression<Double> getDistance(Location location) {
@@ -131,8 +141,8 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
         return distanceExpression;
     }
 
-    private BooleanExpression eqTech(Tech tech) {
-        return tech == null ? null : jobPost.tech.eq(tech);
+    private BooleanExpression eqTech(List<Tech> techList) {
+        return techList == null ? null : jobPost.tech.in(techList);
     }
 
     private BooleanExpression eqWorkDate(List<LocalDate> dateList) {
@@ -140,7 +150,8 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
     }
 
     private BooleanExpression eqScrap(Long memberId, Boolean scrap) {
-        return scrap == null ? null : jobPost.scrapList.any().member.id.eq(memberId);
+        if (scrap == null) return null;
+        return !scrap ? null : jobPost.scrapList.any().member.id.eq(memberId);
     }
 
     private BooleanExpression eqMeal(Boolean meal) {
