@@ -1,7 +1,5 @@
 package jikgong.domain.project.service;
 
-import jikgong.domain.jobPost.dtos.project.JobPostListResponse;
-import jikgong.domain.jobPost.entity.JobPostStatus;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
 import jikgong.domain.project.dtos.ProjectDetailResponse;
@@ -113,15 +111,8 @@ public class ProjectService {
                 .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_FOUND));
 
         // 프로젝트에 해당하는 workDate 조회
-        List<JobPostListResponse> jobPostListResponseList = workDateRepository.findByProject(project.getId(), LocalDate.now()).stream()
-                .map(JobPostListResponse::from)
-                .collect(Collectors.toList());
+        List<WorkDate> workDateList = workDateRepository.findByProject(project.getId(), LocalDate.now());
 
-        ProjectDetailResponse projectDetailResponse = ProjectDetailResponse.from(project);
-
-        // 일별 일자리 정보 세팅
-        projectDetailResponse.setJobPostListResponseList(jobPostListResponseList);
-
-        return projectDetailResponse;
+        return ProjectDetailResponse.from(project, workDateList);
     }
 }
