@@ -33,6 +33,6 @@ public interface WorkDateRepository extends JpaRepository<WorkDate, Long> {
     /**
      * 프로젝트 상세보기
      */
-    @Query("select w from WorkDate w join fetch w.jobPost j join fetch w.jobPost.member m where w.jobPost.project.id = :projectId and w.date >= :now")
-    List<WorkDate> findByProject(@Param("projectId") Long projectId, @Param("now") LocalDate now);
+    @Query("select w from WorkDate w join fetch w.jobPost j join fetch w.jobPost.member m where w.jobPost.project.id = :projectId order by w.date desc")
+    List<WorkDate> findByProject(@Param("projectId") Long projectId);
 }
