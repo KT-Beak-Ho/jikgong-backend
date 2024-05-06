@@ -111,13 +111,7 @@ public class ProjectService {
                 .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_FOUND));
 
         // 프로젝트에 해당하는 workDate 조회
-<<<<<<< Updated upstream
-        List<WorkDate> workDateList = workDateRepository.findByProject(project.getId(), LocalDate.now());
-=======
-        List<JobPostListResponse> jobPostListResponseList = workDateRepository.findByProject(project.getId()).stream()
-                .map(JobPostListResponse::from)
-                .collect(Collectors.toList());
->>>>>>> Stashed changes
+        List<WorkDate> workDateList = workDateRepository.findByProject(project.getId());
 
         return ProjectDetailResponse.from(project, workDateList);
     }
