@@ -33,27 +33,10 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<JobPostListResponse> getMainPage(Long memberId, List<Tech> techList, List<LocalDate> dateList, Boolean isScrap, Boolean meal, Park park, Location location, SortType sortType, Pageable pageable) {
-        List<JobPostListResponse> jobPostList = queryFactory
-                .select(Projections.constructor(JobPostListResponse.class,
-                        jobPost.id,
-                        jobPost.tech,
-                        jobPost.recruitNum,
-                        jobPost.title,
-                        jobPost.availableInfo.meal,
-                        jobPost.availableInfo.pickup,
-                        jobPost.availableInfo.park,
-                        jobPost.startDate,
-                        jobPost.endDate,
-                        jobPost.startTime,
-                        jobPost.endTime,
-                        jobPost.address.address,
-                        getDistance(location),
-                        member.companyInfo.companyName,
-                        jobPost.wage,
-                        Expressions.constant(false)))
-                .from(jobPost)
-                .leftJoin(jobPost.member, member)
+    public Page<JobPost> getMainPage(Long memberId, List<Tech> techList, List<LocalDate> dateList, Boolean isScrap, Boolean meal, Park park, Location location, SortType sortType, Pageable pageable) {
+        List<JobPost> jobPostList = queryFactory
+                .selectFrom(jobPost)
+                .leftJoin(jobPost.member, member).fetchJoin()
                 .where(
                         eqTech(techList),
                         eqWorkDate(dateList),
@@ -77,22 +60,6 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
                         eqPark(park)
                 )
                 .fetchOne();
-
-        List<Long> scrapJobPostId = queryFactory
-                .select(scrap.jobPost.id)
-                .from(scrap)
-                .leftJoin(scrap.jobPost, jobPost)
-                .where(scrap.member.id.eq(memberId))
-                .fetch();
-
-        Set<Long> scrapJobPostIdSet = new HashSet<>(scrapJobPostId);
-
-        // 스크랩 여부
-        for (JobPostListResponse jobPostListResponse : jobPostList) {
-            if (scrapJobPostIdSet.contains(jobPostListResponse.getJobPostId())) {
-                jobPostListResponse.setScrap(true);
-            }
-        }
 
         return new PageImpl<>(jobPostList, pageable, totalCount);
     }

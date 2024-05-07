@@ -3,6 +3,7 @@ package jikgong.domain.jobPost.dtos.worker;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.entity.Park;
 import jikgong.domain.jobPost.entity.Tech;
+import jikgong.domain.jobPostImage.entity.JobPostImage;
 import jikgong.domain.location.entity.Location;
 import jikgong.domain.scrap.entity.Scrap;
 import jikgong.global.utils.DistanceCal;
@@ -12,6 +13,9 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Getter
@@ -38,32 +42,39 @@ public class JobPostListResponse {
     private String companyName;
     private Integer wage; // 임금
 
-    // 스크랩 여부
-    private Boolean isScrap;
+    private Boolean isScrap; // 스크랩 여부
+
+    private String thumbnailS3Url; // 썸네일 Url
 
     public void setScrap(Boolean scrap) {
         isScrap = scrap;
     }
 
-//    public static JobPostListResponse from(Scrap scrap, Location location) {
-//        JobPost jobPost = scrap.getJobPost();
-//        return JobPostListResponse.builder()
-//                .jobPostId(jobPost.getId())
-//                .tech(jobPost.getTech())
-//                .recruitNum(jobPost.getRecruitNum())
-//                .title(jobPost.getTitle())
-//                .meal(jobPost.getAvailableInfo().getMeal())
-//                .pickup(jobPost.getAvailableInfo().getPickup())
-//                .park(jobPost.getAvailableInfo().getPark())
-//                .startDate(jobPost.getStartDate())
-//                .endDate(jobPost.getEndDate())
-//                .startTime(jobPost.getStartTime())
-//                .endTime(jobPost.getEndTime())
-//                .address(jobPost.getAddress().getAddress())
-//                .distance(DistanceCal.getDistance(jobPost, location))
-//                .companyName(jobPost.getMember().getCompanyInfo().getCompanyName())
-//                .wage(jobPost.getWage())
-//                .isScrap(true)
-//                .build();
-//    }
+    public static JobPostListResponse from(JobPost jobPost, Location location, String thumbnailS3Url) {
+        return JobPostListResponse.builder()
+                .jobPostId(jobPost.getId())
+
+                .tech(jobPost.getTech())
+                .recruitNum(jobPost.getRecruitNum())
+                .title(jobPost.getTitle())
+
+                .meal(jobPost.getAvailableInfo().getMeal())
+                .pickup(jobPost.getAvailableInfo().getPickup())
+                .park(jobPost.getAvailableInfo().getPark())
+
+                .startDate(jobPost.getStartDate())
+                .endDate(jobPost.getEndDate())
+                .startTime(jobPost.getStartTime())
+                .endTime(jobPost.getEndTime())
+                .address(jobPost.getAddress().getAddress())
+                .distance(DistanceCal.getDistance(jobPost, location))
+
+                .companyName(jobPost.getMember().getCompanyInfo().getCompanyName())
+                .wage(jobPost.getWage())
+
+                .isScrap(false)
+                .thumbnailS3Url(thumbnailS3Url)
+
+                .build();
+    }
 }

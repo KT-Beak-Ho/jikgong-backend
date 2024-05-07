@@ -9,22 +9,29 @@ import jikgong.domain.jobPost.entity.Park;
 import jikgong.domain.jobPost.entity.SortType;
 import jikgong.domain.jobPost.entity.Tech;
 import jikgong.domain.jobPost.repository.JobPostRepository;
+import jikgong.domain.jobPostImage.entity.JobPostImage;
 import jikgong.domain.location.entity.Location;
 import jikgong.domain.location.repository.LocationRepository;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
 import jikgong.domain.offerWorkDate.repository.OfferWorkDateRepository;
+import jikgong.domain.scrap.entity.Scrap;
+import jikgong.domain.scrap.repository.ScrapRepository;
 import jikgong.global.exception.CustomException;
 import jikgong.global.exception.ErrorCode;
+import jikgong.global.s3.S3Handler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,8 +43,8 @@ public class JobPostWorkerService {
     private final JobPostRepository jobPostRepository;
     private final MemberRepository memberRepository;
     private final LocationRepository locationRepository;
-    private final ApplyRepository applyRepository;
-    private final OfferWorkDateRepository offerWorkDateRepository;
+    private final ScrapRepository scrapRepository;
+    private final S3Handler s3Handler;
 
     /**
      * 메인 페이지 조회
@@ -52,9 +59,36 @@ public class JobPostWorkerService {
                 .orElseThrow(() -> new CustomException(ErrorCode.LOCATION_NOT_FOUND));
 
         // querydsl
-        Page<JobPostListResponse> jobPostPage = jobPostRepository.getMainPage(worker.getId(), techList, workDateList, scrap, meal, park, location, sortType, pageable);
+        Page<JobPost> jobPostPage = jobPostRepository.getMainPage(worker.getId(), techList, workDateList, scrap, meal, park, location, sortType, pageable);
+        List<JobPostListResponse> jobPostListResponseList = jobPostPage.getContent().stream()
+                .map(jobPost -> {
+                    // Thumbnail 이미지 추출
+                    Optional<JobPostImage> thumbnailImage = jobPost.getJobPostImageList().stream()
+                            .filter(JobPostImage::isThumbnail)
+                            .findFirst();
 
-        return jobPostPage;
+                    // Thumbnail URL을 추출하고, 썸네일 이미지가 없을 경우 null 처리
+                    String thumbnailS3Url = thumbnailImage
+                            .map(JobPostImage::getStoreImgName)  // Optional이 비어있지 않다면 getStoreImgName 실행
+                            .map(s3Handler::getThumbnailImgPath)  // s3Handler를 사용해 url 조회
+                            .orElse(null);  // Thumbnail 이미지가 없으면 null 반환
+
+                    return JobPostListResponse.from(jobPost, location, thumbnailS3Url);
+                })
+                .collect(Collectors.toList());
+
+        // scrap 했는지 정보 설정
+        // worker의 scrap 리스트
+        Set<Long> scrapJobPostIdSet = scrapRepository.findScrapJobPostIdByMember(worker.getId());
+        for (JobPostListResponse jobPostListResponse : jobPostListResponseList) {
+            if (scrapJobPostIdSet.contains(jobPostListResponse.getJobPostId())) {
+                jobPostListResponse.setScrap(true);
+            }
+        }
+
+
+
+        return new PageImpl<>(jobPostListResponseList, pageable, jobPostPage.getTotalElements());
     }
 
     /**
