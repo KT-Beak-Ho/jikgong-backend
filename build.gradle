@@ -87,6 +87,11 @@ dependencies {
 
 	// spring batch
 	implementation 'org.springframework.boot:spring-boot-starter-batch'
+
+	// lambda
+	implementation 'com.amazonaws:aws-lambda-java-core:1.2.2'
+	implementation 'com.amazonaws:aws-lambda-java-events:3.11.1'
+	runtimeOnly 'com.amazonaws:aws-lambda-java-log4j2:1.5.1'
 }
 
 tasks.named('bootBuildImage') {
@@ -105,4 +110,12 @@ jar {
 // commons-logging 모듈이 포함되지 않도록 제외
 configurations.all {
 	exclude group: 'commons-logging', module: 'commons-logging'
+}
+
+task buildZip(type: Zip) {
+	from compileJava
+	from processResources
+	into('lib') {
+		from configurations.runtimeClasspath
+	}
 }
