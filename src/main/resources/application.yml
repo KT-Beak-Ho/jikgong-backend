@@ -24,7 +24,8 @@ cloud:
       access-key: ${S3_ACCESS_KEY}
       secret-key: ${S3_SECRET_ACCESS_KEY}
     s3:
-      bucket: jikgong-bucket
+      bucket: jikgong-image
+      resize-bucket: jikgong-resize-bucket
     stack.auto: false #기본 cloudFormation 구성 시작 사용 x
     region:
       static: ap-northeast-2
