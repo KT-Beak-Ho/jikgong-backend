@@ -24,9 +24,14 @@ public class ExceptionController {
     private final SlackService slackService;
 
     @ExceptionHandler(CustomException.class)
-    public ResponseEntity<?> handleCustomException(CustomException e, Model model) {
+    public ResponseEntity<?> handleCustomException(CustomException e) {
         log.error("핸들링한 에러 발생");
-        return ResponseEntity.status(e.getStatus()).body(new Response<String>(e.getMessage(), "커스텀 예외 반환"));
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(e.getStatus())
+                .code(e.getStatus().value())
+                .errorMessage(e.getErrorMessage())
+                .build();
+        return ResponseEntity.status(e.getStatus()).body(new Response<>(errorResponse, "커스텀 예외 반환"));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -63,9 +68,9 @@ public class ExceptionController {
 
         // 로그에 에러 정보 기록
         log.error("핸들링하지 않은 에러 발생");
-        log.info("발생 시각" + currentTime);
-        log.info("에러 위치: " + errorLocation);
-        log.info("에러 내용: " + e.getMessage());
+        log.error("발생 시각" + currentTime);
+        log.error("에러 위치: " + errorLocation);
+        log.error("에러 내용: " + e.getMessage());
 
 
         // Slack 메시지와 데이터에 추가 정보를 포함
