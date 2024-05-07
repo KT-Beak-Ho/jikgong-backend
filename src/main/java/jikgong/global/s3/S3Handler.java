@@ -26,8 +26,11 @@ public class S3Handler {
     private final AmazonS3Client amazonS3Client;
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
+    @Value("${cloud.aws.s3.resize-bucket}")
+    private String resize_bucket;
 
-    public ImageDto uploadImage(MultipartFile file) {
+
+    public ImageDto uploadCertification(MultipartFile file) {
         String extension; //확장자명
         String contentType = file.getContentType();
 
@@ -37,13 +40,13 @@ public class S3Handler {
             if (contentType.contains("image/jpeg")) extension = ".jpg";
             else if (contentType.contains("image/png")) extension = ".png";
             else {
-                log.info("사진이 아닌 파일 입니다.");
+                log.error("사진이 아닌 파일 입니다.");
                 throw new CustomException(ErrorCode.FILE_NOT_SUPPORTED);
             }
         }
 
         // unique 이름 생성
-        String storeImageName = createStoreImageName(extension);
+        String storeImageName = "certification/" + createStoreImageName(extension);
 
         InputStream inputStream = null;
         try {
@@ -75,6 +78,10 @@ public class S3Handler {
         if (files == null) {
             return imageDtoList;
         }
+
+        // 첫번째 이미지는 썸네일로 등록
+        boolean isFirst = true; // 첫 번째 이미지를 식별하기 위한 플래그
+
         for (MultipartFile file : files) {
             String extension; //확장자명
             String contentType = file.getContentType();
@@ -85,13 +92,16 @@ public class S3Handler {
                 if (contentType.contains("image/jpeg")) extension = ".jpg";
                 else if (contentType.contains("image/png")) extension = ".png";
                 else {
-                    log.info("사진이 아닌 파일 입니다.");
+                    log.error("사진이 아닌 파일 입니다.");
                     throw new CustomException(ErrorCode.FILE_NOT_SUPPORTED);
                 }
             }
-
             // unique 이름 생성
             String storeImageName = createStoreImageName(extension);
+            // 썸네일 이미지라면 Prefix를 등록해 AWS Lambda가 실행되도록 세팅
+            String prefix = isFirst ? "thumbnail_" : "";
+            storeImageName = "jobPost/" + prefix + storeImageName;
+
 
             InputStream inputStream = null;
             try {
@@ -115,8 +125,11 @@ public class S3Handler {
             ImageDto imageDto = ImageDto.builder()
                     .s3Url(s3Url)
                     .storeImgName(storeImageName)
+                    .isThumbnail(isFirst) // 첫 번째 이미지만 썸네일로 설정
                     .build();
             imageDtoList.add(imageDto);
+
+            isFirst = false; // 첫 번째 이미지 처리 후, 플래그 변경
         }
         return imageDtoList;
     }
@@ -129,13 +142,19 @@ public class S3Handler {
         log.info("S3 파일 삭제 완료");
     }
 
-
+    // 저장할 이름 생성
     private String createStoreImageName(String extension) {
         String uuid = UUID.randomUUID().toString();
         return uuid + extension;
     }
 
+    // 버킷에서 이미지 조회
     public String getImgPath(String fileName) {
         return amazonS3Client.getUrl(bucket, fileName).toString();
+    }
+
+    // resize버킷에서 이미지 조회
+    public String getThumbnailImgPath(String fileName) {
+        return amazonS3Client.getUrl(resize_bucket, fileName).toString();
     }
 }
