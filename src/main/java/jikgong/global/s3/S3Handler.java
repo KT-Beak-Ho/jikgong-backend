@@ -136,10 +136,14 @@ public class S3Handler {
 
     public void deleteImage(List<String> storeImgList) {
         for (String storeImgName : storeImgList) {
-            DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(bucket, storeImgName);
-            amazonS3Client.deleteObject(deleteObjectRequest);
+            if (amazonS3Client.doesObjectExist(bucket, storeImgName)) {
+                DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(bucket, storeImgName);
+                amazonS3Client.deleteObject(deleteObjectRequest);
+            } else {
+                throw new CustomException(ErrorCode.S3_NOT_FOUND_FILE_NAME);
+            }
         }
-        log.info("S3 파일 삭제 완료");
+        log.info("S3 파일 삭제 작업 완료");
     }
 
     // 저장할 이름 생성
@@ -150,11 +154,26 @@ public class S3Handler {
 
     // 버킷에서 이미지 조회
     public String getImgPath(String fileName) {
-        return amazonS3Client.getUrl(bucket, fileName).toString();
+        if (amazonS3Client.doesObjectExist(bucket, fileName)) {
+            return amazonS3Client.getUrl(bucket, fileName).toString();
+        } else {
+            throw new CustomException(ErrorCode.S3_NOT_FOUND_FILE_NAME);
+        }
     }
 
     // resize버킷에서 이미지 조회
     public String getThumbnailImgPath(String fileName) {
-        return amazonS3Client.getUrl(resize_bucket, fileName).toString();
+        if (amazonS3Client.doesObjectExist(resize_bucket, fileName)) {
+            return amazonS3Client.getUrl(resize_bucket, fileName).toString();
+        } else {
+            // resize_bucket에 파일이 없을 경우, 메인 bucket에서 검색
+            if (amazonS3Client.doesObjectExist(bucket, fileName)) {
+                log.warn("resize_bucket 에서 조회를 시도했지만, bucket에만 존재");
+                return amazonS3Client.getUrl(bucket, fileName).toString();
+            } else {
+                // 두 버킷 모두에 파일이 없을 경우 예외 발생
+                throw new CustomException(ErrorCode.S3_NOT_FOUND_FILE_NAME);
+            }
+        }
     }
 }

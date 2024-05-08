@@ -104,6 +104,11 @@ public enum ErrorCode {
     SEARCH_LOG_NOT_EXIST(HttpStatus.NOT_FOUND, "Redis 에서 요청한 검색 기록을 찾을 수 없습니다."),
 
     /**
+     * s3
+     */
+    S3_NOT_FOUND_FILE_NAME(HttpStatus.NOT_FOUND, "s3에 target 파일 명이 존재하지 않습니다."),
+
+    /**
      * 기타
      */
     REQUEST_INVALID(HttpStatus.BAD_REQUEST, "valid 옵션에 맞지 않는 형식입니다."),
