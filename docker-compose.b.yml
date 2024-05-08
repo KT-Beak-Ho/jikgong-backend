@@ -4,7 +4,7 @@ services:
     container_name: jikgong-b
     image: ${DOCKERHUB_USERNAME}/jikgong-b
     volumes:
-      - ./logs:/logs
+      - ./log:/log
     env_file:
       - .env
 #    logging:
