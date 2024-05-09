@@ -35,7 +35,7 @@ public class ProfitController {
     }
 
     @Operation(summary = "수익금 내역 (캘린더, 일별)", description = "selectDay 예시: 2024-01-01")
-    @GetMapping("/api/profits")
+    @GetMapping("/api/profit/calendar/day")
     public ResponseEntity<Response> findDailyProfitHistory(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                          @RequestParam("selectDay") LocalDate selectDay) {
         List<DailyProfitResponse> dailyProfitResponseList = profitService.findDailyProfitHistory(principalDetails.getMember().getId(), selectDay);
@@ -43,7 +43,7 @@ public class ProfitController {
     }
 
     @Operation(summary = "수익금 내역 (캘린더, 월별)", description = "selectMonth 예시: 2024-01-01")
-    @GetMapping("/api/profits/calendar/month")
+    @GetMapping("/api/profit/calendar/month")
     public ResponseEntity<Response> findMonthlyProfitHistoryCalendar(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                          @RequestParam("selectMonth") LocalDate selectMonth) {
         MonthlyProfitResponse monthlyProfitResponse = profitService.findMonthlyProfitHistoryCalendar(principalDetails.getMember().getId(), selectMonth);
@@ -67,7 +67,7 @@ public class ProfitController {
     }
 
     @Operation(summary = "수익금 내역 (리스트)")
-    @GetMapping("/api/profits/list")
+    @GetMapping("/api/profit/list")
     public ResponseEntity<Response> findProfitHistoryList(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                           @RequestParam(name = "page", defaultValue = "0") int page,
                                                           @RequestParam(name = "size", defaultValue = "10") int size) {
@@ -84,7 +84,7 @@ public class ProfitController {
     }
 
     @Operation(summary = "근무 시간 그래프: 일별")
-    @GetMapping("/api/profit/graph-info/daily")
+    @GetMapping("/api/profit/graph-info/day")
     public ResponseEntity<Response> findDailyGraphInfo(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                   @RequestParam(name = "selectMonth") LocalDate selectMonth) {
         DailyGraphResponse dailyGraphResponse = profitService.findDailyGraphInfo(principalDetails.getMember().getId(), selectMonth);
@@ -92,7 +92,7 @@ public class ProfitController {
     }
 
     @Operation(summary = "근무 시간 그래프: 월별")
-    @GetMapping("/api/profit/graph-info/monthly")
+    @GetMapping("/api/profit/graph-info/month")
     public ResponseEntity<Response> findMonthlyGraphInfo(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                        @RequestParam(name = "selectYear") LocalDate selectYear) {
         MonthlyGraphResponse monthlyGraphResponse = profitService.findMonthlyGraphInfo(principalDetails.getMember().getId(), selectYear);

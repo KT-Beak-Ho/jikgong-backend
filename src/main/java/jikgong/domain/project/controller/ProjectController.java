@@ -32,7 +32,7 @@ public class ProjectController {
     }
 
     @Operation(summary = "프로젝트 리스트 조회")
-    @GetMapping("/api/projects")
+    @GetMapping("/api/project/list")
     public ResponseEntity<Response> findProjects(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                  @RequestParam("projectStatus")ProjectStatus projectStatus) {
         List<ProjectListResponse> projectListResponseList = projectService.findProjects(principalDetails.getMember().getId(), projectStatus);
@@ -48,14 +48,14 @@ public class ProjectController {
     }
 
     @Operation(summary = "기업 검색: 기업이 등록한 프로젝트 조회")
-    @GetMapping("/api/projects/{companyId}")
+    @GetMapping("/api/project/list/{companyId}")
     public ResponseEntity<Response> findProjects(@PathVariable(name = "companyId") Long companyId) {
         List<ProjectListResponse> projectListResponseList = projectService.findProjectAtSearch(companyId);
         return ResponseEntity.ok(new Response(projectListResponseList, "기업이 등록한 프로젝트 조회 완료"));
     }
 
     @Operation(summary = "기업 검색: 프로젝트 상세 정보", description = "현장정보, 건설 시공정보, 현장에 등록된 일자리 조회")
-    @GetMapping("/api/project/company/{projectId}")
+    @GetMapping("/api/project/{projectId}")
     public ResponseEntity<Response> getProjectDetail(@PathVariable(name = "projectId") Long projectId) {
         ProjectDetailResponse projectDetailResponse = projectService.getProjectDetail(projectId);
         return ResponseEntity.ok(new Response(projectDetailResponse, "기업이 등록한 프로젝트 상세 조회 완료"));

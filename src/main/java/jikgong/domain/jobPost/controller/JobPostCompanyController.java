@@ -25,7 +25,7 @@ public class JobPostCompanyController {
     private final JobPostCompanyService jobPostCompanyService;
 
     @Operation(summary = "모집 공고 등록")
-    @PostMapping(value = "/api/company/job-post", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/api/job-post/company", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Response> saveJobPost(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                 @RequestPart JobPostSaveRequest request,
                                                 @RequestPart(required = false) List<MultipartFile> imageList) {
@@ -34,7 +34,7 @@ public class JobPostCompanyController {
     }
 
     @Operation(summary = "등록한 모집 공고 리스트 조회", description = "완료된 공고, 진행 중인 공고, 예정된 공고")
-    @GetMapping("/api/company/job-posts/{projectId}")
+    @GetMapping("/api/job-post/company/list/{projectId}")
     public ResponseEntity<Response> findJobPosts(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                  @RequestParam("jobPostStatus") JobPostStatus jobPostStatus,
                                                  @PathVariable("projectId") Long projectId,
@@ -51,7 +51,7 @@ public class JobPostCompanyController {
     }
 
     @Operation(summary = "인력 관리: 모집 공고 정보 반환", description = "인력 관리 버튼 클릭 시 모집 공고에 대한 정보 반환")
-    @GetMapping("/api/company/job-post/{jobPostId}")
+    @GetMapping("/api/job-post/company/{jobPostId}")
     public ResponseEntity<Response> findJobPostForManage(@PathVariable("jobPostId") Long jobPostId) {
         JobPostManageResponse jobPostManageResponse = jobPostCompanyService.findJobPostForManage(jobPostId);
         return ResponseEntity.ok(new Response(jobPostManageResponse, "인력 관리: 모집 공고 정보 반환"));
@@ -59,7 +59,7 @@ public class JobPostCompanyController {
 
 
     @Operation(summary = "임시 저장: 저장")
-    @PostMapping("/api/company/job-post/temporary")
+    @PostMapping("/api/job-post/company/temporary")
     public ResponseEntity<Response> saveTemporaryJobPost(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                            @RequestBody TemporarySaveRequest request) {
         Long temporaryId = jobPostCompanyService.saveTemporary(principalDetails.getMember().getId(), request);
@@ -68,30 +68,32 @@ public class JobPostCompanyController {
 
 
     @Operation(summary = "임시 저장: 업데이트", description = "임시 저장을 또 한번 임시 저장 할 경우")
-    @PutMapping("/api/company/job-post/temporary")
+    @PutMapping("/api/job-post/company/temporary")
     public ResponseEntity<Response> findTemporaryJobPosts(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                           @RequestBody TemporaryUpdateRequest request) {
         jobPostCompanyService.updateTemporaryJobPost(principalDetails.getMember().getId(), request);
         return ResponseEntity.ok(new Response("임시 등록한 모집 공고 업데이트 완료"));
     }
 
-    @Operation(summary = "임시 저장: 조회")
-    @GetMapping("/api/company/job-posts/temporary")
+    @Operation(summary = "임시 저장: 임지 저장 리스트 조회")
+    @GetMapping("/api/job-post/company/temporary/list")
     public ResponseEntity<Response> findTemporaryJobPosts(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         List<TemporaryListResponse> temporaryJobPostPage = jobPostCompanyService.findTemporaryJobPosts(principalDetails.getMember().getId());
         return ResponseEntity.ok(new Response(temporaryJobPostPage, "임시 등록한 모집 공고 리스트 반환"));
     }
 
     @Operation(summary = "임시 저장: 삭제")
-    @DeleteMapping("/api/company/job-post/temporary/{jobPostId}")
+    @DeleteMapping("/api/job-post/company/temporary/{jobPostId}")
     public ResponseEntity<Response> deleteTemporaryJobPost(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                            @PathVariable("jobPostId") Long jobPostId) {
         jobPostCompanyService.deleteTemporaryJobPost(principalDetails.getMember().getId(), jobPostId);
         return ResponseEntity.ok(new Response("임시 저장 게시물 삭제 완료"));
     }
 
+    // todo: 임시 저장 단건 조회 개발
+
     @Operation(summary = "일자리 제안: 출역 가능한 현장 목록")
-    @GetMapping("/api/company/offer/available-jobPosts")
+    @GetMapping("/api/job-post/company/offer-available")
     public ResponseEntity<Response> findAvailableJobPosts(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                           @RequestParam(name = "memberId") Long memberId,
                                                           @RequestParam(name = "projectId") Long projectId) {

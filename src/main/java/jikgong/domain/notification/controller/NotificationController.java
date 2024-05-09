@@ -23,8 +23,8 @@ import java.util.List;
 public class NotificationController {
     private final NotificationService notificationService;
 
-    @Operation(summary = "받은 알림 조회")
-    @GetMapping("/api/notifications")
+    @Operation(summary = "받은 알림 리스트 조회")
+    @GetMapping("/api/notification/list")
     public ResponseEntity<Response> findNotifications(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         List<NotificationResponse> notificationResponseList = notificationService.findNotifications(principalDetails.getMember().getId());
         return ResponseEntity.ok(new Response(notificationResponseList, "받은 알림 조회 완료"));
@@ -45,8 +45,8 @@ public class NotificationController {
         return ResponseEntity.ok(new Response(unreadCountResponse, "읽지 않은 알림 개수 반환"));
     }
 
-    @Operation(summary = "알림 설정 정보 조회")
-    @GetMapping("/api/notification/setting")
+    @Operation(summary = "노동자 or 기업의 알림 설정 정보 조회")
+    @GetMapping("/api/notification/setting-info")
     public ResponseEntity<Response> findNotificationInfo(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         NotificationInfoResponse notificationInfoResponse = notificationService.findNotificationInfo(principalDetails.getMember().getId());
         return ResponseEntity.ok(new Response(notificationInfoResponse, "알림 설정 정보 조회 완료"));

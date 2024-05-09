@@ -34,7 +34,7 @@ public class JobPostWorkerController {
 
     // todo: 검색 기능 추가
     @Operation(summary = "구직자 홈화면")
-    @GetMapping("/api/worker/job-posts")
+    @GetMapping("/api/job-post/worker/list")
     public ResponseEntity<Response> getMainPage(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                 @RequestParam(name = "tech", required = false) List<Tech> techList,
                                                 @RequestParam(name = "workDateList", required = false) List<LocalDate> workDateList,
@@ -51,7 +51,7 @@ public class JobPostWorkerController {
     }
 
     @Operation(summary = "모집 공고 상세 화면 - 일반")
-    @GetMapping("/api/worker/job-post/{jobPostId}")
+    @GetMapping("/api/job-post/worker/{jobPostId}")
     public ResponseEntity<Response> getJobPostDetail(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                      @PathVariable("jobPostId") Long jobPostId) {
         JobPostDetailResponse jobPostDetailResponse = jobPostWorkerService.getJobPostDetail(principalDetails.getMember().getId(), jobPostId);
@@ -59,7 +59,7 @@ public class JobPostWorkerController {
     }
 
     @Operation(summary = "지도에서 모집 공고 조회")
-    @GetMapping("/api/worker/job-post/map")
+    @GetMapping("/api/job-post/worker/list-on-map")
     public ResponseEntity<Response> getJobPostOnMap(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                     @RequestParam(name = "northEastLat") Float northEastLat,
                                                     @RequestParam(name = "northEastLng") Float northEastLng,
