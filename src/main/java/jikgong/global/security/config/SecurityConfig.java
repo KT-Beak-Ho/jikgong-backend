@@ -48,6 +48,9 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests()
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
+                .requestMatchers("/api/project/**", "/api/notification/company/**", "/api/job-post/company/**").hasRole("COMPANY")
+                .requestMatchers("/api/profit/**", "/api/notification/worker/**", "/api/job-post/worker/**").hasRole("WORKER")
+                .requestMatchers("/api/notification/**").hasAnyRole("COMPANY", "WORKER")
                 .anyRequest().permitAll()
         ;
 
