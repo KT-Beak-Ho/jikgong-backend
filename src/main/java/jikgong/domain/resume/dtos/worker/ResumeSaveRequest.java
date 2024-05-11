@@ -17,7 +17,7 @@ public class ResumeSaveRequest {
     @Schema(description = "경력 (년)", example = "15")
     private Integer career;
     @Schema(description = "경력 상세")
-    private List<CareerDetailRequest> careerDetailRequestList;
+    private List<SkillDetailRequest> skillDetailRequestList;
 
     @Schema(description = "시작 선호 시간", example = "06:00:00")
     private LocalTime preferTimeStart;

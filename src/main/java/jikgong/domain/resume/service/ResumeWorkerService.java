@@ -2,8 +2,8 @@ package jikgong.domain.resume.service;
 
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
-import jikgong.domain.project.repository.ProjectRepository;
-import jikgong.domain.resume.dtos.worker.CareerDetailRequest;
+import jikgong.domain.resume.dtos.worker.ResumeDetailResponse;
+import jikgong.domain.resume.dtos.worker.SkillDetailRequest;
 import jikgong.domain.resume.dtos.worker.ResumeSaveRequest;
 import jikgong.domain.resume.entity.Resume;
 import jikgong.domain.resume.repository.ResumeRepository;
@@ -29,7 +29,6 @@ public class ResumeWorkerService {
     private final SkillRepository skillRepository;
 
     /**
-     * 노동자
      * 이력서 등록
      */
     public void saveResume(Long workerId, ResumeSaveRequest request) {
@@ -40,11 +39,23 @@ public class ResumeWorkerService {
 
         resumeRepository.save(resume);
 
-        List<CareerDetailRequest> careerDetailRequestList = request.getCareerDetailRequestList();
         List<Skill> skillList = new ArrayList<>();
-        for (CareerDetailRequest careerDetailRequest : careerDetailRequestList) {
-            skillList.add(Skill.createEntity(careerDetailRequest, resume));
+        for (SkillDetailRequest skillDetailRequest : request.getSkillDetailRequestList()) {
+            skillList.add(Skill.createEntity(skillDetailRequest, resume));
         }
         skillRepository.saveAll(skillList);
+    }
+
+    /**
+     * 이력서 조회
+     */
+    public ResumeDetailResponse findResume(Long workerId) {
+        Member worker = memberRepository.findById(workerId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Resume resume = resumeRepository.findByMember(worker.getId())
+                .orElseThrow(() -> new CustomException(ErrorCode.RESUME_NOT_FOUND));
+
+        return ResumeDetailResponse.from(resume);
     }
 }
