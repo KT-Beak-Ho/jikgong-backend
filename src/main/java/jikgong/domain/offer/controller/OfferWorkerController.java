@@ -22,7 +22,7 @@ public class OfferWorkerController {
     private final OfferWorkerService offerWorkerService;
 
     @Operation(summary = "노동자: 제안 받은 내역 조회")
-    @GetMapping("/api/worker/offers")
+    @GetMapping("/api/offer/worker/list")
     public ResponseEntity<Response> findReceivedOffer(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                       @RequestParam(name = "isPending") Boolean isPending) {
         List<ReceivedOfferResponse> receivedOfferResponseList = offerWorkerService.findReceivedOffer(principalDetails.getMember().getId(), isPending);
@@ -30,7 +30,7 @@ public class OfferWorkerController {
     }
 
     @Operation(summary = "노동자: 제안 수락, 거부")
-    @PostMapping("/api/worder/offer")
+    @PostMapping("/api/offer/worker")
     public ResponseEntity<Response>  processOffer(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                   @RequestBody OfferProcessRequest request) {
         offerWorkerService.processOffer(principalDetails.getMember().getId(), request);
@@ -38,7 +38,7 @@ public class OfferWorkerController {
     }
 
     @Operation(summary = "제안 받은 내역 상세 조회")
-    @GetMapping("/api/worker/offer/offer-detail/{offerWorkDateId}")
+    @GetMapping("/api/offer/worker/{offerWorkDateId}")
     public ResponseEntity<Response> getJobPostDetailBeforeOfferProcess(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                                        @PathVariable("offerWorkDateId") Long offerWorkDateId) {
         OfferJobPostResponse offerJobPostResponse = offerWorkerService.getJobPostDetailForOffer(principalDetails.getMember().getId(), offerWorkDateId);

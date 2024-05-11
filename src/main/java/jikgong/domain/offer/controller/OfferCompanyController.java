@@ -24,7 +24,7 @@ public class OfferCompanyController {
     private final OfferCompanyService offerCompanyService;
 
     @Operation(summary = "기업: 일자리 제안 하기")
-    @PostMapping("/api/company/offer")
+    @PostMapping("/api/offer/company")
     public ResponseEntity<Response> offerJobPost(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                  @RequestBody OfferRequest request) {
         offerCompanyService.offerJobPost(principalDetails.getMember().getId(), request);
@@ -32,7 +32,7 @@ public class OfferCompanyController {
     }
 
     @Operation(summary = "기업: 제안 기록 조회")
-    @GetMapping("/api/company/offers")
+    @GetMapping("/api/offer/company/list")
     public ResponseEntity<Response> findOfferList(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                   @RequestParam(name = "offerStatus") OfferStatus offerStatus,
                                                   @RequestParam(name = "page", defaultValue = "0") int page,
@@ -43,7 +43,7 @@ public class OfferCompanyController {
     }
 
     @Operation(summary = "기업: 제안 취소")
-    @DeleteMapping("/api/company/offer/{offerId}")
+    @DeleteMapping("/api/offer/company/{offerId}")
     public ResponseEntity<Response> cancelOffer(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                 @PathVariable("offerId") Long offerId) {
         offerCompanyService.cancelOffer(principalDetails.getMember().getId(), offerId);

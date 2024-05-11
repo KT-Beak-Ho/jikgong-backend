@@ -24,7 +24,7 @@ public class ResumeCompanyController {
     private final ResumeCompanyService resumeCompanyService;
 
     @Operation(summary = "기업: 이력서 목록 조회")
-    @GetMapping("/api/company/resumes")
+    @GetMapping("/api/resume/company/list")
     public ResponseEntity<Response> findResumeList(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                    @RequestParam(name = "projectId") Long projectId,
                                                    @RequestParam(name = "tech", required = false) Tech tech,
@@ -38,7 +38,7 @@ public class ResumeCompanyController {
     }
 
     @Operation(summary = "기업: 이력서 상세 정보")
-    @GetMapping("/api/company/resume/{resumeId}")
+    @GetMapping("/api/resume/company/{resumeId}")
     public ResponseEntity<Response> findWorkerInfo(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                    @PathVariable("resumeId") Long resumeId) {
         ResumeDetailResponse resumeDetailResponse = resumeCompanyService.findResumeDetail(principalDetails.getMember().getId(), resumeId);
