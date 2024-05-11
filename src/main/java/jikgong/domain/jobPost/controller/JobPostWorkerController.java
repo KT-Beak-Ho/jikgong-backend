@@ -33,7 +33,7 @@ public class JobPostWorkerController {
     private final JobPostWorkerService jobPostWorkerService;
 
     // todo: 검색 기능 추가
-    @Operation(summary = "구직자 홈화면")
+    @Operation(summary = "모집 공고 조회", description = "직종, 날짜, 스크랩 여부, [식사, 주차 여부], [거리순, 일급 높은 순]")
     @GetMapping("/api/job-post/worker/list")
     public ResponseEntity<Response> getMainPage(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                 @RequestParam(name = "tech", required = false) List<Tech> techList,
