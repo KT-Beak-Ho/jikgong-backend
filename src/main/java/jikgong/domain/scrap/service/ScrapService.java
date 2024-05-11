@@ -36,7 +36,7 @@ public class ScrapService {
      * 이미 스크랩 된 공고 글 이라면 취소
      * 그렇지 않다면 저장
      */
-    public Boolean saveScrap(Long workerId, Long jobPostId) {
+    public Boolean processScrap(Long workerId, Long jobPostId) {
         Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 

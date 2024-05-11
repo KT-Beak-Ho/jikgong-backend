@@ -23,9 +23,9 @@ public class ScrapController {
 
     @Operation(summary = "모집 공고 스크랩 or 취소")
     @PostMapping("/api/scrap/{jobPostId}")
-    public ResponseEntity<Response> saveScrap(@AuthenticationPrincipal PrincipalDetails principalDetails,
+    public ResponseEntity<Response> processScrap(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                               @PathVariable("jobPostId") Long jobPostId) {
-        Boolean result = scrapService.saveScrap(principalDetails.getMember().getId(), jobPostId);
+        Boolean result = scrapService.processScrap(principalDetails.getMember().getId(), jobPostId);
         String message = result ? "완료" : "취소";
         return ResponseEntity.ok(new Response("모집 공고 스크랩 " + message));
     }

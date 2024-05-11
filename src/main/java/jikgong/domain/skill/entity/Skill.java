@@ -2,7 +2,7 @@ package jikgong.domain.skill.entity;
 
 import jakarta.persistence.*;
 import jikgong.domain.jobPost.entity.Tech;
-import jikgong.domain.resume.dtos.worker.CareerDetailRequest;
+import jikgong.domain.resume.dtos.worker.SkillDetailRequest;
 import jikgong.domain.resume.entity.Resume;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -33,7 +33,7 @@ public class Skill {
         this.resume = resume;
     }
 
-    public static Skill createEntity(CareerDetailRequest request, Resume resume) {
+    public static Skill createEntity(SkillDetailRequest request, Resume resume) {
         return Skill.builder()
                 .tech(request.getTech())
                 .skillPeriod(request.getSkillPeriod())

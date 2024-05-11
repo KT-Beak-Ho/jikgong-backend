@@ -7,13 +7,9 @@ import jikgong.domain.resume.dtos.company.ResumeDetailResponse;
 import jikgong.domain.offer.entity.SortType;
 import jikgong.domain.project.entity.Project;
 import jikgong.domain.project.repository.ProjectRepository;
-import jikgong.domain.resume.dtos.worker.CareerDetailRequest;
 import jikgong.domain.resume.dtos.company.ResumeListResponse;
-import jikgong.domain.resume.dtos.worker.ResumeSaveRequest;
 import jikgong.domain.resume.entity.Resume;
 import jikgong.domain.resume.repository.ResumeRepository;
-import jikgong.domain.skill.entity.Skill;
-import jikgong.domain.skill.repository.SkillRepository;
 import jikgong.global.exception.CustomException;
 import jikgong.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +18,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
