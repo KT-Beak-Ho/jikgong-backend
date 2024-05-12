@@ -19,6 +19,7 @@ public class ApplyHistoryResponse {
      */
     private Long applyId;
     private ApplyStatus status;
+    private Boolean isOffer; // Offer로 인해 생성된 Apply인지 여부
     private LocalDateTime applyTime; // 신청 시간
     private LocalDateTime statusDecisionTime; // 신청 처리 시간
 
@@ -28,6 +29,7 @@ public class ApplyHistoryResponse {
         return ApplyHistoryResponse.builder()
                 .applyId(apply.getId())
                 .status(apply.getStatus())
+                .isOffer(apply.getIsOffer())
                 .applyTime(apply.getCreatedDate())
                 .statusDecisionTime(apply.getStatusDecisionTime())
                 .jobPostResponse(JobPostResponse.from(apply.getWorkDate().getJobPost()))

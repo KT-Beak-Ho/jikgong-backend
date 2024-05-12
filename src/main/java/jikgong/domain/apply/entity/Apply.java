@@ -27,6 +27,8 @@ public class Apply extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private ApplyStatus status; // 신청 현황
 
+    private Boolean isOffer; // Offer로 인해 생성된 Apply인지 여부
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
@@ -36,8 +38,9 @@ public class Apply extends BaseEntity {
     private WorkDate workDate;
 
     @Builder
-    public Apply(ApplyStatus status, Member member, WorkDate workDate) {
+    public Apply(ApplyStatus status, Boolean isOffer, Member member, WorkDate workDate) {
         this.status = status;
+        this.isOffer = isOffer;
         this.member = member;
         this.workDate = workDate;
     }
@@ -50,6 +53,7 @@ public class Apply extends BaseEntity {
         for (WorkDate workDate : workDateList) {
             Apply apply = Apply.builder()
                     .status(ApplyStatus.OFFERED)
+                    .isOffer(true)
                     .member(member)
                     .workDate(workDate)
                     .build();
