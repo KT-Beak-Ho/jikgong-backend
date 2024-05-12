@@ -48,9 +48,9 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests()
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
-                .requestMatchers("/api/project/**", "/api/notification/company/**", "/api/job-post/company/**", "/api/offer/company/**", "/api/resume/company").hasRole("COMPANY")
-                .requestMatchers("/api/profit/**", "/api/notification/worker/**", "/api/job-post/worker/**", "/api/offer/worker/**", "/api/scrap/**", "/api/resume/worker").hasRole("WORKER")
-                .requestMatchers("/api/notification/**").hasAnyRole("COMPANY", "WORKER")
+                .requestMatchers("/api/project/**", "/api/notification/company/**", "/api/job-post/company/**", "/api/offer/company/**", "/api/resume/company/**", "/api/apply/company/**", "/api/history/**").hasRole("COMPANY")
+                .requestMatchers("/api/profit/**", "/api/notification/worker/**", "/api/job-post/worker/**", "/api/offer/worker/**", "/api/scrap/**", "/api/resume/worker/**", "/api/apply/worker/**", "/api/certification/worker/**").hasRole("WORKER")
+                .requestMatchers("/api/notification/**", "/api/certification/**").hasAnyRole("COMPANY", "WORKER")
                 .anyRequest().permitAll()
         ;
 

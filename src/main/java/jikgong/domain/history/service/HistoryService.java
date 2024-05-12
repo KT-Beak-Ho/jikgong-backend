@@ -56,6 +56,7 @@ public class HistoryService {
         }
 
         // 기존에 history 데이터가 있다면 제거
+        // 출근, 결근 데이터를 변경하면 기존의 퇴근, 조퇴 데이터 사라짐
         int deleteCount = historyRepository.deleteByWorkDateAndAndMember(request.getStartWorkMemberIdList(), request.getNotWorkMemberIdList(), request.getWorkDateId());
         log.info("기존 history 제거 개수: " + deleteCount);
 
