@@ -49,6 +49,7 @@ public class ResumeWorkerService {
     /**
      * 이력서 조회
      */
+    @Transactional(readOnly = true)
     public ResumeDetailResponse findResume(Long workerId) {
         Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));

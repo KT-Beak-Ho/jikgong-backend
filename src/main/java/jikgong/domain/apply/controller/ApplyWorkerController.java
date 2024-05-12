@@ -32,7 +32,7 @@ public class ApplyWorkerController {
     }
 
     @Operation(summary = "노동자: 신청 내역 일별 조회", description = "workDate: 2024-01-01")
-    @GetMapping("/api/apply/worker/daily")
+    @GetMapping("/api/apply/worker/day")
     public ResponseEntity<Response> findApplyHistoryPerDay(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                            @RequestParam("date") LocalDate date) {
         List<ApplyHistoryResponse> applyResponseList = applyWorkerService.findApplyHistoryPerDay(principalDetails.getMember().getId(), date);
@@ -40,7 +40,7 @@ public class ApplyWorkerController {
     }
 
     @Operation(summary = "노동자: 신청 내역 월별 조회", description = "신청 내역 확정 화면의 달력 동그라미 표시할 날짜 반환  \n workMonth: 2024-01-01  << 이렇게 주면 년,월만 추출 예정")
-    @GetMapping("/api/apply/worker/monthly")
+    @GetMapping("/api/apply/worker/month")
     public ResponseEntity<Response> findApplyHistoryPerMonth(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                                    @RequestParam("workMonth") LocalDate workMonth) {
         List<ApplyResponseMonthly> applyResponseMonthlyList = applyWorkerService.findApplyHistoryPerMonth(principalDetails.getMember().getId(), workMonth);
@@ -54,7 +54,7 @@ public class ApplyWorkerController {
         return ResponseEntity.ok(new Response(applyPendingResponseList, "일자리 신청 내역 조회 완료"));
     }
 
-    @Operation(summary = "노동자: 일자리 취소")
+    @Operation(summary = "노동자: 일자리 지원 취소", description = "지원 status가 수락됨, 대기중 일때만 가능")
     @DeleteMapping("/api/apply/worker/{applyId}")
     public ResponseEntity<Response> cancelApply(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                 @PathVariable("applyId") Long applyId) {

@@ -63,7 +63,7 @@ public class ApplyWorkerService {
 
         ArrayList<Apply> applyList = new ArrayList<>();
         for (WorkDate workDate : workDateList) {
-            applyList.add(new Apply(ApplyStatus.PENDING, worker, workDate));
+            applyList.add(new Apply(ApplyStatus.PENDING, false, worker, workDate));
         }
         applyRepository.saveAll(applyList);
     }
@@ -158,11 +158,10 @@ public class ApplyWorkerService {
             LocalDate applyDate = apply.getWorkDate().getDate();
             ApplyStatus currentStatus = apply.getStatus();
 
-            // 매핑된 날짜가 있을 때 -> 수락된 게 있다면 수락 으로 update
-            // 매핑된 날짜가 없을 때 -> 추가
-            if (workDateMap.containsKey(applyDate) && currentStatus == ApplyStatus.ACCEPTED) {
-                workDateMap.put(applyDate, ApplyStatus.ACCEPTED);
-            } else {
+            // Map에 해당 날짜의 키가 이미 있고, 현재 저장된 값이 'ACCEPTED'가 아니며,
+            // 새로운 상태가 'ACCEPTED'인 경우, 또는 해당 키가 아직 Map에 없는 경우에 값을 업데이트
+            if (!workDateMap.containsKey(applyDate) ||
+                    (workDateMap.get(applyDate) != ApplyStatus.ACCEPTED && currentStatus == ApplyStatus.ACCEPTED)) {
                 workDateMap.put(applyDate, currentStatus);
             }
         }
