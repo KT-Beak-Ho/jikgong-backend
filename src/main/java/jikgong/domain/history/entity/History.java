@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -19,10 +21,12 @@ public class History extends BaseEntity {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private WorkStatus startStatus; // 출근, 퇴근
+    private WorkStatus startStatus; // 출근, 결근
+    private LocalDateTime startStatusDecisionTime; // 출근, 결근 처리 시간
 
     @Enumerated(EnumType.STRING)
-    private WorkStatus endStatus; // 결근, 조퇴
+    private WorkStatus endStatus; // 퇴근, 조퇴
+    private LocalDateTime endStatusDecisionTime; // 퇴근, 조퇴 처리 시간
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -34,16 +38,19 @@ public class History extends BaseEntity {
 
 
     @Builder
-    public History(WorkStatus startStatus, WorkStatus endStatus, Member member, WorkDate workDate) {
+    public History(WorkStatus startStatus, LocalDateTime startStatusDecisionTime, WorkStatus endStatus, LocalDateTime endStatusDecisionTime, Member member, WorkDate workDate) {
         this.startStatus = startStatus;
+        this.startStatusDecisionTime = startStatusDecisionTime;
         this.endStatus = endStatus;
+        this.endStatusDecisionTime = endStatusDecisionTime;
         this.member = member;
         this.workDate = workDate;
     }
 
-    public static History createEntity(WorkStatus workStatus, Member member, WorkDate workDate) {
+    public static History createEntity(WorkStatus workStatus, LocalDateTime now, Member member, WorkDate workDate) {
         return History.builder()
                 .startStatus(workStatus)
+                .startStatusDecisionTime(now)
                 .member(member)
                 .workDate(workDate)
                 .build();

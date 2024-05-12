@@ -20,7 +20,7 @@ public class CertificationController {
     private final CertificationService certificationService;
 
     @Operation(summary = "경력 증명서 등록 & 업데이트", description = "이미 업로드된 경력 증명서가 있다면 제거 후 다시 업로드")
-    @PostMapping(value = "/api/certification", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/api/certification/worker", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Response> saveCertification(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                       @RequestPart("file")   MultipartFile file) {
         // 기존에 업로드된 경력 증명서 제거
@@ -37,7 +37,7 @@ public class CertificationController {
     }
 
     @Operation(summary = "경력 증명서 제거")
-    @DeleteMapping("/api/certification")
+    @DeleteMapping("/api/certification/worker")
     public ResponseEntity<Response> deleteCertification(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         certificationService.checkAndDeleteCertification(principalDetails.getMember().getId());
         return ResponseEntity.ok(new Response("등록된 경력 증명서 제거 완료"));

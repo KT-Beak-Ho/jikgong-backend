@@ -15,7 +15,7 @@ public interface WorkDateRepository extends JpaRepository<WorkDate, Long> {
     /**
      * find by id and JobPost
      */
-    @Query("select w from WorkDate w where w.jobPost = :jobPostId and w.id = :workDateId")
+    @Query("select w from WorkDate w where w.jobPost.id = :jobPostId and w.id = :workDateId")
     Optional<WorkDate> findByIdAndJobPost(@Param("jobPostId") Long jobPostId, @Param("workDateId") Long workDateId);
 
     /**

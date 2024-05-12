@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,8 +26,8 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
 
     // 퇴근, 조퇴 결과 갱신
     @Modifying
-    @Query("update History h set h.endStatus = :status where h.workDate.id = :workDateId and h.id in :workerIdList and h.startStatus != 'NOT_WORK'")
-    int updateHistoryByIdList(@Param("workDateId") Long workDateId, @Param("workerIdList") List<Long> workerIdList, @Param("status") WorkStatus status);
+    @Query("update History h set h.endStatus = :status, h.endStatusDecisionTime = :now where h.workDate.id = :workDateId and h.id in :workerIdList and h.startStatus != 'NOT_WORK'")
+    int updateHistoryByIdList(@Param("workDateId") Long workDateId, @Param("workerIdList") List<Long> workerIdList, @Param("status") WorkStatus status, @Param("now") LocalDateTime now);
 
     // 출근, 결근 조회
     @Query("select h from History h join fetch h.member m where h.workDate.id = :workDateId and h.startStatus = :status")

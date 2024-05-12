@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -63,18 +64,19 @@ public class HistoryService {
         // JPA 1차 캐싱 처리
         getMemberList(request);
 
+        LocalDateTime now = LocalDateTime.now();
         // 출근 history
         for (Long targetMemberId : request.getStartWorkMemberIdList()) {
             Member worker = memberRepository.findById(targetMemberId)
                     .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-            saveHistoryList.add(History.createEntity(WorkStatus.START_WORK, worker, workDate));
+            saveHistoryList.add(History.createEntity(WorkStatus.START_WORK, now, worker, workDate));
         }
 
         // 결근 history
         for (Long targetMemberId : request.getNotWorkMemberIdList()) {
             Member worker = memberRepository.findById(targetMemberId)
                     .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-            saveHistoryList.add(History.createEntity(WorkStatus.NOT_WORK, worker, workDate));
+            saveHistoryList.add(History.createEntity(WorkStatus.NOT_WORK, now, worker, workDate));
         }
 
         return historyRepository.saveAll(saveHistoryList).size();
@@ -99,12 +101,13 @@ public class HistoryService {
         WorkDate workDate = workDateRepository.findByIdAndJobPost(jobPost.getId(), request.getWorkDateId())
                 .orElseThrow(() -> new CustomException(ErrorCode.WORK_DATE_NOT_FOUND));
 
+        LocalDateTime now = LocalDateTime.now();
         // 퇴근
-        int updateFinishWork = historyRepository.updateHistoryByIdList(workDate.getId(), request.getFinishWorkHistoryIdList(), WorkStatus.FINISH_WORK);
+        int updateFinishWork = historyRepository.updateHistoryByIdList(workDate.getId(), request.getFinishWorkHistoryIdList(), WorkStatus.FINISH_WORK, now);
         log.info("퇴근 처리된 데이터: " + updateFinishWork);
 
         // 조퇴
-        int updateEarlyLeave = historyRepository.updateHistoryByIdList(workDate.getId(), request.getEarlyLeaveHistoryIdList(), WorkStatus.EARLY_LEAVE);
+        int updateEarlyLeave = historyRepository.updateHistoryByIdList(workDate.getId(), request.getEarlyLeaveHistoryIdList(), WorkStatus.EARLY_LEAVE, now);
         log.info("조퇴 처리된 데이터: " + updateFinishWork);
 
         // 요청한 데이터와 업데이트한 데이터 비교
