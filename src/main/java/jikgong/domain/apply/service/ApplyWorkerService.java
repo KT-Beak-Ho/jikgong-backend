@@ -7,6 +7,8 @@ import jikgong.domain.apply.dtos.worker.ApplySaveRequest;
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.apply.repository.ApplyRepository;
+import jikgong.domain.history.entity.History;
+import jikgong.domain.history.repository.HistoryRepository;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.repository.JobPostRepository;
 import jikgong.domain.member.entity.Member;
@@ -35,6 +37,7 @@ public class ApplyWorkerService {
     private final MemberRepository memberRepository;
     private final JobPostRepository jobPostRepository;
     private final WorkDateRepository workDateRepository;
+    private final HistoryRepository historyRepository;
 
     /**
      * 일자리 지원
@@ -115,15 +118,16 @@ public class ApplyWorkerService {
      * 확정된 내역 일별 조회
      */
     @Transactional(readOnly = true)
-    public List<ApplyHistoryResponse> findApplyHistoryPerDay(Long workerId, LocalDate date) {
+    public ApplyHistoryResponse findApplyHistoryPerDay(Long workerId, LocalDate date) {
         Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+        Apply apply = applyRepository.findApplyPerDay(worker.getId(), date, ApplyStatus.ACCEPTED)
+                .orElseThrow(() -> new CustomException(ErrorCode.APPLY_NOT_FOUND));
 
-        List<ApplyHistoryResponse> applyResponseList = applyRepository.findApplyPerDay(worker.getId(), date, ApplyStatus.ACCEPTED).stream()
-                .map(ApplyHistoryResponse::from)
-                .collect(Collectors.toList());
+        // 확정된 일자리의 출퇴근 기록
+        Optional<History> history = historyRepository.findByMemberAndApply(worker.getId(), apply.getWorkDate().getId());
 
-        return applyResponseList;
+        return ApplyHistoryResponse.from(apply, history);
     }
 
     /**

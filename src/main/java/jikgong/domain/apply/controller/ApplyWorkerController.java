@@ -35,8 +35,8 @@ public class ApplyWorkerController {
     @GetMapping("/api/apply/worker/day")
     public ResponseEntity<Response> findApplyHistoryPerDay(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                            @RequestParam("date") LocalDate date) {
-        List<ApplyHistoryResponse> applyResponseList = applyWorkerService.findApplyHistoryPerDay(principalDetails.getMember().getId(), date);
-        return ResponseEntity.ok(new Response(applyResponseList, "일자리 신청 내역 조회 완료"));
+        ApplyHistoryResponse applyHistoryResponse = applyWorkerService.findApplyHistoryPerDay(principalDetails.getMember().getId(), date);
+        return ResponseEntity.ok(new Response(applyHistoryResponse, "일자리 신청 내역 조회 완료"));
     }
 
     @Operation(summary = "노동자: 신청 내역 월별 조회", description = "신청 내역 확정 화면의 달력 동그라미 표시할 날짜 반환  \n workMonth: 2024-01-01  << 이렇게 주면 년,월만 추출 예정")

@@ -36,7 +36,7 @@ public class HistoryController {
     public ResponseEntity<Response> updateHistoryAtFinish(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                 @RequestBody HistoryFinishSaveRequest request) {
         int updateCount = historyService.updateHistoryAtFinish(principalDetails.getMember().getId(), request);
-        return ResponseEntity.ok(new Response("출근, 결근 결과 저장 완료"));
+        return ResponseEntity.ok(new Response("조퇴, 퇴근 결과 저장 완료"));
     }
 
     @Operation(summary = "인력 관리: 출근 / 결근 조회")

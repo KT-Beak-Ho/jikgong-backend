@@ -48,7 +48,7 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
      */
     @Query("select a from Apply a join fetch a.workDate w join fetch a.workDate.jobPost j " +
             "where a.member.id = :memberId and w.date = :date and a.status = :applyStatus")
-    List<Apply> findApplyPerDay(@Param("memberId") Long memberId, @Param("date") LocalDate date, @Param("applyStatus") ApplyStatus applyStatus);
+    Optional<Apply> findApplyPerDay(@Param("memberId") Long memberId, @Param("date") LocalDate date, @Param("applyStatus") ApplyStatus applyStatus);
     @Query("select a from Apply a join fetch a.workDate w " +
             "where a.member.id = :memberId and w.date between :monthStart and :monthEnd")
     List<Apply> findApplyPerMonth(@Param("memberId") Long memberId, @Param("monthStart") LocalDate monthStart, @Param("monthEnd") LocalDate monthEnd);

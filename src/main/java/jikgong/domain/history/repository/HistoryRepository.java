@@ -37,4 +37,7 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
     @Query("select h from History h join fetch h.member m join fetch h.workDate.jobPost j " +
             "where h.workDate.id = :workDateId")
     List<History> findPaymentStatementInfo(@Param("workDateId") Long workDateId);
+
+    @Query("select h from History h where h.member.id = :memberId and h.workDate.id = :workDateId")
+    Optional<History> findByMemberAndApply(@Param("memberId") Long memberId, @Param("workDateId") Long workDateId);
 }

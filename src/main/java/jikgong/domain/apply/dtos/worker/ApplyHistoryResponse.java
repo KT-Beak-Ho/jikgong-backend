@@ -1,7 +1,11 @@
 package jikgong.domain.apply.dtos.worker;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.entity.ApplyStatus;
+import jikgong.domain.history.entity.History;
+import jikgong.domain.history.entity.WorkStatus;
 import jikgong.domain.jobPost.entity.JobPost;
 import jikgong.domain.jobPost.entity.Tech;
 import lombok.AllArgsConstructor;
@@ -10,6 +14,7 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Optional;
 
 @Getter
 @Builder
@@ -24,8 +29,15 @@ public class ApplyHistoryResponse {
     private LocalDateTime statusDecisionTime; // 신청 처리 시간
 
     private JobPostResponse jobPostResponse;
+    private HistoryResponse historyResponse;
 
-    public static ApplyHistoryResponse from(Apply apply) {
+    public static ApplyHistoryResponse from(Apply apply, Optional<History> history) {
+        // 출,퇴근 정보
+        HistoryResponse historyResponse = null;
+        if (history.isPresent()) {
+            historyResponse = HistoryResponse.from(history.get());
+        }
+
         return ApplyHistoryResponse.builder()
                 .applyId(apply.getId())
                 .status(apply.getStatus())
@@ -33,6 +45,7 @@ public class ApplyHistoryResponse {
                 .applyTime(apply.getCreatedDate())
                 .statusDecisionTime(apply.getStatusDecisionTime())
                 .jobPostResponse(JobPostResponse.from(apply.getWorkDate().getJobPost()))
+                .historyResponse(historyResponse)
                 .build();
     }
 
@@ -63,4 +76,22 @@ public class ApplyHistoryResponse {
         }
     }
 
+    @Getter
+    @Builder
+    public static class HistoryResponse {
+        private Long historyId;
+        private WorkStatus startStatus; // 출근, 결근
+        private LocalDateTime startStatusDecisionTime; // 출근, 결근 처리 시간
+        private WorkStatus endStatus; // 퇴근, 조퇴
+        private LocalDateTime endStatusDecisionTime; // 퇴근, 조퇴 처리 시간
+        public static HistoryResponse from(History history) {
+            return HistoryResponse.builder()
+                    .historyId(history.getId())
+                    .startStatus(history.getStartStatus())
+                    .startStatusDecisionTime(history.getStartStatusDecisionTime())
+                    .endStatus(history.getEndStatus())
+                    .endStatusDecisionTime(history.getEndStatusDecisionTime())
+                    .build();
+        }
+    }
 }
