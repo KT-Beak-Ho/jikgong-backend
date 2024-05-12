@@ -20,21 +20,22 @@ public class PaymentMemberInfo {
 
 
     public static PaymentMemberInfo from(History history) {
-        WorkStatus workStatus = history.getStartStatus();
+        WorkStatus startStatus = history.getStartStatus();
+        WorkStatus endStatus = history.getEndStatus();
         int payment = 0;
 
         // 출근 기록만 있는 경우 or 결근일 경우 => 0원
-        if (workStatus == WorkStatus.START_WORK || workStatus == WorkStatus.NOT_WORK) {
+        if (startStatus == WorkStatus.START_WORK || startStatus == WorkStatus.NOT_WORK) {
             payment = 0;
         }
         // 퇴근, 조퇴일 경우 => 임금 지급
-        if (workStatus == WorkStatus.FINISH_WORK || workStatus == WorkStatus.EARLY_LEAVE) {
+        if (endStatus == WorkStatus.FINISH_WORK || endStatus == WorkStatus.EARLY_LEAVE) {
             payment = history.getWorkDate().getJobPost().getWage();
         }
         return PaymentMemberInfo.builder()
                 .payment(payment)
-                .startStatus(history.getStartStatus())
-                .endStatus(history.getEndStatus())
+                .startStatus(startStatus)
+                .endStatus(endStatus)
                 .memberResponse(MemberResponse.from(history.getMember()))
                 .build();
     }
