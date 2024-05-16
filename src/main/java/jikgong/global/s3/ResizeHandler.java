@@ -30,7 +30,7 @@ public class ResizeHandler implements RequestHandler<S3Event, String> {
      * aws lambda 함수 등록을 위한 클래스
      */
 
-    private static final float MAX_HEIGHT = 60;
+    private static final float MAX_HEIGHT = 600;
     private final String JPG_TYPE = (String) "jpg";
     private final String JPG_MIME = (String) "image/jpeg";
     private final String JPEG_TYPE = (String) "jpeg";
