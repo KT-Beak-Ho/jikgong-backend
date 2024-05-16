@@ -45,8 +45,14 @@ public class JobPostWorkerController {
                                                 @RequestParam(name = "page", defaultValue = "0") int page,
                                                 @RequestParam(name = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdDate")));
-        Page<JobPostListResponse> jobPostListResponsePage =
-                jobPostWorkerService.getMainPage(principalDetails.getMember().getId(), techList, workDateList, scrap, meal, park, sortType, pageable);
+
+        Page<JobPostListResponse> jobPostListResponsePage;
+        if (principalDetails != null) {
+            jobPostListResponsePage = jobPostWorkerService.getMainPageForMember(principalDetails.getMember().getId(), techList, workDateList, scrap, meal, park, sortType, pageable);
+        } else {
+            jobPostListResponsePage = jobPostWorkerService.getMainPageForNonMember(techList, workDateList, scrap, meal, park, sortType, pageable);
+        }
+
         return ResponseEntity.ok(new Response(jobPostListResponsePage, "구직자 홈화면 정보 반환 완료"));
     }
 
@@ -54,7 +60,12 @@ public class JobPostWorkerController {
     @GetMapping("/api/job-post/worker/{jobPostId}")
     public ResponseEntity<Response> getJobPostDetail(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                      @PathVariable("jobPostId") Long jobPostId) {
-        JobPostDetailResponse jobPostDetailResponse = jobPostWorkerService.getJobPostDetail(principalDetails.getMember().getId(), jobPostId);
+        JobPostDetailResponse jobPostDetailResponse;
+        if (principalDetails != null) {
+            jobPostDetailResponse = jobPostWorkerService.getJobPostDetailForMember(principalDetails.getMember().getId(), jobPostId);
+        } else {
+            jobPostDetailResponse = jobPostWorkerService.getJobPostDetailForNonMember(jobPostId);
+        }
         return ResponseEntity.ok(new Response(jobPostDetailResponse, "모집 공고 상세 화면 - 일반 반환 완료"));
     }
 
@@ -68,7 +79,12 @@ public class JobPostWorkerController {
                                                     @RequestParam(name = "tech", required = false) List<Tech> techList,
                                                     @RequestParam(name = "workDateList", required = false) List<LocalDate> dateList,
                                                     @RequestParam(name = "scrap", required = false) Boolean scrap) {
-        List<JobPostMapResponse> jobPostsOnMap = jobPostWorkerService.findJobPostsOnMap(principalDetails.getMember().getId(), northEastLat, northEastLng, southWestLat, southWestLng, techList, dateList, scrap);
+        List<JobPostMapResponse> jobPostsOnMap;
+        if (principalDetails != null) {
+            jobPostsOnMap = jobPostWorkerService.findJobPostsOnMapForMember(principalDetails.getMember().getId(), northEastLat, northEastLng, southWestLat, southWestLng, techList, dateList, scrap);
+        } else {
+            jobPostsOnMap = jobPostWorkerService.findJobPostsOnMapForNonMember(northEastLat, northEastLng, southWestLat, southWestLng, techList, dateList, scrap);
+        }
         return ResponseEntity.ok(new Response(jobPostsOnMap, "지도에서 경계 안에 속한 모집 공고 조회 완료"));
     }
 }

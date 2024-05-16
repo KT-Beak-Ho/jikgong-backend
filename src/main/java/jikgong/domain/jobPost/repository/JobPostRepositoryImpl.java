@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 import static jikgong.domain.jobPost.entity.QJobPost.*;
+import static jikgong.domain.jobPostImage.entity.QJobPostImage.jobPostImage;
 import static jikgong.domain.member.entity.QMember.member;
 import static jikgong.domain.scrap.entity.QScrap.*;
 
@@ -109,7 +110,9 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
     }
 
     private BooleanExpression eqTech(List<Tech> techList) {
-        return techList == null ? null : jobPost.tech.in(techList);
+        if (techList == null) return null;
+        if (techList.isEmpty()) return null;
+        return jobPost.tech.in(techList);
     }
 
     private BooleanExpression eqWorkDate(List<LocalDate> dateList) {
@@ -117,7 +120,7 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
     }
 
     private BooleanExpression eqScrap(Long memberId, Boolean scrap) {
-        if (scrap == null) return null;
+        if (scrap == null || memberId == null) return null;
         return !scrap ? null : jobPost.scrapList.any().member.id.eq(memberId);
     }
 
@@ -131,8 +134,8 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
 
     // 동적 정렬 기준
     private OrderSpecifier<?> selectOrderBySpecifier(SortType sortType, Location location) {
-        // 임금 높은 순 (기본)
-        if (sortType == SortType.WAGE) {
+        // 임금 높은 순
+        if (sortType == SortType.WAGE || location == null) {
             return jobPost.wage.desc();
         }
         // 가까운 순

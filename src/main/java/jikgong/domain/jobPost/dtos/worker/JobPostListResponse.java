@@ -6,6 +6,8 @@ import jikgong.domain.jobPost.entity.Tech;
 import jikgong.domain.jobPostImage.entity.JobPostImage;
 import jikgong.domain.location.entity.Location;
 import jikgong.domain.scrap.entity.Scrap;
+import jikgong.global.exception.CustomException;
+import jikgong.global.exception.ErrorCode;
 import jikgong.global.utils.DistanceCal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -50,7 +52,17 @@ public class JobPostListResponse {
         isScrap = scrap;
     }
 
-    public static JobPostListResponse from(JobPost jobPost, Location location, String thumbnailS3Url) {
+    public static JobPostListResponse from(JobPost jobPost, Location location) {
+        // Thumbnail 이미지 추출
+        Optional<JobPostImage> thumbnailImage = jobPost.getJobPostImageList().stream()
+                .filter(JobPostImage::isThumbnail)
+                .findFirst();
+
+
+        String s3Url = thumbnailImage.map(JobPostImage::getS3Url)
+                .orElseThrow(() -> new CustomException(ErrorCode.THUMBNAIL_IMAGE_NOT_FOUND));
+        String thumbnailS3Url = s3Url.replace("jikgong-image", "jikgong-resize-bucket");
+
         return JobPostListResponse.builder()
                 .jobPostId(jobPost.getId())
 
@@ -67,12 +79,12 @@ public class JobPostListResponse {
                 .startTime(jobPost.getStartTime())
                 .endTime(jobPost.getEndTime())
                 .address(jobPost.getAddress().getAddress())
-                .distance(DistanceCal.getDistance(jobPost, location))
+                .distance((location == null) ? null : DistanceCal.getDistance(jobPost, location))
 
                 .companyName(jobPost.getMember().getCompanyInfo().getCompanyName())
                 .wage(jobPost.getWage())
 
-                .isScrap(false)
+                .isScrap(null)
                 .thumbnailS3Url(thumbnailS3Url)
 
                 .build();
