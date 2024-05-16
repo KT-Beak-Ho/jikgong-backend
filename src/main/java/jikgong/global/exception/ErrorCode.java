@@ -41,6 +41,7 @@ public enum ErrorCode {
     FILE_NOT_SUPPORTED(HttpStatus.BAD_REQUEST, "지원하지 않는 확장자 입니다."),
     IMAGE_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 처리 중 서버에서 에러가 발생했습니다."),
     CERTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "회원의 증명서 정보가 없습니다."),
+    THUMBNAIL_IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "썸네일 이미지를 찾을 수 없습니다."),
 
     /**
      * 위치
