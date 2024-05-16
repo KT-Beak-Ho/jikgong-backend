@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- jQuery 라이브러리 추가 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // 페이지 로드 시 데이터 불러오기
+            loadJobPosts(0);
+        });
+
+        function loadJobPosts(page) {
+            $.ajax({
+                url: '/api/job-post/worker/list',
+                method: 'GET',
+                data: { page: page },
+                success: function(response) {
+                    $('#job-post-list').empty();
+                    response.data.content.forEach(function(post) {
+                        $('#job-post-list').append(`
+                            <div class="job-post">
+                                <h2>${post.title}</h2>
+                                <p><strong>회사:</strong> ${post.companyName}</p>
+                                <p><strong>주소:</strong> ${post.address}</p>
+                                <p><strong>시작 날짜:</strong> ${post.startDate}</p>
+                                <p><strong>종료 날짜:</strong> ${post.endDate}</p>
+                                <p><strong>임금:</strong> ${post.wage}</p>
+                                <img src="${post.thumbnailS3Url}" alt="${post.title}" style="width: 200px; height: auto;">
+                            </div>
+                        `);
+                    });
+
+                    // 페이지네이션
+                    $('#pagination').empty();
+                    for (let i = 0; i < response.data.totalPages; i++) {
+                        $('#pagination').append(`
+                            <button onclick="loadJobPosts(${i})">${i + 1}</button>
+                        `);
+                    }
+                },
+                error: function(error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<h1>구직자 홈화면</h1>
+<div id="job-post-list"></div>
+<div id="pagination"></div>
+</body>
+</html>
