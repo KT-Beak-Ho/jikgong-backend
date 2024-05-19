@@ -31,7 +31,7 @@ public class LocationController {
     }
 
     @Operation(summary = "등록된 위치 조회")
-    @GetMapping("/api/locations")
+    @GetMapping("/api/location/list")
     public ResponseEntity<Response> findLocationByMember(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         List<LocationResponse> locationResponseList = locationService.findLocationByMember(principalDetails.getMember().getId());
         return ResponseEntity.ok(new Response(locationResponseList, "등록된 위치 정보 반환 완료"));
@@ -54,7 +54,7 @@ public class LocationController {
     }
 
     @Operation(summary = "위치 삭제 (복수)")
-    @DeleteMapping("/api/locations")
+    @DeleteMapping("/api/location/list")
     public ResponseEntity<Response> deleteLocations(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                     @RequestBody LocationDeleteRequest request) {
         locationService.deleteLocations(principalDetails.getMember().getId(), request);

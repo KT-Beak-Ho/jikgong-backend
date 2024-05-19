@@ -21,7 +21,7 @@ public class MemberCompanyController {
     private final MemberCompanyService memberCompanyService;
 
     @Operation(summary = "기업 검색")
-    @GetMapping("/api/member/company/search")
+    @GetMapping("/api/member/search/company")
     public ResponseEntity<Response> searchCompany(@RequestParam(name = "keyword", required = false) String keyword) {
         List<CompanySearchResponse> companySearchResponseList = memberCompanyService.searchCompany(keyword);
         return ResponseEntity.ok(new Response(companySearchResponseList, "기업 검색 결과 반환 완료"));

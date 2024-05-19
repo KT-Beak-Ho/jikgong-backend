@@ -32,7 +32,7 @@ public class SearchLogController {
     }
 
     @Operation(summary = "최근 검색 기록: 조회")
-    @GetMapping("/api/searchLogs")
+    @GetMapping("/api/searchLog/list")
     public ResponseEntity<Response> findRecentSearchLog(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         List<SearchLog> recentSearchLogList = searchLogService.findRecentSearchLogs(principalDetails.getMember().getId());
         return ResponseEntity.ok(new Response(recentSearchLogList, "최근 검색 기록 조회 완료"));
