@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -48,7 +49,7 @@ public class JobPostWorkerService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
         Location location = locationRepository.findMainLocationByMemberId(member.getId())
-                .orElseThrow(() -> new CustomException(ErrorCode.LOCATION_NOT_FOUND));
+                .orElse(null);
 
         // querydsl
         Page<JobPost> jobPostPage = jobPostRepository.getMainPage(memberId, techList, workDateList, scrap, meal, park, location, sortType, pageable);
@@ -98,7 +99,7 @@ public class JobPostWorkerService {
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
 
         Location location = locationRepository.findMainLocationByMemberId(worker.getId())
-                .orElseThrow(() -> new CustomException(ErrorCode.LOCATION_NOT_FOUND));
+                .orElse(null);
 
         return JobPostDetailResponse.from(jobPost, location);
     }
