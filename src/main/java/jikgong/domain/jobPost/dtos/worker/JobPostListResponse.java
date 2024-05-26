@@ -53,15 +53,21 @@ public class JobPostListResponse {
     }
 
     public static JobPostListResponse from(JobPost jobPost, Location location) {
-        // Thumbnail 이미지 추출
-        Optional<JobPostImage> thumbnailImage = jobPost.getJobPostImageList().stream()
-                .filter(JobPostImage::isThumbnail)
-                .findFirst();
+        // JobPostImage 리스트가 null인 경우 null 반환
+        List<JobPostImage> jobPostImages = jobPost.getJobPostImageList();
+        String thumbnailS3Url = null;
 
+        if (jobPostImages != null) {
+            // Thumbnail 이미지 추출
+            Optional<JobPostImage> thumbnailImage = jobPostImages.stream()
+                    .filter(JobPostImage::isThumbnail)
+                    .findFirst();
 
-        String s3Url = thumbnailImage.map(JobPostImage::getS3Url)
-                .orElseThrow(() -> new CustomException(ErrorCode.THUMBNAIL_IMAGE_NOT_FOUND));
-        String thumbnailS3Url = s3Url.replace("jikgong-image", "jikgong-resize-bucket");
+            // S3 URL 추출 및 변경, 없으면 null 반환
+            thumbnailS3Url = thumbnailImage.map(JobPostImage::getS3Url)
+                    .map(s3Url -> s3Url.replace("jikgong-image", "jikgong-resize-bucket"))
+                    .orElse(null);
+        }
 
         return JobPostListResponse.builder()
                 .jobPostId(jobPost.getId())
