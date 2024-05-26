@@ -1,6 +1,10 @@
 //package jikgong;
 //
 //import jakarta.annotation.PostConstruct;
+//import jikgong.domain.jobPost.dtos.company.JobPostSaveRequest;
+//import jikgong.domain.jobPost.entity.Park;
+//import jikgong.domain.jobPost.entity.Tech;
+//import jikgong.domain.jobPost.service.JobPostCompanyService;
 //import jikgong.domain.member.dtos.join.JoinCompanyRequest;
 //import jikgong.domain.member.dtos.join.JoinWorkerRequest;
 //import jikgong.domain.member.entity.*;
@@ -14,6 +18,8 @@
 //import org.springframework.transaction.annotation.Transactional;
 //
 //import java.time.LocalDate;
+//import java.time.LocalTime;
+//import java.util.Arrays;
 //
 //@Component
 //@RequiredArgsConstructor
@@ -31,6 +37,7 @@
 //    public static class InitService {
 //        private final LoginService loginService;
 //        private final ProjectService projectService;
+//        private final JobPostCompanyService jobPostCompanyService;
 //
 //        public void initMember() {
 //            Long savedId = loginService.joinCompanyMember(createJoinCompanyRequest("abcdefg0", "01012345678", Role.ROLE_COMPANY));
@@ -41,6 +48,17 @@
 //            loginService.joinWorkerMember(createJoinWorkerRequest("abcdefg4", "01044444444", Role.ROLE_WORKER, "안병기", "2002-12-04", "021204", 35.142157388697734F, 128.9385393114043F));
 //
 //            projectService.saveProject(savedId, createProjectSaveRequest());
+//
+//            jobPostCompanyService.saveJobPost(savedId, createJobPostSaveRequest("부산 남구 우암1구역 주택재개발", 120000, Park.FREE, true, true, "부산 남구 우암로 168-1", 35.11607388697734F, 128.9605373114043F), null);
+//            jobPostCompanyService.saveJobPost(savedId, createJobPostSaveRequest("부산 강서구 명지동 빌리브 명시 듀클래스", 150000, Park.FREE, false, true, "부산 강서구 명지동 3605-6", 35.11607388697734F, 128.9605393134043F), null);
+//            jobPostCompanyService.saveJobPost(savedId, createJobPostSaveRequest("역세권 청년주택 신축공사", 110000, Park.NONE, true, true, "서울 중랑구 상봉동", 35.12607388697734F, 128.9625393114043F), null);
+//            jobPostCompanyService.saveJobPost(savedId, createJobPostSaveRequest("분당 느티마을 4단지 리모델링 현장", 90000, Park.FREE, true, true, "경기 성남시 분당 느티마을 4단지", 35.11607388697734F, 128.9605393134043F), null);
+//            jobPostCompanyService.saveJobPost(savedId, createJobPostSaveRequest("경기 의왕시 초평 스마트시티퀀텀", 130000, Park.PAID, true, true, "경기 의왕시", 35.13607388697734F, 128.8605393114043F), null);
+//            jobPostCompanyService.saveJobPost(savedId, createJobPostSaveRequest("서울 강남구 근린생활시설 리노베이션 공사", 80000, Park.FREE, true, false, "서울 강남구 상섬동 130-5", 35.11607318697734F, 128.9605393114043F), null);
+//            jobPostCompanyService.saveJobPost(savedId, createJobPostSaveRequest("서울 서초구 GDC&Office 신축공사", 88000, Park.PAID, true, true, "서울 서초구", 35.11607388697734F, 128.9608393114043F), null);
+//            jobPostCompanyService.saveJobPost(savedId, createJobPostSaveRequest("서울 강서구 염창동 등촌역 지식산업센터 개발사업", 145000, Park.FREE, true, true, "서울 강서구 염창동 등촌역", 35.11607288697734F, 128.9605393114043F), null);
+//            jobPostCompanyService.saveJobPost(savedId, createJobPostSaveRequest("서울 중구 필동1가 3-1 업무시설 신축공사", 150000, Park.NONE, true, false, "서울 중구 필동1가 3-1", 35.11607348697734F, 128.9605393114043F), null);
+//            jobPostCompanyService.saveJobPost(savedId, createJobPostSaveRequest("서울 서대문구 창천동 청년주택 신축공사", 117000, Park.PAID, false, true, "서울 서대문구 창천동", 35.12607388697734F, 128.9305393114043F), null);
 //        }
 //
 //        private ProjectSaveRequest createProjectSaveRequest() {
@@ -93,5 +111,36 @@
 //                    .requestContent("직공 서비스에 가입하고 싶습니다.")
 //                    .build();
 //        }
+//
+//        private JobPostSaveRequest createJobPostSaveRequest(String title, Integer wage, Park park, boolean meal, boolean pickup, String address, Float latitude, Float longitude) {
+//            return JobPostSaveRequest.builder()
+//                    .title(title)
+//                    .tech(Tech.NORMAL)
+//                    .startTime(LocalTime.of(9, 30))
+//                    .endTime(LocalTime.of(18, 0))
+//                    .recruitNum(60)
+//                    .wage(wage)
+//                    .preparation("작업복, 작업화")
+//                    .parkDetail("2번 GateWay 옆 공간")
+//                    .meal(meal)
+//                    .pickup(pickup)
+//                    .park(park)
+//                    .address(address)
+//                    .latitude(latitude)
+//                    .longitude(longitude)
+//                    .dateList(Arrays.asList(
+//                            LocalDate.of(2024, 8, 1),
+//                            LocalDate.of(2024, 8, 2)
+//                    ))
+//                    .pickupList(Arrays.asList(
+//                            "부산광역시 사하구 낙동대로 550번길 37",
+//                            "대한민국 부산광역시 서구 구덕로 225"
+//                    ))
+//                    .managerName("홍길동")
+//                    .phone("01012345678")
+//                    .projectId(1L)
+//                    .build();
+//        }
+//
 //    }
 //}
