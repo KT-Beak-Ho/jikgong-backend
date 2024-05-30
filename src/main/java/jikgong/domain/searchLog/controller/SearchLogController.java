@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jikgong.domain.searchLog.entity.SearchLog;
 import jikgong.domain.searchLog.service.SearchLogService;
 import jikgong.domain.searchLog.dtos.SearchLogSaveRequest;
-import jikgong.global.dto.Response;
+import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -6,7 +6,7 @@ import jikgong.domain.member.dtos.login.LoginRequest;
 import jikgong.domain.member.dtos.login.LoginResponse;
 import jikgong.domain.member.dtos.login.RefreshTokenRequest;
 import jikgong.domain.member.service.LoginService;
-import jikgong.global.dto.Response;
+import jikgong.global.common.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

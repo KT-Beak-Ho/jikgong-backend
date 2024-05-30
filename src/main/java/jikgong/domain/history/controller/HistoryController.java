@@ -7,7 +7,7 @@ import jikgong.domain.history.dtos.HistoryStartSaveRequest;
 import jikgong.domain.history.dtos.PaymentStatementResponse;
 import jikgong.domain.history.service.HistoryService;
 import jikgong.domain.history.dtos.HistoryManageResponse;
-import jikgong.global.dto.Response;
+import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

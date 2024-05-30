@@ -8,7 +8,7 @@ import jikgong.domain.jobPost.entity.Park;
 import jikgong.domain.jobPost.entity.SortType;
 import jikgong.domain.jobPost.entity.Tech;
 import jikgong.domain.jobPost.service.JobPostWorkerService;
-import jikgong.global.dto.Response;
+import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

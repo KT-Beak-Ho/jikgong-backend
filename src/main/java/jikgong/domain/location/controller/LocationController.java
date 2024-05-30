@@ -6,7 +6,7 @@ import jikgong.domain.location.dtos.LocationResponse;
 import jikgong.domain.location.dtos.LocationSaveRequest;
 import jikgong.domain.location.dtos.LocationUpdateRequest;
 import jikgong.domain.location.service.LocationService;
-import jikgong.global.dto.Response;
+import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

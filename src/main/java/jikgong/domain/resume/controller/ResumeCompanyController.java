@@ -6,7 +6,7 @@ import jikgong.domain.resume.dtos.company.ResumeDetailResponse;
 import jikgong.domain.offer.entity.SortType;
 import jikgong.domain.resume.dtos.company.ResumeListResponse;
 import jikgong.domain.resume.service.ResumeCompanyService;
-import jikgong.global.dto.Response;
+import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

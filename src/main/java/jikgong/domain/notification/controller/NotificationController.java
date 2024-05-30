@@ -7,7 +7,7 @@ import jikgong.domain.notification.dtos.UnreadCountResponse;
 import jikgong.domain.notification.dtos.company.CompanyNotificationInfoRequest;
 import jikgong.domain.notification.dtos.worker.WorkerNotificationInfoRequest;
 import jikgong.domain.notification.service.NotificationService;
-import jikgong.global.dto.Response;
+import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -6,7 +6,7 @@ import jikgong.domain.apply.dtos.worker.ApplyHistoryResponse;
 import jikgong.domain.apply.dtos.worker.ApplyResponseMonthly;
 import jikgong.domain.apply.dtos.worker.ApplySaveRequest;
 import jikgong.domain.apply.service.ApplyWorkerService;
-import jikgong.global.dto.Response;
+import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

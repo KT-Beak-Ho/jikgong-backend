@@ -5,7 +5,7 @@ import jikgong.domain.offer.dtos.company.OfferHistoryResponse;
 import jikgong.domain.offer.dtos.company.OfferRequest;
 import jikgong.domain.offer.entity.OfferStatus;
 import jikgong.domain.offer.service.OfferCompanyService;
-import jikgong.global.dto.Response;
+import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

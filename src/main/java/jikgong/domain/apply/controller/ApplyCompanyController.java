@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jikgong.domain.apply.dtos.company.ApplyManageResponse;
 import jikgong.domain.apply.dtos.company.ApplyProcessRequest;
 import jikgong.domain.apply.service.ApplyCompanyService;
-import jikgong.global.dto.Response;
+import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

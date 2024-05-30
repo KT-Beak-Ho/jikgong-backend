@@ -1,8 +1,7 @@
-package jikgong.global.dto;
+package jikgong.global.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.ToString;
 

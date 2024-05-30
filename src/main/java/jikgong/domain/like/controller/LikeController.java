@@ -2,7 +2,7 @@ package jikgong.domain.like.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jikgong.domain.like.service.LikeService;
-import jikgong.global.dto.Response;
+import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

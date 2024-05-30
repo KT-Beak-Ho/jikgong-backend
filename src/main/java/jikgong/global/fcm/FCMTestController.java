@@ -1,7 +1,7 @@
 package jikgong.global.fcm;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jikgong.global.dto.Response;
+import jikgong.global.common.Response;
 import jikgong.global.fcm.dtos.FCMNotificationRequestDto;
 import jikgong.global.fcm.service.FCMNotificationService;
 import lombok.RequiredArgsConstructor;

@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jikgong.domain.resume.dtos.worker.ResumeDetailResponse;
 import jikgong.domain.resume.dtos.worker.ResumeSaveRequest;
 import jikgong.domain.resume.service.ResumeWorkerService;
-import jikgong.global.dto.Response;
+import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

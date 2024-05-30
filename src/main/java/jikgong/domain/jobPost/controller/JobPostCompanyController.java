@@ -5,7 +5,7 @@ import jikgong.domain.jobPost.dtos.company.*;
 import jikgong.domain.jobPost.entity.JobPostStatus;
 import jikgong.domain.jobPost.service.JobPostCompanyService;
 import jikgong.domain.jobPost.dtos.company.JobPostResponseForOffer;
-import jikgong.global.dto.Response;
+import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

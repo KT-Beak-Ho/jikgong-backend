@@ -5,7 +5,7 @@ import jikgong.domain.profit.dtos.graph.DailyGraphResponse;
 import jikgong.domain.profit.dtos.graph.MonthlyGraphResponse;
 import jikgong.domain.profit.dtos.history.*;
 import jikgong.domain.profit.service.ProfitService;
-import jikgong.global.dto.Response;
+import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

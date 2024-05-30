@@ -7,7 +7,7 @@ import jikgong.domain.project.dtos.ProjectSaveRequest;
 import jikgong.domain.project.dtos.ProjectUpdateRequest;
 import jikgong.domain.project.entity.ProjectStatus;
 import jikgong.domain.project.service.ProjectService;
-import jikgong.global.dto.Response;
+import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

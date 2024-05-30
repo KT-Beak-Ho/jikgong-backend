@@ -5,7 +5,7 @@ import jikgong.domain.offer.dtos.worker.OfferJobPostResponse;
 import jikgong.domain.offer.dtos.worker.OfferProcessRequest;
 import jikgong.domain.offer.dtos.worker.ReceivedOfferResponse;
 import jikgong.domain.offer.service.OfferWorkerService;
-import jikgong.global.dto.Response;
+import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
