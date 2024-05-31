@@ -1,0 +1,63 @@
+spring:
+  profiles:
+    active: test
+
+  datasource:
+    url: jdbc:h2:mem:test
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      enabled: false # 시작과 동시에 실행되는 것 방지
+
+  jpa:
+    properties:
+      hibernate:
+        create_empty_composites:
+          enabled: true
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+
+app:
+  auth:
+    secret-key: "mockmockmockmockmockmockmockmockmockmockmockmockmockmockmockmockmockmockmockmockmockmockmockmock"
+
+ncp:
+  service-id: "mock"
+  access-key: "mock"
+  secret-key: "mock"
+  plus-friend-id: "mock"
+
+management:
+  endpoints:
+    web:
+      base-path: /jikgong
+      exposure:
+        include: prometheus, health
+
+fcm:
+  path: firebase/jikgong-firebase-local.json
+
+webhook:
+  slack:
+    url: "mock"
+
+
+cloud:
+  aws:
+    credentials:
+      access-key: "mock"
+      secret-key: "mock"
+    s3:
+      bucket: "mock"
+      resize-bucket: "mock"
+    stack.auto: false #기본 cloudFormation 구성 시작 사용 x
+    region:
+      static: ap-northeast-2
