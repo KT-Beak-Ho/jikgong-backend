@@ -3,6 +3,8 @@ package jikgong.domain.workDate.entity;
 import jakarta.persistence.*;
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.jobPost.entity.JobPost;
+import jikgong.global.exception.CustomException;
+import jikgong.global.exception.ErrorCode;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,11 +45,14 @@ public class WorkDate {
         this.applyList = new ArrayList<>();
     }
 
-    public synchronized void plusRegisteredNum(Integer updateCount) {
+    public void plusRegisteredNum(Integer updateCount) {
+        if (this.registeredNum + updateCount > this.recruitNum) {
+            throw new CustomException(ErrorCode.APPLY_OVER_RECRUIT_NUM);
+        }
         this.registeredNum += updateCount;
     }
 
-    public synchronized void minusRegisteredNum() {
+    public void minusRegisteredNum() {
         this.registeredNum -= 1;
     }
 }
