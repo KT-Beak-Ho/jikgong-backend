@@ -1,7 +1,9 @@
 package jikgong.domain.workDate.repository;
 
+import jakarta.persistence.LockModeType;
 import jikgong.domain.workDate.entity.WorkDate;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -35,4 +37,11 @@ public interface WorkDateRepository extends JpaRepository<WorkDate, Long> {
      */
     @Query("select w from WorkDate w join fetch w.jobPost j join fetch w.jobPost.member m where w.jobPost.project.id = :projectId order by w.date desc")
     List<WorkDate> findByProject(@Param("projectId") Long projectId);
+
+    /**
+     * 지원 수락
+     */
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select w from WorkDate w where w.id = :workDateId")
+    Optional<WorkDate> findByIdWithLock(@Param("workDateId") Long workDateId);
 }

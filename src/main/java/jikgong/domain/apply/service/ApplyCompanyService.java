@@ -93,7 +93,9 @@ public class ApplyCompanyService {
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
         JobPost jobPost = jobPostRepository.findByIdAndMember(company.getId(), request.getJobPostId())
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
-        WorkDate workDate = workDateRepository.findById(request.getWorkDateId())
+
+        // workDate에 대한 Lock
+        WorkDate workDate = workDateRepository.findByIdWithLock(request.getWorkDateId())
                 .orElseThrow(() -> new CustomException(ErrorCode.WORK_DATE_NOT_FOUND));
 
         // 대기 중인 요청인지 체크
@@ -105,7 +107,7 @@ public class ApplyCompanyService {
             checkAcceptedWorker(applyList, workDate);
 
             // 모집 인원 및 날짜 체크
-            checkRegisteredNumAndDate(workDate, applyList);
+            checkRegisteredNumAndDate(workDate);
 
             // applyStatus 갱신
             int updatedCount = updateApplyStatus(ApplyStatus.ACCEPTED, applyList);
@@ -142,18 +144,13 @@ public class ApplyCompanyService {
         }
     }
 
-    // 모집 인원 및 날짜 체크
-    private void checkRegisteredNumAndDate(WorkDate workDate, List<Apply> applyList) {
+    // 날짜 체크
+    private void checkRegisteredNumAndDate(WorkDate workDate) {
         // 출역일 2일 전까지 수락 가능
         // 5일이 출역일이면
         // 3일 수락 가능  |  4일 수락 불가능
         if (LocalDate.now().isAfter(workDate.getDate().minusDays(2))) {
             throw new CustomException(ErrorCode.WORK_DATE_NEED_TO_FUTURE);
-        }
-
-        // 모집 인원 체크
-        if (workDate.getRegisteredNum() + applyList.size() > workDate.getRecruitNum()) {
-            throw new CustomException(ErrorCode.APPLY_OVER_RECRUIT_NUM);
         }
     }
 
