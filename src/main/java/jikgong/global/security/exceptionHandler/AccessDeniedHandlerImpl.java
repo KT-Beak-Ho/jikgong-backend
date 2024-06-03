@@ -23,6 +23,7 @@ public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
     private final ObjectMapper objectMapper;
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+        log.error("접근이 거부됐습니다.");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8"); // JSON 응답을 UTF-8로 설정
         response.setStatus(HttpStatus.FORBIDDEN.value());

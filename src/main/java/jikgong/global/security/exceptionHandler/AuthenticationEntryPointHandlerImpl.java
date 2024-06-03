@@ -23,6 +23,7 @@ public class AuthenticationEntryPointHandlerImpl implements AuthenticationEntryP
     private final ObjectMapper objectMapper;
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+        log.error("인증이 필요합니다.");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8"); // JSON 응답을 UTF-8로 설정
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
