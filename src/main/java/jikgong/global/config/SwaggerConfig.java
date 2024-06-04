@@ -21,7 +21,11 @@ import java.util.Arrays;
                         "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZGVmZzIiLCJleHAiOjE3MjA5NzA4NjJ9.xy7PZ5iJ95zBkbjS8qUQH9jP4TWj6t4sAXYZMqJp5js    " +
                         "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZGVmZzMiLCJleHAiOjE3MjA5NzA4Nzl9.aDbyOOZ5_n69hcLNIAsjKa68xalsx8D8_cucljce3fw    " +
                         "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZGVmZzQiLCJleHAiOjE3MjA5NzA4OTZ9.zXCpelBa3gmy35bpDCmn_y1KzQdzUNm6K9o7fzk8VQU",
-                version = "v1"))
+                version = "v1"),
+        servers = {
+                @Server(url = "https://asdfdsas.p-e.kr", description = "Default Server"),
+                @Server(url = "http://localhost:8080", description = "Local Server")
+        })
 @Configuration
 public class SwaggerConfig {
 
@@ -36,6 +40,7 @@ public class SwaggerConfig {
                 .type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")
                 .in(SecurityScheme.In.HEADER).name("Auth");
         SecurityRequirement securityRequirement = new SecurityRequirement().addList("bearerAuth");
+
 
         return new OpenAPI()
                 .components(new Components().addSecuritySchemes("bearerAuth", securityScheme))
