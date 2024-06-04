@@ -21,6 +21,13 @@ public class LoggingInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
                                 Object handler, Exception ex) {
+        String url = request.getRequestURI();
+
+        // Swagger 관련 경로 필터링
+        if (url.startsWith("/swagger-ui") || url.startsWith("/v3/api-docs")) {
+            return;
+        }
+
         int queryCount = queryCounter.getCount();
         log.info(QUERY_COUNT_LOG, request.getMethod(), request.getRequestURI(), response.getStatus(), queryCount);
         if (queryCount >= WARN_QUERY_COUNT) {
