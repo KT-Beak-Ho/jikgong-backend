@@ -4,7 +4,7 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${DB_ENDPOINT}
+    url: jdbc:mysql://127.0.0.1:3307/jikgongDB
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
