@@ -62,9 +62,9 @@ public class SecurityConfig {
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
 
-        http.exceptionHandling()
-                .accessDeniedHandler(accessDeniedHandler) // 커스텀 AccessDeniedHandler 등록
-                .authenticationEntryPoint(authenticationEntryPointHandler); // 커스텀 AuthenticationEntryPoint 등록
+//        http.exceptionHandling()
+//                .accessDeniedHandler(accessDeniedHandler) // 커스텀 AccessDeniedHandler 등록
+//                .authenticationEntryPoint(authenticationEntryPointHandler); // 커스텀 AuthenticationEntryPoint 등록
 
         return http.build();
     }

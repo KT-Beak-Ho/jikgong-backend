@@ -36,7 +36,7 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            String authorizationHeader = request.getHeader("Auth");
+            String authorizationHeader = request.getHeader("Authorization");
             String token;
             String loginId;
             // 헤더가 null 이 아니고 올바른 토큰이라면
