@@ -24,7 +24,8 @@ import java.util.Arrays;
                 version = "v1"),
         servers = {
                 @Server(url = "https://asdfdsas.p-e.kr", description = "Default Server"),
-                @Server(url = "http://localhost:8080", description = "Local Server")
+                @Server(url = "http://localhost:8080", description = "Local Server"),
+                @Server(url = "http://14.42.195.195:8080", description = "Home Server")
         })
 @Configuration
 public class SwaggerConfig {
