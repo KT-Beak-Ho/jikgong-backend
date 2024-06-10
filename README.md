@@ -73,7 +73,8 @@ jikgong
 <br><br><br><br>
 
 ## 🛠️ Architecture
-![image](https://github.com/KT-Beak-Ho/jikgong-backend/assets/97269799/ac2e2931-ebab-4be0-9a88-1bef76fee728)
+![image](https://github.com/KT-Beak-Ho/jikgong-backend/assets/97269799/7ba4ca76-5df9-4496-b3ef-2ff7a1355a73)
+
 
 <br><br><br><br>
 ## 🛠️ ERD
