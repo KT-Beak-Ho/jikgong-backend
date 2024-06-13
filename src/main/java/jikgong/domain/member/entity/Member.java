@@ -22,11 +22,14 @@ public class Member extends BaseEntity {
     @Column(name = "member_id")
     private Long id;
 
+    @Column(unique = true)
     private String loginId; // 로그인 아이디
     private String password; // 패스워드
 
+    @Column(unique = true)
     private String phone; // 휴대폰 번호
 
+    @Column(unique = true)
     private String account; // 계좌
     private String bank; // 은행 종류
     private String deviceToken; // 기기 토큰
