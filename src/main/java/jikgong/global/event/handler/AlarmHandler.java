@@ -1,8 +1,8 @@
 package jikgong.global.event.handler;
 
 import jikgong.global.alimtalk.service.AlimTalkService;
-import jikgong.global.event.dtos.AlarmEvent;
-import jikgong.global.fcm.dtos.FCMNotificationRequestDto;
+import jikgong.global.event.dto.AlarmEvent;
+import jikgong.global.fcm.dto.FCMNotificationRequestDto;
 import jikgong.global.fcm.service.FCMNotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;

@@ -1,10 +1,7 @@
 package jikgong.global.event.handler;
 
-import jikgong.domain.notification.entity.NotificationType;
 import jikgong.domain.notification.service.NotificationService;
-import jikgong.global.event.dtos.NotificationEvent;
-import jikgong.global.fcm.dtos.FCMNotificationRequestDto;
-import jikgong.global.fcm.service.FCMNotificationService;
+import jikgong.global.event.dto.NotificationEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;

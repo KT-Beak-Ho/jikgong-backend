@@ -3,7 +3,7 @@ package jikgong.domain.searchlog.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import jikgong.domain.searchlog.entity.SearchLog;
 import jikgong.domain.searchlog.service.SearchLogService;
-import jikgong.domain.searchlog.dtos.SearchLogSaveRequest;
+import jikgong.domain.searchlog.dto.SearchLogSaveRequest;
 import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
