@@ -1,3 +1,9 @@
+/**
+ * 해당 코드는 개발 단계에서 Dummy Data를 삽입하기 위한 코드입니다.
+ * 항상 전체 주석을 유지하고
+ * 사용할 때만 주석을 풀어 사용해주세요
+ */
+
 //package jikgong;
 //
 //import jakarta.annotation.PostConstruct;
