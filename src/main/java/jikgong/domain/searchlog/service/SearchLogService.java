@@ -5,7 +5,7 @@ import jikgong.domain.member.repository.MemberRepository;
 import jikgong.domain.searchlog.entity.SearchLog;
 import jikgong.domain.searchlog.dto.SearchLogDeleteRequest;
 import jikgong.domain.searchlog.dto.SearchLogSaveRequest;
-import jikgong.global.exception.CustomException;
+import jikgong.global.exception.JikgongException;
 import jikgong.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -25,7 +25,7 @@ public class SearchLogService {
      */
     public void saveRecentSearchLog(Long memberId, SearchLogSaveRequest request) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         String now = LocalDateTime.now().toString();
         String key = "SearchLog" + member.getId();
@@ -49,7 +49,7 @@ public class SearchLogService {
      */
     public List<SearchLog> findRecentSearchLogs(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         String key = "SearchLog" + member.getId();
         List<SearchLog> logs = redisTemplate.opsForList().
@@ -63,7 +63,7 @@ public class SearchLogService {
      */
     public void deleteRecentSearchLog(Long memberId, SearchLogDeleteRequest request) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         String key = "SearchLog" + member.getId();
         SearchLog value = SearchLog.builder()
@@ -74,7 +74,7 @@ public class SearchLogService {
         long count = redisTemplate.opsForList().remove(key, 1, value);
 
         if (count == 0) {
-            throw new CustomException(ErrorCode.SEARCH_LOG_NOT_EXIST);
+            throw new JikgongException(ErrorCode.SEARCH_LOG_NOT_EXIST);
         }
     }
 }

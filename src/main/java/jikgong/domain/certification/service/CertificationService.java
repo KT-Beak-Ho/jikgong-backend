@@ -5,7 +5,7 @@ import jikgong.domain.certification.entity.Certification;
 import jikgong.domain.certification.repository.CertificationRepository;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
-import jikgong.global.exception.CustomException;
+import jikgong.global.exception.JikgongException;
 import jikgong.global.exception.ErrorCode;
 import jikgong.global.s3.ImageDto;
 import jikgong.global.s3.S3Handler;
@@ -32,7 +32,7 @@ public class CertificationService {
      */
     public Long saveCertification(Long workerId, MultipartFile file) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         ImageDto imageDto = s3Handler.uploadCertification(file);
         Certification certification = Certification.builder()
@@ -54,12 +54,12 @@ public class CertificationService {
     @Transactional(readOnly = true)
     public CertificationResponse findCertification(Long workerId) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         Certification certification = worker.getCertification();
 
         if (certification == null) {
-            throw new CustomException(ErrorCode.CERTIFICATION_NOT_FOUND);
+            throw new JikgongException(ErrorCode.CERTIFICATION_NOT_FOUND);
         }
 
         return CertificationResponse.from(certification);
@@ -70,7 +70,7 @@ public class CertificationService {
      */
     public void checkAndDeleteCertification(Long workerId) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         Certification certification = worker.getCertification();
 

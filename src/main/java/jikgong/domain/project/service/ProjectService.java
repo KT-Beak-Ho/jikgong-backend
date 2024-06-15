@@ -11,7 +11,7 @@ import jikgong.domain.project.entity.ProjectStatus;
 import jikgong.domain.project.repository.ProjectRepository;
 import jikgong.domain.workdate.entity.WorkDate;
 import jikgong.domain.workdate.repository.WorkDateRepository;
-import jikgong.global.exception.CustomException;
+import jikgong.global.exception.JikgongException;
 import jikgong.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +37,7 @@ public class ProjectService {
      */
     public Long saveProject(Long companyId, ProjectSaveRequest request) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         Project project = Project.createEntity(request, company);
 
@@ -51,7 +51,7 @@ public class ProjectService {
     @Transactional(readOnly = true)
     public List<ProjectListResponse> findProjects(Long companyId, ProjectStatus projectStatus) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         LocalDate now = LocalDate.now();
         List<Project> projectList = new ArrayList<>();
@@ -78,10 +78,10 @@ public class ProjectService {
      */
     public void updateProject(Long companyId, ProjectUpdateRequest request) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         Project project = projectRepository.findByIdAndMember(company.getId(), request.getProjectId())
-                .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.PROJECT_NOT_FOUND));
 
         project.updateProject(request);
     }
@@ -93,7 +93,7 @@ public class ProjectService {
     @Transactional(readOnly = true)
     public List<ProjectListResponse> findProjectAtSearch(Long companyId) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 준공일이 지나지 않은 project 조회
         return projectRepository.findNotCompletedProject(company.getId(), LocalDate.now()).stream()
@@ -108,7 +108,7 @@ public class ProjectService {
     @Transactional(readOnly = true)
     public ProjectDetailResponse getProjectDetail(Long projectId) {
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.PROJECT_NOT_FOUND));
 
         // 프로젝트에 해당하는 workDate 조회
         List<WorkDate> workDateList = workDateRepository.findByProject(project.getId());

@@ -18,8 +18,8 @@ public class ExceptionController {
 
     private final SlackService slackService;
 
-    @ExceptionHandler(CustomException.class)
-    public ResponseEntity<?> handleCustomException(CustomException e) {
+    @ExceptionHandler(JikgongException.class)
+    public ResponseEntity<?> handleCustomException(JikgongException e) {
         log.error("핸들링한 에러 발생");
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(e.getStatus())
@@ -44,7 +44,7 @@ public class ExceptionController {
             builder.append("]");
         }
         log.error("valid 검사 에러 발생: " + builder);
-        CustomException e = new CustomException(ErrorCode.REQUEST_INVALID);
+        JikgongException e = new JikgongException(ErrorCode.REQUEST_INVALID);
         return ResponseEntity.status(e.getStatus()).body(new Response(e.getMessage(), builder.toString()));
     }
 

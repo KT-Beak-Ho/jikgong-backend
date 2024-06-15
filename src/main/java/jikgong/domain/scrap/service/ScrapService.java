@@ -6,7 +6,7 @@ import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
 import jikgong.domain.scrap.entity.Scrap;
 import jikgong.domain.scrap.repository.ScrapRepository;
-import jikgong.global.exception.CustomException;
+import jikgong.global.exception.JikgongException;
 import jikgong.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,10 +31,10 @@ public class ScrapService {
      */
     public Boolean processScrap(Long workerId, Long jobPostId) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         JobPost jobPost = jobPostRepository.findById(jobPostId)
-                .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
 
         // 이미 스크랩 한 경우 취소
         // 그렇지 않다면 스크랩

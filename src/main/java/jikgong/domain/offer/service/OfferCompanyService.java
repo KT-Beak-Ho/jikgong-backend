@@ -19,7 +19,7 @@ import jikgong.domain.resume.repository.ResumeRepository;
 import jikgong.domain.workdate.entity.WorkDate;
 import jikgong.domain.workdate.repository.WorkDateRepository;
 import jikgong.global.event.dto.NotificationEvent;
-import jikgong.global.exception.CustomException;
+import jikgong.global.exception.JikgongException;
 import jikgong.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,9 +57,9 @@ public class OfferCompanyService {
      */
     public void offerJobPost(Long companyId, OfferRequest request) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
         Resume resume = resumeRepository.findByIdWithMember(request.getResumeId())
-                .orElseThrow(() -> new CustomException(ErrorCode.RESUME_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.RESUME_NOT_FOUND));
         Member worker = resume.getMember();
 
         List<Long> jobPostIdList = new ArrayList<>(); // 제안할 모집공고 id 리스트
@@ -80,7 +80,7 @@ public class OfferCompanyService {
 
         for (OfferJobPostRequest offerJobPostRequest : request.getOfferJobPostRequest()) {
             JobPost jobPost = jobPostRepository.findById(offerJobPostRequest.getJobPostId())
-                    .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
+                    .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
 
             List<LocalDate> dateList = new ArrayList<>();
 
@@ -113,17 +113,17 @@ public class OfferCompanyService {
     private void validationAndAddDateList(OfferJobPostRequest offerJobPostRequest, List<WorkDate> workDateEntityList, List<LocalDate> dateList) {
         // 캐시 map 에서 조회한 workDateList 와 요청한 workDateIdList 와 크기가 다를 때
         if (workDateEntityList.size() != offerJobPostRequest.getWorkDateIdList().size()) {
-            throw new CustomException(ErrorCode.WORK_DATE_NOT_MATCH);
+            throw new JikgongException(ErrorCode.WORK_DATE_NOT_MATCH);
         }
 
         // 이미 지난 공고 인지 체크
         // 출역 시각 3시간 전까지 처리 가능
         for (WorkDate workDate : workDateEntityList) {
             if (LocalDate.now().isAfter(workDate.getDate())) {
-                throw new CustomException(ErrorCode.WORK_DATE_NEED_TO_FUTURE);
+                throw new JikgongException(ErrorCode.WORK_DATE_NEED_TO_FUTURE);
             }
             if (LocalDate.now().isEqual(workDate.getDate()) && LocalTime.now().plusHours(3L).isAfter(workDate.getJobPost().getStartTime())) {
-                throw new CustomException(ErrorCode.WORK_DATE_NEED_TO_FUTURE);
+                throw new JikgongException(ErrorCode.WORK_DATE_NEED_TO_FUTURE);
             }
             dateList.add(workDate.getDate());
         }
@@ -153,7 +153,7 @@ public class OfferCompanyService {
     @Transactional(readOnly = true)
     public Page<OfferHistoryResponse> findOfferHistory(Long companyId, OfferStatus offerStatus, Pageable pageable) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         Page<Offer> offerHistoryPage = offerRepository.findOfferHistory(company.getId(), offerStatus, pageable);
         List<OfferHistoryResponse> offerHistoryResponseList = offerHistoryPage.getContent().stream()
@@ -168,17 +168,17 @@ public class OfferCompanyService {
      */
     public void cancelOffer(Long companyId, Long offerId) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         Offer offer = offerRepository.findByIdAndMember(company.getId(), offerId)
-                .orElseThrow(() -> new CustomException(ErrorCode.OFFER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.OFFER_NOT_FOUND));
 
         List<OfferWorkDate> offerWorkDateList = offer.getOfferWorkDateList();
 
         // 제안 날짜 중 제안 대기중이지 않은 날짜가 있는지 체크
         for (OfferWorkDate offerWorkDate : offerWorkDateList) {
             if (offerWorkDate.getOfferWorkDateStatus() != OfferWorkDateStatus.OFFER_PENDING) {
-                throw new CustomException(ErrorCode.OFFER_CANT_CANCEL);
+                throw new JikgongException(ErrorCode.OFFER_CANT_CANCEL);
             }
         }
 

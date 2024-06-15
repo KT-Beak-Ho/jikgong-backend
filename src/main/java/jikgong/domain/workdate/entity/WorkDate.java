@@ -3,7 +3,7 @@ package jikgong.domain.workdate.entity;
 import jakarta.persistence.*;
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.jobpost.entity.JobPost;
-import jikgong.global.exception.CustomException;
+import jikgong.global.exception.JikgongException;
 import jikgong.global.exception.ErrorCode;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -47,7 +47,7 @@ public class WorkDate {
 
     public void plusRegisteredNum(Integer updateCount) {
         if (this.registeredNum + updateCount > this.recruitNum) {
-            throw new CustomException(ErrorCode.APPLY_OVER_RECRUIT_NUM);
+            throw new JikgongException(ErrorCode.APPLY_OVER_RECRUIT_NUM);
         }
         this.registeredNum += updateCount;
     }

@@ -3,7 +3,7 @@ package jikgong.global.security.service;
 import jikgong.global.security.principal.MemberDto;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
-import jikgong.global.exception.CustomException;
+import jikgong.global.exception.JikgongException;
 import jikgong.global.exception.ErrorCode;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public PrincipalDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
         log.info("loadUserByUsername 실행");
         Member findMember = memberRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
         MemberDto memberDto = MemberDto.builder()
                 .id(findMember.getId())
                 .role(findMember.getRole())

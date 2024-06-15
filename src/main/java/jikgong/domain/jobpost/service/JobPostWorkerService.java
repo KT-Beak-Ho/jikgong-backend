@@ -13,7 +13,7 @@ import jikgong.domain.location.repository.LocationRepository;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
 import jikgong.domain.scrap.repository.ScrapRepository;
-import jikgong.global.exception.CustomException;
+import jikgong.global.exception.JikgongException;
 import jikgong.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +46,7 @@ public class JobPostWorkerService {
     @Transactional(readOnly = true)
     public Page<JobPostListResponse> getMainPageForMember(Long memberId, List<Tech> techList, List<LocalDate> workDateList, Boolean scrap, Boolean meal, Park park, SortType sortType, Pageable pageable) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
         Location location = locationRepository.findMainLocationByMemberId(member.getId())
                 .orElse(null);
 
@@ -92,10 +92,10 @@ public class JobPostWorkerService {
     @Transactional(readOnly = true)
     public JobPostDetailResponse getJobPostDetailForMember(Long workerId, Long jobPostId) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         JobPost jobPost = jobPostRepository.findByIdWithMember(jobPostId)
-                .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
 
         Location location = locationRepository.findMainLocationByMemberId(worker.getId())
                 .orElse(null);
@@ -109,7 +109,7 @@ public class JobPostWorkerService {
     @Transactional(readOnly = true)
     public JobPostDetailResponse getJobPostDetailForNonMember(Long jobPostId) {
         JobPost jobPost = jobPostRepository.findByIdWithMember(jobPostId)
-                .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
 
         return JobPostDetailResponse.from(jobPost, null);
     }
@@ -120,7 +120,7 @@ public class JobPostWorkerService {
     @Transactional(readOnly = true)
     public List<JobPostMapResponse> findJobPostsOnMapForMember(Long workerId, Float northEastLat, Float northEastLng, Float southWestLat, Float southWestLng, List<Tech> techList, List<LocalDate> dateList, Boolean scrap) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         return jobPostRepository.findJobPostOnMap(worker.getId(), northEastLat, northEastLng, southWestLat, southWestLng, techList, dateList, scrap).stream()
                 .map(JobPostMapResponse::from)

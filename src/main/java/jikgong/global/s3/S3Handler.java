@@ -4,7 +4,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import jikgong.global.exception.CustomException;
+import jikgong.global.exception.JikgongException;
 import jikgong.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,13 +35,13 @@ public class S3Handler {
         String contentType = file.getContentType();
 
         if (ObjectUtils.isEmpty(contentType)) {
-            throw new CustomException(ErrorCode.FILE_NOT_FOUND_EXTENSION);
+            throw new JikgongException(ErrorCode.FILE_NOT_FOUND_EXTENSION);
         } else { //확장자명이 jpeg, png 인 파일들만 받아서 처리
             if (contentType.contains("image/jpeg")) extension = ".jpg";
             else if (contentType.contains("image/png")) extension = ".png";
             else {
                 log.error("사진이 아닌 파일 입니다.");
-                throw new CustomException(ErrorCode.FILE_NOT_SUPPORTED);
+                throw new JikgongException(ErrorCode.FILE_NOT_SUPPORTED);
             }
         }
 
@@ -52,7 +52,7 @@ public class S3Handler {
         try {
             inputStream = file.getInputStream();
         } catch (IOException e) {
-            throw new CustomException(ErrorCode.IMAGE_EXCEPTION);
+            throw new JikgongException(ErrorCode.IMAGE_EXCEPTION);
         }
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(file.getSize());
@@ -87,13 +87,13 @@ public class S3Handler {
             String contentType = file.getContentType();
 
             if (ObjectUtils.isEmpty(contentType)) {
-                throw new CustomException(ErrorCode.FILE_NOT_FOUND_EXTENSION);
+                throw new JikgongException(ErrorCode.FILE_NOT_FOUND_EXTENSION);
             } else { //확장자명이 jpeg, png 인 파일들만 받아서 처리
                 if (contentType.contains("image/jpeg")) extension = ".jpg";
                 else if (contentType.contains("image/png")) extension = ".png";
                 else {
                     log.error("사진이 아닌 파일 입니다.");
-                    throw new CustomException(ErrorCode.FILE_NOT_SUPPORTED);
+                    throw new JikgongException(ErrorCode.FILE_NOT_SUPPORTED);
                 }
             }
             // unique 이름 생성
@@ -107,7 +107,7 @@ public class S3Handler {
             try {
                 inputStream = file.getInputStream();
             } catch (IOException e) {
-                throw new CustomException(ErrorCode.IMAGE_EXCEPTION);
+                throw new JikgongException(ErrorCode.IMAGE_EXCEPTION);
             }
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(file.getSize());
@@ -140,7 +140,7 @@ public class S3Handler {
                 DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(bucket, storeImgName);
                 amazonS3Client.deleteObject(deleteObjectRequest);
             } else {
-                throw new CustomException(ErrorCode.S3_NOT_FOUND_FILE_NAME);
+                throw new JikgongException(ErrorCode.S3_NOT_FOUND_FILE_NAME);
             }
         }
         log.info("S3 파일 삭제 작업 완료");
@@ -157,7 +157,7 @@ public class S3Handler {
         if (amazonS3Client.doesObjectExist(bucket, fileName)) {
             return amazonS3Client.getUrl(bucket, fileName).toString();
         } else {
-            throw new CustomException(ErrorCode.S3_NOT_FOUND_FILE_NAME);
+            throw new JikgongException(ErrorCode.S3_NOT_FOUND_FILE_NAME);
         }
     }
 
@@ -172,7 +172,7 @@ public class S3Handler {
                 return amazonS3Client.getUrl(bucket, fileName).toString();
             } else {
                 // 두 버킷 모두에 파일이 없을 경우 예외 발생
-                throw new CustomException(ErrorCode.S3_NOT_FOUND_FILE_NAME);
+                throw new JikgongException(ErrorCode.S3_NOT_FOUND_FILE_NAME);
             }
         }
     }

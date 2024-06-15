@@ -11,7 +11,7 @@ import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
 import jikgong.domain.workdate.entity.WorkDate;
 import jikgong.domain.workdate.repository.WorkDateRepository;
-import jikgong.global.exception.CustomException;
+import jikgong.global.exception.JikgongException;
 import jikgong.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,11 +45,11 @@ public class ApplyCompanyService {
     @Transactional(readOnly = true)
     public Page<ApplyManageResponse> findPendingApplyHistoryCompany(Long companyId, Long jobPostId, Long workDateId, Pageable pageable) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
         JobPost jobPost = jobPostRepository.findByIdAndMember(company.getId(), jobPostId)
-                .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
         WorkDate workDate = workDateRepository.findById(workDateId)
-                .orElseThrow(() -> new CustomException(ErrorCode.WORK_DATE_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.WORK_DATE_NOT_FOUND));
 
         Page<Apply> applyPage = applyRepository.findApplyForCompanyByApplyStatus(company.getId(), jobPost.getId(), workDate.getId(), ApplyStatus.PENDING, pageable);
 
@@ -67,11 +67,11 @@ public class ApplyCompanyService {
     @Transactional(readOnly = true)
     public Page<ApplyManageResponse> findAcceptedHistoryCompany(Long companyId, Long jobPostId, Long workDateId, Pageable pageable) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
         JobPost jobPost = jobPostRepository.findByIdAndMember(company.getId(), jobPostId)
-                .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
         WorkDate workDate = workDateRepository.findById(workDateId)
-                .orElseThrow(() -> new CustomException(ErrorCode.WORK_DATE_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.WORK_DATE_NOT_FOUND));
 
         Page<Apply> applyPage = applyRepository.findApplyForCompanyByApplyStatus(company.getId(), jobPost.getId(), workDate.getId(), ApplyStatus.ACCEPTED, pageable);
 
@@ -89,13 +89,13 @@ public class ApplyCompanyService {
      */
     public void processApply(Long companyId, ApplyProcessRequest request) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
         JobPost jobPost = jobPostRepository.findByIdAndMember(company.getId(), request.getJobPostId())
-                .orElseThrow(() -> new CustomException(ErrorCode.JOB_POST_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
 
         // workDate에 대한 Lock
         WorkDate workDate = workDateRepository.findByIdWithLock(request.getWorkDateId())
-                .orElseThrow(() -> new CustomException(ErrorCode.WORK_DATE_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.WORK_DATE_NOT_FOUND));
 
         // 대기 중인 요청인지 체크
         List<Apply> applyList = checkPendingApply(request, workDate, jobPost);
@@ -139,7 +139,7 @@ public class ApplyCompanyService {
             String acceptedWorkerNames = acceptedApply.stream()
                     .map(worker -> worker.getMember().getWorkerInfo().getWorkerName())
                     .collect(Collectors.joining(", "));
-            throw new CustomException(HttpStatus.BAD_REQUEST, acceptedWorkerNames + " 은 이미 확정된 일자리가 있습니다.");
+            throw new JikgongException(HttpStatus.BAD_REQUEST, acceptedWorkerNames + " 은 이미 확정된 일자리가 있습니다.");
         }
     }
 
@@ -149,7 +149,7 @@ public class ApplyCompanyService {
         // 5일이 출역일이면
         // 3일 수락 가능  |  4일 수락 불가능
         if (LocalDate.now().isAfter(workDate.getDate().minusDays(2))) {
-            throw new CustomException(ErrorCode.WORK_DATE_NEED_TO_FUTURE);
+            throw new JikgongException(ErrorCode.WORK_DATE_NEED_TO_FUTURE);
         }
     }
 
@@ -158,7 +158,7 @@ public class ApplyCompanyService {
         List<Apply> applyList = applyRepository.findByIdList(request.getApplyIdList(), workDate.getId(), jobPost.getId());
         for (Apply apply : applyList) {
             if (apply.getStatus() != ApplyStatus.PENDING) {
-                throw new CustomException(ErrorCode.APPLY_NEED_TO_PENDING);
+                throw new JikgongException(ErrorCode.APPLY_NEED_TO_PENDING);
             }
         }
         return applyList;

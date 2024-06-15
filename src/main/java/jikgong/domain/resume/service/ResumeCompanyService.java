@@ -10,7 +10,7 @@ import jikgong.domain.project.repository.ProjectRepository;
 import jikgong.domain.resume.dto.company.ResumeListResponse;
 import jikgong.domain.resume.entity.Resume;
 import jikgong.domain.resume.repository.ResumeRepository;
-import jikgong.global.exception.CustomException;
+import jikgong.global.exception.JikgongException;
 import jikgong.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,10 +36,10 @@ public class ResumeCompanyService {
     @Transactional(readOnly = true)
     public Page<ResumeListResponse> findResumeList(Long companyId, Long projectId, Tech tech, Float bound, SortType sortType, Pageable pageable) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         Project project = projectRepository.findByIdAndMember(company.getId(), projectId)
-                .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.PROJECT_NOT_FOUND));
 
         // querydsl
         return resumeRepository.findHeadHuntingMemberList(project.getAddress(), tech, bound, sortType, pageable);
@@ -52,10 +52,10 @@ public class ResumeCompanyService {
     @Transactional(readOnly = true)
     public ResumeDetailResponse findResumeDetail(Long companyId, Long resumeId) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         Resume resume = resumeRepository.findByIdWithMember(resumeId)
-                .orElseThrow(() -> new CustomException(ErrorCode.RESUME_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.RESUME_NOT_FOUND));
 
 //        // 이미 확정된 apply 월별 조회
 //        List<Apply> findCantWorkDate = applyRepository.findCantWorkDate(

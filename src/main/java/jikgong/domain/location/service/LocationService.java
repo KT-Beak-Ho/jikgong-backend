@@ -10,7 +10,7 @@ import jikgong.domain.location.entity.Location;
 import jikgong.domain.location.repository.LocationRepository;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
-import jikgong.global.exception.CustomException;
+import jikgong.global.exception.JikgongException;
 import jikgong.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +36,7 @@ public class LocationService {
      */
     public Long saveLocation(Long workerId, LocationSaveRequest request) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 기존 main location 이 있다면 해지
         if (request.getIsMain()) {
@@ -61,7 +61,7 @@ public class LocationService {
     @Transactional(readOnly = true)
     public List<LocationResponse> findLocationByMember(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         List<LocationResponse> locationResponseList = locationRepository.findByMemberId(member.getId()).stream()
                 .map(LocationResponse::from)
@@ -75,13 +75,13 @@ public class LocationService {
      */
     public void changeMainLocation(Long memberId, Long locationId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         Location location = locationRepository.findByIdAndMember(member.getId(), locationId)
-                .orElseThrow(() -> new CustomException(ErrorCode.LOCATION_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.LOCATION_NOT_FOUND));
 
         // 요청한 locationId 가 이미 main 이라면
-        if (location.getIsMain()) throw new CustomException(ErrorCode.LOCATION_ALREADY_MAIN);
+        if (location.getIsMain()) throw new JikgongException(ErrorCode.LOCATION_ALREADY_MAIN);
 
         Optional<Location> mainLocation = locationRepository.findMainLocationByMemberId(memberId);
         if (mainLocation.isPresent()) {
@@ -95,10 +95,10 @@ public class LocationService {
      */
     public void updateLocation(Long memberId, LocationUpdateRequest request) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         Location location = locationRepository.findByIdAndMember(member.getId(), request.getLocationId())
-                .orElseThrow(() -> new CustomException(ErrorCode.LOCATION_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.LOCATION_NOT_FOUND));
 
         location.updateLocation(request);
     }
@@ -108,7 +108,7 @@ public class LocationService {
      */
     public void deleteLocation(Long memberId, Long locationId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         locationRepository.deleteById(member.getId(), locationId);
     }
@@ -118,7 +118,7 @@ public class LocationService {
      */
     public void deleteLocations(Long memberId, LocationDeleteRequest request) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         locationRepository.deleteByIdList(member.getId(), request.getLocationIdList());
     }

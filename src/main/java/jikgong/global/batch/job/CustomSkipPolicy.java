@@ -1,12 +1,8 @@
 package jikgong.global.batch.job;
 
-import jikgong.global.exception.CustomException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.step.skip.SkipPolicy;
 import org.springframework.stereotype.Component;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 @Slf4j

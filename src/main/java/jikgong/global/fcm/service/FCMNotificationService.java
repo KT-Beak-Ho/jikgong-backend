@@ -5,7 +5,7 @@ import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
-import jikgong.global.exception.CustomException;
+import jikgong.global.exception.JikgongException;
 import jikgong.global.exception.ErrorCode;
 import jikgong.global.fcm.dto.FCMNotificationRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class FCMNotificationService {
     public void sendNotificationByToken(FCMNotificationRequestDto requestDto) {
 
         Member member = memberRepository.findById(requestDto.getTargetMemberId())
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         if (member.getDeviceToken() != null) {
             Notification notification = Notification.builder()
@@ -45,7 +45,7 @@ public class FCMNotificationService {
 //                throw new CustomException(ErrorCode.FCM_ERROR);
 //            }
         } else {
-            throw new CustomException(ErrorCode.FCM_FIREBASE_TOKEN_NOT_FOUND);
+            throw new JikgongException(ErrorCode.FCM_FIREBASE_TOKEN_NOT_FOUND);
         }
     }
 }

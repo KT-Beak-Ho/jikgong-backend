@@ -13,7 +13,7 @@ import jikgong.domain.offer.dto.worker.ReceivedOfferResponse;
 import jikgong.domain.offerworkdate.entity.OfferWorkDate;
 import jikgong.domain.offerworkdate.repository.OfferWorkDateRepository;
 import jikgong.domain.workdate.entity.WorkDate;
-import jikgong.global.exception.CustomException;
+import jikgong.global.exception.JikgongException;
 import jikgong.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +42,7 @@ public class OfferWorkerService {
     @Transactional(readOnly = true)
     public List<ReceivedOfferResponse> findReceivedOffer(Long workerId, Boolean isPending) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
         List<OfferWorkDate> offerWorkDateList;
         if (isPending) {
             // 대기 중인 제안 목록
@@ -64,10 +64,10 @@ public class OfferWorkerService {
      */
     public void processOffer(Long workerId, OfferProcessRequest request) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         OfferWorkDate offerWorkDate = offerWorkDateRepository.findByIdWithWorkDate(request.getOfferWorkDateId())
-                .orElseThrow(() -> new CustomException(ErrorCode.OFFER_WORK_DATE_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.OFFER_WORK_DATE_NOT_FOUND));
 
         // workDate 조회
         WorkDate workDate = offerWorkDate.getWorkDate();
@@ -77,7 +77,7 @@ public class OfferWorkerService {
 
         // 요청에 따라 Apply 삭제 or status 업데이트
         Apply offeredApply = applyRepository.findOfferedApply(worker.getId(), workDate.getId())
-                .orElseThrow(() -> new CustomException(ErrorCode.APPLY_OFFERED_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.APPLY_OFFERED_NOT_FOUND));
 
         // 수락일 때
         if (request.getIsAccept()) {
@@ -109,17 +109,17 @@ public class OfferWorkerService {
     private void validationBeforeProcessOffer(WorkDate workDate, Member worker) {
         // 인원 마감 체크
         if (workDate.getRecruitNum() <= workDate.getRegisteredNum()) {
-            throw new CustomException(ErrorCode.RECRUITMENT_FULL);
+            throw new JikgongException(ErrorCode.RECRUITMENT_FULL);
         }
 
         // 출역일 최소 2일전 승인
         if (LocalDate.now().isAfter(workDate.getDate().minusDays(2L))) {
-            throw new CustomException(ErrorCode.WORK_DATE_NEED_TO_FUTURE);
+            throw new JikgongException(ErrorCode.WORK_DATE_NEED_TO_FUTURE);
         }
 
         // 수락 하려는 날짜에 출역 날짜가 확정된 기록이 있는지 체크
         if (applyRepository.findAcceptedApplyByWorkDate(worker.getId(), workDate.getDate()) != 0) {
-            throw new CustomException(ErrorCode.APPLY_ALREADY_ACCEPTED_IN_WORKDATE);
+            throw new JikgongException(ErrorCode.APPLY_ALREADY_ACCEPTED_IN_WORKDATE);
         }
     }
 
@@ -130,10 +130,10 @@ public class OfferWorkerService {
     @Transactional(readOnly = true)
     public OfferJobPostResponse getJobPostDetailForOffer(Long workerId, Long offerWorkDateId) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         OfferWorkDate offerWorkDate = offerWorkDateRepository.findByIdAtProcessOffer(offerWorkDateId)
-                .orElseThrow(() -> new CustomException(ErrorCode.OFFER_WORK_DATE_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.OFFER_WORK_DATE_NOT_FOUND));
 
         WorkDate workDate = offerWorkDate.getWorkDate();
 
@@ -142,7 +142,7 @@ public class OfferWorkerService {
 
         // 대표 위치 조회
         Location location = locationRepository.findMainLocationByMemberId(worker.getId())
-                .orElseThrow(() -> new CustomException(ErrorCode.LOCATION_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.LOCATION_NOT_FOUND));
 
         return OfferJobPostResponse.from(offerWorkDate, acceptedApply, location);
     }

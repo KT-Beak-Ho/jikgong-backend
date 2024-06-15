@@ -1,7 +1,6 @@
 package jikgong.global.batch.scheduler;
 
-import jikgong.global.batch.job.ApplyJobConfig;
-import jikgong.global.exception.CustomException;
+import jikgong.global.exception.JikgongException;
 import jikgong.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +35,7 @@ public class ApplyCancelScheduler {
         try {
             jobLauncher.run(applyJobConfig, jobParameters);
         } catch (Exception e) {
-            throw new CustomException(ErrorCode.SCHEDULER_INTERNAL_ERROR);
+            throw new JikgongException(ErrorCode.SCHEDULER_INTERNAL_ERROR);
         }
     }
 }

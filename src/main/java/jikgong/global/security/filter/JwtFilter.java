@@ -7,7 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jikgong.global.common.Response;
-import jikgong.global.exception.CustomException;
+import jikgong.global.exception.JikgongException;
 import jikgong.global.exception.ErrorCode;
 import jikgong.global.security.principal.PrincipalDetails;
 import jikgong.global.security.service.CustomUserDetailsService;
@@ -46,7 +46,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 // 만료 체크
                 if (jwtProvider.isExpiration(token)) {
                     log.info("access token 만료");
-                    throw new CustomException(ErrorCode.ACCESS_TOKEN_EXPIRED);
+                    throw new JikgongException(ErrorCode.ACCESS_TOKEN_EXPIRED);
                 }
 
                 // claim 을 받아와 정보 추출
@@ -62,7 +62,7 @@ public class JwtFilter extends OncePerRequestFilter {
             }
 
             filterChain.doFilter(request, response);
-        } catch (CustomException e) {
+        } catch (JikgongException e) {
             // response 세팅
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json;charset=UTF-8"); // JSON 응답을 UTF-8로 설정
