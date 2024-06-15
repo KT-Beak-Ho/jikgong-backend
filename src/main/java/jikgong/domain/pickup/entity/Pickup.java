@@ -1,6 +1,11 @@
 package jikgong.domain.pickup.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jikgong.domain.jobpost.entity.JobPost;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -12,7 +17,8 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Pickup {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "pickup_id")
     private Long id;
 

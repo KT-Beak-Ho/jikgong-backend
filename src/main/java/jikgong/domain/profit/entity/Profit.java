@@ -18,7 +18,9 @@ import java.time.LocalTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Profit {
-    @Id @GeneratedValue
+
+    @Id
+    @GeneratedValue
     @Column(name = "profit_id")
     private Long id;
 
@@ -37,7 +39,8 @@ public class Profit {
     private Member member;
 
     @Builder
-    public Profit(String title, LocalDate date, LocalTime startTime, LocalTime endTime, Integer wage, Tech tech, Member member, ProfitType profitType) {
+    public Profit(String title, LocalDate date, LocalTime startTime, LocalTime endTime, Integer wage, Tech tech,
+        Member member, ProfitType profitType) {
         this.title = title;
         this.date = date;
         this.startTime = startTime;
@@ -50,15 +53,15 @@ public class Profit {
 
     public static Profit createEntity(ProfitSaveRequest request, Member member) {
         return Profit.builder()
-                .title(request.getTitle())
-                .date(request.getDate())
-                .startTime(request.getStartTime())
-                .endTime(request.getEndTime())
-                .wage(request.getWage())
-                .tech(request.getTech())
-                .profitType(request.getWageType())
-                .member(member)
-                .build();
+            .title(request.getTitle())
+            .date(request.getDate())
+            .startTime(request.getStartTime())
+            .endTime(request.getEndTime())
+            .wage(request.getWage())
+            .tech(request.getTech())
+            .profitType(request.getWageType())
+            .member(member)
+            .build();
     }
 
     // 임금 지급 내역 수정

@@ -1,6 +1,9 @@
 package jikgong.global.security.principal;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,15 +12,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @ToString
 public class PrincipalDetails implements UserDetails {
+
     private MemberDto member;
 
     @JsonIgnore

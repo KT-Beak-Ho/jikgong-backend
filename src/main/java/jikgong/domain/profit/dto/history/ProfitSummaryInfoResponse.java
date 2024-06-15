@@ -8,6 +8,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class ProfitSummaryInfoResponse {
+
     private Integer totalWorkTime;
     private Integer totalWage;
 }

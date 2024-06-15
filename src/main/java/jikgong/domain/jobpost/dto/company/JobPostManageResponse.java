@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 @Getter
 @Builder
 public class JobPostManageResponse {
+
     private Long jobPostId;
     private Tech tech; // 인부 타입
     private Integer recruitNum;
@@ -26,16 +27,16 @@ public class JobPostManageResponse {
 
     public static JobPostManageResponse from(JobPost jobPost) {
         return JobPostManageResponse.builder()
-                .jobPostId(jobPost.getId())
-                .tech(jobPost.getTech())
-                .recruitNum(jobPost.getRecruitNum())
-                .startDate(jobPost.getStartDate())
-                .endDate(jobPost.getEndDate())
-                .startTime(jobPost.getStartTime())
-                .endTime(jobPost.getEndTime())
-                .wage(jobPost.getWage())
-                .workDateResponseList(jobPost.getWorkDateList().stream().map(WorkDateResponse::from).collect(Collectors.toList()))
-                .build();
-
+            .jobPostId(jobPost.getId())
+            .tech(jobPost.getTech())
+            .recruitNum(jobPost.getRecruitNum())
+            .startDate(jobPost.getStartDate())
+            .endDate(jobPost.getEndDate())
+            .startTime(jobPost.getStartTime())
+            .endTime(jobPost.getEndTime())
+            .wage(jobPost.getWage())
+            .workDateResponseList(
+                jobPost.getWorkDateList().stream().map(WorkDateResponse::from).collect(Collectors.toList()))
+            .build();
     }
 }

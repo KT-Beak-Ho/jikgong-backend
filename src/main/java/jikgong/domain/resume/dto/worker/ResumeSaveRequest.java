@@ -13,6 +13,7 @@ import java.util.List;
 @Getter
 @ToString
 public class ResumeSaveRequest {
+
     // 경력
     @Schema(description = "경력 (년)", example = "15")
     private Integer career;

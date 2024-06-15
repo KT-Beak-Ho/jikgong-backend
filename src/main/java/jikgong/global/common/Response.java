@@ -10,6 +10,7 @@ import lombok.ToString;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ToString
 public class Response<T> {
+
     private T data;
     private String message;
 

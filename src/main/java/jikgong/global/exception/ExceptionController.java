@@ -22,10 +22,10 @@ public class ExceptionController {
     public ResponseEntity<?> handleCustomException(JikgongException e) {
         log.error("핸들링한 에러 발생");
         ErrorResponse errorResponse = ErrorResponse.builder()
-                .status(e.getStatus())
-                .code(e.getStatus().value())
-                .errorMessage(e.getErrorMessage())
-                .build();
+            .status(e.getStatus())
+            .code(e.getStatus().value())
+            .errorMessage(e.getErrorMessage())
+            .build();
         return ResponseEntity.status(e.getStatus()).body(new Response<>(errorResponse, "커스텀 예외 반환"));
     }
 

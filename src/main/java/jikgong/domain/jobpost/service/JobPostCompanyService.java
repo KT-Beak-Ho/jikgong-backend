@@ -6,7 +6,6 @@ import jikgong.domain.jobpost.entity.JobPostStatus;
 import jikgong.domain.jobpost.repository.JobPostRepository;
 import jikgong.domain.jobpostimage.entity.JobPostImage;
 import jikgong.domain.jobpostimage.repository.JobPostImageRepository;
-import jikgong.domain.jobpostimage.service.JobPostImageService;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
 import jikgong.domain.jobpost.dto.company.JobPostResponseForOffer;
@@ -37,9 +36,9 @@ import java.util.stream.Collectors;
 @Transactional
 @Slf4j
 public class JobPostCompanyService {
+
     private final JobPostRepository jobPostRepository;
     private final JobPostImageRepository jobPostImageRepository;
-    private final JobPostImageService jobPostImageService;
     private final MemberRepository memberRepository;
     private final PickupRepository pickupRepository;
     private final WorkDateRepository workDateRepository;
@@ -52,10 +51,10 @@ public class JobPostCompanyService {
      */
     public Long saveJobPost(Long companyId, JobPostSaveRequest request, List<MultipartFile> imageList) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         Project project = projectRepository.findByIdAndMember(company.getId(), request.getProjectId())
-                .orElseThrow(() -> new JikgongException(ErrorCode.PROJECT_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.PROJECT_NOT_FOUND));
 
         // 모집 공고 저장
         JobPost jobPost = JobPost.createEntityByJobPost(request, company, project);
@@ -64,22 +63,22 @@ public class JobPostCompanyService {
         // 픽업 정보 저장
         if (request.getPickup()) {
             List<Pickup> pickupLocationList = request.getPickupList().stream()
-                    .map(address -> new Pickup(address, savedJobPost))
-                    .collect(Collectors.toList());
+                .map(address -> new Pickup(address, savedJobPost))
+                .collect(Collectors.toList());
             pickupRepository.saveAll(pickupLocationList);
         }
 
         // 날짜 정보 저장
         List<WorkDate> workDateList = request.getDateList().stream()
-                .map(date -> new WorkDate(date, request.getRecruitNum(), savedJobPost))
-                .collect(Collectors.toList());
+            .map(date -> new WorkDate(date, request.getRecruitNum(), savedJobPost))
+            .collect(Collectors.toList());
         workDateRepository.saveAll(workDateList);
 
         // 이미지 업로드 및 저장
         List<ImageDto> imageDtoList = s3Handler.uploadImageList(imageList);
         List<JobPostImage> jobPostImageList = imageDtoList.stream()
-                .map(imageDto -> JobPostImage.createEntity(imageDto, savedJobPost))
-                .collect(Collectors.toList());
+            .map(imageDto -> JobPostImage.createEntity(imageDto, savedJobPost))
+            .collect(Collectors.toList());
         jobPostImageRepository.saveAll(jobPostImageList);
 
         return savedJobPost.getId();
@@ -90,12 +89,13 @@ public class JobPostCompanyService {
      * 필터: 완료됨 | 진행 중 | 예정
      */
     @Transactional(readOnly = true)
-    public List<JobPostListResponse> findJobPostsByMemberAndProject(Long companyId, JobPostStatus jobPostStatus, Long projectId, Pageable pageable) {
+    public List<JobPostListResponse> findJobPostsByMemberAndProject(Long companyId, JobPostStatus jobPostStatus,
+        Long projectId, Pageable pageable) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         Project project = projectRepository.findByIdAndMember(company.getId(), projectId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.PROJECT_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.PROJECT_NOT_FOUND));
 
         LocalDate now = LocalDate.now();
         List<JobPost> jobPostList = new ArrayList<>();
@@ -109,8 +109,8 @@ public class JobPostCompanyService {
         }
 
         return jobPostList.stream()
-                .map(JobPostListResponse::from)
-                .collect(Collectors.toList());
+            .map(JobPostListResponse::from)
+            .collect(Collectors.toList());
     }
 
     /**
@@ -119,7 +119,7 @@ public class JobPostCompanyService {
     @Transactional(readOnly = true)
     public JobPostManageResponse findJobPostForManage(Long jobPostId) {
         JobPost jobPost = jobPostRepository.findById(jobPostId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
 
         return JobPostManageResponse.from(jobPost);
     }
@@ -130,11 +130,11 @@ public class JobPostCompanyService {
     @Transactional(readOnly = true)
     public List<TemporaryListResponse> findTemporaryJobPosts(Long companyId) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         return jobPostRepository.findTemporaryJobPostByMemberId(company.getId()).stream()
-                .map(TemporaryListResponse::from)
-                .collect(Collectors.toList());
+            .map(TemporaryListResponse::from)
+            .collect(Collectors.toList());
     }
 
     /**
@@ -142,9 +142,9 @@ public class JobPostCompanyService {
      */
     public void deleteTemporaryJobPost(Long companyId, Long jobPostId) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
         JobPost jobPost = jobPostRepository.findTemporaryForDelete(company.getId(), jobPostId, true)
-                .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
 
         // todo: cascade 빼고 delete 쿼리 날리는 방향으로 생각 해보자
 
@@ -170,10 +170,10 @@ public class JobPostCompanyService {
      */
     public Long saveTemporary(Long companyId, TemporarySaveRequest request) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         Project project = projectRepository.findByIdAndMember(company.getId(), request.getProjectId())
-                    .orElseThrow(() -> new JikgongException(ErrorCode.PROJECT_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.PROJECT_NOT_FOUND));
 
         // 모집 공고 저장
         JobPost jobPost = JobPost.createEntityByTemporary(request, company, project);
@@ -183,8 +183,8 @@ public class JobPostCompanyService {
         if (request.getPickup()) {
             if (request.getPickupList() != null) {
                 List<Pickup> pickupLocationList = request.getPickupList().stream()
-                        .map(address -> new Pickup(address, savedJobPost))
-                        .collect(Collectors.toList());
+                    .map(address -> new Pickup(address, savedJobPost))
+                    .collect(Collectors.toList());
                 pickupRepository.saveAll(pickupLocationList);
             }
         }
@@ -192,8 +192,8 @@ public class JobPostCompanyService {
         // 날짜 정보 저장
         if (request.getWorkDateList() != null) {
             List<WorkDate> workDayList = request.getWorkDateList().stream()
-                    .map(workDay -> new WorkDate(workDay, request.getRecruitNum(), savedJobPost))
-                    .collect(Collectors.toList());
+                .map(workDay -> new WorkDate(workDay, request.getRecruitNum(), savedJobPost))
+                .collect(Collectors.toList());
             workDateRepository.saveAll(workDayList);
         }
 
@@ -211,14 +211,13 @@ public class JobPostCompanyService {
     @Transactional(readOnly = true)
     public JobPostResponseForOffer findAvailableJobPosts(Long companyId, Long workerId, Long projectId) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         Project project = projectRepository.findByIdAndMember(company.getId(), projectId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.PROJECT_NOT_FOUND));
-
+            .orElseThrow(() -> new JikgongException(ErrorCode.PROJECT_NOT_FOUND));
 
 //        // 노동자 작업 불가능한 날짜 조회
 //        List<LocalDate> cantWorkDate = applyRepository.findAllCantWorkDate(worker.getId()).stream()

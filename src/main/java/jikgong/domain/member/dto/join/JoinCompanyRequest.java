@@ -10,6 +10,7 @@ import lombok.*;
 @Getter
 @ToString
 public class JoinCompanyRequest {
+
     // 공통 정보
     @Schema(description = "로그인 아이디", example = "abcdefg1")
     private String loginId; // 인증 코드

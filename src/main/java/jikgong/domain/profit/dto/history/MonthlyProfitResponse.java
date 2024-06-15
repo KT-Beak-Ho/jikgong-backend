@@ -11,6 +11,7 @@ import java.util.List;
 @Getter
 @Builder
 public class MonthlyProfitResponse {
+
     private Integer wageInMonth; // 한달 임금 합
     private String workTimeInMonth; // 한달 근무 시간 합
     private List<LocalDate> workDateList; // 해당 월 일한 날짜

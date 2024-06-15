@@ -14,13 +14,13 @@ public class LoggingInterceptor implements HandlerInterceptor {
 
     private static final String QUERY_COUNT_LOG = "METHOD: {}, URL: {}, STATUS_CODE: {}, QUERY_COUNT: {}";
     private static final String QUERY_COUNT_WARN_LOG = "쿼리가 {}번 이상 실행되었습니다!!!";
-    private static final int WARN_QUERY_COUNT= 8;
+    private static final int WARN_QUERY_COUNT = 8;
 
     private final QueryCounter queryCounter;
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
-                                Object handler, Exception ex) {
+        Object handler, Exception ex) {
         String url = request.getRequestURI();
 
         // Swagger 관련 경로 필터링

@@ -11,6 +11,7 @@ import java.util.List;
 @Getter
 @ToString
 public class HistoryStartSaveRequest {
+
     @Schema(description = "출근 인부 id list", example = "[1,2]")
     private List<Long> startWorkMemberIdList;
     @Schema(description = "결근 인부 id list", example = "[3,4]")

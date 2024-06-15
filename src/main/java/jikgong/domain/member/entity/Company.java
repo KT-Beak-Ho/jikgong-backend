@@ -23,7 +23,8 @@ public class Company {
     private CompanyNotificationInfo companyNotificationInfo; // 기업 알림 정보
 
     @Builder
-    public Company(String businessNumber, String region, String companyName, String email, String manager, String requestContent, Boolean isNotification) {
+    public Company(String businessNumber, String region, String companyName, String email, String manager,
+        String requestContent, Boolean isNotification) {
         this.businessNumber = businessNumber;
         this.region = region;
         this.companyName = companyName;

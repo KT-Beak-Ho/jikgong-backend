@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class ProjectService {
+
     private final ProjectRepository projectRepository;
     private final MemberRepository memberRepository;
     private final WorkDateRepository workDateRepository;
@@ -37,7 +38,7 @@ public class ProjectService {
      */
     public Long saveProject(Long companyId, ProjectSaveRequest request) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         Project project = Project.createEntity(request, company);
 
@@ -51,24 +52,22 @@ public class ProjectService {
     @Transactional(readOnly = true)
     public List<ProjectListResponse> findProjects(Long companyId, ProjectStatus projectStatus) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         LocalDate now = LocalDate.now();
         List<Project> projectList = new ArrayList<>();
 
         if (projectStatus == ProjectStatus.COMPLETED) {
             projectList = projectRepository.findCompletedProject(company.getId(), now);
-        }
-        else if (projectStatus == ProjectStatus.IN_PROGRESS) {
+        } else if (projectStatus == ProjectStatus.IN_PROGRESS) {
             projectList = projectRepository.findInProgressProject(company.getId(), now);
-        }
-        else if (projectStatus == ProjectStatus.PLANNED) {
+        } else if (projectStatus == ProjectStatus.PLANNED) {
             projectList = projectRepository.findPlannedProject(company.getId(), now);
         }
 
         List<ProjectListResponse> projectListResponseList = projectList.stream()
-                .map(ProjectListResponse::from)
-                .collect(Collectors.toList());
+            .map(ProjectListResponse::from)
+            .collect(Collectors.toList());
 
         return projectListResponseList;
     }
@@ -78,10 +77,10 @@ public class ProjectService {
      */
     public void updateProject(Long companyId, ProjectUpdateRequest request) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         Project project = projectRepository.findByIdAndMember(company.getId(), request.getProjectId())
-                .orElseThrow(() -> new JikgongException(ErrorCode.PROJECT_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.PROJECT_NOT_FOUND));
 
         project.updateProject(request);
     }
@@ -93,12 +92,12 @@ public class ProjectService {
     @Transactional(readOnly = true)
     public List<ProjectListResponse> findProjectAtSearch(Long companyId) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 준공일이 지나지 않은 project 조회
         return projectRepository.findNotCompletedProject(company.getId(), LocalDate.now()).stream()
-                .map(ProjectListResponse::from)
-                .collect(Collectors.toList());
+            .map(ProjectListResponse::from)
+            .collect(Collectors.toList());
     }
 
     /**
@@ -108,7 +107,7 @@ public class ProjectService {
     @Transactional(readOnly = true)
     public ProjectDetailResponse getProjectDetail(Long projectId) {
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.PROJECT_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.PROJECT_NOT_FOUND));
 
         // 프로젝트에 해당하는 workDate 조회
         List<WorkDate> workDateList = workDateRepository.findByProject(project.getId());

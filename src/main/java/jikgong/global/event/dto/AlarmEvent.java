@@ -6,6 +6,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class AlarmEvent {
+
     private String content;
     private Long receiverId;
     private String phone;

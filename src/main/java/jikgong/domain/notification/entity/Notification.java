@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Notification extends BaseEntity {
+
     @Id
     @GeneratedValue
     @Column(name = "notification_id")

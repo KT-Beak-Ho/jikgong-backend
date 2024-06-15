@@ -1,30 +1,37 @@
 package jikgong.global.security.filter;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import java.security.Key;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
-import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
 @Component
 @Slf4j
 public class JwtTokenProvider {
+
+    private static final Long ACCESS_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 60L; // 60 days
+    //    private static final Long ACCESS_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 2L; // 2 hours
+    private static final Long REFRESH_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 90L; // 90 days
     private final RedisTemplate<String, String> redisTemplate;
     private final Key key;
-//    private static final Long ACCESS_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 2L; // 2 hours
-    private static final Long ACCESS_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 60L; // 60 days
-    private static final Long REFRESH_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 90L; // 90 days
+
     @Autowired
-    public JwtTokenProvider(@Value("${app.auth.secret-key}") String secretKey, RedisTemplate<String, String> redisTemplate) {
+    public JwtTokenProvider(@Value("${app.auth.secret-key}") String secretKey,
+        RedisTemplate<String, String> redisTemplate) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
         this.redisTemplate = redisTemplate;
@@ -47,10 +54,10 @@ public class JwtTokenProvider {
 
     public String createJwt(String subject, Long expiration, Map<String, Object> claim) {
         JwtBuilder jwtBuilder = Jwts.builder()
-                .setHeaderParam("typ", "JWT")
-                .setSubject(subject)
-                .setIssuedAt(new Date())
-                .signWith(key, SignatureAlgorithm.HS256);
+            .setHeaderParam("typ", "JWT")
+            .setSubject(subject)
+            .setIssuedAt(new Date())
+            .signWith(key, SignatureAlgorithm.HS256);
 
         // claim 세팅
         if (claim != null) {
@@ -70,11 +77,11 @@ public class JwtTokenProvider {
      */
     public Claims get(String jwt) throws JwtException {
         return Jwts
-                .parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(jwt)
-                .getBody();
+            .parserBuilder()
+            .setSigningKey(key)
+            .build()
+            .parseClaimsJws(jwt)
+            .getBody();
     }
 
     /**
@@ -93,10 +100,10 @@ public class JwtTokenProvider {
     public void saveRefreshTokenInRedis(String loginId, String refreshToken) {
         // redis 에 저장
         redisTemplate.opsForValue().set(
-                loginId,
-                refreshToken,
-                REFRESH_TOKEN_EXPIRATION_TIME,
-                TimeUnit.MILLISECONDS
+            loginId,
+            refreshToken,
+            REFRESH_TOKEN_EXPIRATION_TIME,
+            TimeUnit.MILLISECONDS
         );
         log.info("redis 에 refresh token 저장");
     }

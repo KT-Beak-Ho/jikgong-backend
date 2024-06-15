@@ -1,6 +1,16 @@
 package jikgong.domain.offerworkdate.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import java.util.ArrayList;
+import java.util.List;
 import jikgong.domain.offer.entity.Offer;
 import jikgong.domain.workdate.entity.WorkDate;
 import lombok.AccessLevel;
@@ -8,13 +18,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class OfferWorkDate {
+
     @Id
     @GeneratedValue
     @Column(name = "offer_work_date_id")
@@ -42,10 +50,10 @@ public class OfferWorkDate {
         List<OfferWorkDate> offerWorkDateList = new ArrayList<>();
         for (WorkDate workDate : workDateList) {
             OfferWorkDate offerWorkDate = OfferWorkDate.builder()
-                    .offerWorkDateStatus(OfferWorkDateStatus.OFFER_PENDING)
-                    .offer(offer)
-                    .workDate(workDate)
-                    .build();
+                .offerWorkDateStatus(OfferWorkDateStatus.OFFER_PENDING)
+                .offer(offer)
+                .workDate(workDate)
+                .build();
             offerWorkDateList.add(offerWorkDate);
         }
         return offerWorkDateList;

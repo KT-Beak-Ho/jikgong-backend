@@ -1,6 +1,17 @@
 package jikgong.domain.apply.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import jikgong.domain.common.BaseEntity;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.workdate.entity.WorkDate;
@@ -9,15 +20,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Apply extends BaseEntity {
-    @Id @GeneratedValue
+
+    @Id
+    @GeneratedValue
     @Column(name = "apply_id")
     private Long id;
 
@@ -51,11 +60,11 @@ public class Apply extends BaseEntity {
 
         for (WorkDate workDate : workDateList) {
             Apply apply = Apply.builder()
-                    .status(ApplyStatus.OFFERED)
-                    .isOffer(true)
-                    .member(member)
-                    .workDate(workDate)
-                    .build();
+                .status(ApplyStatus.OFFERED)
+                .isOffer(true)
+                .member(member)
+                .workDate(workDate)
+                .build();
             applyList.add(apply);
         }
         return applyList;

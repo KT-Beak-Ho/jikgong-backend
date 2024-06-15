@@ -19,6 +19,7 @@ import java.util.Optional;
 @Transactional
 @Slf4j
 public class LikeService {
+
     private final LikeRepository likeRepository;
     private final MemberRepository memberRepository;
 
@@ -34,9 +35,9 @@ public class LikeService {
         }
 
         Member sender = memberRepository.findById(senderId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
         Member receiver = memberRepository.findById(receiverId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 기업 -> 노동자 요청이 아닌 경우
         if (sender.getRole() != Role.ROLE_COMPANY || receiver.getRole() != Role.ROLE_WORKER) {
@@ -51,9 +52,9 @@ public class LikeService {
      */
     public void deleteLike(Long senderId, Long receiverId) {
         Member sender = memberRepository.findById(senderId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
         Member receiver = memberRepository.findById(receiverId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 기업 -> 노동자 요청이 아닌 경우
         if (sender.getRole() != Role.ROLE_COMPANY || receiver.getRole() != Role.ROLE_WORKER) {
@@ -61,7 +62,7 @@ public class LikeService {
         }
 
         Like like = likeRepository.findBySenderIdAndReceiverId(senderId, receiverId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.LIKE_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.LIKE_NOT_FOUND));
         likeRepository.delete(like);
     }
 }

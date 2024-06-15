@@ -17,6 +17,7 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Project extends BaseEntity {
+
     @Id
     @GeneratedValue
     @Column(name = "project_id")
@@ -43,12 +44,12 @@ public class Project extends BaseEntity {
 
     public static Project createEntity(ProjectSaveRequest request, Member member) {
         return Project.builder()
-                .projectName(request.getProjectName())
-                .startDate(request.getStartDate())
-                .endDate(request.getEndDate())
-                .address(new Address(request.getAddress(), request.getLatitude(), request.getLongitude()))
-                .member(member)
-                .build();
+            .projectName(request.getProjectName())
+            .startDate(request.getStartDate())
+            .endDate(request.getEndDate())
+            .address(new Address(request.getAddress(), request.getLatitude(), request.getLongitude()))
+            .member(member)
+            .build();
     }
 
     public void updateProject(ProjectUpdateRequest request) {

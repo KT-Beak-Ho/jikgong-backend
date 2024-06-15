@@ -11,6 +11,7 @@ import java.util.List;
 @Getter
 @ToString
 public class OfferJobPostRequest {
+
     @Schema(description = "jobPostId", example = "1")
     private Long jobPostId;
     @Schema(description = "제안 날짜 목록", example = "[1, 2]")

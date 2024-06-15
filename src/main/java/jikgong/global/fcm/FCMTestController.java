@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController("/fcm")
 @RequiredArgsConstructor
 public class FCMTestController {
+
     private final FCMNotificationService fcmNotificationService;
 
     @Operation(summary = "알림 보내기 위한 테스트 api")

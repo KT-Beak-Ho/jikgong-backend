@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 @Transactional
 @Slf4j
 public class NotificationService {
+
     private final NotificationRepository notificationRepository;
     private final MemberRepository memberRepository;
     private final ApplicationEventPublisher publisher;
@@ -42,14 +43,14 @@ public class NotificationService {
      */
     public void saveNotification(Long receiverId, NotificationType type, String content, String url) {
         Member worker = memberRepository.findById(receiverId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         Notification notification = Notification.builder()
-                .content(content)
-                .url(url)
-                .notificationType(type)
-                .receiver(worker)
-                .build();
+            .content(content)
+            .url(url)
+            .notificationType(type)
+            .receiver(worker)
+            .build();
 
         notificationRepository.save(notification);
 
@@ -64,11 +65,11 @@ public class NotificationService {
     @Transactional(readOnly = true)
     public List<NotificationResponse> findNotifications(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         return notificationRepository.findByMember(member.getId()).stream()
-                .map(NotificationResponse::from)
-                .collect(Collectors.toList());
+            .map(NotificationResponse::from)
+            .collect(Collectors.toList());
     }
 
     /**
@@ -76,10 +77,10 @@ public class NotificationService {
      */
     public void readNotification(Long memberId, Long notificationId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         Notification notification = notificationRepository.findByIdAndMember(member.getId(), notificationId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.NOTIFICATION_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.NOTIFICATION_NOT_FOUND));
 
         // 읽음 처리
         notification.readNotification();
@@ -91,7 +92,7 @@ public class NotificationService {
     @Transactional(readOnly = true)
     public UnreadCountResponse unreadNotification(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         int unreadCount = notificationRepository.countUnreadNotification(member.getId());
         return UnreadCountResponse.builder().unreadCount(unreadCount).build();
@@ -104,7 +105,7 @@ public class NotificationService {
     @Transactional(readOnly = true)
     public NotificationInfoResponse findNotificationInfo(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 기업일 경우
         if (member.getRole() == Role.ROLE_COMPANY) {
@@ -112,7 +113,7 @@ public class NotificationService {
             return NotificationInfoResponse.from(companyNotificationInfo);
         }
         // 노동자일 경우
-        if(member.getRole() == Role.ROLE_WORKER) {
+        if (member.getRole() == Role.ROLE_WORKER) {
             WorkerNotificationInfo workerNotificationInfo = member.getWorkerInfo().getWorkerNotificationInfo();
             return NotificationInfoResponse.from(workerNotificationInfo);
         }
@@ -126,7 +127,7 @@ public class NotificationService {
      */
     public void updateNotificationInfoWorker(Long workerId, WorkerNotificationInfoRequest request) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         worker.getWorkerInfo().getWorkerNotificationInfo().updateInfo(request);
     }
@@ -136,7 +137,7 @@ public class NotificationService {
      */
     public void updateNotificationInfoCompany(Long companyId, CompanyNotificationInfoRequest request) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         company.getCompanyInfo().getCompanyNotificationInfo().updateInfo(request);
     }

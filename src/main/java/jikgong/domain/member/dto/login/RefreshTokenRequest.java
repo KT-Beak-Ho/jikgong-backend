@@ -9,6 +9,7 @@ import lombok.ToString;
 @Getter
 @ToString
 public class RefreshTokenRequest {
+
     @Schema(description = "refresh token", example = "refresh_token")
     private String refreshToken;
 }

@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 @Getter
 @Builder
 public class ResumeDetailResponse {
+
     private Long resumeId;
     private Integer career; // 경력
     private List<SkillResponse> skillResponseList; // 경력 상세 정보
@@ -38,28 +39,29 @@ public class ResumeDetailResponse {
     public static ResumeDetailResponse from(Resume resume) {
         // skill 리스트
         List<SkillResponse> skillResponseList = resume.getSkillList().stream()
-                .map(SkillResponse::from)
-                .collect(Collectors.toList());
+            .map(SkillResponse::from)
+            .collect(Collectors.toList());
 
         return ResumeDetailResponse.builder()
-                .resumeId(resume.getId())
-                .career(resume.getCareer())
-                .skillResponseList(skillResponseList)
+            .resumeId(resume.getId())
+            .career(resume.getCareer())
+            .skillResponseList(skillResponseList)
 
-                .preferTimeStart(resume.getPreferTimeStart())
-                .preferTimeEnd(resume.getPreferTimeEnd())
+            .preferTimeStart(resume.getPreferTimeStart())
+            .preferTimeEnd(resume.getPreferTimeEnd())
 
-                .meal(resume.getAvailableInfo().getMeal())
-                .pickup(resume.getAvailableInfo().getPickup())
-                .park(resume.getAvailableInfo().getPark())
+            .meal(resume.getAvailableInfo().getMeal())
+            .pickup(resume.getAvailableInfo().getPickup())
+            .park(resume.getAvailableInfo().getPark())
 
-                .memberResponse(MemberResponse.from(resume.getMember()))
-                .build();
+            .memberResponse(MemberResponse.from(resume.getMember()))
+            .build();
     }
 
     @Builder
     @Getter
     public static class MemberResponse {
+
         private Long memberId;
         private String workerName; // 이름
         private Integer age; // 나이
@@ -72,13 +74,13 @@ public class ResumeDetailResponse {
         public static MemberResponse from(Member member) {
             // 대표 위치
             Optional<Location> mainLocation = member.getLocationList().stream()
-                    .filter(Location::getIsMain)
-                    .findFirst();
+                .filter(Location::getIsMain)
+                .findFirst();
 
             // 출역 횟수, 참여율
             List<History> workHistory = member.getHistoryList().stream()
-                    .filter(history -> history.getEndStatus() == WorkStatus.FINISH_WORK)
-                    .collect(Collectors.toList());
+                .filter(history -> history.getEndStatus() == WorkStatus.FINISH_WORK)
+                .collect(Collectors.toList());
             int workTimes = workHistory.size();
             float participationRate = (float) workTimes / (float) member.getHistoryList().size();
             // 출역 내역이 없을 경우 -1
@@ -87,14 +89,14 @@ public class ResumeDetailResponse {
             }
 
             return MemberResponse.builder()
-                    .memberId(member.getId())
-                    .workerName(member.getWorkerInfo().getWorkerName())
-                    .age(AgeTransfer.getAgeByBirth(member.getWorkerInfo().getBrith()))
-                    .gender(member.getWorkerInfo().getGender())
-                    .address(mainLocation.map(location -> location.getAddress().getAddress()).orElse(null))
-                    .workTimes(workTimes)
-                    .participationRate(participationRate)
-                    .build();
+                .memberId(member.getId())
+                .workerName(member.getWorkerInfo().getWorkerName())
+                .age(AgeTransfer.getAgeByBirth(member.getWorkerInfo().getBrith()))
+                .gender(member.getWorkerInfo().getGender())
+                .address(mainLocation.map(location -> location.getAddress().getAddress()).orElse(null))
+                .workTimes(workTimes)
+                .participationRate(participationRate)
+                .build();
         }
     }
 }

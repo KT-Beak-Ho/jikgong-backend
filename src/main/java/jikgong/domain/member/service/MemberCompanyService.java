@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 @Transactional
 @Slf4j
 public class MemberCompanyService {
+
     private final MemberRepository memberRepository;
 
     /**
@@ -23,7 +24,7 @@ public class MemberCompanyService {
     @Transactional(readOnly = true)
     public List<CompanySearchResponse> searchCompany(String keyword) {
         return memberRepository.findByCompanyName(keyword).stream()
-                .map(CompanySearchResponse::from)
-                .collect(Collectors.toList());
+            .map(CompanySearchResponse::from)
+            .collect(Collectors.toList());
     }
 }

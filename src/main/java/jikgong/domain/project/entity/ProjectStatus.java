@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum ProjectStatus {
+
     COMPLETED("완료됨"),
     IN_PROGRESS("진행중"),
     PLANNED("예정");

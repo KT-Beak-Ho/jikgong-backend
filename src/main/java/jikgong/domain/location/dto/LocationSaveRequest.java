@@ -9,6 +9,7 @@ import lombok.ToString;
 @Getter
 @ToString
 public class LocationSaveRequest {
+
     @Schema(description = "도로명 주소", example = "부산광역시 사하구 낙동대로 550번길 37")
     private String address; // 도로명 주소
     @Schema(description = "위도", example = "35.116777388697734")

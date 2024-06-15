@@ -10,6 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface OfferRepository extends JpaRepository<Offer, Long>, OfferRepositoryCustom {
+
     /**
      * find by id and member
      */

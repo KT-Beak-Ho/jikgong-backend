@@ -22,6 +22,7 @@ import java.util.List;
 @Transactional
 @Slf4j
 public class CertificationService {
+
     private final CertificationRepository certificationRepository;
     private final S3Handler s3Handler;
     private final MemberRepository memberRepository;
@@ -32,13 +33,13 @@ public class CertificationService {
      */
     public Long saveCertification(Long workerId, MultipartFile file) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         ImageDto imageDto = s3Handler.uploadCertification(file);
         Certification certification = Certification.builder()
-                .storeImgName(imageDto.getStoreImgName())
-                .s3Url(imageDto.getS3Url())
-                .build();
+            .storeImgName(imageDto.getStoreImgName())
+            .s3Url(imageDto.getS3Url())
+            .build();
         Certification savedCertification = certificationRepository.save(certification);
 
         // 회원 엔티티와 연관 관계 세팅
@@ -47,14 +48,13 @@ public class CertificationService {
         return savedCertification.getId();
     }
 
-
     /**
      * 경력 인증서 조회
      */
     @Transactional(readOnly = true)
     public CertificationResponse findCertification(Long workerId) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         Certification certification = worker.getCertification();
 
@@ -70,7 +70,7 @@ public class CertificationService {
      */
     public void checkAndDeleteCertification(Long workerId) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         Certification certification = worker.getCertification();
 

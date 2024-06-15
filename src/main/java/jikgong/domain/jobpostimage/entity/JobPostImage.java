@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class JobPostImage {
+
     @Id
     @GeneratedValue
     @Column(name = "job_post_image")
@@ -36,10 +37,10 @@ public class JobPostImage {
 
     public static JobPostImage createEntity(ImageDto imageDto, JobPost jobPost) {
         return JobPostImage.builder()
-                .storeImgName(imageDto.getStoreImgName())
-                .s3Url(imageDto.getS3Url())
-                .isThumbnail(imageDto.isThumbnail())
-                .jobPost(jobPost)
-                .build();
+            .storeImgName(imageDto.getStoreImgName())
+            .s3Url(imageDto.getS3Url())
+            .isThumbnail(imageDto.isThumbnail())
+            .jobPost(jobPost)
+            .build();
     }
 }

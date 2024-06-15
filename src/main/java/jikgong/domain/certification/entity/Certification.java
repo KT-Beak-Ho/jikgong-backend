@@ -16,7 +16,8 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Certification extends BaseEntity {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "certification_id")
     private Long id;
 
@@ -28,6 +29,4 @@ public class Certification extends BaseEntity {
         this.storeImgName = storeImgName;
         this.s3Url = s3Url;
     }
-
-
 }

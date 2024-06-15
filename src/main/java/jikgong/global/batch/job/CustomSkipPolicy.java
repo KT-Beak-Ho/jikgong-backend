@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class CustomSkipPolicy implements SkipPolicy {
+
     private int skipCount = 0;
 
     @Override

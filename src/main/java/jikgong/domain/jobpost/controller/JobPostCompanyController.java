@@ -22,13 +22,14 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class JobPostCompanyController {
+
     private final JobPostCompanyService jobPostCompanyService;
 
     @Operation(summary = "모집 공고 등록")
     @PostMapping(value = "/api/job-post/company", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Response> saveJobPost(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                @RequestPart JobPostSaveRequest request,
-                                                @RequestPart(required = false) List<MultipartFile> imageList) {
+        @RequestPart JobPostSaveRequest request,
+        @RequestPart(required = false) List<MultipartFile> imageList) {
         Long jobPostId = jobPostCompanyService.saveJobPost(principalDetails.getMember().getId(), request, imageList);
         return ResponseEntity.ok(new Response("모집 공고 등록 완료"));
     }
@@ -36,18 +37,21 @@ public class JobPostCompanyController {
     @Operation(summary = "등록한 모집 공고 리스트 조회", description = "완료된 공고, 진행 중인 공고, 예정된 공고")
     @GetMapping("/api/job-post/company/list/{projectId}")
     public ResponseEntity<Response> findJobPosts(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                 @RequestParam("jobPostStatus") JobPostStatus jobPostStatus,
-                                                 @PathVariable("projectId") Long projectId,
-                                                 @RequestParam(name = "page", defaultValue = "0") int page,
-                                                 @RequestParam(name = "size", defaultValue = "10") int size) {
+        @RequestParam("jobPostStatus") JobPostStatus jobPostStatus,
+        @PathVariable("projectId") Long projectId,
+        @RequestParam(name = "page", defaultValue = "0") int page,
+        @RequestParam(name = "size", defaultValue = "10") int size) {
         // 페이징 처리
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdDate")));
 
         List<JobPostListResponse> jobPostListResponseList =
-                jobPostCompanyService.findJobPostsByMemberAndProject(principalDetails.getMember().getId(), jobPostStatus, projectId, pageable);
+            jobPostCompanyService.findJobPostsByMemberAndProject(principalDetails.getMember().getId(), jobPostStatus,
+                projectId, pageable);
 
-        Page<JobPostListResponse> jobPostListResponsePage = new PageImpl<>(jobPostListResponseList, pageable, jobPostListResponseList.size());
-        return ResponseEntity.ok(new Response(jobPostListResponsePage, "등록한 모집 공고 중 " + jobPostStatus.getDescription() + " 모집 공고 조회"));
+        Page<JobPostListResponse> jobPostListResponsePage = new PageImpl<>(jobPostListResponseList, pageable,
+            jobPostListResponseList.size());
+        return ResponseEntity.ok(
+            new Response(jobPostListResponsePage, "등록한 모집 공고 중 " + jobPostStatus.getDescription() + " 모집 공고 조회"));
     }
 
     @Operation(summary = "인력 관리: 모집 공고 정보 반환", description = "인력 관리 버튼 클릭 시 모집 공고에 대한 정보 반환")
@@ -61,7 +65,7 @@ public class JobPostCompanyController {
     @Operation(summary = "임시 저장: 저장")
     @PostMapping("/api/job-post/company/temporary")
     public ResponseEntity<Response> saveTemporaryJobPost(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                           @RequestBody TemporarySaveRequest request) {
+        @RequestBody TemporarySaveRequest request) {
         Long temporaryId = jobPostCompanyService.saveTemporary(principalDetails.getMember().getId(), request);
         return ResponseEntity.ok(new Response("임시 저장 등록 완료"));
     }
@@ -70,7 +74,7 @@ public class JobPostCompanyController {
     @Operation(summary = "임시 저장: 업데이트", description = "임시 저장을 또 한번 임시 저장 할 경우")
     @PutMapping("/api/job-post/company/temporary")
     public ResponseEntity<Response> findTemporaryJobPosts(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                          @RequestBody TemporaryUpdateRequest request) {
+        @RequestBody TemporaryUpdateRequest request) {
         jobPostCompanyService.updateTemporaryJobPost(principalDetails.getMember().getId(), request);
         return ResponseEntity.ok(new Response("임시 등록한 모집 공고 업데이트 완료"));
     }
@@ -78,14 +82,15 @@ public class JobPostCompanyController {
     @Operation(summary = "임시 저장: 임지 저장 리스트 조회")
     @GetMapping("/api/job-post/company/temporary/list")
     public ResponseEntity<Response> findTemporaryJobPosts(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        List<TemporaryListResponse> temporaryJobPostPage = jobPostCompanyService.findTemporaryJobPosts(principalDetails.getMember().getId());
+        List<TemporaryListResponse> temporaryJobPostPage = jobPostCompanyService.findTemporaryJobPosts(
+            principalDetails.getMember().getId());
         return ResponseEntity.ok(new Response(temporaryJobPostPage, "임시 등록한 모집 공고 리스트 반환"));
     }
 
     @Operation(summary = "임시 저장: 삭제")
     @DeleteMapping("/api/job-post/company/temporary/{jobPostId}")
     public ResponseEntity<Response> deleteTemporaryJobPost(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                           @PathVariable("jobPostId") Long jobPostId) {
+        @PathVariable("jobPostId") Long jobPostId) {
         jobPostCompanyService.deleteTemporaryJobPost(principalDetails.getMember().getId(), jobPostId);
         return ResponseEntity.ok(new Response("임시 저장 게시물 삭제 완료"));
     }
@@ -95,9 +100,10 @@ public class JobPostCompanyController {
     @Operation(summary = "일자리 제안: 출역 가능한 현장 목록")
     @GetMapping("/api/job-post/company/offer-available")
     public ResponseEntity<Response> findAvailableJobPosts(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                          @RequestParam(name = "memberId") Long memberId,
-                                                          @RequestParam(name = "projectId") Long projectId) {
-        JobPostResponseForOffer selectOfferJobPostResponse = jobPostCompanyService.findAvailableJobPosts(principalDetails.getMember().getId(), memberId, projectId);
+        @RequestParam(name = "memberId") Long memberId,
+        @RequestParam(name = "projectId") Long projectId) {
+        JobPostResponseForOffer selectOfferJobPostResponse = jobPostCompanyService.findAvailableJobPosts(
+            principalDetails.getMember().getId(), memberId, projectId);
         return ResponseEntity.ok(new Response(selectOfferJobPostResponse, "기업: 출역 가능한 현장 목록 반환 완료"));
     }
 }

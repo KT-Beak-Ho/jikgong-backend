@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum ProfitType {
+
     AUTO("자동 입력"),
     CUSTOM("직접 입력");
 

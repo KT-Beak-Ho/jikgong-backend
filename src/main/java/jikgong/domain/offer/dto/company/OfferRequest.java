@@ -11,6 +11,7 @@ import java.util.List;
 @Getter
 @ToString
 public class OfferRequest {
+
     @Schema(description = "resumeId", example = "1")
     private Long resumeId;
 

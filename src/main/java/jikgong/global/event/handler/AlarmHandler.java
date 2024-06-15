@@ -13,6 +13,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Component
 @RequiredArgsConstructor
 public class AlarmHandler {
+
     private final FCMNotificationService fcmNotificationService;
     private final AlimTalkService alimTalkService;
 
@@ -21,10 +22,10 @@ public class AlarmHandler {
     public void sendFCM(AlarmEvent event) {
         // fcm 알림 발송
         FCMNotificationRequestDto request = FCMNotificationRequestDto.builder()
-                .targetMemberId(event.getReceiverId())
-                .title(event.getContent())
-                .body(event.getContent())
-                .build();
+            .targetMemberId(event.getReceiverId())
+            .title(event.getContent())
+            .body(event.getContent())
+            .build();
         fcmNotificationService.sendNotificationByToken(request);
     }
 

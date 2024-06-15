@@ -44,17 +44,19 @@ public class JobPostWorkerService {
      * 필터: 직종, 날짜, 스크랩, 식사 제공, 주차 여부, 정렬 기준
      */
     @Transactional(readOnly = true)
-    public Page<JobPostListResponse> getMainPageForMember(Long memberId, List<Tech> techList, List<LocalDate> workDateList, Boolean scrap, Boolean meal, Park park, SortType sortType, Pageable pageable) {
+    public Page<JobPostListResponse> getMainPageForMember(Long memberId, List<Tech> techList,
+        List<LocalDate> workDateList, Boolean scrap, Boolean meal, Park park, SortType sortType, Pageable pageable) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
         Location location = locationRepository.findMainLocationByMemberId(member.getId())
-                .orElse(null);
+            .orElse(null);
 
         // querydsl
-        Page<JobPost> jobPostPage = jobPostRepository.getMainPage(memberId, techList, workDateList, scrap, meal, park, location, sortType, pageable);
+        Page<JobPost> jobPostPage = jobPostRepository.getMainPage(memberId, techList, workDateList, scrap, meal, park,
+            location, sortType, pageable);
         List<JobPostListResponse> jobPostListResponseList = jobPostPage.getContent().stream()
-                .map(jobPost -> JobPostListResponse.from(jobPost, location))
-                .collect(Collectors.toList());
+            .map(jobPost -> JobPostListResponse.from(jobPost, location))
+            .collect(Collectors.toList());
 
         // scrap 했는지 정보 설정
         // worker의 scrap 리스트
@@ -75,13 +77,15 @@ public class JobPostWorkerService {
      * 필터: 직종, 날짜, 스크랩, 식사 제공, 주차 여부, 정렬 기준
      */
     @Transactional(readOnly = true)
-    public Page<JobPostListResponse> getMainPageForNonMember(List<Tech> techList, List<LocalDate> workDateList, Boolean scrap, Boolean meal, Park park, SortType sortType, Pageable pageable) {
+    public Page<JobPostListResponse> getMainPageForNonMember(List<Tech> techList, List<LocalDate> workDateList,
+        Boolean scrap, Boolean meal, Park park, SortType sortType, Pageable pageable) {
 
         // querydsl
-        Page<JobPost> jobPostPage = jobPostRepository.getMainPage(null, techList, workDateList, scrap, meal, park, null, sortType, pageable);
+        Page<JobPost> jobPostPage = jobPostRepository.getMainPage(null, techList, workDateList, scrap, meal, park, null,
+            sortType, pageable);
         List<JobPostListResponse> jobPostListResponseList = jobPostPage.getContent().stream()
-                .map(jobPost -> JobPostListResponse.from(jobPost, null))
-                .collect(Collectors.toList());
+            .map(jobPost -> JobPostListResponse.from(jobPost, null))
+            .collect(Collectors.toList());
 
         return new PageImpl<>(jobPostListResponseList, pageable, jobPostPage.getTotalElements());
     }
@@ -92,13 +96,13 @@ public class JobPostWorkerService {
     @Transactional(readOnly = true)
     public JobPostDetailResponse getJobPostDetailForMember(Long workerId, Long jobPostId) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         JobPost jobPost = jobPostRepository.findByIdWithMember(jobPostId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
 
         Location location = locationRepository.findMainLocationByMemberId(worker.getId())
-                .orElse(null);
+            .orElse(null);
 
         return JobPostDetailResponse.from(jobPost, location);
     }
@@ -109,7 +113,7 @@ public class JobPostWorkerService {
     @Transactional(readOnly = true)
     public JobPostDetailResponse getJobPostDetailForNonMember(Long jobPostId) {
         JobPost jobPost = jobPostRepository.findByIdWithMember(jobPostId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
 
         return JobPostDetailResponse.from(jobPost, null);
     }
@@ -118,23 +122,27 @@ public class JobPostWorkerService {
      * 모집 공고 지도에서 조회 (회원)
      */
     @Transactional(readOnly = true)
-    public List<JobPostMapResponse> findJobPostsOnMapForMember(Long workerId, Float northEastLat, Float northEastLng, Float southWestLat, Float southWestLng, List<Tech> techList, List<LocalDate> dateList, Boolean scrap) {
+    public List<JobPostMapResponse> findJobPostsOnMapForMember(Long workerId, Float northEastLat, Float northEastLng,
+        Float southWestLat, Float southWestLng, List<Tech> techList, List<LocalDate> dateList, Boolean scrap) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
-        return jobPostRepository.findJobPostOnMap(worker.getId(), northEastLat, northEastLng, southWestLat, southWestLng, techList, dateList, scrap).stream()
-                .map(JobPostMapResponse::from)
-                .collect(Collectors.toList());
+        return jobPostRepository.findJobPostOnMap(worker.getId(), northEastLat, northEastLng, southWestLat,
+                southWestLng, techList, dateList, scrap).stream()
+            .map(JobPostMapResponse::from)
+            .collect(Collectors.toList());
     }
 
     /**
      * 모집 공고 지도에서 조회 (비회원)
      */
     @Transactional(readOnly = true)
-    public List<JobPostMapResponse> findJobPostsOnMapForNonMember(Float northEastLat, Float northEastLng, Float southWestLat, Float southWestLng, List<Tech> techList, List<LocalDate> dateList, Boolean scrap) {
+    public List<JobPostMapResponse> findJobPostsOnMapForNonMember(Float northEastLat, Float northEastLng,
+        Float southWestLat, Float southWestLng, List<Tech> techList, List<LocalDate> dateList, Boolean scrap) {
 
-        return jobPostRepository.findJobPostOnMap(null, northEastLat, northEastLng, southWestLat, southWestLng, techList, dateList, scrap).stream()
-                .map(JobPostMapResponse::from)
-                .collect(Collectors.toList());
+        return jobPostRepository.findJobPostOnMap(null, northEastLat, northEastLng, southWestLat, southWestLng,
+                techList, dateList, scrap).stream()
+            .map(JobPostMapResponse::from)
+            .collect(Collectors.toList());
     }
 }

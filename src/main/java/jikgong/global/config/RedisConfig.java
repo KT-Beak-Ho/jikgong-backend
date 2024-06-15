@@ -1,5 +1,6 @@
 package jikgong.global.config;
 
+import java.time.Duration;
 import jikgong.domain.searchlog.entity.SearchLog;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
@@ -15,8 +16,6 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-
-import java.time.Duration;
 
 @Configuration
 @EnableCaching
@@ -63,11 +62,12 @@ public class RedisConfig {
     @Bean
     public CacheManager authCacheManager(RedisConnectionFactory cf) {
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
-                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer())) // Value Serializer 변경
-                .entryTtl(Duration.ofMinutes(30L)); // 캐시 수명 30분
+            .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
+            .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(
+                new GenericJackson2JsonRedisSerializer())) // Value Serializer 변경
+            .entryTtl(Duration.ofMinutes(30L)); // 캐시 수명 30분
 
-        return RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(cf).cacheDefaults(redisCacheConfiguration).build();
+        return RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(cf)
+            .cacheDefaults(redisCacheConfiguration).build();
     }
-
 }

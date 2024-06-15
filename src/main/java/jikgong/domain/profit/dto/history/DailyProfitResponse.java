@@ -1,5 +1,7 @@
 package jikgong.domain.profit.dto.history;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import jikgong.domain.jobpost.entity.Tech;
 import jikgong.domain.profit.entity.Profit;
 import jikgong.domain.profit.entity.ProfitType;
@@ -7,13 +9,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-
 @AllArgsConstructor
 @Getter
 @Builder
 public class DailyProfitResponse {
+
     private Long profitId;
 
     private String title; // 현장 명
@@ -26,14 +26,14 @@ public class DailyProfitResponse {
 
     public static DailyProfitResponse from(Profit profit) {
         return DailyProfitResponse.builder()
-                .profitId(profit.getId())
-                .title(profit.getTitle())
-                .date(profit.getDate())
-                .startTime(profit.getStartTime())
-                .endTime(profit.getEndTime())
-                .wage(profit.getWage())
-                .tech(profit.getTech())
-                .profitType(profit.getProfitType())
-                .build();
+            .profitId(profit.getId())
+            .title(profit.getTitle())
+            .date(profit.getDate())
+            .startTime(profit.getStartTime())
+            .endTime(profit.getEndTime())
+            .wage(profit.getWage())
+            .tech(profit.getTech())
+            .profitType(profit.getProfitType())
+            .build();
     }
 }

@@ -14,6 +14,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class ReceivedOfferResponse {
+
     private Long offerWorkDateId;
     private OfferWorkDateStatus status; // 제안 status
 
@@ -25,24 +26,25 @@ public class ReceivedOfferResponse {
         WorkDate workDate = offerWorkDate.getWorkDate();
 
         return ReceivedOfferResponse.builder()
-                .offerWorkDateId(offerWorkDate.getId())
-                .status(offerWorkDate.getOfferWorkDateStatus())
-                .workDateResponse(WorkDateResponse.from(workDate))
-                .jobPostResponse(JobPostResponse.from(jobPost))
-                .build();
+            .offerWorkDateId(offerWorkDate.getId())
+            .status(offerWorkDate.getOfferWorkDateStatus())
+            .workDateResponse(WorkDateResponse.from(workDate))
+            .jobPostResponse(JobPostResponse.from(jobPost))
+            .build();
     }
 
     @Getter
     @Builder
     public static class JobPostResponse {
+
         private Tech tech; // 직종
         private String title; // 공고 제목
 
         public static JobPostResponse from(JobPost jobPost) {
             return JobPostResponse.builder()
-                    .tech(jobPost.getTech())
-                    .title(jobPost.getTitle())
-                    .build();
+                .tech(jobPost.getTech())
+                .title(jobPost.getTitle())
+                .build();
         }
     }
 }

@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @Getter
 @ToString
 public class ProjectUpdateRequest {
+
     @Schema(description = "project Id", example = "1")
     private Long projectId;
     @Schema(description = "프로젝트 명", example = "사하구 낙동5블럭 낙동강 온도 측정 센터 신축공사 ")

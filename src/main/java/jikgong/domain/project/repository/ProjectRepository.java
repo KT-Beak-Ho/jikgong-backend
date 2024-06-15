@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, Long> {
+
     /**
      * find by id and member
      */
@@ -23,8 +24,10 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
      */
     @Query("select p from Project p where p.member.id = :memberId and p.endDate < :now")
     List<Project> findCompletedProject(@Param("memberId") Long memberId, @Param("now") LocalDate now);
+
     @Query("select p from Project p where p.member.id = :memberId and p.startDate < :now and p.endDate > :now")
     List<Project> findInProgressProject(@Param("memberId") Long memberId, @Param("now") LocalDate now);
+
     @Query("select p from Project p where p.member.id = :memberId and p.startDate > :now")
     List<Project> findPlannedProject(@Param("memberId") Long memberId, @Param("now") LocalDate now);
 

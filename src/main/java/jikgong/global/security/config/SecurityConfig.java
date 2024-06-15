@@ -7,7 +7,6 @@ import jikgong.global.security.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -37,30 +36,35 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)
-                .headers((headers) -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
-                .cors() // cors 커스텀 설정
-                .and()
+            .csrf(AbstractHttpConfigurer::disable)
+            .headers((headers) -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+            .cors() // cors 커스텀 설정
+            .and()
 
-                .sessionManagement()//세션 사용 x
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
+            .sessionManagement()//세션 사용 x
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
 
-                .authorizeHttpRequests()
-                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
-                .requestMatchers("/api/project/**", "/api/notification/company/**", "/api/job-post/company/**", "/api/offer/company/**", "/api/resume/company/**", "/api/apply/company/**", "/api/history/**", "/api/like/**").hasRole("COMPANY")
-                .requestMatchers("/api/profit/**", "/api/notification/worker/**", "/api/offer/worker/**", "/api/scrap/**", "/api/resume/worker/**", "/api/apply/worker/**", "/api/certification/worker/**", "/api/location/**").hasRole("WORKER")
-                .requestMatchers("/api/notification/**", "/api/certification/**", "/api/searchLog/**").hasAnyRole("COMPANY", "WORKER")
-                .requestMatchers("/api/job-post/worker/**", "/api/login/**", "/api/join/**", "/api/member/search/**").permitAll()
-                .anyRequest().permitAll()
+            .authorizeHttpRequests()
+            .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
+            .requestMatchers("/api/project/**", "/api/notification/company/**", "/api/job-post/company/**",
+                "/api/offer/company/**", "/api/resume/company/**", "/api/apply/company/**", "/api/history/**",
+                "/api/like/**").hasRole("COMPANY")
+            .requestMatchers("/api/profit/**", "/api/notification/worker/**", "/api/offer/worker/**", "/api/scrap/**",
+                "/api/resume/worker/**", "/api/apply/worker/**", "/api/certification/worker/**", "/api/location/**")
+            .hasRole("WORKER")
+            .requestMatchers("/api/notification/**", "/api/certification/**", "/api/searchLog/**")
+            .hasAnyRole("COMPANY", "WORKER")
+            .requestMatchers("/api/job-post/worker/**", "/api/login/**", "/api/join/**", "/api/member/search/**")
+            .permitAll()
+            .anyRequest().permitAll()
         ;
 
         http
-                .userDetailsService(customUserDetailsService);
+            .userDetailsService(customUserDetailsService);
 
         http
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
 //        http.exceptionHandling()
 //                .accessDeniedHandler(accessDeniedHandler) // 커스텀 AccessDeniedHandler 등록

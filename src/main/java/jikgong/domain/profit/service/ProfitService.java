@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 @Transactional
 @Slf4j
 public class ProfitService {
+
     private final ProfitRepository profitRepository;
     private final MemberRepository memberRepository;
 
@@ -38,7 +39,7 @@ public class ProfitService {
      */
     public Long saveProfitHistory(Long workerId, ProfitSaveRequest request) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
         return profitRepository.save(Profit.createEntity(request, worker)).getId();
     }
 
@@ -48,12 +49,12 @@ public class ProfitService {
     @Transactional(readOnly = true)
     public List<DailyProfitResponse> findDailyProfitHistory(Long workerId, LocalDate selectDate) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 일일 임금 지급 리스트
         return profitRepository.findBySelectDate(worker.getId(), selectDate).stream()
-                .map(DailyProfitResponse::from)
-                .collect(Collectors.toList());
+            .map(DailyProfitResponse::from)
+            .collect(Collectors.toList());
     }
 
     /**
@@ -63,7 +64,7 @@ public class ProfitService {
     @Transactional(readOnly = true)
     public MonthlyProfitResponse findMonthlyProfitHistoryCalendar(Long workerId, LocalDate selectMonth) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         LocalDate monthStart = TimeTransfer.getFirstDayOfMonth(selectMonth);
         LocalDate monthEnd = TimeTransfer.getLastDayOfMonth(selectMonth);
@@ -78,33 +79,32 @@ public class ProfitService {
         List<Profit> profitHistoryMonth = profitRepository.findProfitInMonth(worker.getId(), selectMonth);
 
         List<DailyProfitResponse> dailyProfitResponseList = profitHistoryMonth.stream()
-                .map(DailyProfitResponse::from)
-                .collect(Collectors.toList());
+            .map(DailyProfitResponse::from)
+            .collect(Collectors.toList());
 
         // 월별 일한 날짜 리스트
         List<LocalDate> workDateList = profitHistoryMonth.stream()
-                .map(Profit::getDate)
-                .distinct()
-                .collect(Collectors.toList());
+            .map(Profit::getDate)
+            .distinct()
+            .collect(Collectors.toList());
 
         return MonthlyProfitResponse.builder()
-                .wageInMonth(wageInMonth)
-                .workTimeInMonth(TimeTransfer.getHourMinute(workTimeInMonth))
-                .workDateList(workDateList)
-                .profitResponseList(dailyProfitResponseList)
-                .build();
+            .wageInMonth(wageInMonth)
+            .workTimeInMonth(TimeTransfer.getHourMinute(workTimeInMonth))
+            .workDateList(workDateList)
+            .profitResponseList(dailyProfitResponseList)
+            .build();
     }
-
 
     /**
      * 수익 내역 삭제
      */
     public void deleteProfitHistory(Long workerId, Long profitId) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         Profit profit = profitRepository.findByIdAndMember(worker.getId(), profitId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.PROFIT_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.PROFIT_NOT_FOUND));
 
         profitRepository.delete(profit);
     }
@@ -114,10 +114,10 @@ public class ProfitService {
      */
     public void modifyProfitHistory(Long workerId, ProfitModifyRequest request) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         Profit profit = profitRepository.findByIdAndMember(worker.getId(), request.getProfitId())
-                .orElseThrow(() -> new JikgongException(ErrorCode.PROFIT_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.PROFIT_NOT_FOUND));
 
         // update
         profit.modifyProfit(request);
@@ -129,14 +129,14 @@ public class ProfitService {
     @Transactional(readOnly = true)
     public Page<DailyProfitResponse> findProfitHistoryList(Long workerId, Pageable pageable) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 수익 내역 페이징
         Page<Profit> profitPage = profitRepository.findByMember(worker.getId(), pageable);
 
         List<DailyProfitResponse> profitResponseList = profitPage.getContent().stream()
-                .map(DailyProfitResponse::from)
-                .collect(Collectors.toList());
+            .map(DailyProfitResponse::from)
+            .collect(Collectors.toList());
         return new PageImpl<>(profitResponseList, pageable, profitPage.getTotalElements());
     }
 
@@ -147,15 +147,15 @@ public class ProfitService {
     @Transactional(readOnly = true)
     public ProfitSummaryInfoResponse findSummaryInfo(Long workerId) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         Integer totalWorkTime = profitRepository.findTotalWorkTimeByMember(worker.getId());
         Integer totalWage = profitRepository.findTotalWageByMember(worker.getId());
 
         return ProfitSummaryInfoResponse.builder()
-                .totalWorkTime(totalWorkTime)
-                .totalWage(totalWage)
-                .build();
+            .totalWorkTime(totalWorkTime)
+            .totalWage(totalWage)
+            .build();
     }
 
     /**
@@ -164,10 +164,11 @@ public class ProfitService {
     @Transactional(readOnly = true)
     public DailyGraphResponse findDailyGraphInfo(Long workerId, LocalDate selectMonth) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         // [출역 날짜, 일한 시간] 으로 그룹핑
-        List<Object[]> totalWagePerDay = profitRepository.getTotalWagePerDay(selectMonth.getYear(), selectMonth.getMonth().getValue());
+        List<Object[]> totalWagePerDay = profitRepository.getTotalWagePerDay(selectMonth.getYear(),
+            selectMonth.getMonth().getValue());
 
         List<Profit> profitInMonth = profitRepository.findProfitInMonth(worker.getId(), selectMonth);
 
@@ -190,14 +191,15 @@ public class ProfitService {
 
                 totalWorkTimePerDay.put(profit.getDate(), workTimeGraphResponse);
             } else {
-                totalWorkTimePerDay.put(profit.getDate(), WorkTimeGraphResponse.createDto(profit.getStartTime(), profit.getEndTime()));
+                totalWorkTimePerDay.put(profit.getDate(),
+                    WorkTimeGraphResponse.createDto(profit.getStartTime(), profit.getEndTime()));
             }
         }
 
         return DailyGraphResponse.builder()
-                .totalWagePerDay(totalWagePerDay)
-                .totalWorkTimePerDay(totalWorkTimePerDay)
-                .build();
+            .totalWagePerDay(totalWagePerDay)
+            .totalWorkTimePerDay(totalWorkTimePerDay)
+            .build();
     }
 
     /**
@@ -206,14 +208,15 @@ public class ProfitService {
     @Transactional(readOnly = true)
     public MonthlyGraphResponse findMonthlyGraphInfo(Long workerId, LocalDate selectYear) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         // [월, 일한 시간, 총 수익]
-        List<Object[]> totalWageAndWorkTimePerMonth = profitRepository.getTotalWageAndWorkTimePerMonth(worker.getId(), selectYear.getYear());
+        List<Object[]> totalWageAndWorkTimePerMonth = profitRepository.getTotalWageAndWorkTimePerMonth(worker.getId(),
+            selectYear.getYear());
 
         return MonthlyGraphResponse
-                .builder()
-                .totalWageAndWorkTimePerMonth(totalWageAndWorkTimePerMonth)
-                .build();
+            .builder()
+            .totalWageAndWorkTimePerMonth(totalWageAndWorkTimePerMonth)
+            .build();
     }
 }

@@ -17,6 +17,7 @@ import java.util.List;
 @Getter
 @ToString
 public class TemporaryUpdateRequest {
+
     @Schema(description = "jobPostId", example = "1")
     private Long jobPostId;
     @Schema(description = "공고 제목", example = "사하구 낙동5블럭 낙동강 온도 측정 센터 신축공사")
@@ -33,7 +34,7 @@ public class TemporaryUpdateRequest {
     private Integer wage;
     @Schema(description = "준비 사항", example = "작업복, 작업화")
     private String preparation;
-    @Schema(description = "모집 마감", example = "2024-03-01T09:30:00", type="string")
+    @Schema(description = "모집 마감", example = "2024-03-01T09:30:00", type = "string")
     private LocalDateTime expirationTime;
     @Schema(description = "주차 공간 설명", example = "2번 GateWay 옆 공간")
     private String parkDetail;

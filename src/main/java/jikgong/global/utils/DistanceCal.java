@@ -5,6 +5,7 @@ import jikgong.domain.jobpost.entity.JobPost;
 import jikgong.domain.location.entity.Location;
 
 public class DistanceCal {
+
     public static Double getDistance(JobPost jobPost, Location location) {
         double earthRadius = 6371; // 지구 반지름
 
@@ -22,8 +23,8 @@ public class DistanceCal {
 
         // Haversine 공식 계산
         double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(lat1) * Math.cos(lat2) *
-                        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            Math.cos(lat1) * Math.cos(lat2) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
 
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
@@ -50,8 +51,8 @@ public class DistanceCal {
 
         // Haversine 공식 계산
         double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(lat1) * Math.cos(lat2) *
-                        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            Math.cos(lat1) * Math.cos(lat2) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
 
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 

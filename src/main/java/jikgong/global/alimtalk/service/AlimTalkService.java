@@ -1,15 +1,14 @@
 package jikgong.global.alimtalk.service;
 
+import java.time.Instant;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import jikgong.global.feignclient.client.AlimTalkClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import java.time.Instant;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +26,11 @@ public class AlimTalkService {
     @Value("${ncp.plus-friend-id}")
     private String plusFriendId;
 
+    /**
+     * 사업자 등록 시 AlimTalk 개발 진행
+     */
     public void sendAlimTalk(String to, String templateCode, String content) {
+
 //        String alimTalkSignatureRequestUrl = "/alimtalk/v2/services/" + serviceID + "/messages";
 //        try {
 //            // signature 생성
@@ -64,15 +67,15 @@ public class AlimTalkService {
             String method = "POST"; // method
 
             String message =
-                    new StringBuilder()
-                            .append(method)
-                            .append(space)
-                            .append(url)
-                            .append(newLine)
-                            .append(timeStamp)
-                            .append(newLine)
-                            .append(accessKey)
-                            .toString();
+                new StringBuilder()
+                    .append(method)
+                    .append(space)
+                    .append(url)
+                    .append(newLine)
+                    .append(timeStamp)
+                    .append(newLine)
+                    .append(accessKey)
+                    .toString();
 
             SecretKeySpec signingKey = new SecretKeySpec(secretKey.getBytes("UTF-8"), "HmacSHA256");
             Mac mac = Mac.getInstance("HmacSHA256");

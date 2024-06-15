@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class JobPostImageResponse {
+
     private Long jobPostImageId;
 
     private String s3Url; // s3 url
@@ -14,9 +15,9 @@ public class JobPostImageResponse {
 
     public static JobPostImageResponse from(JobPostImage jobPostImage) {
         return JobPostImageResponse.builder()
-                .jobPostImageId(jobPostImage.getId())
-                .s3Url(jobPostImage.getS3Url())
-                .isThumbnail(jobPostImage.isThumbnail())
-                .build();
+            .jobPostImageId(jobPostImage.getId())
+            .s3Url(jobPostImage.getS3Url())
+            .isThumbnail(jobPostImage.isThumbnail())
+            .build();
     }
 }

@@ -1,6 +1,14 @@
 package jikgong.domain.skill.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jikgong.domain.jobpost.entity.Tech;
 import jikgong.domain.resume.dto.worker.SkillDetailRequest;
 import jikgong.domain.resume.entity.Resume;
@@ -13,6 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Skill {
+
     @Id
     @GeneratedValue
     @Column(name = "skill_id")
@@ -35,9 +44,9 @@ public class Skill {
 
     public static Skill createEntity(SkillDetailRequest request, Resume resume) {
         return Skill.builder()
-                .tech(request.getTech())
-                .skillPeriod(request.getSkillPeriod())
-                .resume(resume)
-                .build();
+            .tech(request.getTech())
+            .skillPeriod(request.getSkillPeriod())
+            .resume(resume)
+            .build();
     }
 }

@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @Getter
 @Builder
 public class ProjectDetailResponse {
+
     /**
      * 기업 검색 부분에서 사용
      */
@@ -32,27 +33,27 @@ public class ProjectDetailResponse {
 
     private List<JobPostResponse> jobPostResponseList;
 
-    public static ProjectDetailResponse from (Project project, List<WorkDate> workDateList) {
+    public static ProjectDetailResponse from(Project project, List<WorkDate> workDateList) {
         List<JobPostResponse> jobPostResponseList = workDateList.stream()
-                .map(JobPostResponse::from)
-                .collect(Collectors.toList());
+            .map(JobPostResponse::from)
+            .collect(Collectors.toList());
 
         return ProjectDetailResponse.builder()
-                .projectId(project.getId())
-                .projectName(project.getProjectName())
-                .companyName(project.getMember().getCompanyInfo().getCompanyName())
+            .projectId(project.getId())
+            .projectName(project.getProjectName())
+            .companyName(project.getMember().getCompanyInfo().getCompanyName())
 
-                .startDate(project.getStartDate())
-                .endDate(project.getEndDate())
+            .startDate(project.getStartDate())
+            .endDate(project.getEndDate())
 
-                .jobPostResponseList(jobPostResponseList)
-                .build();
+            .jobPostResponseList(jobPostResponseList)
+            .build();
     }
-
 
     @Getter
     @Builder
     public static class JobPostResponse {
+
         private Tech tech; // 직종
         private Integer wage; // 임금
 
@@ -76,18 +77,18 @@ public class ProjectDetailResponse {
             Member company = jobPost.getMember();
 
             return JobPostResponse.builder()
-                    .tech(jobPost.getTech())
-                    .wage(jobPost.getWage())
-                    .date(workDate.getDate())
-                    .startTime(jobPost.getStartTime())
-                    .endTime(jobPost.getEndTime())
-                    .recruitNum(workDate.getRecruitNum())
-                    .registeredNum(workDate.getRegisteredNum())
-                    .meal(jobPost.getAvailableInfo().getMeal())
-                    .pickup(jobPost.getAvailableInfo().getPickup())
-                    .park(jobPost.getAvailableInfo().getPark())
-                    .companyName(company.getCompanyInfo().getCompanyName())
-                    .build();
+                .tech(jobPost.getTech())
+                .wage(jobPost.getWage())
+                .date(workDate.getDate())
+                .startTime(jobPost.getStartTime())
+                .endTime(jobPost.getEndTime())
+                .recruitNum(workDate.getRecruitNum())
+                .registeredNum(workDate.getRegisteredNum())
+                .meal(jobPost.getAvailableInfo().getMeal())
+                .pickup(jobPost.getAvailableInfo().getPickup())
+                .park(jobPost.getAvailableInfo().getPark())
+                .companyName(company.getCompanyInfo().getCompanyName())
+                .build();
         }
     }
 }

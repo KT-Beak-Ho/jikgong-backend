@@ -16,8 +16,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableAsync
 public class JikgongApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(JikgongApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(JikgongApplication.class, args);
+    }
 
 }

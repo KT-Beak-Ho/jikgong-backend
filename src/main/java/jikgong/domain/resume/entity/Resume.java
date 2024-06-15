@@ -18,6 +18,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Resume {
+
     @Id
     @GeneratedValue
     @Column(name = "resume_id")
@@ -39,7 +40,8 @@ public class Resume {
     private List<Skill> skillList = new ArrayList<>();
 
     @Builder
-    public Resume(Integer career, LocalTime preferTimeStart, LocalTime preferTimeEnd, AvailableInfo availableInfo, Member member) {
+    public Resume(Integer career, LocalTime preferTimeStart, LocalTime preferTimeEnd, AvailableInfo availableInfo,
+        Member member) {
         this.career = career;
         this.preferTimeStart = preferTimeStart;
         this.preferTimeEnd = preferTimeEnd;
@@ -51,11 +53,11 @@ public class Resume {
 
     public static Resume createEntity(ResumeSaveRequest request, Member member) {
         return Resume.builder()
-                .career(request.getCareer())
-                .preferTimeStart(request.getPreferTimeStart())
-                .preferTimeEnd(request.getPreferTimeEnd())
-                .availableInfo(new AvailableInfo(request.getMeal(), request.getPickup(), request.getPark()))
-                .member(member)
-                .build();
+            .career(request.getCareer())
+            .preferTimeStart(request.getPreferTimeStart())
+            .preferTimeEnd(request.getPreferTimeEnd())
+            .availableInfo(new AvailableInfo(request.getMeal(), request.getPickup(), request.getPark()))
+            .member(member)
+            .build();
     }
 }

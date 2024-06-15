@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum SortType {
+
     DISTANCE("거리순"),
     CAREER("경력순");
 

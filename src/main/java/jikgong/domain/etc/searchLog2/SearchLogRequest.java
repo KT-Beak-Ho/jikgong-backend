@@ -1,4 +1,4 @@
-//package jikgong.domain.searchLog2;
+//package jikgong.domain.etc.searchLog2;
 //
 //import lombok.Getter;
 //import lombok.NoArgsConstructor;

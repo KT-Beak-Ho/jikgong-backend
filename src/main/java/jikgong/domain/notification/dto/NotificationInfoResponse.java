@@ -10,6 +10,7 @@ import lombok.Getter;
 @Builder
 @Getter
 public class NotificationInfoResponse {
+
     // 기업
     private Boolean companyOfferDecision; // 제안 결과 수신 여부
     private Boolean companyEvent; // 이벤트 수신 여부
@@ -22,16 +23,16 @@ public class NotificationInfoResponse {
 
     public static NotificationInfoResponse from(CompanyNotificationInfo info) {
         return NotificationInfoResponse.builder()
-                .companyOfferDecision(info.getCompanyOfferDecision())
-                .companyEvent(info.getCompanyEvent())
-                .build();
+            .companyOfferDecision(info.getCompanyOfferDecision())
+            .companyEvent(info.getCompanyEvent())
+            .build();
     }
 
     public static NotificationInfoResponse from(WorkerNotificationInfo info) {
         return NotificationInfoResponse.builder()
-                .workerOffer(info.getWorkerOffer())
-                .workerApplyDecision(info.getWorkerApplyDecision())
-                .workerEvent(info.getWorkerEvent())
-                .build();
+            .workerOffer(info.getWorkerOffer())
+            .workerApplyDecision(info.getWorkerApplyDecision())
+            .workerEvent(info.getWorkerEvent())
+            .build();
     }
 }

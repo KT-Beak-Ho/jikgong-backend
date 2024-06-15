@@ -1,15 +1,15 @@
 package jikgong.global.querycount;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.context.request.RequestContextHolder;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-
 @Slf4j
 @RequiredArgsConstructor
 public class ConnectionHandler implements InvocationHandler {
+
     private static final String QUERY_PREPARE_STATEMENT = "prepareStatement";
 
     private final Object connection;

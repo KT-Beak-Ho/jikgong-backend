@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 @Getter
 @Builder
 public class JobPostDetailResponse {
+
     private Long jobPostId;
     private String title; // 제목
     private Tech tech; // 직종
@@ -50,44 +51,44 @@ public class JobPostDetailResponse {
 
         // 픽업 장소 리스트
         List<String> pickupAddressList = jobPost.getPickupList().stream()
-                .map(Pickup::getAddress)
-                .collect(Collectors.toList());
+            .map(Pickup::getAddress)
+            .collect(Collectors.toList());
 
         // 근무 날짜
         List<WorkDateResponse> workDateResponseList = jobPost.getWorkDateList().stream()
-                .map(WorkDateResponse::from)
-                .collect(Collectors.toList());
+            .map(WorkDateResponse::from)
+            .collect(Collectors.toList());
 
         // 이미지 리스트
         List<String> imageUrls = jobPost.getJobPostImageList().stream()
-                .map(JobPostImage::getS3Url)
-                .collect(Collectors.toList());
+            .map(JobPostImage::getS3Url)
+            .collect(Collectors.toList());
 
         return JobPostDetailResponse.builder()
-                .jobPostId(jobPost.getId())
-                .title(jobPost.getTitle())
-                .tech(jobPost.getTech())
-                .startTime(jobPost.getStartTime())
-                .endTime(jobPost.getEndTime())
+            .jobPostId(jobPost.getId())
+            .title(jobPost.getTitle())
+            .tech(jobPost.getTech())
+            .startTime(jobPost.getStartTime())
+            .endTime(jobPost.getEndTime())
 
-                .workAddress(jobPost.getAddress().getAddress())
-                .distance((location == null) ? null : DistanceCal.getDistance(jobPost, location))
+            .workAddress(jobPost.getAddress().getAddress())
+            .distance((location == null) ? null : DistanceCal.getDistance(jobPost, location))
 
-                .meal(jobPost.getAvailableInfo().getMeal())
-                .pickup(jobPost.getAvailableInfo().getPickup())
-                .pickupAddressList(pickupAddressList)
-                .park(jobPost.getAvailableInfo().getPark())
-                .parkDetail(jobPost.getParkDetail())
-                .preparation(jobPost.getPreparation())
+            .meal(jobPost.getAvailableInfo().getMeal())
+            .pickup(jobPost.getAvailableInfo().getPickup())
+            .pickupAddressList(pickupAddressList)
+            .park(jobPost.getAvailableInfo().getPark())
+            .parkDetail(jobPost.getParkDetail())
+            .preparation(jobPost.getPreparation())
 
-                .workDateResponseList(workDateResponseList)
+            .workDateResponseList(workDateResponseList)
 
-                .companyName(member.getCompanyInfo().getCompanyName())
-                .manager(member.getCompanyInfo().getManager())
-                .phone(member.getPhone())
+            .companyName(member.getCompanyInfo().getCompanyName())
+            .manager(member.getCompanyInfo().getManager())
+            .phone(member.getPhone())
 
-                .imageUrls(imageUrls)
+            .imageUrls(imageUrls)
 
-                .build();
+            .build();
     }
 }

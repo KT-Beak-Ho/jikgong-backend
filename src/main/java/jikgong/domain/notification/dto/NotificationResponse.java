@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 public class NotificationResponse {
+
     private Long notificationId;
     private String content; // 내용
     private String url; // 이동 url
@@ -23,12 +24,12 @@ public class NotificationResponse {
 
     public static NotificationResponse from(Notification notification) {
         return NotificationResponse.builder()
-                .notificationId(notification.getId())
-                .content(notification.getContent())
-                .url(notification.getUrl())
-                .isRead(notification.getIsRead())
-                .notificationType(notification.getNotificationType())
-                .receivedAt(notification.getCreatedDate())
-                .build();
+            .notificationId(notification.getId())
+            .content(notification.getContent())
+            .url(notification.getUrl())
+            .isRead(notification.getIsRead())
+            .notificationType(notification.getNotificationType())
+            .receivedAt(notification.getCreatedDate())
+            .build();
     }
 }

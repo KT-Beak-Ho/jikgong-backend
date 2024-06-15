@@ -9,6 +9,7 @@ import lombok.ToString;
 @Getter
 @ToString
 public class ValidationPhoneRequest {
+
     @Schema(description = "휴대폰 번호", example = "01012345678")
     private String phone; // 휴대폰 번호
 }

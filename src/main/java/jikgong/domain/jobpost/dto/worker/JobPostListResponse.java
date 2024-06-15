@@ -19,6 +19,7 @@ import java.util.Optional;
 @Getter
 @Builder
 public class JobPostListResponse {
+
     private Long jobPostId;
 
     private Tech tech; // 직종
@@ -56,39 +57,39 @@ public class JobPostListResponse {
         if (jobPostImages != null) {
             // Thumbnail 이미지 추출
             Optional<JobPostImage> thumbnailImage = jobPostImages.stream()
-                    .filter(JobPostImage::isThumbnail)
-                    .findFirst();
+                .filter(JobPostImage::isThumbnail)
+                .findFirst();
 
             // S3 URL 추출 및 변경, 없으면 null 반환
             thumbnailS3Url = thumbnailImage.map(JobPostImage::getS3Url)
-                    .map(s3Url -> s3Url.replace("jikgong-image", "jikgong-resize-bucket"))
-                    .orElse(null);
+                .map(s3Url -> s3Url.replace("jikgong-image", "jikgong-resize-bucket"))
+                .orElse(null);
         }
 
         return JobPostListResponse.builder()
-                .jobPostId(jobPost.getId())
+            .jobPostId(jobPost.getId())
 
-                .tech(jobPost.getTech())
-                .recruitNum(jobPost.getRecruitNum())
-                .title(jobPost.getTitle())
+            .tech(jobPost.getTech())
+            .recruitNum(jobPost.getRecruitNum())
+            .title(jobPost.getTitle())
 
-                .meal(jobPost.getAvailableInfo().getMeal())
-                .pickup(jobPost.getAvailableInfo().getPickup())
-                .park(jobPost.getAvailableInfo().getPark())
+            .meal(jobPost.getAvailableInfo().getMeal())
+            .pickup(jobPost.getAvailableInfo().getPickup())
+            .park(jobPost.getAvailableInfo().getPark())
 
-                .startDate(jobPost.getStartDate())
-                .endDate(jobPost.getEndDate())
-                .startTime(jobPost.getStartTime())
-                .endTime(jobPost.getEndTime())
-                .address(jobPost.getAddress().getAddress())
-                .distance((location == null) ? null : DistanceCal.getDistance(jobPost, location))
+            .startDate(jobPost.getStartDate())
+            .endDate(jobPost.getEndDate())
+            .startTime(jobPost.getStartTime())
+            .endTime(jobPost.getEndTime())
+            .address(jobPost.getAddress().getAddress())
+            .distance((location == null) ? null : DistanceCal.getDistance(jobPost, location))
 
-                .companyName(jobPost.getMember().getCompanyInfo().getCompanyName())
-                .wage(jobPost.getWage())
+            .companyName(jobPost.getMember().getCompanyInfo().getCompanyName())
+            .wage(jobPost.getWage())
 
-                .isScrap(null)
-                .thumbnailS3Url(thumbnailS3Url)
+            .isScrap(null)
+            .thumbnailS3Url(thumbnailS3Url)
 
-                .build();
+            .build();
     }
 }

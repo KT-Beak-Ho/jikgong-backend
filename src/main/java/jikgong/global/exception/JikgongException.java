@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public class JikgongException extends RuntimeException {
+
     private final HttpStatus status;
     private final String errorMessage;
 
@@ -14,6 +15,7 @@ public class JikgongException extends RuntimeException {
         this.status = errorCode.getStatus();
         this.errorMessage = errorCode.getErrorMessage();
     }
+
     public JikgongException(HttpStatus status, String errorMessage) {
         super(errorMessage);
         this.status = status;

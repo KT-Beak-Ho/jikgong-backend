@@ -1,14 +1,18 @@
 package jikgong.global.security.filter;
 
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Arrays;
 import jikgong.global.common.Response;
-import jikgong.global.exception.JikgongException;
 import jikgong.global.exception.ErrorCode;
+import jikgong.global.exception.JikgongException;
 import jikgong.global.security.principal.PrincipalDetails;
 import jikgong.global.security.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
@@ -19,28 +23,25 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException;
-import java.util.Arrays;
-
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
+
     private final JwtTokenProvider jwtProvider;
     private final ObjectMapper objectMapper;
     private final CustomUserDetailsService userDetailsService;
 
-
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+        throws ServletException, IOException {
         try {
             String authorizationHeader = request.getHeader("Authorization");
             String token;
             String loginId;
             // 헤더가 null 이 아니고 올바른 토큰이라면
-            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ") && !request.getRequestURI().equals("/reissue")) {
+            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ") && !request.getRequestURI()
+                .equals("/reissue")) {
                 // 토큰 추출
                 token = authorizationHeader.substring(7);
                 // 만료 체크
@@ -55,7 +56,8 @@ public class JwtFilter extends OncePerRequestFilter {
                 PrincipalDetails principalDetails = userDetailsService.loadUserByUsername(loginId);
 
                 // 인증 정보 생성
-                Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());
+                Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetails, null,
+                    principalDetails.getAuthorities());
                 // SecurityContextHolder에 인증 정보 설정
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 log.info("회원 인증 완료");
@@ -73,7 +75,8 @@ public class JwtFilter extends OncePerRequestFilter {
                 writeErrorLogs("EXPIRED_ACCESS_TOKEN", e.getMessage(), e.getStackTrace());
                 // 응값 코드 세팅
                 response.setStatus(e.getStatus().value());
-                response.getWriter().write(objectMapper.writeValueAsString(new Response<String>("만료된 access token 입니다.")));
+                response.getWriter()
+                    .write(objectMapper.writeValueAsString(new Response<String>("만료된 access token 입니다.")));
                 response.getWriter().flush();
                 response.getWriter().close();
             }

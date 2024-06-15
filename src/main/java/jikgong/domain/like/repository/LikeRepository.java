@@ -11,6 +11,7 @@ import java.util.Optional;
 
 @Repository
 public interface LikeRepository extends JpaRepository<Like, Long> {
+
     @Query("select l from Like l where l.sender.id = :senderId and l.receiver.id = :receiverId")
     Optional<Like> findBySenderIdAndReceiverId(@Param("senderId") Long senderId, @Param("receiverId") Long receiverId);
 }

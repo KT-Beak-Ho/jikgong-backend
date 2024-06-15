@@ -1,10 +1,10 @@
 package jikgong.global.utils;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.YearMonth;
 
 public class TimeTransfer {
+
     public static LocalDate getFirstDayOfMonth(LocalDate localDate) {
         return localDate.withDayOfMonth(1);
     }

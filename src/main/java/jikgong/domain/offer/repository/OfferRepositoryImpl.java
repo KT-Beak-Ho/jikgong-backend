@@ -17,32 +17,33 @@ import static jikgong.domain.offer.entity.QOffer.*;
 
 @RequiredArgsConstructor
 public class OfferRepositoryImpl implements OfferRepositoryCustom {
+
     private final JPAQueryFactory queryFactory;
 
     @Override
     public Page<Offer> findOfferHistory(Long companyId, OfferStatus offerStatus, Pageable pageable) {
         List<Offer> result = queryFactory
-                .select(offer)
-                .from(offer)
-                .join(offer.worker, member).fetchJoin()
-                .join(offer.jobPost, jobPost).fetchJoin()
-                .where(
-                        eqCompany(companyId),
-                        eqOfferStatus(offerStatus)
-                )
-                .orderBy(offer.createdDate.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
+            .select(offer)
+            .from(offer)
+            .join(offer.worker, member).fetchJoin()
+            .join(offer.jobPost, jobPost).fetchJoin()
+            .where(
+                eqCompany(companyId),
+                eqOfferStatus(offerStatus)
+            )
+            .orderBy(offer.createdDate.desc())
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
 
         Long totalCount = queryFactory
-                .select(offer.count())
-                .from(offer)
-                .where(
-                        eqCompany(companyId),
-                        eqOfferStatus(offerStatus)
-                )
-                .fetchOne();
+            .select(offer.count())
+            .from(offer)
+            .where(
+                eqCompany(companyId),
+                eqOfferStatus(offerStatus)
+            )
+            .fetchOne();
 
         return new PageImpl<>(result, pageable, totalCount);
     }

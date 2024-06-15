@@ -1,7 +1,9 @@
 package jikgong.global.batch.scheduler;
 
-import jikgong.global.exception.JikgongException;
+import java.util.HashMap;
+import java.util.Map;
 import jikgong.global.exception.ErrorCode;
+import jikgong.global.exception.JikgongException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -11,13 +13,11 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class ApplyCancelScheduler {
+
     private final JobLauncher jobLauncher;
     private final Job applyJobConfig;
 

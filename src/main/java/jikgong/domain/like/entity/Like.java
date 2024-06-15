@@ -13,10 +13,12 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "likes")
 public class Like extends BaseEntity {
+
     /**
      * 회사가 노동자에게 누르는 좋아요
      */
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "like_id")
     private Long id;
 
@@ -36,8 +38,8 @@ public class Like extends BaseEntity {
 
     public static Like createEntity(Member sender, Member receiver) {
         return Like.builder()
-                .sender(sender)
-                .receiver(receiver)
-                .build();
+            .sender(sender)
+            .receiver(receiver)
+            .build();
     }
 }

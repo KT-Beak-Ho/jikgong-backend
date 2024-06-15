@@ -11,11 +11,13 @@ import java.util.Optional;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
+
     /**
      * find by id and member
      */
     @Query("select n from Notification n where n.receiver.id = :memberId and n.id = :notificationId")
-    Optional<Notification> findByIdAndMember(@Param("memberId") Long memberId, @Param("notificationId") Long notificationId);
+    Optional<Notification> findByIdAndMember(@Param("memberId") Long memberId,
+        @Param("notificationId") Long notificationId);
 
     @Query("select n from Notification n where n.receiver.id = :memberId order by n.createdDate desc")
     List<Notification> findByMember(@Param("memberId") Long memberId);

@@ -16,6 +16,7 @@ import java.util.List;
 @Getter
 @Builder
 public class JobPostResponseForOffer {
+
     private String workerName;
     private List<JobPostResponse> jobPostResponseList;
 
@@ -28,14 +29,15 @@ public class JobPostResponseForOffer {
             jobPostResponseList.add(JobPostResponse.from(jobPost));
         }
         return JobPostResponseForOffer.builder()
-                .workerName(member.getWorkerInfo().getWorkerName())
-                .jobPostResponseList(jobPostResponseList)
-                .build();
+            .workerName(member.getWorkerInfo().getWorkerName())
+            .jobPostResponseList(jobPostResponseList)
+            .build();
     }
 
     @Getter
     @Builder
     public static class JobPostResponse {
+
         private Long jobPostId;
         private Tech tech; // 타입
         private String title; // 모집 공고 제목
@@ -58,27 +60,30 @@ public class JobPostResponseForOffer {
             for (WorkDate workDate : jobPostWorkDateList) {
                 // 출역일 전 혹은 출역일과 같은 날이라면 출역 시각 3시간 전인지 체크
                 if (now.isAfter(workDate.getDate()) ||
-                        (now.isEqual(workDate.getDate()) && LocalTime.now().plusHours(3L).isAfter(jobPost.getStartTime()))) {
+                    (now.isEqual(workDate.getDate()) && LocalTime.now().plusHours(3L)
+                        .isAfter(jobPost.getStartTime()))) {
                     pastDate.add(WorkDateResponse.from(workDate));
                 }
 
                 // 모집된 인원이 전부 찼는지 체크
                 else if (workDate.getRegisteredNum() >= workDate.getRecruitNum()) {
                     fullCapacityDate.add(WorkDateResponse.from(workDate));
-                } else availableDate.add(WorkDateResponse.from(workDate));
+                } else {
+                    availableDate.add(WorkDateResponse.from(workDate));
+                }
             }
 
             return JobPostResponse.builder()
-                    .jobPostId(jobPost.getId())
-                    .tech(jobPost.getTech())
-                    .title(jobPost.getTitle())
-                    .availableDate(availableDate)
-                    .fullCapacityDate(fullCapacityDate)
-                    .pastDate(pastDate)
-                    .startTime(jobPost.getStartTime())
-                    .endTime(jobPost.getEndTime())
-                    .wage(jobPost.getWage())
-                    .build();
+                .jobPostId(jobPost.getId())
+                .tech(jobPost.getTech())
+                .title(jobPost.getTitle())
+                .availableDate(availableDate)
+                .fullCapacityDate(fullCapacityDate)
+                .pastDate(pastDate)
+                .startTime(jobPost.getStartTime())
+                .endTime(jobPost.getEndTime())
+                .wage(jobPost.getWage())
+                .build();
         }
     }
 }

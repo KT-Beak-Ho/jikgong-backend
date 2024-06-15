@@ -4,8 +4,13 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import jikgong.global.exception.JikgongException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import jikgong.global.exception.ErrorCode;
+import jikgong.global.exception.JikgongException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,16 +18,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class S3Handler {
+
     private final AmazonS3Client amazonS3Client;
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -37,9 +37,11 @@ public class S3Handler {
         if (ObjectUtils.isEmpty(contentType)) {
             throw new JikgongException(ErrorCode.FILE_NOT_FOUND_EXTENSION);
         } else { //확장자명이 jpeg, png 인 파일들만 받아서 처리
-            if (contentType.contains("image/jpeg")) extension = ".jpg";
-            else if (contentType.contains("image/png")) extension = ".png";
-            else {
+            if (contentType.contains("image/jpeg")) {
+                extension = ".jpg";
+            } else if (contentType.contains("image/png")) {
+                extension = ".png";
+            } else {
                 log.error("사진이 아닌 파일 입니다.");
                 throw new JikgongException(ErrorCode.FILE_NOT_SUPPORTED);
             }
@@ -68,9 +70,9 @@ public class S3Handler {
         String s3Url = getImgPath(storeImageName);
 
         return ImageDto.builder()
-                .s3Url(s3Url)
-                .storeImgName(storeImageName)
-                .build();
+            .s3Url(s3Url)
+            .storeImgName(storeImageName)
+            .build();
     }
 
     public List<ImageDto> uploadImageList(List<MultipartFile> files) {
@@ -89,9 +91,11 @@ public class S3Handler {
             if (ObjectUtils.isEmpty(contentType)) {
                 throw new JikgongException(ErrorCode.FILE_NOT_FOUND_EXTENSION);
             } else { //확장자명이 jpeg, png 인 파일들만 받아서 처리
-                if (contentType.contains("image/jpeg")) extension = ".jpg";
-                else if (contentType.contains("image/png")) extension = ".png";
-                else {
+                if (contentType.contains("image/jpeg")) {
+                    extension = ".jpg";
+                } else if (contentType.contains("image/png")) {
+                    extension = ".png";
+                } else {
                     log.error("사진이 아닌 파일 입니다.");
                     throw new JikgongException(ErrorCode.FILE_NOT_SUPPORTED);
                 }
@@ -101,7 +105,6 @@ public class S3Handler {
             // 썸네일 이미지라면 Prefix를 등록해 AWS Lambda가 실행되도록 세팅
             String prefix = isFirst ? "thumbnail_" : "";
             storeImageName = "jobPost/" + prefix + storeImageName;
-
 
             InputStream inputStream = null;
             try {
@@ -123,10 +126,10 @@ public class S3Handler {
             String s3Url = getImgPath(storeImageName);
 
             ImageDto imageDto = ImageDto.builder()
-                    .s3Url(s3Url)
-                    .storeImgName(storeImageName)
-                    .isThumbnail(isFirst) // 첫 번째 이미지만 썸네일로 설정
-                    .build();
+                .s3Url(s3Url)
+                .storeImgName(storeImageName)
+                .isThumbnail(isFirst) // 첫 번째 이미지만 썸네일로 설정
+                .build();
             imageDtoList.add(imageDto);
 
             isFirst = false; // 첫 번째 이미지 처리 후, 플래그 변경

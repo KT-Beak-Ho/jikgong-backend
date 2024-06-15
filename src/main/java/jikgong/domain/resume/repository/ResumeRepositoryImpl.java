@@ -27,35 +27,37 @@ import static jikgong.domain.resume.entity.QResume.*;
 public class ResumeRepositoryImpl implements ResumeRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
+
     @Override
-    public Page<ResumeListResponse> findHeadHuntingMemberList(Address projectAddress, Tech tech, Float bound, SortType sortType, Pageable pageable) {
+    public Page<ResumeListResponse> findHeadHuntingMemberList(Address projectAddress, Tech tech, Float bound,
+        SortType sortType, Pageable pageable) {
         List<Resume> headHuntingList = queryFactory
-                .selectFrom(resume)
-                .leftJoin(resume.member, member)
-                .leftJoin(member.locationList, location).on(location.isMain.isTrue())
-                .where(
-                        containTech(tech),
-                        ltBound(bound, projectAddress, location)
-                )
-                .orderBy(selectOrderBySpecifier(sortType, projectAddress, location))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
+            .selectFrom(resume)
+            .leftJoin(resume.member, member)
+            .leftJoin(member.locationList, location).on(location.isMain.isTrue())
+            .where(
+                containTech(tech),
+                ltBound(bound, projectAddress, location)
+            )
+            .orderBy(selectOrderBySpecifier(sortType, projectAddress, location))
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
 
         Long totalCount = queryFactory
-                .select(resume.count())
-                .from(resume)
-                .leftJoin(resume.member, member)
-                .leftJoin(member.locationList, location).on(location.isMain.isTrue())
-                .where(
-                        containTech(tech),
-                        ltBound(bound, projectAddress, location)
-                )
-                .fetchOne();
+            .select(resume.count())
+            .from(resume)
+            .leftJoin(resume.member, member)
+            .leftJoin(member.locationList, location).on(location.isMain.isTrue())
+            .where(
+                containTech(tech),
+                ltBound(bound, projectAddress, location)
+            )
+            .fetchOne();
 
         List<ResumeListResponse> resumeListResponse = headHuntingList.stream()
-                .map(h -> ResumeListResponse.from(h, projectAddress))
-                .collect(Collectors.toList());
+            .map(h -> ResumeListResponse.from(h, projectAddress))
+            .collect(Collectors.toList());
 
         return new PageImpl<>(resumeListResponse, pageable, totalCount);
     }
@@ -85,30 +87,33 @@ public class ResumeRepositoryImpl implements ResumeRepositoryCustom {
     private NumberExpression<Double> getDistance(Address projectAddress, QLocation locationParam) {
         // latitude 를 radians 로 계산
         NumberExpression<Double> radiansLatitude =
-                Expressions.numberTemplate(Double.class, "radians({0})", projectAddress.getLatitude());
+            Expressions.numberTemplate(Double.class, "radians({0})", projectAddress.getLatitude());
 
         // 계산된 latitude -> 코사인 계산
         NumberExpression<Double> cosLatitude =
-                Expressions.numberTemplate(Double.class, "cos({0})", radiansLatitude);
+            Expressions.numberTemplate(Double.class, "cos({0})", radiansLatitude);
         NumberExpression<Double> cosSubwayLatitude =
-                Expressions.numberTemplate(Double.class, "cos(radians({0}))", locationParam.address.latitude);
+            Expressions.numberTemplate(Double.class, "cos(radians({0}))", locationParam.address.latitude);
 
         // 계산된 latitude -> 사인 계산
         NumberExpression<Double> sinLatitude =
-                Expressions.numberTemplate(Double.class, "sin({0})", radiansLatitude);
+            Expressions.numberTemplate(Double.class, "sin({0})", radiansLatitude);
         NumberExpression<Double> sinSubWayLatitude =
-                Expressions.numberTemplate(Double.class, "sin(radians({0}))", locationParam.address.latitude);
+            Expressions.numberTemplate(Double.class, "sin(radians({0}))", locationParam.address.latitude);
 
         // 사이 거리 계산
         NumberExpression<Double> cosLongitude =
-                Expressions.numberTemplate(Double.class, "cos(radians({0}) - radians({1}))", locationParam.address.longitude, projectAddress.getLongitude());
+            Expressions.numberTemplate(Double.class, "cos(radians({0}) - radians({1}))",
+                locationParam.address.longitude, projectAddress.getLongitude());
 
         NumberExpression<Double> acosExpression =
-                Expressions.numberTemplate(Double.class, "acos({0})", cosLatitude.multiply(cosSubwayLatitude).multiply(cosLongitude).add(sinLatitude.multiply(sinSubWayLatitude)));
+            Expressions.numberTemplate(Double.class, "acos({0})",
+                cosLatitude.multiply(cosSubwayLatitude).multiply(cosLongitude)
+                    .add(sinLatitude.multiply(sinSubWayLatitude)));
 
         // 최종 계산
         NumberExpression<Double> distanceExpression =
-                Expressions.numberTemplate(Double.class, "6371 * {0}", acosExpression);
+            Expressions.numberTemplate(Double.class, "6371 * {0}", acosExpression);
 
         return distanceExpression;
     }

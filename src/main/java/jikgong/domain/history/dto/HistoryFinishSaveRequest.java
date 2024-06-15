@@ -11,6 +11,7 @@ import java.util.List;
 @Getter
 @ToString
 public class HistoryFinishSaveRequest {
+
     @Schema(description = "퇴근 history id list", example = "[\"1\", \"2\"]")
     private List<Long> finishWorkHistoryIdList;
     @Schema(description = "조퇴 history id list", example = "[\"3\", \"4\"]")

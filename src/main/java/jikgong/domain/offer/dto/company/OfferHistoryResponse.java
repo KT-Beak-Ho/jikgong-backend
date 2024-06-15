@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 @Getter
 @Builder
 public class OfferHistoryResponse {
+
     private Long offerId;
     private OfferStatus offerStatus; // 수락, 거절
 
@@ -29,26 +30,26 @@ public class OfferHistoryResponse {
 
     public static OfferHistoryResponse from(Offer offer) {
         List<WorkDate> workDateList = offer.getOfferWorkDateList().stream()
-                .map(OfferWorkDate::getWorkDate)
-                .collect(Collectors.toList());
-
+            .map(OfferWorkDate::getWorkDate)
+            .collect(Collectors.toList());
 
         JobPost jobPost = offer.getJobPost();
         Member worker = offer.getWorker();
 
         return OfferHistoryResponse.builder()
-                .offerId(offer.getId())
-                .offerStatus(offer.getOfferStatus())
-                .workDateResponseList(workDateList.stream().map(WorkDateResponse::from).collect(Collectors.toList()))
-                .jobPostResponse(JobPostResponse.from(jobPost))
-                .memberResponse(MemberResponse.from(worker))
-                .build();
+            .offerId(offer.getId())
+            .offerStatus(offer.getOfferStatus())
+            .workDateResponseList(workDateList.stream().map(WorkDateResponse::from).collect(Collectors.toList()))
+            .jobPostResponse(JobPostResponse.from(jobPost))
+            .memberResponse(MemberResponse.from(worker))
+            .build();
     }
 
 
     @Getter
     @Builder
     public static class JobPostResponse {
+
         private String title; // 공고 명
         private Tech tech; // 기술 타입
         private LocalTime startTime; // 시작 시간
@@ -57,18 +58,19 @@ public class OfferHistoryResponse {
 
         public static JobPostResponse from(JobPost jobPost) {
             return JobPostResponse.builder()
-                    .title(jobPost.getTitle())
-                    .tech(jobPost.getTech())
-                    .startTime(jobPost.getStartTime())
-                    .endTime(jobPost.getEndTime())
-                    .wage(jobPost.getWage())
-                    .build();
+                .title(jobPost.getTitle())
+                .tech(jobPost.getTech())
+                .startTime(jobPost.getStartTime())
+                .endTime(jobPost.getEndTime())
+                .wage(jobPost.getWage())
+                .build();
         }
     }
 
     @Getter
     @Builder
     public static class MemberResponse {
+
         private String workerName; // 노동자 이름
 
         public static MemberResponse from(Member member) {

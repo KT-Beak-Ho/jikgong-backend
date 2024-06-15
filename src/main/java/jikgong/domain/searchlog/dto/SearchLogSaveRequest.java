@@ -6,5 +6,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class SearchLogSaveRequest {
+
     private String name;
 }

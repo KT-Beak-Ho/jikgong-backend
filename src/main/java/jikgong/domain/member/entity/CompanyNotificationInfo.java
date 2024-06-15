@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class CompanyNotificationInfo {
+
     private Boolean companyOfferDecision; // 제안 결과 수신 여부
     private Boolean companyEvent; // 이벤트 수신 여부
 

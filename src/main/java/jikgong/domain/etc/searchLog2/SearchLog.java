@@ -1,4 +1,4 @@
-//package jikgong.domain.searchLog2;
+//package jikgong.domain.etc.searchLog2;
 //
 //import jakarta.persistence.*;
 //import jikgong.domain.common.BaseEntity;

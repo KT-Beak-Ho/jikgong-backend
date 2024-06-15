@@ -18,7 +18,9 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Member extends BaseEntity {
-    @Id @GeneratedValue
+
+    @Id
+    @GeneratedValue
     @Column(name = "member_id")
     private Long id;
 
@@ -60,7 +62,8 @@ public class Member extends BaseEntity {
     }
 
     @Builder
-    public Member(String loginId, String password, String phone, String account, String bank, String deviceToken, Role role, Worker workerInfo, Company companyInfo, Certification certification) {
+    public Member(String loginId, String password, String phone, String account, String bank, String deviceToken,
+        Role role, Worker workerInfo, Company companyInfo, Certification certification) {
         this.loginId = loginId;
         this.password = password;
         this.phone = phone;

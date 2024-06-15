@@ -1,8 +1,8 @@
-//package jikgong.domain.searchLog2;
+//package jikgong.domain.etc.searchLog2;
 //
 //import jikgong.domain.member.entity.Member;
 //import jikgong.domain.member.repository.MemberRepository;
-//import jikgong.global.exception.CustomException;
+//import jikgong.global.exception.JikgongException;
 //import jikgong.global.exception.ErrorCode;
 //import lombok.RequiredArgsConstructor;
 //import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@
 //
 //    public void saveSearchLog(Long memberId, SearchLogRequest request) {
 //        Member member = memberRepository.findById(memberId)
-//                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+//                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 //
 //        SearchLog searchLog = SearchLog.builder()
 //                .keyword(request.getKeyword())

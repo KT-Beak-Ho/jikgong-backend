@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Slf4j
 public class LoginController {
+
     private final LoginService loginService;
 
     @Operation(summary = "회원 가입: 노동자")

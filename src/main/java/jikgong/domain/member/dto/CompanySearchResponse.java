@@ -9,13 +9,14 @@ import lombok.Getter;
 @Getter
 @Builder
 public class CompanySearchResponse {
+
     private Long companyId; // 기업 pk
     private String companyName; // 기업명
 
     public static CompanySearchResponse from(Member member) {
         return CompanySearchResponse.builder()
-                .companyId(member.getId())
-                .companyName(member.getCompanyInfo().getCompanyName())
-                .build();
+            .companyId(member.getId())
+            .companyName(member.getCompanyInfo().getCompanyName())
+            .build();
     }
 }

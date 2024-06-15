@@ -1,7 +1,15 @@
 package jikgong.domain.apply.service;
 
-import jikgong.domain.apply.dto.worker.ApplyPendingResponse;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import jikgong.domain.apply.dto.worker.ApplyHistoryResponse;
+import jikgong.domain.apply.dto.worker.ApplyPendingResponse;
 import jikgong.domain.apply.dto.worker.ApplyResponseMonthly;
 import jikgong.domain.apply.dto.worker.ApplySaveRequest;
 import jikgong.domain.apply.entity.Apply;
@@ -15,24 +23,20 @@ import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
 import jikgong.domain.workdate.entity.WorkDate;
 import jikgong.domain.workdate.repository.WorkDateRepository;
-import jikgong.global.exception.JikgongException;
 import jikgong.global.exception.ErrorCode;
+import jikgong.global.exception.JikgongException;
 import jikgong.global.utils.TimeTransfer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
 public class ApplyWorkerService {
+
     private final ApplyRepository applyRepository;
     private final MemberRepository memberRepository;
     private final JobPostRepository jobPostRepository;
@@ -40,17 +44,17 @@ public class ApplyWorkerService {
     private final HistoryRepository historyRepository;
 
     /**
-     * 일자리 지원
+     * 일자리 지원,
      * 신청 날짜 기준 최소 이틀 후 출역하는 공고에만 지원 가능
      * 같은 날 이미 승인된 요청이 있을 경우 요청 실패
      */
     public void saveApply(Long workerId, ApplySaveRequest request) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 임시 저장이 아닌 JobPost 조회
         JobPost jobPost = jobPostRepository.findNotTemporaryJobPost(request.getJobPostId(), false)
-                .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
 
         // 신청할 날짜 validation 체크
         List<WorkDate> workDateList = validateWorkDate(request, jobPost);
@@ -82,7 +86,8 @@ public class ApplyWorkerService {
 
     // 중복 신청 체크
     private void validateDuplication(ApplySaveRequest request, Member member, JobPost jobPost) {
-        List<Apply> findApply = applyRepository.checkDuplication(member.getId(), jobPost.getId(), request.getWorkDateList());
+        List<Apply> findApply = applyRepository.checkDuplication(member.getId(), jobPost.getId(),
+            request.getWorkDateList());
         if (!findApply.isEmpty()) {
             throw new JikgongException(ErrorCode.APPLY_ALREADY_EXIST);
         }
@@ -92,9 +97,9 @@ public class ApplyWorkerService {
     private void validateTwoDaysBefore(List<WorkDate> workDateList) {
         // 신청한 날짜 중 가장 빠른 날짜 추출
         LocalDate minWorkDate = workDateList.stream()
-                .map(WorkDate::getDate)
-                .min(LocalDate::compareTo)
-                .orElseThrow(() -> new JikgongException(ErrorCode.EMPTY_WORK_DATE_LIST));
+            .map(WorkDate::getDate)
+            .min(LocalDate::compareTo)
+            .orElseThrow(() -> new JikgongException(ErrorCode.EMPTY_WORK_DATE_LIST));
 
         // 1일날 3일 공고를 신청했을 경우 가능
         // 1일날 2일 공고를 신청했을 경우 불가능
@@ -106,7 +111,8 @@ public class ApplyWorkerService {
 
     // 신청할 날짜 validation 체크
     private List<WorkDate> validateWorkDate(ApplySaveRequest request, JobPost jobPost) {
-        List<WorkDate> workDateList = workDateRepository.checkWorkDateBeforeApply(jobPost.getId(), request.getWorkDateList());
+        List<WorkDate> workDateList = workDateRepository.checkWorkDateBeforeApply(jobPost.getId(),
+            request.getWorkDateList());
         if (workDateList.size() != request.getWorkDateList().size()) {
             throw new JikgongException(ErrorCode.WORK_DATE_LIST_NOT_FOUND);
         }
@@ -120,9 +126,9 @@ public class ApplyWorkerService {
     @Transactional(readOnly = true)
     public ApplyHistoryResponse findApplyHistoryPerDay(Long workerId, LocalDate date) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
         Apply apply = applyRepository.findApplyPerDay(worker.getId(), date, ApplyStatus.ACCEPTED)
-                .orElseThrow(() -> new JikgongException(ErrorCode.APPLY_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.APPLY_NOT_FOUND));
 
         // 확정된 일자리의 출퇴근 기록
         Optional<History> history = historyRepository.findByMemberAndApply(worker.getId(), apply.getWorkDate().getId());
@@ -139,19 +145,19 @@ public class ApplyWorkerService {
     @Transactional(readOnly = true)
     public List<ApplyResponseMonthly> findApplyHistoryPerMonth(Long workerId, LocalDate workMonth) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 한달 간의 신청 내역
         List<Apply> applyList = applyRepository.findApplyPerMonth(worker.getId(),
-                TimeTransfer.getFirstDayOfMonth(workMonth),
-                TimeTransfer.getLastDayOfMonth(workMonth));
+            TimeTransfer.getFirstDayOfMonth(workMonth),
+            TimeTransfer.getLastDayOfMonth(workMonth));
 
         // 지원 날짜와 지원 결과가 담긴 map
         Map<LocalDate, ApplyStatus> workDateMap = getWorkDateMap(applyList);
 
         return workDateMap.entrySet().stream()
-                .map(entry -> ApplyResponseMonthly.from(entry.getKey(), entry.getValue()))
-                .collect(Collectors.toList());
+            .map(entry -> ApplyResponseMonthly.from(entry.getKey(), entry.getValue()))
+            .collect(Collectors.toList());
     }
 
     // 지원 날짜와 지원 결과가 담긴 map
@@ -165,7 +171,7 @@ public class ApplyWorkerService {
             // Map에 해당 날짜의 키가 이미 있고, 현재 저장된 값이 'ACCEPTED'가 아니며,
             // 새로운 상태가 'ACCEPTED'인 경우, 또는 해당 키가 아직 Map에 없는 경우에 값을 업데이트
             if (!workDateMap.containsKey(applyDate) ||
-                    (workDateMap.get(applyDate) != ApplyStatus.ACCEPTED && currentStatus == ApplyStatus.ACCEPTED)) {
+                (workDateMap.get(applyDate) != ApplyStatus.ACCEPTED && currentStatus == ApplyStatus.ACCEPTED)) {
                 workDateMap.put(applyDate, currentStatus);
             }
         }
@@ -178,11 +184,11 @@ public class ApplyWorkerService {
     @Transactional(readOnly = true)
     public List<ApplyPendingResponse> findPendingApply(Long workerId) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         return applyRepository.findPendingApply(worker.getId()).stream()
-                .map(ApplyPendingResponse::from)
-                .collect(Collectors.toList());
+            .map(ApplyPendingResponse::from)
+            .collect(Collectors.toList());
     }
 
     /**
@@ -194,10 +200,10 @@ public class ApplyWorkerService {
      */
     public void cancelApply(Long workerId, Long applyId) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         Apply apply = applyRepository.findCancelApply(worker.getId(), applyId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.APPLY_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.APPLY_NOT_FOUND));
 
         // jobPost 조회 (fetch join)
         JobPost jobPost = apply.getWorkDate().getJobPost();

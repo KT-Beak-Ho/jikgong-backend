@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 public class TemporaryListResponse {
+
     /**
      * 임시 저장한 일자리 공고 목록 dto
      */
@@ -22,12 +23,12 @@ public class TemporaryListResponse {
 
     public static TemporaryListResponse from(JobPost jobPost) {
         return TemporaryListResponse.builder()
-                .jobPostId(jobPost.getId())
-                .title(jobPost.getTitle())
-                .lastModifiedDate(jobPost.getLastModifiedDate())
-                .tech(jobPost.getTech())
-                .recruitNum(jobPost.getRecruitNum())
-                .wage(jobPost.getWage())
-                .build();
+            .jobPostId(jobPost.getId())
+            .title(jobPost.getTitle())
+            .lastModifiedDate(jobPost.getLastModifiedDate())
+            .tech(jobPost.getTech())
+            .recruitNum(jobPost.getRecruitNum())
+            .wage(jobPost.getWage())
+            .build();
     }
 }

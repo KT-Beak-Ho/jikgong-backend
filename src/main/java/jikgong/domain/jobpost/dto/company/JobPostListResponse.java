@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 public class JobPostListResponse {
+
     /**
      * 등록한 일자리 공고 목록 dto
      */
@@ -19,7 +20,6 @@ public class JobPostListResponse {
     private Integer applyNum;
     private Integer acceptedNum;
 
-
     public static JobPostListResponse from(JobPost jobPost) {
         int applyNum = 0;
         int acceptedNum = 0;
@@ -28,11 +28,11 @@ public class JobPostListResponse {
             acceptedNum += workDate.getRegisteredNum();
         }
         return JobPostListResponse.builder()
-                .jobPostId(jobPost.getId())
-                .title(jobPost.getTitle())
-                .createdDate(jobPost.getCreatedDate())
-                .applyNum(applyNum)
-                .acceptedNum(acceptedNum)
-                .build();
+            .jobPostId(jobPost.getId())
+            .title(jobPost.getTitle())
+            .createdDate(jobPost.getCreatedDate())
+            .applyNum(applyNum)
+            .acceptedNum(acceptedNum)
+            .build();
     }
 }

@@ -16,6 +16,7 @@ import java.util.List;
 @ToString
 @Builder
 public class JobPostSaveRequest {
+
     @Schema(description = "공고 제목", example = "사하구  낙동5블럭  낙동강 온도 측정 센터 신축공사")
     private String title;
     @Schema(description = "인부 타입", example = "NORMAL")

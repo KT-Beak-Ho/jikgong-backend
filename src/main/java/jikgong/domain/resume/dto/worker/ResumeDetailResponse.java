@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 @Getter
 @Builder
 public class ResumeDetailResponse {
+
     private Long resumeId;
     private Integer career; // 경력
     private List<SkillResponse> skillResponseList; // 경력 상세 정보
@@ -29,21 +30,21 @@ public class ResumeDetailResponse {
     public static ResumeDetailResponse from(Resume resume) {
         // skill 리스트
         List<SkillResponse> skillResponseList = resume.getSkillList().stream()
-                .map(SkillResponse::from)
-                .collect(Collectors.toList());
+            .map(SkillResponse::from)
+            .collect(Collectors.toList());
 
         return ResumeDetailResponse.builder()
-                .resumeId(resume.getId())
-                .career(resume.getCareer())
-                .skillResponseList(skillResponseList)
+            .resumeId(resume.getId())
+            .career(resume.getCareer())
+            .skillResponseList(skillResponseList)
 
-                .preferTimeStart(resume.getPreferTimeStart())
-                .preferTimeEnd(resume.getPreferTimeEnd())
+            .preferTimeStart(resume.getPreferTimeStart())
+            .preferTimeEnd(resume.getPreferTimeEnd())
 
-                .meal(resume.getAvailableInfo().getMeal())
-                .pickup(resume.getAvailableInfo().getPickup())
-                .park(resume.getAvailableInfo().getPark())
+            .meal(resume.getAvailableInfo().getMeal())
+            .pickup(resume.getAvailableInfo().getPickup())
+            .park(resume.getAvailableInfo().getPark())
 
-                .build();
+            .build();
     }
 }

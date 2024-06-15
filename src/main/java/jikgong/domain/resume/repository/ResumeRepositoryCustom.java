@@ -8,5 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ResumeRepositoryCustom {
-    Page<ResumeListResponse> findHeadHuntingMemberList(Address projectAddress, Tech tech, Float bound, SortType sortType, Pageable pageable);
+
+    Page<ResumeListResponse> findHeadHuntingMemberList(Address projectAddress, Tech tech, Float bound,
+        SortType sortType, Pageable pageable);
 }

@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class HistoryService {
+
     private final HistoryRepository historyRepository;
     private final MemberRepository memberRepository;
     private final ApplyRepository applyRepository;
@@ -43,21 +44,23 @@ public class HistoryService {
      */
     public int saveHistoryAtStart(Long companyId, HistoryStartSaveRequest request) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
         JobPost jobPost = jobPostRepository.findByIdAndMember(company.getId(), request.getJobPostId())
-                .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
         WorkDate workDate = workDateRepository.findByIdAndJobPost(jobPost.getId(), request.getWorkDateId())
-                .orElseThrow(() -> new JikgongException(ErrorCode.WORK_DATE_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.WORK_DATE_NOT_FOUND));
 
         // 승인된 지원인지 체크
-        List<Apply> applyList =   applyRepository.checkApplyBeforeSaveHistory(workDate.getId(), request.getStartWorkMemberIdList(), request.getNotWorkMemberIdList(), ApplyStatus.ACCEPTED);
+        List<Apply> applyList = applyRepository.checkApplyBeforeSaveHistory(workDate.getId(),
+            request.getStartWorkMemberIdList(), request.getNotWorkMemberIdList(), ApplyStatus.ACCEPTED);
         if (applyList.size() != request.getStartWorkMemberIdList().size() + request.getNotWorkMemberIdList().size()) {
             throw new JikgongException(ErrorCode.HISTORY_NOT_FOUND_APPLY);
         }
 
         // 기존에 history 데이터가 있다면 제거
         // 출근, 결근 데이터를 변경하면 기존의 퇴근, 조퇴 데이터 사라짐
-        int deleteCount = historyRepository.deleteByWorkDateAndAndMember(request.getStartWorkMemberIdList(), request.getNotWorkMemberIdList(), request.getWorkDateId());
+        int deleteCount = historyRepository.deleteByWorkDateAndAndMember(request.getStartWorkMemberIdList(),
+            request.getNotWorkMemberIdList(), request.getWorkDateId());
         log.info("기존 history 제거 개수: " + deleteCount);
 
         List<History> saveHistoryList = new ArrayList<>();
@@ -69,14 +72,14 @@ public class HistoryService {
         // 출근 history
         for (Long targetMemberId : request.getStartWorkMemberIdList()) {
             Member worker = memberRepository.findById(targetMemberId)
-                    .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
             saveHistoryList.add(History.createEntity(WorkStatus.START_WORK, now, worker, workDate));
         }
 
         // 결근 history
         for (Long targetMemberId : request.getNotWorkMemberIdList()) {
             Member worker = memberRepository.findById(targetMemberId)
-                    .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
             saveHistoryList.add(History.createEntity(WorkStatus.NOT_WORK, now, worker, workDate));
         }
 
@@ -96,23 +99,26 @@ public class HistoryService {
      */
     public int updateHistoryAtFinish(Long companyId, HistoryFinishSaveRequest request) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
         JobPost jobPost = jobPostRepository.findByIdAndMember(company.getId(), request.getJobPostId())
-                .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
         WorkDate workDate = workDateRepository.findByIdAndJobPost(jobPost.getId(), request.getWorkDateId())
-                .orElseThrow(() -> new JikgongException(ErrorCode.WORK_DATE_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.WORK_DATE_NOT_FOUND));
 
         LocalDateTime now = LocalDateTime.now();
         // 퇴근
-        int updateFinishWork = historyRepository.updateHistoryByIdList(workDate.getId(), request.getFinishWorkHistoryIdList(), WorkStatus.FINISH_WORK, now);
+        int updateFinishWork = historyRepository.updateHistoryByIdList(workDate.getId(),
+            request.getFinishWorkHistoryIdList(), WorkStatus.FINISH_WORK, now);
         log.info("퇴근 처리된 데이터: " + updateFinishWork);
 
         // 조퇴
-        int updateEarlyLeave = historyRepository.updateHistoryByIdList(workDate.getId(), request.getEarlyLeaveHistoryIdList(), WorkStatus.EARLY_LEAVE, now);
+        int updateEarlyLeave = historyRepository.updateHistoryByIdList(workDate.getId(),
+            request.getEarlyLeaveHistoryIdList(), WorkStatus.EARLY_LEAVE, now);
         log.info("조퇴 처리된 데이터: " + updateFinishWork);
 
         // 요청한 데이터와 업데이트한 데이터 비교
-        if (updateFinishWork != request.getFinishWorkHistoryIdList().size() && updateEarlyLeave != request.getEarlyLeaveHistoryIdList().size()) {
+        if (updateFinishWork != request.getFinishWorkHistoryIdList().size()
+            && updateEarlyLeave != request.getEarlyLeaveHistoryIdList().size()) {
             throw new JikgongException(ErrorCode.HISTORY_UPDATE_FAIL);
         }
 
@@ -129,11 +135,11 @@ public class HistoryService {
     @Transactional(readOnly = true)
     public List<HistoryManageResponse> findHistoryAtStart(Long companyId, Long jobPostId, Long workDateId) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
         JobPost jobPost = jobPostRepository.findByIdAndMember(company.getId(), jobPostId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
         WorkDate workDate = workDateRepository.findByIdAndJobPost(jobPost.getId(), workDateId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.WORK_DATE_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.WORK_DATE_NOT_FOUND));
 
         // key: memberId  |  value: history
         // 출근 기록된 member, 결근 기록된 member
@@ -144,8 +150,8 @@ public class HistoryService {
         List<Apply> applyList = applyRepository.findApplyBeforeHistoryProcess(workDate.getId(), ApplyStatus.ACCEPTED);
 
         List<HistoryManageResponse> historyManageResponseList = applyList.stream()
-                .map(HistoryManageResponse::from)
-                .collect(Collectors.toList());
+            .map(HistoryManageResponse::from)
+            .collect(Collectors.toList());
 
         // 현재 출근, 결근, 출근 전 status 값 세팅
         for (HistoryManageResponse historyManageResponse : historyManageResponseList) {
@@ -163,7 +169,7 @@ public class HistoryService {
     // key: memberId  |  value: history  map 생성
     private Map<Long, History> createHistoryMap(Long workDateId, WorkStatus status) {
         return historyRepository.findHistoryBeforeProcess(workDateId, status).stream()
-                .collect(Collectors.toMap(history -> history.getMember().getId(), Function.identity()));
+            .collect(Collectors.toMap(history -> history.getMember().getId(), Function.identity()));
     }
 
     /**
@@ -174,27 +180,29 @@ public class HistoryService {
     @Transactional(readOnly = true)
     public HistoryAtFinishResponse findHistoryAtFinish(Long companyId, Long jobPostId, Long workDateId) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
         JobPost jobPost = jobPostRepository.findByIdAndMember(company.getId(), jobPostId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
         WorkDate workDate = workDateRepository.findByIdAndJobPost(jobPost.getId(), workDateId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.WORK_DATE_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.WORK_DATE_NOT_FOUND));
 
         // 출근한 기록, 결근한 기록 조회
-        List<History> workHistoryList = historyRepository.findHistoryBeforeProcess(workDate.getId(), WorkStatus.START_WORK);
-        List<History> notWorkHistoryList = historyRepository.findHistoryBeforeProcess(workDate.getId(), WorkStatus.NOT_WORK);
+        List<History> workHistoryList = historyRepository.findHistoryBeforeProcess(workDate.getId(),
+            WorkStatus.START_WORK);
+        List<History> notWorkHistoryList = historyRepository.findHistoryBeforeProcess(workDate.getId(),
+            WorkStatus.NOT_WORK);
 
         List<HistoryManageResponse> workMemberResponse = workHistoryList.stream()
-                .map(HistoryManageResponse::from)
-                .collect(Collectors.toList());
+            .map(HistoryManageResponse::from)
+            .collect(Collectors.toList());
         List<HistoryManageResponse> notWorkMemberResponse = notWorkHistoryList.stream()
-                .map(HistoryManageResponse::from)
-                .collect(Collectors.toList());
+            .map(HistoryManageResponse::from)
+            .collect(Collectors.toList());
 
         return HistoryAtFinishResponse.builder()
-                .workMemberResponse(workMemberResponse)
-                .notWorkMemberResponse(notWorkMemberResponse)
-                .build();
+            .workMemberResponse(workMemberResponse)
+            .notWorkMemberResponse(notWorkMemberResponse)
+            .build();
     }
 
     /**
@@ -204,15 +212,16 @@ public class HistoryService {
     @Transactional(readOnly = true)
     public PaymentStatementResponse findPaymentStatement(Long companyId, Long jobPostId, Long workDateId) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
         JobPost jobPost = jobPostRepository.findByIdAndMember(company.getId(), jobPostId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
         WorkDate workDate = workDateRepository.findByIdAndJobPost(jobPost.getId(), workDateId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.WORK_DATE_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.WORK_DATE_NOT_FOUND));
 
-        List<PaymentMemberInfo> paymentMemberInfoList = historyRepository.findPaymentStatementInfo(workDate.getId()).stream()
-                .map(PaymentMemberInfo::from)
-                .collect(Collectors.toList());
+        List<PaymentMemberInfo> paymentMemberInfoList = historyRepository.findPaymentStatementInfo(workDate.getId())
+            .stream()
+            .map(PaymentMemberInfo::from)
+            .collect(Collectors.toList());
 
         return PaymentStatementResponse.from(paymentMemberInfoList);
     }

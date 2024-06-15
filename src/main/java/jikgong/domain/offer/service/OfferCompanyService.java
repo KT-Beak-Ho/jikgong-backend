@@ -40,6 +40,7 @@ import java.util.stream.Collectors;
 @Transactional
 @Slf4j
 public class OfferCompanyService {
+
     private final MemberRepository memberRepository;
     private final ApplyRepository applyRepository;
     private final OfferRepository offerRepository;
@@ -57,9 +58,9 @@ public class OfferCompanyService {
      */
     public void offerJobPost(Long companyId, OfferRequest request) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
         Resume resume = resumeRepository.findByIdWithMember(request.getResumeId())
-                .orElseThrow(() -> new JikgongException(ErrorCode.RESUME_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.RESUME_NOT_FOUND));
         Member worker = resume.getMember();
 
         List<Long> jobPostIdList = new ArrayList<>(); // 제안할 모집공고 id 리스트
@@ -80,7 +81,7 @@ public class OfferCompanyService {
 
         for (OfferJobPostRequest offerJobPostRequest : request.getOfferJobPostRequest()) {
             JobPost jobPost = jobPostRepository.findById(offerJobPostRequest.getJobPostId())
-                    .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
 
             List<LocalDate> dateList = new ArrayList<>();
 
@@ -101,7 +102,8 @@ public class OfferCompanyService {
             applyList.addAll(Apply.createEntityList(worker, workDateEntityList));
 
             // notification event 발행
-            publisher.publishEvent(new NotificationEvent(company.getCompanyInfo().getCompanyName(), dateList, offerJobPostRequest.getJobPostId(), NotificationType.OFFER, worker.getId()));
+            publisher.publishEvent(new NotificationEvent(company.getCompanyInfo().getCompanyName(), dateList,
+                offerJobPostRequest.getJobPostId(), NotificationType.OFFER, worker.getId()));
         }
 
         offerRepository.saveAll(offerList);
@@ -110,7 +112,8 @@ public class OfferCompanyService {
     }
 
     // 예외 체크 및 dateList 에 date 추가
-    private void validationAndAddDateList(OfferJobPostRequest offerJobPostRequest, List<WorkDate> workDateEntityList, List<LocalDate> dateList) {
+    private void validationAndAddDateList(OfferJobPostRequest offerJobPostRequest, List<WorkDate> workDateEntityList,
+        List<LocalDate> dateList) {
         // 캐시 map 에서 조회한 workDateList 와 요청한 workDateIdList 와 크기가 다를 때
         if (workDateEntityList.size() != offerJobPostRequest.getWorkDateIdList().size()) {
             throw new JikgongException(ErrorCode.WORK_DATE_NOT_MATCH);
@@ -122,7 +125,8 @@ public class OfferCompanyService {
             if (LocalDate.now().isAfter(workDate.getDate())) {
                 throw new JikgongException(ErrorCode.WORK_DATE_NEED_TO_FUTURE);
             }
-            if (LocalDate.now().isEqual(workDate.getDate()) && LocalTime.now().plusHours(3L).isAfter(workDate.getJobPost().getStartTime())) {
+            if (LocalDate.now().isEqual(workDate.getDate()) && LocalTime.now().plusHours(3L)
+                .isAfter(workDate.getJobPost().getStartTime())) {
                 throw new JikgongException(ErrorCode.WORK_DATE_NEED_TO_FUTURE);
             }
             dateList.add(workDate.getDate());
@@ -153,25 +157,24 @@ public class OfferCompanyService {
     @Transactional(readOnly = true)
     public Page<OfferHistoryResponse> findOfferHistory(Long companyId, OfferStatus offerStatus, Pageable pageable) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         Page<Offer> offerHistoryPage = offerRepository.findOfferHistory(company.getId(), offerStatus, pageable);
         List<OfferHistoryResponse> offerHistoryResponseList = offerHistoryPage.getContent().stream()
-                .map(OfferHistoryResponse::from)
-                .collect(Collectors.toList());
+            .map(OfferHistoryResponse::from)
+            .collect(Collectors.toList());
         return new PageImpl<>(offerHistoryResponseList, pageable, offerHistoryPage.getTotalElements());
     }
 
-    
     /**
      * 제안 취소
      */
     public void cancelOffer(Long companyId, Long offerId) {
         Member company = memberRepository.findById(companyId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         Offer offer = offerRepository.findByIdAndMember(company.getId(), offerId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.OFFER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.OFFER_NOT_FOUND));
 
         List<OfferWorkDate> offerWorkDateList = offer.getOfferWorkDateList();
 

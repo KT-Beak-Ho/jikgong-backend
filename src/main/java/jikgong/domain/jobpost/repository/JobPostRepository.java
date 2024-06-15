@@ -13,23 +13,28 @@ import java.util.Optional;
 
 @Repository
 public interface JobPostRepository extends JpaRepository<JobPost, Long>, JobPostRepositoryCustom {
+
     /**
      * find by id and member
      */
     @Query("select j from JobPost j where j.member.id = :memberId and j.id = :jobPostId and j.isTemporary = false")
     Optional<JobPost> findByIdAndMember(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId);
 
+
     /**
      * 프로젝트 별 공고 조회
      */
     @Query("select j from JobPost j where j.endDate < :now and j.isTemporary = false and j.project.id = :projectId")
-    List<JobPost> findCompletedJobPostByMemberAndProject(@Param("now") LocalDate now, @Param("projectId") Long projectId, Pageable pageable);
+    List<JobPost> findCompletedJobPostByMemberAndProject(@Param("now") LocalDate now,
+        @Param("projectId") Long projectId, Pageable pageable);
 
     @Query("select j from JobPost j where j.startDate < :now and j.endDate > :now and j.isTemporary = false and j.project.id = :projectId")
-    List<JobPost> findInProgressJobPostByMemberAndProject(@Param("now") LocalDate now, @Param("projectId") Long projectId, Pageable pageable);
+    List<JobPost> findInProgressJobPostByMemberAndProject(@Param("now") LocalDate now,
+        @Param("projectId") Long projectId, Pageable pageable);
 
     @Query("select j from JobPost j where j.startDate > :now and j.isTemporary = false and j.project.id = :projectId")
-    List<JobPost> findPlannedJobPostByMemberAndProject(@Param("now") LocalDate now, @Param("projectId") Long projectId, Pageable pageable);
+    List<JobPost> findPlannedJobPostByMemberAndProject(@Param("now") LocalDate now, @Param("projectId") Long projectId,
+        Pageable pageable);
 
 
     /**
@@ -39,14 +44,16 @@ public interface JobPostRepository extends JpaRepository<JobPost, Long>, JobPost
     List<JobPost> findTemporaryJobPostByMemberId(@Param("memberId") Long memberId);
 
     @Query("select j from JobPost j where j.member.id = :memberId and j.id = :jobPostId and j.isTemporary = :isTemporary")
-    Optional<JobPost> findTemporaryForDelete(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId, @Param("isTemporary") Boolean isTemporary);
+    Optional<JobPost> findTemporaryForDelete(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId,
+        @Param("isTemporary") Boolean isTemporary);
 
 
     /**
      * 일자리 지원
      */
     @Query("select j from JobPost j where j.id = :jobPostId and j.isTemporary = :isTemporary")
-    Optional<JobPost> findNotTemporaryJobPost(@Param("jobPostId") Long jobPostId, @Param("isTemporary") Boolean isTemporary);
+    Optional<JobPost> findNotTemporaryJobPost(@Param("jobPostId") Long jobPostId,
+        @Param("isTemporary") Boolean isTemporary);
 
 
     /**

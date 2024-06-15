@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 @Getter
 @Builder
 public class ResumeListResponse {
+
     private Long resumeId;
     private Long memberId;
     private String workerName; // 이름
@@ -47,13 +48,13 @@ public class ResumeListResponse {
 
         // 대표 위치
         Optional<Location> mainLocation = member.getLocationList().stream()
-                .filter(Location::getIsMain)
-                .findFirst();
+            .filter(Location::getIsMain)
+            .findFirst();
 
         // 출역 횟수, 참여율
         List<History> workHistory = member.getHistoryList().stream()
-                .filter(history -> history.getEndStatus() == WorkStatus.FINISH_WORK)
-                .collect(Collectors.toList());
+            .filter(history -> history.getEndStatus() == WorkStatus.FINISH_WORK)
+            .collect(Collectors.toList());
         int workTimes = workHistory.size();
         float participationRate = (float) workTimes / (float) member.getHistoryList().size();
 
@@ -64,8 +65,8 @@ public class ResumeListResponse {
 
         // skill 리스트
         List<String> skillList = resume.getSkillList().stream()
-                .map(skill -> skill.getTech().getDescription())
-                .collect(Collectors.toList());
+            .map(skill -> skill.getTech().getDescription())
+            .collect(Collectors.toList());
 
         // 거리 계산
         Double distance = null;
@@ -74,20 +75,20 @@ public class ResumeListResponse {
         }
 
         return ResumeListResponse.builder()
-                .resumeId(resume.getId())
-                .memberId(member.getId())
-                .workerName(member.getWorkerInfo().getWorkerName())
-                .age(AgeTransfer.getAgeByBirth(member.getWorkerInfo().getBrith()))
-                .gender(member.getWorkerInfo().getGender())
-                .career(resume.getCareer())
-                .address(mainLocation.map(location -> location.getAddress().getAddress()).orElse(null))
-                .distance(distance)
-                .workTimes(workTimes)
-                .participationRate(participationRate)
-                .skillList(skillList)
-                .meal(resume.getAvailableInfo().getMeal())
-                .pickup(resume.getAvailableInfo().getPickup())
-                .park(resume.getAvailableInfo().getPark())
-                .build();
+            .resumeId(resume.getId())
+            .memberId(member.getId())
+            .workerName(member.getWorkerInfo().getWorkerName())
+            .age(AgeTransfer.getAgeByBirth(member.getWorkerInfo().getBrith()))
+            .gender(member.getWorkerInfo().getGender())
+            .career(resume.getCareer())
+            .address(mainLocation.map(location -> location.getAddress().getAddress()).orElse(null))
+            .distance(distance)
+            .workTimes(workTimes)
+            .participationRate(participationRate)
+            .skillList(skillList)
+            .meal(resume.getAvailableInfo().getMeal())
+            .pickup(resume.getAvailableInfo().getPickup())
+            .park(resume.getAvailableInfo().getPark())
+            .build();
     }
 }

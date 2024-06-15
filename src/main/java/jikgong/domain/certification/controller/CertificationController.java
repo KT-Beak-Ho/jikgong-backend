@@ -10,19 +10,25 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
 public class CertificationController {
+
     private final CertificationService certificationService;
 
     @Operation(summary = "경력 증명서 등록 & 업데이트", description = "이미 업로드된 경력 증명서가 있다면 제거 후 다시 업로드")
     @PostMapping(value = "/api/certification/worker", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Response> saveCertification(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                      @RequestPart("file")   MultipartFile file) {
+        @RequestPart("file") MultipartFile file) {
         // 기존에 업로드된 경력 증명서 제거
         certificationService.checkAndDeleteCertification(principalDetails.getMember().getId());
         Long certificationId = certificationService.saveCertification(principalDetails.getMember().getId(), file);

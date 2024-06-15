@@ -1,19 +1,19 @@
 package jikgong.domain.profit.dto.graph;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
 @Builder
 public class WorkTimeGraphResponse {
+
     private long totalWorkTime;
     private List<String> workTimeList;
 
@@ -39,8 +39,8 @@ public class WorkTimeGraphResponse {
         String workTime = formattedStartTime + " ~ " + formattedEndTime;
 
         return WorkTimeGraphResponse.builder()
-                .totalWorkTime(totalWorkTime)
-                .workTimeList(new ArrayList<>(List.of(workTime)))
-                .build();
+            .totalWorkTime(totalWorkTime)
+            .workTimeList(new ArrayList<>(List.of(workTime)))
+            .build();
     }
 }

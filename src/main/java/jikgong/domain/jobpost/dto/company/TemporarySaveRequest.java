@@ -13,9 +13,11 @@ import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter @Builder
+@Getter
+@Builder
 @ToString
 public class TemporarySaveRequest {
+
     @Schema(description = "공고 제목", example = "사하구  낙동5블럭  낙동강 온도 측정 센터 신축공사")
     private String title;
     @Schema(description = "인부 타입", example = "NORMAL")
@@ -30,7 +32,7 @@ public class TemporarySaveRequest {
     private Integer wage;
     @Schema(description = "준비 사항", example = "작업복, 작업화")
     private String preparation;
-    @Schema(description = "모집 마감", example = "2024-03-01T09:30:00", type="string")
+    @Schema(description = "모집 마감", example = "2024-03-01T09:30:00", type = "string")
     private LocalDateTime expirationTime;
     @Schema(description = "주차 공간 설명", example = "2번 GateWay 옆 공간")
     private String parkDetail;
@@ -70,26 +72,26 @@ public class TemporarySaveRequest {
 
     public static TemporarySaveRequest from(TemporaryUpdateRequest request) {
         return TemporarySaveRequest.builder()
-                .title(request.getTitle())
-                .tech(request.getTech())
-                .startTime(request.getStartTime())
-                .endTime(request.getEndTime())
-                .recruitNum(request.getRecruitNum())
-                .wage(request.getWage())
-                .preparation(request.getPreparation())
-                .expirationTime(request.getExpirationTime())
-                .parkDetail(request.getParkDetail())
-                .meal(request.getMeal())
-                .pickup(request.getPickup())
-                .park(request.getPark())
-                .address(request.getAddress())
-                .latitude(request.getLatitude())
-                .longitude(request.getLongitude())
-                .workDateList(request.getWorkDateList())
-                .pickupList(request.getPickupList())
-                .managerName(request.getManagerName())
-                .phone(request.getPhone())
-                .projectId(request.getProjectId())
-                .build();
+            .title(request.getTitle())
+            .tech(request.getTech())
+            .startTime(request.getStartTime())
+            .endTime(request.getEndTime())
+            .recruitNum(request.getRecruitNum())
+            .wage(request.getWage())
+            .preparation(request.getPreparation())
+            .expirationTime(request.getExpirationTime())
+            .parkDetail(request.getParkDetail())
+            .meal(request.getMeal())
+            .pickup(request.getPickup())
+            .park(request.getPark())
+            .address(request.getAddress())
+            .latitude(request.getLatitude())
+            .longitude(request.getLongitude())
+            .workDateList(request.getWorkDateList())
+            .pickupList(request.getPickupList())
+            .managerName(request.getManagerName())
+            .phone(request.getPhone())
+            .projectId(request.getProjectId())
+            .build();
     }
 }

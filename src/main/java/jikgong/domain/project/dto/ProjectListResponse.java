@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @Getter
 @Builder
 public class ProjectListResponse {
+
     private Long projectId;
     private String projectName; // 프로젝트 명
     private LocalDate startDate; // 착공일
@@ -18,10 +19,10 @@ public class ProjectListResponse {
 
     public static ProjectListResponse from(Project project) {
         return ProjectListResponse.builder()
-                .projectId(project.getId())
-                .projectName(project.getProjectName())
-                .startDate(project.getStartDate())
-                .endDate(project.getEndDate())
-                .build();
+            .projectId(project.getId())
+            .projectName(project.getProjectName())
+            .startDate(project.getStartDate())
+            .endDate(project.getEndDate())
+            .build();
     }
 }

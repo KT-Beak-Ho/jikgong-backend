@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 public class SearchLog {
+
     private String name;
     private String createdAt;
 }

@@ -8,6 +8,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class JobPostMapResponse {
+
     private Long jobPostId;
     private Tech tech; // 직종
     private Float latitude; // 위도
@@ -15,10 +16,10 @@ public class JobPostMapResponse {
 
     public static JobPostMapResponse from(JobPost jobPost) {
         return JobPostMapResponse.builder()
-                .jobPostId(jobPost.getId())
-                .tech(jobPost.getTech())
-                .latitude(jobPost.getAddress().getLatitude())
-                .longitude(jobPost.getAddress().getLongitude())
-                .build();
+            .jobPostId(jobPost.getId())
+            .tech(jobPost.getTech())
+            .latitude(jobPost.getAddress().getLatitude())
+            .longitude(jobPost.getAddress().getLongitude())
+            .build();
     }
 }

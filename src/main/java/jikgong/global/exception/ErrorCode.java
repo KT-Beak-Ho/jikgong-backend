@@ -19,7 +19,6 @@ public enum ErrorCode {
     REFRESH_TOKEN_NOT_MATCH(HttpStatus.FORBIDDEN, "유효하지 않은 refresh token 입니다. 다시 로그인하세요."),
     ROLE_NOT_FOUND(HttpStatus.NOT_FOUND, "요청된 회원의 ROLE을 특정할 수 없습니다."),
 
-
     /**
      * 알림
      */
@@ -117,5 +116,4 @@ public enum ErrorCode {
 
     private final HttpStatus status;
     private final String errorMessage;
-
 }

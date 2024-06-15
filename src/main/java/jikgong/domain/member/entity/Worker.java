@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Worker {
+
     private String workerName; // 노동자 이름
     private String brith; // 생년월일
     private String rrn; // 주민등록번호
@@ -24,9 +25,9 @@ public class Worker {
     @Embedded
     private WorkerNotificationInfo workerNotificationInfo; // 노동자 알림 정보
 
-
     @Builder
-    public Worker(String workerName, String birth, String rrn, Gender gender, String nationality, Boolean isNotification) {
+    public Worker(String workerName, String birth, String rrn, Gender gender, String nationality,
+        Boolean isNotification) {
         this.workerName = workerName;
         this.brith = birth;
         this.rrn = rrn;

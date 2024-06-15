@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class AlimTalkTestController {
+
     private final AlimTalkService alimTalkService;
+
     @GetMapping("/test")
     ResponseEntity<Response> test() {
         alimTalkService.sendAlimTalk("01031725949", "test", "test");

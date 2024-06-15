@@ -23,6 +23,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class JobPost extends BaseEntity {
+
     @Id
     @GeneratedValue
     @Column(name = "job_post_id")
@@ -67,7 +68,10 @@ public class JobPost extends BaseEntity {
     private List<JobPostImage> jobPostImageList = new ArrayList<>();
 
     @Builder
-    public JobPost(String title, Tech tech, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, Integer recruitNum, Integer wage, String parkDetail, String preparation, String managerName, String phone, Boolean isTemporary, AvailableInfo availableInfo, Address address, Member member, Project project) {
+    public JobPost(String title, Tech tech, LocalDate startDate, LocalDate endDate, LocalTime startTime,
+        LocalTime endTime, Integer recruitNum, Integer wage, String parkDetail, String preparation, String managerName,
+        String phone, Boolean isTemporary, AvailableInfo availableInfo, Address address, Member member,
+        Project project) {
         this.title = title;
         this.tech = tech;
         this.startDate = startDate;
@@ -102,24 +106,24 @@ public class JobPost extends BaseEntity {
             maxDate = Collections.max(request.getWorkDateList());
         }
         return JobPost.builder()
-                .title(request.getTitle())
-                .tech(request.getTech())
-                .startDate(minDate)
-                .endDate(maxDate)
-                .startTime(request.getStartTime())
-                .endTime(request.getEndTime())
-                .recruitNum(request.getRecruitNum())
-                .wage(request.getWage())
-                .parkDetail(request.getParkDetail())
-                .preparation(request.getPreparation())
-                .managerName(request.getManagerName())
-                .phone(request.getPhone())
-                .isTemporary(true)
-                .availableInfo(new AvailableInfo(request.getMeal(), request.getPickup(), request.getPark()))
-                .address(new Address(request.getAddress(), request.getLatitude(), request.getLongitude()))
-                .member(member)
-                .project(project)
-                .build();
+            .title(request.getTitle())
+            .tech(request.getTech())
+            .startDate(minDate)
+            .endDate(maxDate)
+            .startTime(request.getStartTime())
+            .endTime(request.getEndTime())
+            .recruitNum(request.getRecruitNum())
+            .wage(request.getWage())
+            .parkDetail(request.getParkDetail())
+            .preparation(request.getPreparation())
+            .managerName(request.getManagerName())
+            .phone(request.getPhone())
+            .isTemporary(true)
+            .availableInfo(new AvailableInfo(request.getMeal(), request.getPickup(), request.getPark()))
+            .address(new Address(request.getAddress(), request.getLatitude(), request.getLongitude()))
+            .member(member)
+            .project(project)
+            .build();
     }
 
     public static JobPost createEntityByJobPost(JobPostSaveRequest request, Member member, Project project) {
@@ -128,24 +132,24 @@ public class JobPost extends BaseEntity {
         // 가장 느린 날짜 찾기
         LocalDate maxDate = Collections.max(request.getDateList());
         return JobPost.builder()
-                .title(request.getTitle())
-                .tech(request.getTech())
-                .startDate(minDate)
-                .endDate(maxDate)
-                .startTime(request.getStartTime())
-                .endTime(request.getEndTime())
-                .recruitNum(request.getRecruitNum())
-                .wage(request.getWage())
-                .parkDetail(request.getParkDetail())
-                .preparation(request.getPreparation())
-                .managerName(request.getManagerName())
-                .phone(request.getPhone())
-                .isTemporary(false)
-                .availableInfo(new AvailableInfo(request.getMeal(), request.getPickup(), request.getPark()))
-                .address(new Address(request.getAddress(), request.getLatitude(), request.getLongitude()))
-                .member(member)
-                .project(project)
-                .build();
+            .title(request.getTitle())
+            .tech(request.getTech())
+            .startDate(minDate)
+            .endDate(maxDate)
+            .startTime(request.getStartTime())
+            .endTime(request.getEndTime())
+            .recruitNum(request.getRecruitNum())
+            .wage(request.getWage())
+            .parkDetail(request.getParkDetail())
+            .preparation(request.getPreparation())
+            .managerName(request.getManagerName())
+            .phone(request.getPhone())
+            .isTemporary(false)
+            .availableInfo(new AvailableInfo(request.getMeal(), request.getPickup(), request.getPark()))
+            .address(new Address(request.getAddress(), request.getLatitude(), request.getLongitude()))
+            .member(member)
+            .project(project)
+            .build();
     }
 
     public void deleteChildEntity(JobPost jobPost) {

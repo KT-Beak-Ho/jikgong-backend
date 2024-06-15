@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 @Transactional
 @Slf4j
 public class OfferWorkerService {
+
     private final MemberRepository memberRepository;
     private final OfferWorkDateRepository offerWorkDateRepository;
     private final ApplyRepository applyRepository;
@@ -42,7 +43,7 @@ public class OfferWorkerService {
     @Transactional(readOnly = true)
     public List<ReceivedOfferResponse> findReceivedOffer(Long workerId, Boolean isPending) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
         List<OfferWorkDate> offerWorkDateList;
         if (isPending) {
             // 대기 중인 제안 목록
@@ -52,8 +53,8 @@ public class OfferWorkerService {
             offerWorkDateList = offerWorkDateRepository.findReceivedClosedOffer(worker.getId());
         }
         return offerWorkDateList.stream()
-                .map(ReceivedOfferResponse::from)
-                .collect(Collectors.toList());
+            .map(ReceivedOfferResponse::from)
+            .collect(Collectors.toList());
     }
 
     /**
@@ -64,10 +65,10 @@ public class OfferWorkerService {
      */
     public void processOffer(Long workerId, OfferProcessRequest request) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         OfferWorkDate offerWorkDate = offerWorkDateRepository.findByIdWithWorkDate(request.getOfferWorkDateId())
-                .orElseThrow(() -> new JikgongException(ErrorCode.OFFER_WORK_DATE_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.OFFER_WORK_DATE_NOT_FOUND));
 
         // workDate 조회
         WorkDate workDate = offerWorkDate.getWorkDate();
@@ -77,7 +78,7 @@ public class OfferWorkerService {
 
         // 요청에 따라 Apply 삭제 or status 업데이트
         Apply offeredApply = applyRepository.findOfferedApply(worker.getId(), workDate.getId())
-                .orElseThrow(() -> new JikgongException(ErrorCode.APPLY_OFFERED_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.APPLY_OFFERED_NOT_FOUND));
 
         // 수락일 때
         if (request.getIsAccept()) {
@@ -91,8 +92,10 @@ public class OfferWorkerService {
             offeredApply.updateStatus(ApplyStatus.ACCEPTED, LocalDateTime.now());
 
             // 같은 날 다른 공고에 지원 했던 대기중인 요청 취소
-            List<Long> cancelApplyIdList = applyRepository.deleteOtherApplyOnDate(worker.getId(), offerWorkDate.getWorkDate().getDate());
-            int canceledCount = applyRepository.updateApplyStatus(cancelApplyIdList, ApplyStatus.CANCELED, LocalDateTime.now());
+            List<Long> cancelApplyIdList = applyRepository.deleteOtherApplyOnDate(worker.getId(),
+                offerWorkDate.getWorkDate().getDate());
+            int canceledCount = applyRepository.updateApplyStatus(cancelApplyIdList, ApplyStatus.CANCELED,
+                LocalDateTime.now());
             log.info("취소된 요청 횟수: " + canceledCount);
         }
         // 거절일 때
@@ -130,10 +133,10 @@ public class OfferWorkerService {
     @Transactional(readOnly = true)
     public OfferJobPostResponse getJobPostDetailForOffer(Long workerId, Long offerWorkDateId) {
         Member worker = memberRepository.findById(workerId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         OfferWorkDate offerWorkDate = offerWorkDateRepository.findByIdAtProcessOffer(offerWorkDateId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.OFFER_WORK_DATE_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.OFFER_WORK_DATE_NOT_FOUND));
 
         WorkDate workDate = offerWorkDate.getWorkDate();
 
@@ -142,7 +145,7 @@ public class OfferWorkerService {
 
         // 대표 위치 조회
         Location location = locationRepository.findMainLocationByMemberId(worker.getId())
-                .orElseThrow(() -> new JikgongException(ErrorCode.LOCATION_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.LOCATION_NOT_FOUND));
 
         return OfferJobPostResponse.from(offerWorkDate, acceptedApply, location);
     }

@@ -21,12 +21,13 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class ProjectController {
+
     private final ProjectService projectService;
 
     @Operation(summary = "프로젝트 생성")
     @PostMapping("/api/project")
     public ResponseEntity<Response> saveProject(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                @RequestBody ProjectSaveRequest request) {
+        @RequestBody ProjectSaveRequest request) {
         Long projectId = projectService.saveProject(principalDetails.getMember().getId(), request);
         return ResponseEntity.ok(new Response("프로젝트 생성 완료"));
     }
@@ -34,15 +35,17 @@ public class ProjectController {
     @Operation(summary = "프로젝트 리스트 조회")
     @GetMapping("/api/project/list")
     public ResponseEntity<Response> findProjects(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                 @RequestParam("projectStatus")ProjectStatus projectStatus) {
-        List<ProjectListResponse> projectListResponseList = projectService.findProjects(principalDetails.getMember().getId(), projectStatus);
-        return ResponseEntity.ok(new Response(projectListResponseList, "프로젝트 중 " + projectStatus.getDescription() + " 프로젝트 조회"));
+        @RequestParam("projectStatus") ProjectStatus projectStatus) {
+        List<ProjectListResponse> projectListResponseList = projectService.findProjects(
+            principalDetails.getMember().getId(), projectStatus);
+        return ResponseEntity.ok(
+            new Response(projectListResponseList, "프로젝트 중 " + projectStatus.getDescription() + " 프로젝트 조회"));
     }
 
     @Operation(summary = "프로젝트 수정")
     @PutMapping("/api/project")
     public ResponseEntity<Response> updateProject(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                 @RequestBody ProjectUpdateRequest request) {
+        @RequestBody ProjectUpdateRequest request) {
         projectService.updateProject(principalDetails.getMember().getId(), request);
         return ResponseEntity.ok(new Response("프로젝트 조회"));
     }

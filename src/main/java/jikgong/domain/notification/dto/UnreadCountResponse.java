@@ -8,5 +8,6 @@ import lombok.Getter;
 @Getter
 @Builder
 public class UnreadCountResponse {
+
     private Integer unreadCount;
 }

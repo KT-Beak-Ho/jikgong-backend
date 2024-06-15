@@ -1,6 +1,10 @@
 package jikgong.global.batch.job;
 
 import jakarta.persistence.EntityManagerFactory;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.jobpost.entity.JobPost;
@@ -27,14 +31,11 @@ import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
-
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
 public class ApplyJobConfig {
+
     private final NotificationService notificationService;
     private final EntityManagerFactory entityManagerFactory;
 
@@ -43,21 +44,21 @@ public class ApplyJobConfig {
     @Bean
     public Job applyProcessJob(JobRepository jobRepository, Step applyProcessStep) {
         return new JobBuilder("applyProcessJob", jobRepository)
-                .start(applyProcessStep)
-                .build();
+            .start(applyProcessStep)
+            .build();
     }
 
     @Bean
     public Step applyProcessStep(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
         return new StepBuilder("applyProcessStep", jobRepository)
-                .<Apply, Apply>chunk(CHUNK_SIZE, transactionManager)
-                .reader(applyReader())
-                .processor(applyProcessor())
-                .writer(applyWriter())
-                .faultTolerant()
-                .retryPolicy(retryPolicy())
-                .skipPolicy(new CustomSkipPolicy()) // Custom Skip 정책 설정
-                .build();
+            .<Apply, Apply>chunk(CHUNK_SIZE, transactionManager)
+            .reader(applyReader())
+            .processor(applyProcessor())
+            .writer(applyWriter())
+            .faultTolerant()
+            .retryPolicy(retryPolicy())
+            .skipPolicy(new CustomSkipPolicy()) // Custom Skip 정책 설정
+            .build();
     }
 
     @Bean
@@ -72,7 +73,8 @@ public class ApplyJobConfig {
         reader.setName("applyReader");
         reader.setPageSize(100);
         reader.setEntityManagerFactory(entityManagerFactory);
-        reader.setQueryString("select a from Apply a join fetch a.workDate w join fetch a.member m join fetch a.workDate.jobPost j where w.date < :now and a.status = 'PENDING'");
+        reader.setQueryString(
+            "select a from Apply a join fetch a.workDate w join fetch a.member m join fetch a.workDate.jobPost j where w.date < :now and a.status = 'PENDING'");
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("now", now);
         reader.setParameterValues(parameters);
@@ -113,8 +115,8 @@ public class ApplyJobConfig {
     @Bean
     public ItemWriter<Apply> applyWriter() {
         return new JpaItemWriterBuilder<Apply>()
-                .entityManagerFactory(entityManagerFactory)
-                .build();
+            .entityManagerFactory(entityManagerFactory)
+            .build();
     }
 
     // RetryTemplate 빈 생성 (재시도 정책 설정)

@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class History extends BaseEntity {
+
     @Id
     @GeneratedValue
     @Column(name = "history_id")
@@ -36,9 +37,9 @@ public class History extends BaseEntity {
     @JoinColumn(name = "work_date_id")
     private WorkDate workDate;
 
-
     @Builder
-    public History(WorkStatus startStatus, LocalDateTime startStatusDecisionTime, WorkStatus endStatus, LocalDateTime endStatusDecisionTime, Member member, WorkDate workDate) {
+    public History(WorkStatus startStatus, LocalDateTime startStatusDecisionTime, WorkStatus endStatus,
+        LocalDateTime endStatusDecisionTime, Member member, WorkDate workDate) {
         this.startStatus = startStatus;
         this.startStatusDecisionTime = startStatusDecisionTime;
         this.endStatus = endStatus;
@@ -49,10 +50,10 @@ public class History extends BaseEntity {
 
     public static History createEntity(WorkStatus workStatus, LocalDateTime now, Member member, WorkDate workDate) {
         return History.builder()
-                .startStatus(workStatus)
-                .startStatusDecisionTime(now)
-                .member(member)
-                .workDate(workDate)
-                .build();
+            .startStatus(workStatus)
+            .startStatusDecisionTime(now)
+            .member(member)
+            .workDate(workDate)
+            .build();
     }
 }

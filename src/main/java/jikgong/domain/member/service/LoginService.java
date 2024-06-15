@@ -29,6 +29,7 @@ import java.util.Random;
 @Transactional
 @Slf4j
 public class LoginService {
+
     private final MemberRepository memberRepository;
     private final LocationRepository locationRepository;
     private final PasswordEncoder encoder;
@@ -47,30 +48,30 @@ public class LoginService {
 
         // 노동자 정보
         Worker worker = Worker.builder()
-                .workerName(request.getWorkerName())
-                .birth(request.getBirth())
-                .rrn(request.getRrn())
-                .gender(request.getGender())
-                .nationality(request.getNationality())
-                .isNotification(request.getIsNotification())
-                .build();
+            .workerName(request.getWorkerName())
+            .birth(request.getBirth())
+            .rrn(request.getRrn())
+            .gender(request.getGender())
+            .nationality(request.getNationality())
+            .isNotification(request.getIsNotification())
+            .build();
         // 공통 부분
         Member member = Member.builder()
-                .loginId(request.getLoginId())
-                .password(encoder.encode(request.getPassword()))
-                .phone(request.getPhone())
-                .account(request.getAccount())
-                .bank(request.getBank())
-                .role(request.getRole())
-                .deviceToken(request.getDeviceToken())
-                .workerInfo(worker)
-                .build();
+            .loginId(request.getLoginId())
+            .password(encoder.encode(request.getPassword()))
+            .phone(request.getPhone())
+            .account(request.getAccount())
+            .bank(request.getBank())
+            .role(request.getRole())
+            .deviceToken(request.getDeviceToken())
+            .workerInfo(worker)
+            .build();
 
         Location location = Location.builder()
-                .address(new Address(request.getAddress(), request.getLatitude(), request.getLongitude()))
-                .isMain(true)
-                .member(member)
-                .build();
+            .address(new Address(request.getAddress(), request.getLatitude(), request.getLongitude()))
+            .isMain(true)
+            .member(member)
+            .build();
 
         Member savedMember = memberRepository.save(member); // 회원 저장
         locationRepository.save(location); // 위치 정보 저장
@@ -89,26 +90,26 @@ public class LoginService {
 
         // 기업 정보
         Company company = Company.builder()
-                .businessNumber(request.getBusinessNumber())
-                .region(request.getRegion())
-                .companyName(request.getCompanyName())
-                .email(request.getEmail())
-                .manager(request.getManager())
-                .requestContent(request.getRequestContent())
-                .isNotification(request.getIsNotification())
-                .build();
+            .businessNumber(request.getBusinessNumber())
+            .region(request.getRegion())
+            .companyName(request.getCompanyName())
+            .email(request.getEmail())
+            .manager(request.getManager())
+            .requestContent(request.getRequestContent())
+            .isNotification(request.getIsNotification())
+            .build();
 
         // 공통 부분
         Member member = Member.builder()
-                .loginId(request.getLoginId())
-                .password(encoder.encode(request.getPassword()))
-                .phone(request.getPhone())
-                .account(request.getAccount())
-                .bank(request.getBank())
-                .role(request.getRole())
-                .deviceToken(request.getDeviceToken())
-                .companyInfo(company)
-                .build();
+            .loginId(request.getLoginId())
+            .password(encoder.encode(request.getPassword()))
+            .phone(request.getPhone())
+            .account(request.getAccount())
+            .bank(request.getBank())
+            .role(request.getRole())
+            .deviceToken(request.getDeviceToken())
+            .companyInfo(company)
+            .build();
 
         log.info("기업 회원 가입 완료");
         return memberRepository.save(member).getId(); // 회원 저장
@@ -178,7 +179,7 @@ public class LoginService {
     public LoginResponse login(LoginRequest request) {
         // id 체크
         Member member = memberRepository.findByLoginId(request.getLoginId())
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         // authCode 체크
         if (!encoder.matches(request.getPassword(), member.getPassword())) {
@@ -208,7 +209,7 @@ public class LoginService {
         String loginId = (String) jwtTokenProvider.get(refreshToken).get("loginId");
 
         Member member = memberRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         // phone 값으로 redis 에 저장된 refreshToken 추출
         String findRefreshToken = redisTemplate.opsForValue().get(loginId);

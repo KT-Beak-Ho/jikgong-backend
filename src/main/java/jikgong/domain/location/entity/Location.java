@@ -14,7 +14,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Location extends BaseEntity {
-    @Id @GeneratedValue
+
+    @Id
+    @GeneratedValue
     @Column(name = "location_id")
     private Long id;
 

@@ -1,5 +1,8 @@
 package jikgong.global.aop;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import jikgong.global.slack.SlackService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,10 +11,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
 
 @Component
 @RequiredArgsConstructor
@@ -38,10 +37,9 @@ public class TimingAdvisor {
         long end = System.currentTimeMillis();
         long runningTime = end - start;
 
-
         if (runningTime > 5000) {
             String message = String.format("[!경고] [기준 실행 시간을 초과하였습니다] 시간: %s, 클래스: %s, 메서드: %s, 실행 시간: %dms",
-                    currentTime, className, methodName, runningTime);
+                currentTime, className, methodName, runningTime);
             log.warn(message);
             // Slack 메시지 전송
             HashMap<String, String> data = new HashMap<>();

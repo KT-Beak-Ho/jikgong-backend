@@ -1,9 +1,18 @@
 package jikgong.global.s3;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.amazonaws.services.lambda.runtime.events.S3Event;
 import com.amazonaws.services.lambda.runtime.events.models.s3.S3EventNotification.S3EventNotificationRecord;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -15,17 +24,9 @@ import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
-import com.amazonaws.AmazonServiceException;
-import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.RequestHandler;
-import com.amazonaws.services.lambda.runtime.events.S3Event;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.GetObjectRequest;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 
 public class ResizeHandler implements RequestHandler<S3Event, String> {
+
     /**
      * aws lambda 함수 등록을 위한 클래스
      */
@@ -48,7 +49,6 @@ public class ResizeHandler implements RequestHandler<S3Event, String> {
             String key = record.getS3().getObject().getUrlDecodedKey(); // 객체의 키 (파일 경로 및 이름)
             String dstBucket = "jikgong-resize-bucket"; // 수정된 저장될 버킷 이름
 
-
             // 파일 확장자 추출
             Matcher matcher = Pattern.compile(".*\\.([^\\.]*)").matcher(key);
             if (!matcher.matches()) {
@@ -57,7 +57,8 @@ public class ResizeHandler implements RequestHandler<S3Event, String> {
             }
             String imageType = matcher.group(1);
             // 지원하지 않는 이미지 형식인 경우 로그를 남기고 리턴
-            if (!(JPG_TYPE.equals(imageType)) && !(JPEG_TYPE.equals(imageType)) && !(PNG_TYPE.equals(imageType)) && !(GIF_TYPE.equals(imageType))) {
+            if (!(JPG_TYPE.equals(imageType)) && !(JPEG_TYPE.equals(imageType)) && !(PNG_TYPE.equals(imageType))
+                && !(GIF_TYPE.equals(imageType))) {
                 logger.log("Skipping non-image " + key);
                 return "";
             }
@@ -94,7 +95,8 @@ public class ResizeHandler implements RequestHandler<S3Event, String> {
             // 리사이즈된 이미지를 S3에 저장
             logger.log("Writing to: " + dstBucket + "/" + key);
             try {
-                s3Client.putObject(new PutObjectRequest(dstBucket, key, is, meta).withCannedAcl(CannedAccessControlList.PublicRead));
+                s3Client.putObject(
+                    new PutObjectRequest(dstBucket, key, is, meta).withCannedAcl(CannedAccessControlList.PublicRead));
             } catch (AmazonServiceException e) {
                 logger.log(e.getErrorMessage());
                 System.exit(1);
@@ -108,7 +110,7 @@ public class ResizeHandler implements RequestHandler<S3Event, String> {
 
     // MIME 타입을 반환하는 보조 메소드
     private String getMimeType(String imageType) {
-        switch(imageType) {
+        switch (imageType) {
             case JPG_TYPE:
             case JPEG_TYPE:
                 return JPG_MIME;

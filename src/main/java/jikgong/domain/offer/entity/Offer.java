@@ -17,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Offer extends BaseEntity {
+
     @Id
     @GeneratedValue
     @Column(name = "offer_id")
@@ -53,10 +54,10 @@ public class Offer extends BaseEntity {
 
     public static Offer createEntity(Member company, Member worker, JobPost jobPost) {
         return Offer.builder()
-                .company(company)
-                .worker(worker)
-                .jobPost(jobPost)
-                .build();
+            .company(company)
+            .worker(worker)
+            .jobPost(jobPost)
+            .build();
     }
 
     public void cancelOffer() {

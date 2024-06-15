@@ -10,6 +10,7 @@ import lombok.ToString;
 @Getter
 @ToString
 public class SkillDetailRequest {
+
     @Schema(description = "인부 타입", example = "NORMAL")
     private Tech tech;
     @Schema(description = "기간 (1년 2개월 이라면 14", example = "14")

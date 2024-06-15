@@ -12,6 +12,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class HistoryManageResponse {
+
     /**
      * 인력 관리 화면에서 출퇴근 관련 dto
      */
@@ -25,19 +26,19 @@ public class HistoryManageResponse {
         Member member = apply.getMember();
 
         return HistoryManageResponse.builder()
-                .memberResponse(MemberResponse.from(member))
-                .build();
+            .memberResponse(MemberResponse.from(member))
+            .build();
     }
 
     public static HistoryManageResponse from(History history) {
         Member member = history.getMember();
 
         return HistoryManageResponse.builder()
-                .historyId(history.getId())
-                .startStatus(history.getStartStatus())
-                .endStatus(history.getEndStatus())
-                .memberResponse(MemberResponse.from(member))
-                .build();
+            .historyId(history.getId())
+            .startStatus(history.getStartStatus())
+            .endStatus(history.getEndStatus())
+            .memberResponse(MemberResponse.from(member))
+            .build();
     }
 
     public void updateHistoryInfo(History history) {
@@ -49,6 +50,7 @@ public class HistoryManageResponse {
     @Getter
     @Builder
     public static class MemberResponse {
+
         private Long memberId;
         private String workerName; // 노동자 이름
         private String phone; // 휴대폰 번호
@@ -57,12 +59,12 @@ public class HistoryManageResponse {
 
         public static MemberResponse from(Member member) {
             return MemberResponse.builder()
-                    .memberId(member.getId())
-                    .workerName(member.getWorkerInfo().getWorkerName())
-                    .phone(member.getPhone())
-                    .age(AgeTransfer.getAgeByBirth(member.getWorkerInfo().getBrith()))
-                    .gender(member.getWorkerInfo().getGender())
-                    .build();
+                .memberId(member.getId())
+                .workerName(member.getWorkerInfo().getWorkerName())
+                .phone(member.getPhone())
+                .age(AgeTransfer.getAgeByBirth(member.getWorkerInfo().getBrith()))
+                .gender(member.getWorkerInfo().getGender())
+                .build();
         }
     }
 }

@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum Tech {
+
     NORMAL("보통 인부"),
     TILE("타일공");
     private final String description;

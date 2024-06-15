@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 @Getter
 @Builder
 public class OfferJobPostResponse {
+
     private Long offerWorkDateId;
 
     private JobPostResponse jobPostResponse; // 모집 공고 정보
@@ -34,33 +35,34 @@ public class OfferJobPostResponse {
         Member company = jobPost.getMember();
 
         return OfferJobPostResponse.builder()
-                .offerWorkDateId(offerWorkDate.getId())
-                .workDateResponse(WorkDateResponse.from(workDate))
-                .jobPostResponse(JobPostResponse.from(offerWorkDate, acceptedApply, location)) // 모집 공고 정보
-                .companyResponse(CompanyResponse.from(company))
-                .build();
+            .offerWorkDateId(offerWorkDate.getId())
+            .workDateResponse(WorkDateResponse.from(workDate))
+            .jobPostResponse(JobPostResponse.from(offerWorkDate, acceptedApply, location)) // 모집 공고 정보
+            .companyResponse(CompanyResponse.from(company))
+            .build();
     }
-
 
     @Getter
     @Builder
     public static class CompanyResponse {
+
         private String companyName; // 회사 명
         private String manager; // 담당자
         private String phone; // 연락처
 
         public static CompanyResponse from(Member company) {
             return CompanyResponse.builder()
-                    .companyName(company.getCompanyInfo().getCompanyName())
-                    .manager(company.getCompanyInfo().getManager())
-                    .phone(company.getPhone())
-                    .build();
+                .companyName(company.getCompanyInfo().getCompanyName())
+                .manager(company.getCompanyInfo().getManager())
+                .phone(company.getPhone())
+                .build();
         }
     }
 
     @Getter
     @Builder
     public static class JobPostResponse {
+
         private Long jobPostId;
         private String title; // 제목
         private Tech tech; // 직종
@@ -89,13 +91,13 @@ public class OfferJobPostResponse {
 
             // 픽업 장소 리스트
             List<String> pickupAddressList = jobPost.getPickupList().stream()
-                    .map(Pickup::getAddress)
-                    .collect(Collectors.toList());
+                .map(Pickup::getAddress)
+                .collect(Collectors.toList());
 
             // 이미지 리스트
             List<String> imageUrls = jobPost.getJobPostImageList().stream()
-                    .map(JobPostImage::getS3Url)
-                    .collect(Collectors.toList());
+                .map(JobPostImage::getS3Url)
+                .collect(Collectors.toList());
 
             // 인원이 꽉 찼을 경우 true
             Boolean recruitmentFull = workDate.getRecruitNum() <= workDate.getRegisteredNum();
@@ -103,29 +105,29 @@ public class OfferJobPostResponse {
             Boolean acceptedApplyOnDate = !acceptedApply.isEmpty();
 
             return JobPostResponse.builder()
-                    .jobPostId(jobPost.getId())
-                    .title(jobPost.getTitle())
-                    .tech(jobPost.getTech())
-                    .wage(jobPost.getWage())
-                    .startTime(jobPost.getStartTime())
-                    .endTime(jobPost.getEndTime())
+                .jobPostId(jobPost.getId())
+                .title(jobPost.getTitle())
+                .tech(jobPost.getTech())
+                .wage(jobPost.getWage())
+                .startTime(jobPost.getStartTime())
+                .endTime(jobPost.getEndTime())
 
-                    .workAddress(jobPost.getAddress().getAddress())
-                    .distance(DistanceCal.getDistance(jobPost, location))
+                .workAddress(jobPost.getAddress().getAddress())
+                .distance(DistanceCal.getDistance(jobPost, location))
 
-                    .meal(jobPost.getAvailableInfo().getMeal())
-                    .pickup(jobPost.getAvailableInfo().getPickup())
-                    .pickupAddressList(pickupAddressList)
-                    .park(jobPost.getAvailableInfo().getPark())
-                    .parkDetail(jobPost.getParkDetail())
-                    .preparation(jobPost.getPreparation())
+                .meal(jobPost.getAvailableInfo().getMeal())
+                .pickup(jobPost.getAvailableInfo().getPickup())
+                .pickupAddressList(pickupAddressList)
+                .park(jobPost.getAvailableInfo().getPark())
+                .parkDetail(jobPost.getParkDetail())
+                .preparation(jobPost.getPreparation())
 
-                    .imageUrls(imageUrls)
+                .imageUrls(imageUrls)
 
-                    .recruitmentFull(recruitmentFull)
-                    .acceptedApplyOnDate(acceptedApplyOnDate)
+                .recruitmentFull(recruitmentFull)
+                .acceptedApplyOnDate(acceptedApplyOnDate)
 
-                    .build();
+                .build();
         }
     }
 }

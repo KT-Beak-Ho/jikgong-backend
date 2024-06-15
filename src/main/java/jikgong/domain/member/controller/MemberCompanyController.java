@@ -17,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class MemberCompanyController {
+
     private final MemberCompanyService memberCompanyService;
 
     @Operation(summary = "기업 검색")

@@ -10,6 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface ResumeRepository extends JpaRepository<Resume, Long>, ResumeRepositoryCustom {
+
     /**
      * 일자리 제안
      */
