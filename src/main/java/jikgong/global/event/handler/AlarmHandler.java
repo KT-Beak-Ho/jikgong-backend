@@ -1,6 +1,6 @@
 package jikgong.global.event.handler;
 
-import jikgong.global.alimTalk.service.AlimTalkService;
+import jikgong.global.alimtalk.service.AlimTalkService;
 import jikgong.global.event.dtos.AlarmEvent;
 import jikgong.global.fcm.dtos.FCMNotificationRequestDto;
 import jikgong.global.fcm.service.FCMNotificationService;

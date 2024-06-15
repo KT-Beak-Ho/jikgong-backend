@@ -1,13 +1,12 @@
 package jikgong.global.aop;
 
-import jikgong.global.queryCount.ConnectionHandler;
-import jikgong.global.queryCount.QueryCounter;
+import jikgong.global.querycount.ConnectionHandler;
+import jikgong.global.querycount.QueryCounter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Proxy;

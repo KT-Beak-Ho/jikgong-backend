@@ -3,7 +3,7 @@ package jikgong.domain.history.entity;
 import jakarta.persistence.*;
 import jikgong.domain.common.BaseEntity;
 import jikgong.domain.member.entity.Member;
-import jikgong.domain.workDate.entity.WorkDate;
+import jikgong.domain.workdate.entity.WorkDate;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

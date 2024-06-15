@@ -1,8 +1,7 @@
 package jikgong.global.utils;
 
 import jikgong.domain.common.Address;
-import jikgong.domain.jobPost.entity.JobPost;
-import jikgong.domain.jobPost.entity.QJobPost;
+import jikgong.domain.jobpost.entity.JobPost;
 import jikgong.domain.location.entity.Location;
 
 public class DistanceCal {

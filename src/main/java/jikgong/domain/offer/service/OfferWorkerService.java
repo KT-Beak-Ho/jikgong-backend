@@ -10,11 +10,9 @@ import jikgong.domain.member.repository.MemberRepository;
 import jikgong.domain.offer.dtos.worker.OfferJobPostResponse;
 import jikgong.domain.offer.dtos.worker.OfferProcessRequest;
 import jikgong.domain.offer.dtos.worker.ReceivedOfferResponse;
-import jikgong.domain.offer.entity.OfferStatus;
-import jikgong.domain.offerWorkDate.entity.OfferWorkDate;
-import jikgong.domain.offerWorkDate.entity.OfferWorkDateStatus;
-import jikgong.domain.offerWorkDate.repository.OfferWorkDateRepository;
-import jikgong.domain.workDate.entity.WorkDate;
+import jikgong.domain.offerworkdate.entity.OfferWorkDate;
+import jikgong.domain.offerworkdate.repository.OfferWorkDateRepository;
+import jikgong.domain.workdate.entity.WorkDate;
 import jikgong.global.exception.CustomException;
 import jikgong.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 

@@ -1,7 +1,7 @@
 package jikgong.domain.pickup.entity;
 
 import jakarta.persistence.*;
-import jikgong.domain.jobPost.entity.JobPost;
+import jikgong.domain.jobpost.entity.JobPost;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

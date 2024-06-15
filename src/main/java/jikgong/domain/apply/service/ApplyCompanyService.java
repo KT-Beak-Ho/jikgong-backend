@@ -5,12 +5,12 @@ import jikgong.domain.apply.dtos.company.ApplyProcessRequest;
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.apply.repository.ApplyRepository;
-import jikgong.domain.jobPost.entity.JobPost;
-import jikgong.domain.jobPost.repository.JobPostRepository;
+import jikgong.domain.jobpost.entity.JobPost;
+import jikgong.domain.jobpost.repository.JobPostRepository;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
-import jikgong.domain.workDate.entity.WorkDate;
-import jikgong.domain.workDate.repository.WorkDateRepository;
+import jikgong.domain.workdate.entity.WorkDate;
+import jikgong.domain.workdate.repository.WorkDateRepository;
 import jikgong.global.exception.CustomException;
 import jikgong.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 

@@ -1,11 +1,11 @@
 package jikgong.domain.offer.dtos.worker;
 
-import jikgong.domain.jobPost.entity.JobPost;
-import jikgong.domain.jobPost.entity.Tech;
-import jikgong.domain.offerWorkDate.entity.OfferWorkDate;
-import jikgong.domain.offerWorkDate.entity.OfferWorkDateStatus;
-import jikgong.domain.workDate.dtos.WorkDateResponse;
-import jikgong.domain.workDate.entity.WorkDate;
+import jikgong.domain.jobpost.entity.JobPost;
+import jikgong.domain.jobpost.entity.Tech;
+import jikgong.domain.offerworkdate.entity.OfferWorkDate;
+import jikgong.domain.offerworkdate.entity.OfferWorkDateStatus;
+import jikgong.domain.workdate.dtos.WorkDateResponse;
+import jikgong.domain.workdate.entity.WorkDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

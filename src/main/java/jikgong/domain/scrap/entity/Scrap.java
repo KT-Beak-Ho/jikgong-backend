@@ -2,7 +2,7 @@ package jikgong.domain.scrap.entity;
 
 import jakarta.persistence.*;
 import jikgong.domain.common.BaseEntity;
-import jikgong.domain.jobPost.entity.JobPost;
+import jikgong.domain.jobpost.entity.JobPost;
 import jikgong.domain.member.entity.Member;
 import lombok.AccessLevel;
 import lombok.Builder;

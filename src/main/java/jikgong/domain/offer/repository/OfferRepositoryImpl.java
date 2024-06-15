@@ -1,6 +1,5 @@
 package jikgong.domain.offer.repository;
 
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jikgong.domain.offer.entity.Offer;
@@ -12,10 +11,9 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-import static jikgong.domain.jobPost.entity.QJobPost.*;
+import static jikgong.domain.jobpost.entity.QJobPost.*;
 import static jikgong.domain.member.entity.QMember.*;
 import static jikgong.domain.offer.entity.QOffer.*;
-import static jikgong.domain.offerWorkDate.entity.QOfferWorkDate.*;
 
 @RequiredArgsConstructor
 public class OfferRepositoryImpl implements OfferRepositoryCustom {

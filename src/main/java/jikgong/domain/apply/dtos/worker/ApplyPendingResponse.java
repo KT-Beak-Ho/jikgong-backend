@@ -2,9 +2,8 @@ package jikgong.domain.apply.dtos.worker;
 
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.entity.ApplyStatus;
-import jikgong.domain.jobPost.entity.JobPost;
-import jikgong.domain.jobPost.entity.Tech;
-import lombok.AllArgsConstructor;
+import jikgong.domain.jobpost.entity.JobPost;
+import jikgong.domain.jobpost.entity.Tech;
 import lombok.Builder;
 import lombok.Getter;
 

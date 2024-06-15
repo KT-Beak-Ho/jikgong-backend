@@ -1,6 +1,6 @@
 package jikgong.domain.resume.service;
 
-import jikgong.domain.jobPost.entity.Tech;
+import jikgong.domain.jobpost.entity.Tech;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
 import jikgong.domain.resume.dtos.company.ResumeDetailResponse;

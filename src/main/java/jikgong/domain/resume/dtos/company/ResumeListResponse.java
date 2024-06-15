@@ -3,7 +3,7 @@ package jikgong.domain.resume.dtos.company;
 import jikgong.domain.common.Address;
 import jikgong.domain.history.entity.History;
 import jikgong.domain.history.entity.WorkStatus;
-import jikgong.domain.jobPost.entity.Park;
+import jikgong.domain.jobpost.entity.Park;
 import jikgong.domain.location.entity.Location;
 import jikgong.domain.member.entity.Gender;
 import jikgong.domain.member.entity.Member;

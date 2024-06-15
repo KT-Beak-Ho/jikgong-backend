@@ -1,6 +1,6 @@
 package jikgong.global.config;
 
-import jikgong.global.queryCount.LoggingInterceptor;
+import jikgong.global.querycount.LoggingInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

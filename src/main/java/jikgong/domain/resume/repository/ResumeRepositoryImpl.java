@@ -8,7 +8,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jikgong.domain.common.Address;
 import jikgong.domain.resume.dtos.company.ResumeListResponse;
 import jikgong.domain.offer.entity.SortType;
-import jikgong.domain.jobPost.entity.Tech;
+import jikgong.domain.jobpost.entity.Tech;
 import jikgong.domain.location.entity.QLocation;
 import jikgong.domain.resume.entity.Resume;
 import lombok.RequiredArgsConstructor;

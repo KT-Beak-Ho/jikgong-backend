@@ -1,6 +1,6 @@
 package jikgong.domain.profit.dtos.history;
 
-import jikgong.domain.jobPost.entity.Tech;
+import jikgong.domain.jobpost.entity.Tech;
 import jikgong.domain.profit.entity.Profit;
 import jikgong.domain.profit.entity.ProfitType;
 import lombok.AllArgsConstructor;

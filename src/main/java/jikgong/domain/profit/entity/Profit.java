@@ -2,7 +2,7 @@ package jikgong.domain.profit.entity;
 
 
 import jakarta.persistence.*;
-import jikgong.domain.jobPost.entity.Tech;
+import jikgong.domain.jobpost.entity.Tech;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.profit.dtos.history.ProfitModifyRequest;
 import jikgong.domain.profit.dtos.history.ProfitSaveRequest;

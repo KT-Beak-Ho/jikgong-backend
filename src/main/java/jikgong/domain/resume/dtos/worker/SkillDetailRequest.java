@@ -1,7 +1,7 @@
 package jikgong.domain.resume.dtos.worker;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jikgong.domain.jobPost.entity.Tech;
+import jikgong.domain.jobpost.entity.Tech;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;

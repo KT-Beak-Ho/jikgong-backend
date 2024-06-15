@@ -2,9 +2,9 @@ package jikgong.domain.offer.entity;
 
 import jakarta.persistence.*;
 import jikgong.domain.common.BaseEntity;
-import jikgong.domain.jobPost.entity.JobPost;
+import jikgong.domain.jobpost.entity.JobPost;
 import jikgong.domain.member.entity.Member;
-import jikgong.domain.offerWorkDate.entity.OfferWorkDate;
+import jikgong.domain.offerworkdate.entity.OfferWorkDate;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

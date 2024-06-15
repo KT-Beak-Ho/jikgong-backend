@@ -1,6 +1,6 @@
 package jikgong.global.config;
 
-import jikgong.domain.searchLog.entity.SearchLog;
+import jikgong.domain.searchlog.entity.SearchLog;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;

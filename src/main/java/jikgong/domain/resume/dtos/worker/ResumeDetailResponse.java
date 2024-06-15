@@ -1,6 +1,6 @@
 package jikgong.domain.resume.dtos.worker;
 
-import jikgong.domain.jobPost.entity.Park;
+import jikgong.domain.jobpost.entity.Park;
 import jikgong.domain.resume.entity.Resume;
 import jikgong.domain.skill.dtos.SkillResponse;
 import lombok.Builder;

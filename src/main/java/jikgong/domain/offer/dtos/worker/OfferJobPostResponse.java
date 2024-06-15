@@ -1,16 +1,16 @@
 package jikgong.domain.offer.dtos.worker;
 
 import jikgong.domain.apply.entity.Apply;
-import jikgong.domain.jobPost.entity.JobPost;
-import jikgong.domain.jobPost.entity.Park;
-import jikgong.domain.jobPost.entity.Tech;
-import jikgong.domain.jobPostImage.entity.JobPostImage;
+import jikgong.domain.jobpost.entity.JobPost;
+import jikgong.domain.jobpost.entity.Park;
+import jikgong.domain.jobpost.entity.Tech;
+import jikgong.domain.jobpostimage.entity.JobPostImage;
 import jikgong.domain.location.entity.Location;
 import jikgong.domain.member.entity.Member;
-import jikgong.domain.offerWorkDate.entity.OfferWorkDate;
+import jikgong.domain.offerworkdate.entity.OfferWorkDate;
 import jikgong.domain.pickup.entity.Pickup;
-import jikgong.domain.workDate.dtos.WorkDateResponse;
-import jikgong.domain.workDate.entity.WorkDate;
+import jikgong.domain.workdate.dtos.WorkDateResponse;
+import jikgong.domain.workdate.entity.WorkDate;
 import jikgong.global.utils.DistanceCal;
 import lombok.Builder;
 import lombok.Getter;

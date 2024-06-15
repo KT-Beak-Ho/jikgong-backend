@@ -1,7 +1,7 @@
 package jikgong.domain.resume.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jikgong.domain.jobPost.entity.Tech;
+import jikgong.domain.jobpost.entity.Tech;
 import jikgong.domain.resume.dtos.company.ResumeDetailResponse;
 import jikgong.domain.offer.entity.SortType;
 import jikgong.domain.resume.dtos.company.ResumeListResponse;

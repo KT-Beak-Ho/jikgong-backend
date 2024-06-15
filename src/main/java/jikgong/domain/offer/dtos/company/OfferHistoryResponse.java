@@ -1,18 +1,17 @@
 package jikgong.domain.offer.dtos.company;
 
-import jikgong.domain.jobPost.entity.JobPost;
-import jikgong.domain.jobPost.entity.Tech;
+import jikgong.domain.jobpost.entity.JobPost;
+import jikgong.domain.jobpost.entity.Tech;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.offer.entity.Offer;
 import jikgong.domain.offer.entity.OfferStatus;
-import jikgong.domain.offerWorkDate.entity.OfferWorkDate;
-import jikgong.domain.workDate.dtos.WorkDateResponse;
-import jikgong.domain.workDate.entity.WorkDate;
+import jikgong.domain.offerworkdate.entity.OfferWorkDate;
+import jikgong.domain.workdate.dtos.WorkDateResponse;
+import jikgong.domain.workdate.entity.WorkDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;

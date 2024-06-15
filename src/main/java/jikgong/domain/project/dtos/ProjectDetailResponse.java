@@ -1,11 +1,11 @@
 package jikgong.domain.project.dtos;
 
-import jikgong.domain.jobPost.entity.JobPost;
-import jikgong.domain.jobPost.entity.Park;
-import jikgong.domain.jobPost.entity.Tech;
+import jikgong.domain.jobpost.entity.JobPost;
+import jikgong.domain.jobpost.entity.Park;
+import jikgong.domain.jobpost.entity.Tech;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.project.entity.Project;
-import jikgong.domain.workDate.entity.WorkDate;
+import jikgong.domain.workdate.entity.WorkDate;
 import lombok.Builder;
 import lombok.Getter;
 

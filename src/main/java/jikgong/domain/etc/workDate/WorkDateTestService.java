@@ -1,7 +1,7 @@
 package jikgong.domain.etc.workDate;
 
-import jikgong.domain.workDate.entity.WorkDate;
-import jikgong.domain.workDate.repository.WorkDateRepository;
+import jikgong.domain.workdate.entity.WorkDate;
+import jikgong.domain.workdate.repository.WorkDateRepository;
 import jikgong.global.exception.CustomException;
 import jikgong.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
