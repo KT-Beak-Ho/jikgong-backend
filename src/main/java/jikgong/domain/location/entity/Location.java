@@ -3,7 +3,7 @@ package jikgong.domain.location.entity;
 import jakarta.persistence.*;
 import jikgong.domain.common.Address;
 import jikgong.domain.common.BaseEntity;
-import jikgong.domain.location.dtos.LocationUpdateRequest;
+import jikgong.domain.location.dto.LocationUpdateRequest;
 import jikgong.domain.member.entity.Member;
 import lombok.AccessLevel;
 import lombok.Builder;

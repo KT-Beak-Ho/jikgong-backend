@@ -1,14 +1,13 @@
 package jikgong.global.fcm.service;
 
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
 import jikgong.global.exception.CustomException;
 import jikgong.global.exception.ErrorCode;
-import jikgong.global.fcm.dtos.FCMNotificationRequestDto;
+import jikgong.global.fcm.dto.FCMNotificationRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

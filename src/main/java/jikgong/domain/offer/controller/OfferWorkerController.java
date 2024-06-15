@@ -1,9 +1,9 @@
 package jikgong.domain.offer.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jikgong.domain.offer.dtos.worker.OfferJobPostResponse;
-import jikgong.domain.offer.dtos.worker.OfferProcessRequest;
-import jikgong.domain.offer.dtos.worker.ReceivedOfferResponse;
+import jikgong.domain.offer.dto.worker.OfferJobPostResponse;
+import jikgong.domain.offer.dto.worker.OfferProcessRequest;
+import jikgong.domain.offer.dto.worker.ReceivedOfferResponse;
 import jikgong.domain.offer.service.OfferWorkerService;
 import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;

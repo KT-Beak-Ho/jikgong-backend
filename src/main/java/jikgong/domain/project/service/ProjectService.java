@@ -2,10 +2,10 @@ package jikgong.domain.project.service;
 
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
-import jikgong.domain.project.dtos.ProjectDetailResponse;
-import jikgong.domain.project.dtos.ProjectListResponse;
-import jikgong.domain.project.dtos.ProjectSaveRequest;
-import jikgong.domain.project.dtos.ProjectUpdateRequest;
+import jikgong.domain.project.dto.ProjectDetailResponse;
+import jikgong.domain.project.dto.ProjectListResponse;
+import jikgong.domain.project.dto.ProjectSaveRequest;
+import jikgong.domain.project.dto.ProjectUpdateRequest;
 import jikgong.domain.project.entity.Project;
 import jikgong.domain.project.entity.ProjectStatus;
 import jikgong.domain.project.repository.ProjectRepository;

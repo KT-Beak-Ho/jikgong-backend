@@ -1,6 +1,6 @@
 package jikgong.domain.certification.service;
 
-import jikgong.domain.certification.dtos.CertificationResponse;
+import jikgong.domain.certification.dto.CertificationResponse;
 import jikgong.domain.certification.entity.Certification;
 import jikgong.domain.certification.repository.CertificationRepository;
 import jikgong.domain.member.entity.Member;

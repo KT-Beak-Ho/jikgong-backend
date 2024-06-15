@@ -2,10 +2,10 @@ package jikgong.domain.profit.service;
 
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
-import jikgong.domain.profit.dtos.graph.DailyGraphResponse;
-import jikgong.domain.profit.dtos.graph.MonthlyGraphResponse;
-import jikgong.domain.profit.dtos.graph.WorkTimeGraphResponse;
-import jikgong.domain.profit.dtos.history.*;
+import jikgong.domain.profit.dto.graph.DailyGraphResponse;
+import jikgong.domain.profit.dto.graph.MonthlyGraphResponse;
+import jikgong.domain.profit.dto.graph.WorkTimeGraphResponse;
+import jikgong.domain.profit.dto.history.*;
 import jikgong.domain.profit.entity.Profit;
 import jikgong.domain.profit.repository.ProfitRepository;
 import jikgong.global.exception.CustomException;

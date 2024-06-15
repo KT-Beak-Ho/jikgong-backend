@@ -1,10 +1,10 @@
 package jikgong.domain.location.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jikgong.domain.location.dtos.LocationDeleteRequest;
-import jikgong.domain.location.dtos.LocationResponse;
-import jikgong.domain.location.dtos.LocationSaveRequest;
-import jikgong.domain.location.dtos.LocationUpdateRequest;
+import jikgong.domain.location.dto.LocationDeleteRequest;
+import jikgong.domain.location.dto.LocationResponse;
+import jikgong.domain.location.dto.LocationSaveRequest;
+import jikgong.domain.location.dto.LocationUpdateRequest;
 import jikgong.domain.location.service.LocationService;
 import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;

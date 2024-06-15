@@ -1,7 +1,7 @@
 package jikgong.domain.apply.service;
 
-import jikgong.domain.apply.dtos.company.ApplyManageResponse;
-import jikgong.domain.apply.dtos.company.ApplyProcessRequest;
+import jikgong.domain.apply.dto.company.ApplyManageResponse;
+import jikgong.domain.apply.dto.company.ApplyProcessRequest;
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.apply.repository.ApplyRepository;

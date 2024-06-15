@@ -2,7 +2,7 @@ package jikgong.domain.offer.service;
 
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.repository.ApplyRepository;
-import jikgong.domain.offer.dtos.company.*;
+import jikgong.domain.offer.dto.company.*;
 import jikgong.domain.offer.entity.OfferStatus;
 import jikgong.domain.offer.repository.OfferRepository;
 import jikgong.domain.offer.entity.Offer;
@@ -18,7 +18,7 @@ import jikgong.domain.resume.entity.Resume;
 import jikgong.domain.resume.repository.ResumeRepository;
 import jikgong.domain.workdate.entity.WorkDate;
 import jikgong.domain.workdate.repository.WorkDateRepository;
-import jikgong.global.event.dtos.NotificationEvent;
+import jikgong.global.event.dto.NotificationEvent;
 import jikgong.global.exception.CustomException;
 import jikgong.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;

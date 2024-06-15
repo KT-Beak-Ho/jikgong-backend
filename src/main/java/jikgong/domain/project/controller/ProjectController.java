@@ -1,10 +1,10 @@
 package jikgong.domain.project.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jikgong.domain.project.dtos.ProjectDetailResponse;
-import jikgong.domain.project.dtos.ProjectListResponse;
-import jikgong.domain.project.dtos.ProjectSaveRequest;
-import jikgong.domain.project.dtos.ProjectUpdateRequest;
+import jikgong.domain.project.dto.ProjectDetailResponse;
+import jikgong.domain.project.dto.ProjectListResponse;
+import jikgong.domain.project.dto.ProjectSaveRequest;
+import jikgong.domain.project.dto.ProjectUpdateRequest;
 import jikgong.domain.project.entity.ProjectStatus;
 import jikgong.domain.project.service.ProjectService;
 import jikgong.global.common.Response;

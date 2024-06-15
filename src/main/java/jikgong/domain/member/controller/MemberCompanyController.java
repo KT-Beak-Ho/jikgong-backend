@@ -1,7 +1,7 @@
 package jikgong.domain.member.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jikgong.domain.member.dtos.CompanySearchResponse;
+import jikgong.domain.member.dto.CompanySearchResponse;
 import jikgong.domain.member.service.MemberCompanyService;
 import jikgong.global.common.Response;
 import lombok.RequiredArgsConstructor;

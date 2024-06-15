@@ -1,6 +1,6 @@
 package jikgong.domain.jobpost.service;
 
-import jikgong.domain.jobpost.dtos.company.*;
+import jikgong.domain.jobpost.dto.company.*;
 import jikgong.domain.jobpost.entity.JobPost;
 import jikgong.domain.jobpost.entity.JobPostStatus;
 import jikgong.domain.jobpost.repository.JobPostRepository;
@@ -9,7 +9,7 @@ import jikgong.domain.jobpostimage.repository.JobPostImageRepository;
 import jikgong.domain.jobpostimage.service.JobPostImageService;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
-import jikgong.domain.jobpost.dtos.company.JobPostResponseForOffer;
+import jikgong.domain.jobpost.dto.company.JobPostResponseForOffer;
 import jikgong.domain.pickup.entity.Pickup;
 import jikgong.domain.pickup.repository.PickupRepository;
 import jikgong.domain.project.entity.Project;

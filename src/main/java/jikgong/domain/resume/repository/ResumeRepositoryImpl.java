@@ -6,7 +6,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jikgong.domain.common.Address;
-import jikgong.domain.resume.dtos.company.ResumeListResponse;
+import jikgong.domain.resume.dto.company.ResumeListResponse;
 import jikgong.domain.offer.entity.SortType;
 import jikgong.domain.jobpost.entity.Tech;
 import jikgong.domain.location.entity.QLocation;

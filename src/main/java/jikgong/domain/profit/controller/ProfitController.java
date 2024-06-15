@@ -1,9 +1,9 @@
 package jikgong.domain.profit.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jikgong.domain.profit.dtos.graph.DailyGraphResponse;
-import jikgong.domain.profit.dtos.graph.MonthlyGraphResponse;
-import jikgong.domain.profit.dtos.history.*;
+import jikgong.domain.profit.dto.graph.DailyGraphResponse;
+import jikgong.domain.profit.dto.graph.MonthlyGraphResponse;
+import jikgong.domain.profit.dto.history.*;
 import jikgong.domain.profit.service.ProfitService;
 import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;

@@ -1,10 +1,10 @@
 package jikgong.domain.apply.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jikgong.domain.apply.dtos.worker.ApplyPendingResponse;
-import jikgong.domain.apply.dtos.worker.ApplyHistoryResponse;
-import jikgong.domain.apply.dtos.worker.ApplyResponseMonthly;
-import jikgong.domain.apply.dtos.worker.ApplySaveRequest;
+import jikgong.domain.apply.dto.worker.ApplyPendingResponse;
+import jikgong.domain.apply.dto.worker.ApplyHistoryResponse;
+import jikgong.domain.apply.dto.worker.ApplyResponseMonthly;
+import jikgong.domain.apply.dto.worker.ApplySaveRequest;
 import jikgong.domain.apply.service.ApplyWorkerService;
 import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;

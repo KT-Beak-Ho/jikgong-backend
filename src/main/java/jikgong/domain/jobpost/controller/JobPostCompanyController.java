@@ -1,10 +1,10 @@
 package jikgong.domain.jobpost.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jikgong.domain.jobpost.dtos.company.*;
+import jikgong.domain.jobpost.dto.company.*;
 import jikgong.domain.jobpost.entity.JobPostStatus;
 import jikgong.domain.jobpost.service.JobPostCompanyService;
-import jikgong.domain.jobpost.dtos.company.JobPostResponseForOffer;
+import jikgong.domain.jobpost.dto.company.JobPostResponseForOffer;
 import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;

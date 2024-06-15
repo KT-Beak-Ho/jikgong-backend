@@ -1,7 +1,7 @@
 package jikgong.domain.certification.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jikgong.domain.certification.dtos.CertificationResponse;
+import jikgong.domain.certification.dto.CertificationResponse;
 import jikgong.domain.certification.service.CertificationService;
 import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;

@@ -1,12 +1,12 @@
 package jikgong.domain.history.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jikgong.domain.history.dtos.HistoryAtFinishResponse;
-import jikgong.domain.history.dtos.HistoryFinishSaveRequest;
-import jikgong.domain.history.dtos.HistoryStartSaveRequest;
-import jikgong.domain.history.dtos.PaymentStatementResponse;
+import jikgong.domain.history.dto.HistoryAtFinishResponse;
+import jikgong.domain.history.dto.HistoryFinishSaveRequest;
+import jikgong.domain.history.dto.HistoryStartSaveRequest;
+import jikgong.domain.history.dto.PaymentStatementResponse;
 import jikgong.domain.history.service.HistoryService;
-import jikgong.domain.history.dtos.HistoryManageResponse;
+import jikgong.domain.history.dto.HistoryManageResponse;
 import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;

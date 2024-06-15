@@ -1,9 +1,9 @@
 package jikgong.domain.apply.service;
 
-import jikgong.domain.apply.dtos.worker.ApplyPendingResponse;
-import jikgong.domain.apply.dtos.worker.ApplyHistoryResponse;
-import jikgong.domain.apply.dtos.worker.ApplyResponseMonthly;
-import jikgong.domain.apply.dtos.worker.ApplySaveRequest;
+import jikgong.domain.apply.dto.worker.ApplyPendingResponse;
+import jikgong.domain.apply.dto.worker.ApplyHistoryResponse;
+import jikgong.domain.apply.dto.worker.ApplyResponseMonthly;
+import jikgong.domain.apply.dto.worker.ApplySaveRequest;
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.apply.repository.ApplyRepository;

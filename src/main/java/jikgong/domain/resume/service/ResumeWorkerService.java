@@ -2,9 +2,9 @@ package jikgong.domain.resume.service;
 
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
-import jikgong.domain.resume.dtos.worker.ResumeDetailResponse;
-import jikgong.domain.resume.dtos.worker.SkillDetailRequest;
-import jikgong.domain.resume.dtos.worker.ResumeSaveRequest;
+import jikgong.domain.resume.dto.worker.ResumeDetailResponse;
+import jikgong.domain.resume.dto.worker.SkillDetailRequest;
+import jikgong.domain.resume.dto.worker.ResumeSaveRequest;
 import jikgong.domain.resume.entity.Resume;
 import jikgong.domain.resume.repository.ResumeRepository;
 import jikgong.domain.skill.entity.Skill;

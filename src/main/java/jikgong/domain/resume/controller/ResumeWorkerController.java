@@ -1,8 +1,8 @@
 package jikgong.domain.resume.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jikgong.domain.resume.dtos.worker.ResumeDetailResponse;
-import jikgong.domain.resume.dtos.worker.ResumeSaveRequest;
+import jikgong.domain.resume.dto.worker.ResumeDetailResponse;
+import jikgong.domain.resume.dto.worker.ResumeSaveRequest;
 import jikgong.domain.resume.service.ResumeWorkerService;
 import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;

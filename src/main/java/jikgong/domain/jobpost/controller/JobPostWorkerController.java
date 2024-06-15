@@ -1,9 +1,9 @@
 package jikgong.domain.jobpost.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jikgong.domain.jobpost.dtos.worker.JobPostDetailResponse;
-import jikgong.domain.jobpost.dtos.worker.JobPostListResponse;
-import jikgong.domain.jobpost.dtos.worker.JobPostMapResponse;
+import jikgong.domain.jobpost.dto.worker.JobPostDetailResponse;
+import jikgong.domain.jobpost.dto.worker.JobPostListResponse;
+import jikgong.domain.jobpost.dto.worker.JobPostMapResponse;
 import jikgong.domain.jobpost.entity.Park;
 import jikgong.domain.jobpost.entity.SortType;
 import jikgong.domain.jobpost.entity.Tech;

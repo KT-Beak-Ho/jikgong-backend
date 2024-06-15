@@ -1,7 +1,7 @@
 package jikgong.domain.member.entity;
 
 import jakarta.persistence.Embeddable;
-import jikgong.domain.notification.dtos.company.CompanyNotificationInfoRequest;
+import jikgong.domain.notification.dto.company.CompanyNotificationInfoRequest;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

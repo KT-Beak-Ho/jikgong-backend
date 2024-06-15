@@ -1,11 +1,11 @@
 package jikgong.domain.notification.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jikgong.domain.notification.dtos.NotificationInfoResponse;
-import jikgong.domain.notification.dtos.NotificationResponse;
-import jikgong.domain.notification.dtos.UnreadCountResponse;
-import jikgong.domain.notification.dtos.company.CompanyNotificationInfoRequest;
-import jikgong.domain.notification.dtos.worker.WorkerNotificationInfoRequest;
+import jikgong.domain.notification.dto.NotificationInfoResponse;
+import jikgong.domain.notification.dto.NotificationResponse;
+import jikgong.domain.notification.dto.UnreadCountResponse;
+import jikgong.domain.notification.dto.company.CompanyNotificationInfoRequest;
+import jikgong.domain.notification.dto.worker.WorkerNotificationInfoRequest;
 import jikgong.domain.notification.service.NotificationService;
 import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;

@@ -1,8 +1,8 @@
 package jikgong.global.feignclient.client;
 
 import feign.Headers;
-import jikgong.global.alimtalk.dtos.AlimTalkRequest;
-import jikgong.global.alimtalk.dtos.AlimTalkResponse;
+import jikgong.global.alimtalk.dto.AlimTalkRequest;
+import jikgong.global.alimtalk.dto.AlimTalkResponse;
 import jikgong.global.config.CoreFeignConfiguration;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;

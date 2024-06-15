@@ -1,10 +1,10 @@
 package jikgong.domain.member.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jikgong.domain.member.dtos.join.*;
-import jikgong.domain.member.dtos.login.LoginRequest;
-import jikgong.domain.member.dtos.login.LoginResponse;
-import jikgong.domain.member.dtos.login.RefreshTokenRequest;
+import jikgong.domain.member.dto.join.*;
+import jikgong.domain.member.dto.login.LoginRequest;
+import jikgong.domain.member.dto.login.LoginResponse;
+import jikgong.domain.member.dto.login.RefreshTokenRequest;
 import jikgong.domain.member.service.LoginService;
 import jikgong.global.common.Response;
 import lombok.RequiredArgsConstructor;

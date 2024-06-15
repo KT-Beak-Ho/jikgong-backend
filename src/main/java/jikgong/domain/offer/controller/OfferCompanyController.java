@@ -1,8 +1,8 @@
 package jikgong.domain.offer.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jikgong.domain.offer.dtos.company.OfferHistoryResponse;
-import jikgong.domain.offer.dtos.company.OfferRequest;
+import jikgong.domain.offer.dto.company.OfferHistoryResponse;
+import jikgong.domain.offer.dto.company.OfferRequest;
 import jikgong.domain.offer.entity.OfferStatus;
 import jikgong.domain.offer.service.OfferCompanyService;
 import jikgong.global.common.Response;

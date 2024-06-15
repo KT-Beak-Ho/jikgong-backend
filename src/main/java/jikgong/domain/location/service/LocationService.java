@@ -2,10 +2,10 @@ package jikgong.domain.location.service;
 
 
 import jikgong.domain.common.Address;
-import jikgong.domain.location.dtos.LocationDeleteRequest;
-import jikgong.domain.location.dtos.LocationResponse;
-import jikgong.domain.location.dtos.LocationSaveRequest;
-import jikgong.domain.location.dtos.LocationUpdateRequest;
+import jikgong.domain.location.dto.LocationDeleteRequest;
+import jikgong.domain.location.dto.LocationResponse;
+import jikgong.domain.location.dto.LocationSaveRequest;
+import jikgong.domain.location.dto.LocationUpdateRequest;
 import jikgong.domain.location.entity.Location;
 import jikgong.domain.location.repository.LocationRepository;
 import jikgong.domain.member.entity.Member;
