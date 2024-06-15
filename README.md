@@ -33,42 +33,45 @@
 
 ## 🗂 디렉토리 구조
 ```markdown
-jikgong
-|-- 📂domain
-    └-- 📂apply
-    └-- 📂certification
-    └-- 📂common
-    └-- 📂history
-    └-- 📂jobPost
-    └-- 📂jobPostImage
-    └-- 📂like
-    └-- 📂location
-    └-- 📂member
-    └-- 📂notification
-    └-- 📂offer
-    └-- 📂offerWorkDate
-    └-- 📂pickup
-    └-- 📂profit
-    └-- 📂project
-    └-- 📂resume
-    └-- 📂scrap
-    └-- 📂searchLog
-    └-- 📂skill
-    └-- 📂workDate
-|-- 📂global
-    |-- 📂alimTalk
-    |-- 📂aop
-    |-- 📂batch
-    |-- 📂config
-    |-- 📂event
-    |-- 📂exception
-    |-- 📂fcm
-    |-- 📂feignClient
-    |-- 📂s3
-    |-- 📂security
-    |-- 📂slack
-    |-- 📂sms
-    |-- 📂utils
+📦jikgong
+ ┣ 📂domain
+ ┃ ┣ 📂apply
+ ┃ ┣ 📂certification
+ ┃ ┣ 📂common
+ ┃ ┣ 📂etc
+ ┃ ┣ 📂history
+ ┃ ┣ 📂jobpost
+ ┃ ┣ 📂jobpostimage
+ ┃ ┣ 📂like
+ ┃ ┣ 📂location
+ ┃ ┣ 📂member
+ ┃ ┣ 📂notification
+ ┃ ┣ 📂offer
+ ┃ ┣ 📂offerworkdate
+ ┃ ┣ 📂pickup
+ ┃ ┣ 📂profit
+ ┃ ┣ 📂project
+ ┃ ┣ 📂resume
+ ┃ ┣ 📂scrap
+ ┃ ┣ 📂searchlog
+ ┃ ┣ 📂skill
+ ┃ ┗ 📂workdate
+ ┣ 📂global
+ ┃ ┣ 📂alimtalk
+ ┃ ┣ 📂aop
+ ┃ ┣ 📂batch
+ ┃ ┣ 📂common
+ ┃ ┣ 📂config
+ ┃ ┣ 📂event
+ ┃ ┣ 📂exception
+ ┃ ┣ 📂fcm
+ ┃ ┣ 📂feignclient
+ ┃ ┣ 📂querycount
+ ┃ ┣ 📂s3
+ ┃ ┣ 📂security
+ ┃ ┣ 📂slack
+ ┃ ┗ 📂utils
+ ┗ 📜JikgongApplication.java
 ```
 <br><br><br><br>
 
