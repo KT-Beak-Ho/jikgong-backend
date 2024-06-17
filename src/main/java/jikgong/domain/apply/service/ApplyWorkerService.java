@@ -80,7 +80,7 @@ public class ApplyWorkerService {
         List<LocalDate> dateList = workDateList.stream().map(WorkDate::getDate).collect(Collectors.toList());
         List<Apply> acceptedApplyInWorkDateList = applyRepository.checkAcceptedApplyForApply(member.getId(), dateList);
         if (!acceptedApplyInWorkDateList.isEmpty()) {
-            throw new JikgongException(ErrorCode.APPLY_ALREADY_ACCEPTED_IN_WORKDATE);
+            throw new JikgongException(ErrorCode.APPLY_ALREADY_ACCEPTED_IN_WORK_DATE);
         }
     }
 
@@ -99,7 +99,7 @@ public class ApplyWorkerService {
         LocalDate minWorkDate = workDateList.stream()
             .map(WorkDate::getDate)
             .min(LocalDate::compareTo)
-            .orElseThrow(() -> new JikgongException(ErrorCode.EMPTY_WORK_DATE_LIST));
+            .orElseThrow(() -> new JikgongException(ErrorCode.WORK_DATE_LIST_NOT_FOUND));
 
         // 1일날 3일 공고를 신청했을 경우 가능
         // 1일날 2일 공고를 신청했을 경우 불가능

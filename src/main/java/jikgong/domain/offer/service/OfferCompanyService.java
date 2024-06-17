@@ -1,16 +1,25 @@
 package jikgong.domain.offer.service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.repository.ApplyRepository;
-import jikgong.domain.offer.dto.company.*;
-import jikgong.domain.offer.entity.OfferStatus;
-import jikgong.domain.offer.repository.OfferRepository;
-import jikgong.domain.offer.entity.Offer;
 import jikgong.domain.jobpost.entity.JobPost;
 import jikgong.domain.jobpost.repository.JobPostRepository;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
 import jikgong.domain.notification.entity.NotificationType;
+import jikgong.domain.offer.dto.company.OfferHistoryResponse;
+import jikgong.domain.offer.dto.company.OfferJobPostRequest;
+import jikgong.domain.offer.dto.company.OfferRequest;
+import jikgong.domain.offer.entity.Offer;
+import jikgong.domain.offer.entity.OfferStatus;
+import jikgong.domain.offer.repository.OfferRepository;
 import jikgong.domain.offerworkdate.entity.OfferWorkDate;
 import jikgong.domain.offerworkdate.entity.OfferWorkDateStatus;
 import jikgong.domain.offerworkdate.repository.OfferWorkDateRepository;
@@ -19,8 +28,8 @@ import jikgong.domain.resume.repository.ResumeRepository;
 import jikgong.domain.workdate.entity.WorkDate;
 import jikgong.domain.workdate.repository.WorkDateRepository;
 import jikgong.global.event.dto.NotificationEvent;
-import jikgong.global.exception.JikgongException;
 import jikgong.global.exception.ErrorCode;
+import jikgong.global.exception.JikgongException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -29,11 +38,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -181,7 +185,7 @@ public class OfferCompanyService {
         // 제안 날짜 중 제안 대기중이지 않은 날짜가 있는지 체크
         for (OfferWorkDate offerWorkDate : offerWorkDateList) {
             if (offerWorkDate.getOfferWorkDateStatus() != OfferWorkDateStatus.OFFER_PENDING) {
-                throw new JikgongException(ErrorCode.OFFER_CANT_CANCEL);
+                throw new JikgongException(ErrorCode.OFFER_CANCEL_FAIL);
             }
         }
 

@@ -139,7 +139,8 @@ public class ApplyCompanyService {
             String acceptedWorkerNames = acceptedApply.stream()
                 .map(worker -> worker.getMember().getWorkerInfo().getWorkerName())
                 .collect(Collectors.joining(", "));
-            throw new JikgongException(HttpStatus.BAD_REQUEST, acceptedWorkerNames + " 은 이미 확정된 일자리가 있습니다.");
+            throw new JikgongException(HttpStatus.BAD_REQUEST, "APPLY-004",
+                acceptedWorkerNames + " 은 이미 확정된 일자리가 있습니다.");
         }
     }
 

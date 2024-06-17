@@ -4,6 +4,7 @@ import jikgong.global.common.Response;
 import jikgong.global.slack.SlackService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -23,7 +24,7 @@ public class ExceptionController {
         log.error("핸들링한 에러 발생");
         ErrorResponse errorResponse = ErrorResponse.builder()
             .status(e.getStatus())
-            .code(e.getStatus().value())
+            .code(e.getErrorCode())
             .errorMessage(e.getErrorMessage())
             .build();
         return ResponseEntity.status(e.getStatus()).body(new Response<>(errorResponse, "커스텀 예외 반환"));
@@ -43,9 +44,15 @@ public class ExceptionController {
             builder.append(fieldError.getRejectedValue());
             builder.append("]");
         }
-        log.error("valid 검사 에러 발생: " + builder);
-        JikgongException e = new JikgongException(ErrorCode.REQUEST_INVALID);
-        return ResponseEntity.status(e.getStatus()).body(new Response(e.getMessage(), builder.toString()));
+        log.error("valid 검사 에러 발생: " + builder.toString());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+            .status(HttpStatus.BAD_REQUEST)
+            .code("VALID-001")
+            .errorMessage(builder.toString())
+            .build();
+
+        return ResponseEntity.status(errorResponse.getStatus()).body(new Response<>(errorResponse, "커스텀 예외 반환"));
     }
 
 //    @ExceptionHandler(Exception.class)

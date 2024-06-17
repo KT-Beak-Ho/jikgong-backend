@@ -1,5 +1,9 @@
 package jikgong.domain.offer.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.apply.repository.ApplyRepository;
@@ -13,17 +17,12 @@ import jikgong.domain.offer.dto.worker.ReceivedOfferResponse;
 import jikgong.domain.offerworkdate.entity.OfferWorkDate;
 import jikgong.domain.offerworkdate.repository.OfferWorkDateRepository;
 import jikgong.domain.workdate.entity.WorkDate;
-import jikgong.global.exception.JikgongException;
 import jikgong.global.exception.ErrorCode;
+import jikgong.global.exception.JikgongException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -122,7 +121,7 @@ public class OfferWorkerService {
 
         // 수락 하려는 날짜에 출역 날짜가 확정된 기록이 있는지 체크
         if (applyRepository.findAcceptedApplyByWorkDate(worker.getId(), workDate.getDate()) != 0) {
-            throw new JikgongException(ErrorCode.APPLY_ALREADY_ACCEPTED_IN_WORKDATE);
+            throw new JikgongException(ErrorCode.APPLY_ALREADY_ACCEPTED_IN_WORK_DATE);
         }
     }
 

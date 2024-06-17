@@ -54,7 +54,7 @@ public class S3Handler {
         try {
             inputStream = file.getInputStream();
         } catch (IOException e) {
-            throw new JikgongException(ErrorCode.IMAGE_EXCEPTION);
+            throw new JikgongException(ErrorCode.FILE_STREAM_FAIL);
         }
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(file.getSize());
@@ -110,7 +110,7 @@ public class S3Handler {
             try {
                 inputStream = file.getInputStream();
             } catch (IOException e) {
-                throw new JikgongException(ErrorCode.IMAGE_EXCEPTION);
+                throw new JikgongException(ErrorCode.FILE_STREAM_FAIL);
             }
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(file.getSize());
