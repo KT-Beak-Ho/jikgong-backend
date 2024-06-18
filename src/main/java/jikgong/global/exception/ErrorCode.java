@@ -68,12 +68,12 @@ public enum ErrorCode {
     /**
      * 모집 공고 관련 (JobPost, WorkDate, Project)
      */
-    JOB_POST_NOT_FOUND(HttpStatus.NOT_FOUND, "JOB-POST-001", "모집 공고 정보가 없습니다."),
-    WORK_DATE_NOT_FOUND(HttpStatus.NOT_FOUND, "WORK-DATE-001", "채용 공고의 날짜 정보가 존재하지 않습니다."),
-    WORK_DATE_LIST_NOT_FOUND(HttpStatus.NOT_FOUND, "WORK-DATE-002", "요청한 날짜 중 모집 공고에 맞지 않는 날짜가 있습니다."),
-    WORK_DATE_RECRUITMENT_FULL(HttpStatus.BAD_REQUEST, "WORK-DATE-003", "이미 모집 인원이 충족되었습니다."),
-    WORK_DATE_NEED_TO_FUTURE(HttpStatus.BAD_REQUEST, "WORK-DATE-004", "해당 날짜는 처리를 위한 조건에 부합하지 않습니다. 조건을 확인해주세요."),
-    WORK_DATE_NOT_MATCH(HttpStatus.BAD_REQUEST, "WORK-DATE-005", "공고에 해당하는 workdate의 id값이 아닙니다."),
+    JOB_POST_NOT_FOUND(HttpStatus.NOT_FOUND, "JOBPOST-001", "모집 공고 정보가 없습니다."),
+    WORK_DATE_NOT_FOUND(HttpStatus.NOT_FOUND, "WORKDATE-001", "채용 공고의 날짜 정보가 존재하지 않습니다."),
+    WORK_DATE_LIST_NOT_FOUND(HttpStatus.NOT_FOUND, "WORKDATE-002", "요청한 날짜 중 모집 공고에 맞지 않는 날짜가 있습니다."),
+    WORK_DATE_RECRUITMENT_FULL(HttpStatus.BAD_REQUEST, "WORKDATE-003", "이미 모집 인원이 충족되었습니다."),
+    WORK_DATE_NEED_TO_FUTURE(HttpStatus.BAD_REQUEST, "WORKDATE-004", "해당 날짜는 처리를 위한 조건에 부합하지 않습니다. 조건을 확인해주세요."),
+    WORK_DATE_NOT_MATCH(HttpStatus.BAD_REQUEST, "WORKDATE-005", "공고에 해당하는 workdate의 id값이 아닙니다."),
     PROJECT_NOT_FOUND(HttpStatus.NOT_FOUND, "PROJECT-001", "프로젝트 정보가 없습니다."),
 
     /**
@@ -99,7 +99,7 @@ public enum ErrorCode {
     /**
      * 최근 기록
      */
-    SEARCH_LOG_NOT_EXIST(HttpStatus.NOT_FOUND, "SEARCH-LOG-001", "검색 기록을 찾을 수 없습니다."),
+    SEARCH_LOG_NOT_EXIST(HttpStatus.NOT_FOUND, "SEARCHLOG-001", "검색 기록을 찾을 수 없습니다."),
 
     /**
      * s3
