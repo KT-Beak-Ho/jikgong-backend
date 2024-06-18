@@ -25,12 +25,12 @@ public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response,
         AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        log.error("접근이 거부됐습니다.");
+        log.error("접근 권한이 없습니다.");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8"); // JSON 응답을 UTF-8로 설정
         response.setStatus(HttpStatus.FORBIDDEN.value());
         response.setContentType(APPLICATION_JSON_VALUE);
-        response.getWriter().write(objectMapper.writeValueAsString(new Response<String>("접근이 거부됐습니다.")));
+        response.getWriter().write(objectMapper.writeValueAsString(new Response<String>("접근 권한이 없습니다.")));
         response.getWriter().flush();
         response.getWriter().close();
     }
