@@ -111,7 +111,7 @@ public class OfferWorkerService {
     private void validationBeforeProcessOffer(WorkDate workDate, Member worker) {
         // 인원 마감 체크
         if (workDate.getRecruitNum() <= workDate.getRegisteredNum()) {
-            throw new JikgongException(ErrorCode.RECRUITMENT_FULL);
+            throw new JikgongException(ErrorCode.WORK_DATE_RECRUITMENT_FULL);
         }
 
         // 출역일 최소 2일전 승인
