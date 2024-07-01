@@ -1,5 +1,9 @@
 package jikgong.domain.jobpost.service;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import jikgong.domain.jobpost.dto.worker.JobPostDetailResponse;
 import jikgong.domain.jobpost.dto.worker.JobPostListResponse;
 import jikgong.domain.jobpost.dto.worker.JobPostMapResponse;
@@ -13,8 +17,8 @@ import jikgong.domain.location.repository.LocationRepository;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
 import jikgong.domain.scrap.repository.ScrapRepository;
-import jikgong.global.exception.JikgongException;
 import jikgong.global.exception.ErrorCode;
+import jikgong.global.exception.JikgongException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -22,11 +26,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -73,7 +72,7 @@ public class JobPostWorkerService {
     }
 
     /**
-     * 메인 페이지 조회 비회원
+     * 메인 페이지 조회 (비회원)
      * 필터: 직종, 날짜, 스크랩, 식사 제공, 주차 여부, 정렬 기준
      */
     @Transactional(readOnly = true)

@@ -1,5 +1,9 @@
 package jikgong.domain.jobpost.dto.worker;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
+import java.util.Optional;
 import jikgong.domain.jobpost.entity.JobPost;
 import jikgong.domain.jobpost.entity.Park;
 import jikgong.domain.jobpost.entity.Tech;
@@ -9,11 +13,6 @@ import jikgong.global.utils.DistanceCal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
-import java.util.Optional;
 
 @AllArgsConstructor
 @Getter
@@ -43,7 +42,8 @@ public class JobPostListResponse {
 
     private Boolean isScrap; // 스크랩 여부
 
-    private String thumbnailS3Url; // 썸네일 Url
+    private String thumbnailResizeUrl; // 리사이징 썸네일
+    private String thumbnailOriginUrl; // 원본 썸네일
 
     public void setScrap(Boolean scrap) {
         isScrap = scrap;
@@ -52,18 +52,18 @@ public class JobPostListResponse {
     public static JobPostListResponse from(JobPost jobPost, Location location) {
         // JobPostImage 리스트가 null인 경우 null 반환
         List<JobPostImage> jobPostImages = jobPost.getJobPostImageList();
-        String thumbnailS3Url = null;
+        String thumbnailResizeUrl = null;
+        String thumbnailOriginUrl = null;
 
         if (jobPostImages != null) {
             // Thumbnail 이미지 추출
             Optional<JobPostImage> thumbnailImage = jobPostImages.stream()
                 .filter(JobPostImage::isThumbnail)
                 .findFirst();
-
-            // S3 URL 추출 및 변경, 없으면 null 반환
-            thumbnailS3Url = thumbnailImage.map(JobPostImage::getS3Url)
-                .map(s3Url -> s3Url.replace("jikgong-image", "jikgong-resize-bucket"))
-                .orElse(null);
+            if (thumbnailImage.isPresent()) {
+                thumbnailOriginUrl = thumbnailImage.get().getS3Url();
+                thumbnailResizeUrl = thumbnailOriginUrl.replace("jikgong-image", "jikgong-resize-bucket");
+            }
         }
 
         return JobPostListResponse.builder()
@@ -88,7 +88,8 @@ public class JobPostListResponse {
             .wage(jobPost.getWage())
 
             .isScrap(null)
-            .thumbnailS3Url(thumbnailS3Url)
+            .thumbnailOriginUrl(thumbnailOriginUrl)
+            .thumbnailResizeUrl(thumbnailResizeUrl)
 
             .build();
     }
