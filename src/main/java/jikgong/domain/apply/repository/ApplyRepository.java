@@ -122,4 +122,8 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
     @Query("select a from Apply a where a.member.id = :memberId")
     List<Apply> findWorkerApplyForLock(@Param("memberId") Long memberId);
 
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select a from Apply a where a.member.id in :memberId")
+    List<Apply> findWorkerApplyListForLock(@Param("memberIdList") List<Long> memberIdList);
+
 }

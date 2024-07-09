@@ -99,10 +99,16 @@ public class ApplyCompanyService {
         // 대기 중인 요청인지 체크
         List<Apply> applyList = checkPendingApply(request, workDate, jobPost);
 
+        List<Long> workerIdList = applyList.stream().map(apply -> apply.getMember().getId())
+            .collect(Collectors.toList());
+
+        // 처리하려는 회원의 지원 데이터에 Lock
+        applyRepository.findWorkerApplyListForLock(workerIdList);
+
         // 수락인 경우
         if (request.getIsAccept()) {
             // 이미 다른 일자리에 승인된 노동자가 있는지 체크
-            checkAcceptedWorker(applyList, workDate);
+            checkAcceptedWorker(workerIdList, workDate);
 
             // 모집 인원 및 날짜 체크
             checkRegisteredNumAndDate(workDate);
@@ -131,9 +137,7 @@ public class ApplyCompanyService {
     }
 
     // 이미 다른 일자리에 승인된 노동자가 있는지 체크
-    private void checkAcceptedWorker(List<Apply> applyList, WorkDate workDate) {
-        List<Long> workerIdList = applyList.stream().map(apply -> apply.getMember().getId())
-            .collect(Collectors.toList());
+    private void checkAcceptedWorker(List<Long> workerIdList, WorkDate workDate) {
         List<Apply> acceptedApply = applyRepository.findAcceptedMember(workerIdList, workDate.getDate());
         if (!acceptedApply.isEmpty()) {
             String acceptedWorkerNames = acceptedApply.stream()
