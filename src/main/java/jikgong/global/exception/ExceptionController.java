@@ -1,5 +1,8 @@
 package jikgong.global.exception;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import jikgong.global.common.Response;
 import jikgong.global.slack.SlackService;
 import lombok.RequiredArgsConstructor;
@@ -55,34 +58,32 @@ public class ExceptionController {
         return ResponseEntity.status(errorResponse.getStatus()).body(new Response<>(errorResponse, "커스텀 예외 반환"));
     }
 
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<?> unHandledException(Exception e) {
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        String currentTime = sdf.format(new Date());
-//
-//        // 에러 발생 위치 추출
-//        StackTraceElement[] stackTrace = e.getStackTrace();
-//        String errorLocation = "";
-//        if (stackTrace.length > 0) {
-//            StackTraceElement element = stackTrace[0];
-//            errorLocation = element.getClassName() + " at line " + element.getLineNumber();
-//        }
-//
-//        // 로그에 에러 정보 기록
-//        log.error("핸들링하지 않은 에러 발생");
-//        log.error("발생 시각" + currentTime);
-//        log.error("에러 위치: " + errorLocation);
-//        log.error("에러 내용: " + e.getMessage());
-//
-//
-//        // Slack 메시지와 데이터에 추가 정보를 포함
-//        HashMap<String, String> data = new HashMap<>();
-//        data.put("에러 내용", e.getMessage());
-//        data.put("발생 시각", currentTime);
-//        data.put("에러 위치", errorLocation);
-//        slackService.sendMessage("Unhandled exception occurred", data);
-//
-//
-//        return ResponseEntity.badRequest().body(new Response(e.getMessage()));
-//    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> unHandledException(Exception e) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentTime = sdf.format(new Date());
+
+        // 에러 발생 위치 추출
+        StackTraceElement[] stackTrace = e.getStackTrace();
+        String errorLocation = "";
+        if (stackTrace.length > 0) {
+            StackTraceElement element = stackTrace[0];
+            errorLocation = element.getClassName() + " at line " + element.getLineNumber();
+        }
+
+        // 로그에 에러 정보 기록
+        log.error("핸들링하지 않은 에러 발생");
+        log.error("발생 시각" + currentTime);
+        log.error("에러 위치: " + errorLocation);
+        log.error("에러 내용: " + e.getMessage());
+
+        // Slack 메시지와 데이터에 추가 정보를 포함
+        HashMap<String, String> data = new HashMap<>();
+        data.put("에러 내용", e.getMessage());
+        data.put("발생 시각", currentTime);
+        data.put("에러 위치", errorLocation);
+        slackService.sendMessage("Unhandled exception occurred", data);
+
+        return ResponseEntity.badRequest().body(new Response(e.getMessage()));
+    }
 }
