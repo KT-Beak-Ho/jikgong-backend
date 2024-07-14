@@ -1,6 +1,5 @@
 package jikgong.domain.apply.repository;
 
-import jakarta.persistence.LockModeType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,7 +9,6 @@ import jikgong.domain.apply.entity.ApplyStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -118,12 +116,12 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
     @Query("select a from Apply a where a.member.id = :memberId and a.workDate.id = :workDateId and a.status = 'OFFERED'")
     Optional<Apply> findOfferedApply(@Param("memberId") Long memberId, @Param("workDateId") Long workDateId);
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("select a from Apply a where a.member.id = :memberId")
-    List<Apply> findWorkerApplyForLock(@Param("memberId") Long memberId);
-
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("select a from Apply a where a.member.id in :memberIdList")
-    List<Apply> findWorkerApplyListForLock(@Param("memberIdList") List<Long> memberIdList);
-
+    // 비관적 Lock 사용했던 코드
+//    @Lock(LockModeType.PESSIMISTIC_WRITE)
+//    @Query("select a from Apply a where a.member.id = :memberId")
+//    List<Apply> findWorkerApplyForLock(@Param("memberId") Long memberId);
+//
+//    @Lock(LockModeType.PESSIMISTIC_WRITE)
+//    @Query("select a from Apply a where a.member.id in :memberIdList")
+//    List<Apply> findWorkerApplyListForLock(@Param("memberIdList") List<Long> memberIdList);
 }

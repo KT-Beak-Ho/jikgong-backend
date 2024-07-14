@@ -102,9 +102,6 @@ public class ApplyCompanyService {
         List<Long> workerIdList = applyList.stream().map(apply -> apply.getMember().getId())
             .collect(Collectors.toList());
 
-        // 처리하려는 회원의 지원 데이터에 Lock
-        applyRepository.findWorkerApplyListForLock(workerIdList);
-
         // 수락인 경우
         if (request.getIsAccept()) {
             // 이미 다른 일자리에 승인된 노동자가 있는지 체크
