@@ -114,7 +114,12 @@ public enum ErrorCode {
     /**
      * 스케줄링
      */
-    SCHEDULER_INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "SCHEDULER-001", "스케줄러 동작 중 에러가 발생했습니다.");
+    SCHEDULER_INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "SCHEDULER-001", "스케줄러 동작 중 에러가 발생했습니다."),
+
+    /**
+     * 동시성
+     */
+    CONCURRENCY_FAILURE(HttpStatus.CONFLICT, "CONCURRENCY-001", "동시성 문제가 발생하였습니다. 다시 시도해주세요.");
 
     private final HttpStatus status;
     private final String code;
