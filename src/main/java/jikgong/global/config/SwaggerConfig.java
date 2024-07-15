@@ -14,16 +14,16 @@ import org.springframework.context.annotation.Configuration;
 @OpenAPIDefinition(
     info = @Info(title = "jikgong API 명세서",
         description = "기업 계정: 아래 1개   " +
-            "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZGVmZzAiLCJleHAiOjE3MjA5NzA5MTB9.yg1G0zizw-BoGxcWGUPNgudBhi7CLsM1359eHYMOujQ    "
+            "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZGVmZzAiLCJleHAiOjE3MjYyMjY3NDB9.fztvihYHiIqMviCdHRxu5CBbCv9yN3gOIQy_8U4olMI    "
             +
             "\n노동자 계정: 아래 4개    " +
-            "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZGVmZzEiLCJleHAiOjE3MjA5NzA3OTJ9.mhV9FqhLONb5uohaA8FrTEY45DFFEc5qYsDjpQD5PH8    "
+            "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZGVmZzEiLCJleHAiOjE3MjYyMjY3NjZ9.wKJLM50gYXZ-xDxalx13xsTBJRuVILG72Y4uyflTq3Y    "
             +
-            "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZGVmZzIiLCJleHAiOjE3MjA5NzA4NjJ9.xy7PZ5iJ95zBkbjS8qUQH9jP4TWj6t4sAXYZMqJp5js    "
+            "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZGVmZzIiLCJleHAiOjE3MjYyMjY3OTB9.KD1B-mmOeOa-k2wvgaFLMZ7RLwCfhzhB8EBFSFtbJao    "
             +
-            "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZGVmZzMiLCJleHAiOjE3MjA5NzA4Nzl9.aDbyOOZ5_n69hcLNIAsjKa68xalsx8D8_cucljce3fw    "
+            "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZGVmZzMiLCJleHAiOjE3MjYyMjY4MDd9.bnMXxKmBBSXVufJ8wvI7RDcK62WhrWJdH9abRTxuC-E    "
             +
-            "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZGVmZzQiLCJleHAiOjE3MjA5NzA4OTZ9.zXCpelBa3gmy35bpDCmn_y1KzQdzUNm6K9o7fzk8VQU",
+            "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZGVmZzQiLCJleHAiOjE3MjYyMjY4MjB9.pCs2S7lzylPgIxD0t0IQ7bO89GaRZi1QoFcvjIc2W2c",
         version = "v1"),
     servers = {
         @Server(url = "https://asdfdsas.p-e.kr", description = "Default Server"),
