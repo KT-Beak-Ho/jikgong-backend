@@ -1,21 +1,21 @@
 package jikgong.domain.jobpost.dto.worker;
 
-import jikgong.domain.pickup.entity.Pickup;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
+import java.util.stream.Collectors;
 import jikgong.domain.jobpost.entity.JobPost;
 import jikgong.domain.jobpost.entity.Park;
 import jikgong.domain.jobpost.entity.Tech;
 import jikgong.domain.jobpostimage.entity.JobPostImage;
 import jikgong.domain.location.entity.Location;
 import jikgong.domain.member.entity.Member;
-import jikgong.domain.workdate.dto.WorkDateResponse;
+import jikgong.domain.pickup.entity.Pickup;
+import jikgong.domain.workdate.entity.WorkDate;
 import jikgong.global.utils.DistanceCal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.time.LocalTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Getter
@@ -91,4 +91,24 @@ public class JobPostDetailResponse {
 
             .build();
     }
+
+    @Getter
+    @Builder
+    public static class WorkDateResponse {
+
+        private Long workDateId;
+        private LocalDate date;
+        private Integer recruitNum; // 모집 인원
+        private Integer registeredNum; // 모집된 인원
+
+        public static WorkDateResponse from(WorkDate workDate) {
+            return WorkDateResponse.builder()
+                .workDateId(workDate.getId())
+                .date(workDate.getDate())
+                .recruitNum(workDate.getRecruitNum())
+                .registeredNum(workDate.getRegisteredNum())
+                .build();
+        }
+    }
+
 }
