@@ -1,7 +1,6 @@
 package jikgong.domain.jobpost.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import jikgong.domain.jobpost.dto.company.JobPostListResponse;
@@ -46,10 +45,9 @@ public class JobPostCompanyController {
     @Operation(summary = "모집 공고 등록")
     @PostMapping(value = "/api/job-post/company", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Response> saveJobPost(@AuthenticationPrincipal PrincipalDetails principalDetails,
-        @RequestPart JobPostSaveRequest request/*,
-        @RequestPart(required = false) List<MultipartFile> imageList*/) {
+        @RequestPart JobPostSaveRequest request,
+        @RequestPart(required = false) List<MultipartFile> imageList) {
 
-        List<MultipartFile> imageList = new ArrayList<>();
         // 이미지 리스트가 null일 경우 빈 리스트로 초기화
         if (imageList == null) {
             imageList = Collections.emptyList();
