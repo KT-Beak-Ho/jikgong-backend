@@ -1,22 +1,39 @@
 package jikgong.domain.jobpost.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jikgong.domain.jobpost.dto.company.*;
+import java.util.Collections;
+import java.util.List;
+import jikgong.domain.jobpost.dto.company.JobPostListResponse;
+import jikgong.domain.jobpost.dto.company.JobPostManageResponse;
+import jikgong.domain.jobpost.dto.company.JobPostResponseForOffer;
+import jikgong.domain.jobpost.dto.company.JobPostSaveRequest;
+import jikgong.domain.jobpost.dto.company.TemporaryListResponse;
+import jikgong.domain.jobpost.dto.company.TemporarySaveRequest;
+import jikgong.domain.jobpost.dto.company.TemporaryUpdateRequest;
 import jikgong.domain.jobpost.entity.JobPostStatus;
 import jikgong.domain.jobpost.service.JobPostCompanyService;
-import jikgong.domain.jobpost.dto.company.JobPostResponseForOffer;
 import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,6 +47,12 @@ public class JobPostCompanyController {
     public ResponseEntity<Response> saveJobPost(@AuthenticationPrincipal PrincipalDetails principalDetails,
         @RequestPart JobPostSaveRequest request,
         @RequestPart(required = false) List<MultipartFile> imageList) {
+
+        // 이미지 리스트가 null일 경우 빈 리스트로 초기화
+        if (imageList == null) {
+            imageList = Collections.emptyList();
+        }
+        
         Long jobPostId = jobPostCompanyService.saveJobPost(principalDetails.getMember().getId(), request, imageList);
         return ResponseEntity.ok(new Response("모집 공고 등록 완료"));
     }

@@ -20,6 +20,10 @@ spring:
         create_empty_composites:
           enabled: true
 
+  servlet:
+    multipart:
+      enabled: true
+
 app:
   auth:
     secret-key: ${SECRET_KEY}
