@@ -1,23 +1,25 @@
 package jikgong.domain.jobpost.repository;
 
+import static jikgong.domain.jobpost.entity.QJobPost.jobPost;
+import static jikgong.domain.member.entity.QMember.member;
+
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import jikgong.domain.jobpost.entity.*;
+import java.time.LocalDate;
+import java.util.List;
+import jikgong.domain.jobpost.entity.JobPost;
+import jikgong.domain.jobpost.entity.Park;
+import jikgong.domain.jobpost.entity.SortType;
+import jikgong.domain.jobpost.entity.Tech;
 import jikgong.domain.location.entity.Location;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-
-import java.time.LocalDate;
-import java.util.List;
-
-import static jikgong.domain.jobpost.entity.QJobPost.*;
-import static jikgong.domain.member.entity.QMember.member;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -36,7 +38,8 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
                 eqWorkDate(dateList),
                 eqScrap(memberId, isScrap),
                 eqMeal(meal),
-                eqPark(park)
+                eqPark(park),
+                workDateAfterToday() // 모든 날짜가 과거일 땐 조회 X
             )
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
@@ -134,6 +137,11 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
 
     private BooleanExpression eqPark(Park park) {
         return park == null ? null : jobPost.availableInfo.park.eq(park);
+    }
+
+    private BooleanExpression workDateAfterToday() {
+        LocalDate today = LocalDate.now();
+        return jobPost.workDateList.any().date.after(today);
     }
 
     // 동적 정렬 기준
