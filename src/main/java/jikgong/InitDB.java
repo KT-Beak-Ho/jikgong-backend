@@ -11,6 +11,10 @@ import jakarta.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import jikgong.domain.jobpost.dto.company.JobPostSaveRequest;
 import jikgong.domain.jobpost.entity.Park;
 import jikgong.domain.jobpost.entity.Tech;
@@ -107,8 +111,8 @@ public class InitDB {
         private ProjectSaveRequest createProjectSaveRequest() {
             return ProjectSaveRequest.builder()
                 .projectName("사하구 낙동5블럭 낙동강 온도 측정 센터 신축공사")
-                .startDate(LocalDate.of(2024, 3, 1))
-                .endDate(LocalDate.of(2024, 5, 1))
+                .startDate(LocalDate.of(2024, 7, 1))
+                .endDate(LocalDate.of(2024, 12, 1))
                 .address("부산광역시 사하구 낙동대로 550번길 37")
                 .latitude(35.116777388697734F)
                 .longitude(128.9685393114043F)
@@ -174,10 +178,7 @@ public class InitDB {
                 .address(address)
                 .latitude(latitude)
                 .longitude(longitude)
-                .dateList(Arrays.asList(
-                    LocalDate.of(2024, 8, 1),
-                    LocalDate.of(2024, 8, 2)
-                ))
+                .dateList(generateRandomDates(3))
                 .pickupList(Arrays.asList(
                     "부산광역시 사하구 낙동대로 550번길 37",
                     "대한민국 부산광역시 서구 구덕로 225"
@@ -188,5 +189,11 @@ public class InitDB {
                 .build();
         }
 
+        private List<LocalDate> generateRandomDates(int count) {
+            Random random = new Random();
+            return IntStream.range(0, count)
+                .mapToObj(i -> LocalDate.of(2024, 10, random.nextInt(30) + 1))
+                .collect(Collectors.toList());
+        }
     }
 }
