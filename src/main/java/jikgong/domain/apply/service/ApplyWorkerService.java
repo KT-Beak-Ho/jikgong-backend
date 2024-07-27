@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import jikgong.domain.apply.dto.worker.ApplyAcceptedResponse;
 import jikgong.domain.apply.dto.worker.ApplyHistoryResponse;
-import jikgong.domain.apply.dto.worker.ApplyPendingResponse;
 import jikgong.domain.apply.dto.worker.ApplyResponseMonthly;
 import jikgong.domain.apply.dto.worker.ApplySaveRequest;
 import jikgong.domain.apply.entity.Apply;
@@ -124,16 +124,22 @@ public class ApplyWorkerService {
      * 확정된 내역 일별 조회
      */
     @Transactional(readOnly = true)
-    public ApplyHistoryResponse findApplyHistoryPerDay(Long workerId, LocalDate date) {
+    public ApplyAcceptedResponse findApplyHistoryPerDay(Long workerId, LocalDate date) {
         Member worker = memberRepository.findById(workerId)
             .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
-        Apply apply = applyRepository.findApplyPerDay(worker.getId(), date, ApplyStatus.ACCEPTED)
-            .orElseThrow(() -> new JikgongException(ErrorCode.APPLY_NOT_FOUND));
+
+        Optional<Apply> optionalApply = applyRepository.findApplyPerDay(worker.getId(), date, ApplyStatus.ACCEPTED);
+
+        // 신청 내역이 없는 경우 null 값 반환
+        if (optionalApply.isPresent()) {
+            return null;
+        }
 
         // 확정된 일자리의 출퇴근 기록
+        Apply apply = optionalApply.get();
         Optional<History> history = historyRepository.findByMemberAndApply(worker.getId(), apply.getWorkDate().getId());
 
-        return ApplyHistoryResponse.from(apply, history);
+        return ApplyAcceptedResponse.from(apply, history);
     }
 
     /**
@@ -168,8 +174,8 @@ public class ApplyWorkerService {
             LocalDate applyDate = apply.getWorkDate().getDate();
             ApplyStatus currentStatus = apply.getStatus();
 
-            // Map에 해당 날짜의 키가 이미 있고, 현재 저장된 값이 'ACCEPTED'가 아니며,
-            // 새로운 상태가 'ACCEPTED'인 경우, 또는 해당 키가 아직 Map에 없는 경우에 값을 업데이트
+            // Map에 해당 날짜의 키가 없거나,
+            // 현재 저장된 값이 'ACCEPTED'가 아니며, 새로운 상태가 'ACCEPTED'인 경우 값을 업데이트
             if (!workDateMap.containsKey(applyDate) ||
                 (workDateMap.get(applyDate) != ApplyStatus.ACCEPTED && currentStatus == ApplyStatus.ACCEPTED)) {
                 workDateMap.put(applyDate, currentStatus);
@@ -182,12 +188,25 @@ public class ApplyWorkerService {
      * 신청 진행 중인 내역 조회
      */
     @Transactional(readOnly = true)
-    public List<ApplyPendingResponse> findPendingApply(Long workerId) {
+    public List<ApplyHistoryResponse> findPendingApply(Long workerId) {
         Member worker = memberRepository.findById(workerId)
             .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         return applyRepository.findPendingApply(worker.getId()).stream()
-            .map(ApplyPendingResponse::from)
+            .map(ApplyHistoryResponse::from)
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * 근무 일이 지나지 않은 신청 내역 조회 (진행, 대기, 거절 전부)
+     */
+    @Transactional(readOnly = true)
+    public List<ApplyHistoryResponse> findApplyFutureHistory(Long workerId) {
+        Member worker = memberRepository.findById(workerId)
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+
+        return applyRepository.findFutureApply(worker.getId(), LocalDate.now()).stream()
+            .map(ApplyHistoryResponse::from)
             .collect(Collectors.toList());
     }
 

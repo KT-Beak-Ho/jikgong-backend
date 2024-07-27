@@ -61,6 +61,9 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
     @Query("select a from Apply a join fetch a.workDate w join fetch w.jobPost j where a.member.id = :memberId and a.status = 'PENDING' order by a.createdDate")
     List<Apply> findPendingApply(@Param("memberId") Long memberId);
 
+    @Query("select a from Apply a join fetch a.workDate w join fetch w.jobPost j where a.member.id = :memberId and w.date >= :now order by a.createdDate")
+    List<Apply> findFutureApply(@Param("memberId") Long memberId, @Param("now") LocalDate now);
+
 
     /**
      * 일자리 지원 및 취소
