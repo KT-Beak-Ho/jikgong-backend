@@ -27,6 +27,7 @@ public class JobPostDetailResponse {
     private Tech tech; // 직종
     private LocalTime startTime; // 시작 시간
     private LocalTime endTime; // 종료 시간
+    private Integer wage; // 임금
 
     private String workAddress; // 근무지
     private Double distance; // 근무지와의 거리
@@ -70,6 +71,7 @@ public class JobPostDetailResponse {
             .tech(jobPost.getTech())
             .startTime(jobPost.getStartTime())
             .endTime(jobPost.getEndTime())
+            .wage(jobPost.getWage())
 
             .workAddress(jobPost.getAddress().getAddress())
             .distance((location == null) ? null : DistanceCal.getDistance(jobPost, location))
