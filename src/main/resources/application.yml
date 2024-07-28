@@ -14,6 +14,7 @@ spring:
     job:
       enabled: false # 시작과 동시에 실행되는 것 방지
 
+  # embeddable 사용 시 null 허용 X
   jpa:
     properties:
       hibernate:
@@ -24,10 +25,20 @@ spring:
     multipart:
       enabled: true
 
+  # 종료 전 처리 중인 프로세스 100초간 대기
+  lifecycle:
+    timeout-per-shutdown-phase: 100s
+
+# 작업 중인 프로세스 처리 후 종료
+server:
+  shutdown: graceful
+
+# JWT 시크릿 키
 app:
   auth:
     secret-key: ${SECRET_KEY}
 
+# s3 설정
 cloud:
   aws:
     credentials:
