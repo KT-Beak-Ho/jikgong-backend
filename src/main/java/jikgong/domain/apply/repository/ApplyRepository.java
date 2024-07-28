@@ -125,10 +125,9 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
     @Query("select a from Apply a where a.member.id = :memberId and a.workDate.id = :workDateId and a.status = 'OFFERED'")
     Optional<Apply> findOfferedApply(@Param("memberId") Long memberId, @Param("workDateId") Long workDateId);
 
-    // 비관적 Lock 사용했던 코드
-//    @Lock(LockModeType.PESSIMISTIC_WRITE)
-//    @Query("select a from Apply a where a.member.id = :memberId")
-//    List<Apply> findWorkerApplyForLock(@Param("memberId") Long memberId);
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select a from Apply a where a.member.id = :memberId and a.workDate.date = :date")
+    List<Apply> findByMemberForLock(@Param("memberId") Long memberId, @Param("date") LocalDate date);
 //
 //    @Lock(LockModeType.PESSIMISTIC_WRITE)
 //    @Query("select a from Apply a where a.member.id in :memberIdList")

@@ -72,6 +72,10 @@ public class OfferWorkerService {
         // workDate 조회
         WorkDate workDate = offerWorkDate.getWorkDate();
 
+        // 회원의 apply에 대한 Lock
+        // 하루에 확정된 일자리는 하나임을 만족하기 위함
+        applyRepository.findByMemberForLock(worker.getId(), workDate.getDate());
+
         // 요청에 따라 Apply 삭제 or status 업데이트
         Apply offeredApply = applyRepository.findOfferedApply(worker.getId(), workDate.getId())
             .orElseThrow(() -> new JikgongException(ErrorCode.APPLY_OFFERED_NOT_FOUND));
