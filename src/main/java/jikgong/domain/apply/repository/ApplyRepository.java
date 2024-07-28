@@ -1,5 +1,6 @@
 package jikgong.domain.apply.repository;
 
+import jakarta.persistence.LockModeType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,6 +10,7 @@ import jikgong.domain.apply.entity.ApplyStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -34,6 +36,10 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
 
     @Query("select a from Apply a join fetch a.member m where a.member.id in :memberIdList and a.workDate.date = :date and a.status = 'ACCEPTED'")
     List<Apply> findAcceptedMember(@Param("memberIdList") List<Long> memberIdList, @Param("date") LocalDate date);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select a from Apply a where a.member.id in :memberIdList and a.workDate.date = :date")
+    void findByMemberForLock(@Param("memberIdList") List<Long> memberIdList, @Param("date") LocalDate date);
 
 
     /**

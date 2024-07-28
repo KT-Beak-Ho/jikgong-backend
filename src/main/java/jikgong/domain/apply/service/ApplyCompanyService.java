@@ -96,6 +96,10 @@ public class ApplyCompanyService {
         WorkDate workDate = workDateRepository.findByIdWithLock(request.getWorkDateId())
             .orElseThrow(() -> new JikgongException(ErrorCode.WORK_DATE_NOT_FOUND));
 
+        // 회원들의 apply에 대한 Lock
+        // 하루에 확정된 일자리는 하나임을 만족하기 위함
+        applyRepository.findByMemberForLock(request.getMemberIdList(), workDate.getDate());
+
         // 대기 중인 요청인지 체크
         List<Apply> applyList = checkPendingApply(request, workDate, jobPost);
 
