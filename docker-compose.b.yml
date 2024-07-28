@@ -7,15 +7,16 @@ services:
       - ./log:/log
     env_file:
       - .env
-#    logging:
-#      driver: awslogs
-#      options:
-#        awslogs-group: "jikgong-logs"
-#        awslogs-region: "ap-northeast-2"
-#        awslogs-stream: "jikgong-stream"
+    #    logging:
+    #      driver: awslogs
+    #      options:
+    #        awslogs-group: "jikgong-logs"
+    #        awslogs-region: "ap-northeast-2"
+    #        awslogs-stream: "jikgong-stream"
     ports:
       - "8081:8080"
     restart: always
+    stop_grace_period: 100s # garceful 종료
 
 networks:
   default:
