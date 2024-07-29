@@ -5,6 +5,7 @@ import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.jobpost.entity.JobPost;
 import jikgong.domain.jobpost.entity.Tech;
+import jikgong.global.utils.TimeTransfer;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -14,7 +15,8 @@ public class ApplyHistoryResponse {
 
     private Long applyId;
     private ApplyStatus status;
-    private LocalDate applyTime; // 신청 시간
+    private LocalDate applyDate; // 신청 시간
+    private String timePassed; // 신청 시간
     private LocalDate workDate; // 지원 날짜
     private Integer applyNum; // 지원자 수
 
@@ -24,7 +26,8 @@ public class ApplyHistoryResponse {
         return ApplyHistoryResponse.builder()
             .applyId(apply.getId())
             .status(apply.getStatus())
-            .applyTime(apply.getCreatedDate().toLocalDate())
+            .applyDate(apply.getCreatedDate().toLocalDate())
+            .timePassed(TimeTransfer.getTimeDifference(apply.getCreatedDate()))
             .workDate(apply.getWorkDate().getDate())
             .applyNum(apply.getWorkDate().getApplyList().size())
             .jobPostResponse(JobPostResponse.from(apply.getWorkDate().getJobPost()))
