@@ -64,7 +64,7 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
     List<Apply> findApplyPerMonth(@Param("memberId") Long memberId, @Param("monthStart") LocalDate monthStart,
         @Param("monthEnd") LocalDate monthEnd);
 
-    @Query("select a from Apply a join fetch a.workDate w join fetch w.jobPost j where a.member.id = :memberId and a.status = 'PENDING' order by a.createdDate")
+    @Query("select a from Apply a join fetch a.workDate w join fetch w.jobPost j where a.member.id = :memberId and a.status = 'PENDING' order by a.createdDate desc")
     List<Apply> findPendingApply(@Param("memberId") Long memberId);
 
     @Query("select a from Apply a join fetch a.workDate w join fetch w.jobPost j where a.member.id = :memberId and w.date >= :now order by a.createdDate")
