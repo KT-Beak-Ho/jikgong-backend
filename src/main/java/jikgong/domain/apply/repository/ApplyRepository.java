@@ -39,7 +39,7 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select a from Apply a where a.member.id in :memberIdList and a.workDate.date = :date")
-    void findByMemberForLock(@Param("memberIdList") List<Long> memberIdList, @Param("date") LocalDate date);
+    List<Apply> findByMemberForLock(@Param("memberIdList") List<Long> memberIdList, @Param("date") LocalDate date);
 
 
     /**
