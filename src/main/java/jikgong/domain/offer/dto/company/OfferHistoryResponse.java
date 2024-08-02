@@ -1,5 +1,9 @@
 package jikgong.domain.offer.dto.company;
 
+import java.time.LocalTime;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 import jikgong.domain.jobpost.entity.JobPost;
 import jikgong.domain.jobpost.entity.Tech;
 import jikgong.domain.member.entity.Member;
@@ -11,10 +15,6 @@ import jikgong.domain.workdate.entity.WorkDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.time.LocalTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Getter
@@ -31,6 +31,7 @@ public class OfferHistoryResponse {
     public static OfferHistoryResponse from(Offer offer) {
         List<WorkDate> workDateList = offer.getOfferWorkDateList().stream()
             .map(OfferWorkDate::getWorkDate)
+            .sorted(Comparator.comparing(WorkDate::getDate))
             .collect(Collectors.toList());
 
         JobPost jobPost = offer.getJobPost();

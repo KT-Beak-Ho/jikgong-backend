@@ -1,5 +1,11 @@
 package jikgong.domain.jobpost.dto.company;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 import jikgong.domain.jobpost.entity.JobPost;
 import jikgong.domain.jobpost.entity.Tech;
 import jikgong.domain.member.entity.Member;
@@ -7,11 +13,6 @@ import jikgong.domain.workdate.dto.WorkDateResponse;
 import jikgong.domain.workdate.entity.WorkDate;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Builder
@@ -56,7 +57,11 @@ public class JobPostResponseForOffer {
             List<WorkDateResponse> pastDate = new ArrayList<>(); // 제안 불가능 날짜 (날짜 지남)
 
             // workDate 조회
-            List<WorkDate> jobPostWorkDateList = jobPost.getWorkDateList();
+            List<WorkDate> jobPostWorkDateList = jobPost.getWorkDateList()
+                .stream()
+                .sorted(Comparator.comparing(WorkDate::getDate))
+                .collect(Collectors.toList());
+
             for (WorkDate workDate : jobPostWorkDateList) {
                 // 출역일 전 혹은 출역일과 같은 날이라면 출역 시각 3시간 전인지 체크
                 if (now.isAfter(workDate.getDate()) ||

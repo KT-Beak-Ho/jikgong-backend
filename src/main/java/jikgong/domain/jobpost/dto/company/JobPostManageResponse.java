@@ -1,15 +1,15 @@
 package jikgong.domain.jobpost.dto.company;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 import jikgong.domain.jobpost.entity.JobPost;
 import jikgong.domain.jobpost.entity.Tech;
 import jikgong.domain.workdate.dto.WorkDateResponse;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Builder
@@ -26,6 +26,12 @@ public class JobPostManageResponse {
     private List<WorkDateResponse> workDateResponseList; // 일하는 날짜
 
     public static JobPostManageResponse from(JobPost jobPost) {
+
+        List<WorkDateResponse> workDateResponseList = jobPost.getWorkDateList().stream()
+            .map(WorkDateResponse::from)
+            .sorted(Comparator.comparing(WorkDateResponse::getDate))
+            .collect(Collectors.toList());
+
         return JobPostManageResponse.builder()
             .jobPostId(jobPost.getId())
             .tech(jobPost.getTech())
@@ -35,8 +41,7 @@ public class JobPostManageResponse {
             .startTime(jobPost.getStartTime())
             .endTime(jobPost.getEndTime())
             .wage(jobPost.getWage())
-            .workDateResponseList(
-                jobPost.getWorkDateList().stream().map(WorkDateResponse::from).collect(Collectors.toList()))
+            .workDateResponseList(workDateResponseList)
             .build();
     }
 }

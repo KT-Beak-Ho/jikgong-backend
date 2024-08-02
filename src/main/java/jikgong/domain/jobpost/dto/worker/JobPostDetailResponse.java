@@ -2,6 +2,7 @@ package jikgong.domain.jobpost.dto.worker;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import jikgong.domain.jobpost.entity.JobPost;
@@ -58,6 +59,7 @@ public class JobPostDetailResponse {
         // 근무 날짜
         List<WorkDateResponse> workDateResponseList = jobPost.getWorkDateList().stream()
             .map(WorkDateResponse::from)
+            .sorted(Comparator.comparing(WorkDateResponse::getDate))
             .collect(Collectors.toList());
 
         // 이미지 리스트
