@@ -3,6 +3,7 @@ package jikgong.domain.apply.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -198,14 +199,22 @@ public class ApplyWorkerService {
     }
 
     /**
-     * 근무 일이 지나지 않은 신청 내역 조회 (진행, 대기, 거절 전부)
+     * 근무 일이 지나지 않은 신청 내역 조회 (대기, 거절, 수락)
+     * 웹에서 보여주기 위함
      */
     @Transactional(readOnly = true)
     public List<ApplyHistoryResponse> findApplyFutureHistory(Long workerId) {
         Member worker = memberRepository.findById(workerId)
             .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
-        return applyRepository.findFutureApply(worker.getId(), LocalDate.now()).stream()
+        // 조회하고자 하는 상태
+        List<ApplyStatus> statusList = Arrays.asList(
+            ApplyStatus.PENDING,
+            ApplyStatus.REJECTED,
+            ApplyStatus.ACCEPTED
+        );
+
+        return applyRepository.findFutureApply(worker.getId(), statusList, LocalDate.now()).stream()
             .map(ApplyHistoryResponse::from)
             .collect(Collectors.toList());
     }
