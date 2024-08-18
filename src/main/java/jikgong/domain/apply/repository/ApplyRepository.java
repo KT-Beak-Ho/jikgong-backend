@@ -79,7 +79,7 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
     List<Apply> checkAcceptedApplyForApply(@Param("memberId") Long memberId,
         @Param("workDateList") List<LocalDate> workDateList);
 
-    @Query("select a from Apply a where a.member.id = :memberId and a.workDate.jobPost.id = :jobPostId and a.workDate.id in :workDateList")
+    @Query("select a from Apply a where a.member.id = :memberId and a.workDate.jobPost.id = :jobPostId and a.workDate.id in :workDateList and a.status = 'PENDING'")
     List<Apply> checkDuplication(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId,
         @Param("workDateList") List<Long> workDateList);
 
