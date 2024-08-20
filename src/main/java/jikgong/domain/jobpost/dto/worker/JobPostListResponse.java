@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import jikgong.domain.jobpost.dto.worker.JobPostDetailResponse.WorkDateResponse;
 import jikgong.domain.jobpost.entity.JobPost;
 import jikgong.domain.jobpost.entity.Park;
 import jikgong.domain.jobpost.entity.Tech;
@@ -42,6 +44,8 @@ public class JobPostListResponse {
 
     private Boolean isScrap; // 스크랩 여부
 
+    private List<WorkDateResponse> workDateResponseList;
+
     private String thumbnailResizeUrl; // 리사이징 썸네일
     private String thumbnailOriginUrl; // 원본 썸네일
 
@@ -66,6 +70,10 @@ public class JobPostListResponse {
             }
         }
 
+        List<WorkDateResponse> workDateResponseList = jobPost.getWorkDateList().stream()
+            .map(WorkDateResponse::from)
+            .collect(Collectors.toList());
+
         return JobPostListResponse.builder()
             .jobPostId(jobPost.getId())
 
@@ -88,6 +96,8 @@ public class JobPostListResponse {
             .wage(jobPost.getWage())
 
             .isScrap(null)
+            .workDateResponseList(workDateResponseList)
+            
             .thumbnailOriginUrl(thumbnailOriginUrl)
             .thumbnailResizeUrl(thumbnailResizeUrl)
 
