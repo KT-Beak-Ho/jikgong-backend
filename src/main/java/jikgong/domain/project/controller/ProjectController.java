@@ -1,6 +1,7 @@
 package jikgong.domain.project.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import java.util.List;
 import jikgong.domain.project.dto.ProjectDetailResponse;
 import jikgong.domain.project.dto.ProjectListResponse;
 import jikgong.domain.project.dto.ProjectSaveRequest;
@@ -13,9 +14,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,6 +41,9 @@ public class ProjectController {
     @GetMapping("/api/project/list")
     public ResponseEntity<Response> findProjects(@AuthenticationPrincipal PrincipalDetails principalDetails,
         @RequestParam("projectStatus") ProjectStatus projectStatus) {
+
+        // todo: 페이징 처리 추가
+
         List<ProjectListResponse> projectListResponseList = projectService.findProjects(
             principalDetails.getMember().getId(), projectStatus);
         return ResponseEntity.ok(
