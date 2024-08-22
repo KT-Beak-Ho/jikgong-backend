@@ -2,13 +2,16 @@ package jikgong.domain.jobpost.dto.company;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
-import jikgong.domain.jobpost.entity.Park;
-import jikgong.domain.jobpost.entity.Tech;
-import lombok.*;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import jikgong.domain.jobpost.entity.Park;
+import jikgong.domain.jobpost.entity.Tech;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -62,6 +65,16 @@ public class JobPostSaveRequest {
     private String managerName;
     @Schema(description = "연락 번호", example = "01012345678")
     private String phone;
+
+    // 모집 공고 상세 설명
+    @Schema(description = "모집 공고 상세 설명", example = """
+        주요업무
+        (업무내용)
+        - 건축구조물의 내·외벽, 바닥, 천장 등에 각종 장비를 사용해 타일을 시멘트 또는 기타 접착제로 붙여서 마감
+        - 주택, 상업시설, 문화시설 등의 고품질화
+        - 외벽, 바닥, 천정 등에 각종 도기류 및 화학 제품류의 타일을 접착
+        """)
+    private String description;
 
     // 프로젝트
     @Schema(description = "projectId", example = "1")

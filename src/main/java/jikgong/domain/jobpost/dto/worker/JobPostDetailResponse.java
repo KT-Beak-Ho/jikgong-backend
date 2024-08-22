@@ -46,6 +46,8 @@ public class JobPostDetailResponse {
     private String manager; // 담당자
     private String phone; // 연락처
 
+    private String description; // 모집 공고 상세
+
     private List<String> imageUrls; // 이미지 정보
 
     public static JobPostDetailResponse from(JobPost jobPost, Location location) {
@@ -90,6 +92,8 @@ public class JobPostDetailResponse {
             .companyName(member.getCompanyInfo().getCompanyName())
             .manager(member.getCompanyInfo().getManager())
             .phone(member.getPhone())
+
+            .description(jobPost.getDescription())
 
             .imageUrls(imageUrls)
 
