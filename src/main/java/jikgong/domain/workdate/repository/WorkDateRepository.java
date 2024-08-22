@@ -6,6 +6,7 @@ import java.util.Optional;
 import jikgong.domain.workdate.entity.WorkDate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -44,4 +45,11 @@ public interface WorkDateRepository extends JpaRepository<WorkDate, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select w from WorkDate w where w.id = :workDateId")
     Optional<WorkDate> findByIdWithLock(@Param("workDateId") Long workDateId);
+
+    /**
+     * 임시 공고
+     */
+    @Modifying
+    @Query("delete from WorkDate w where w.jobPost.id = :jobPostId")
+    void deleteByJobPost(@Param("jobPostId") Long jobPostId);
 }
