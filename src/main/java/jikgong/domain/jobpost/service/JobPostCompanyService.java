@@ -1,6 +1,19 @@
 package jikgong.domain.jobpost.service;
 
-import jikgong.domain.jobpost.dto.company.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+import jikgong.domain.apply.entity.Apply;
+import jikgong.domain.apply.repository.ApplyRepository;
+import jikgong.domain.jobpost.dto.company.JobPostListResponse;
+import jikgong.domain.jobpost.dto.company.JobPostManageResponse;
+import jikgong.domain.jobpost.dto.company.JobPostResponseForOffer;
+import jikgong.domain.jobpost.dto.company.JobPostSaveRequest;
+import jikgong.domain.jobpost.dto.company.TemporaryListResponse;
+import jikgong.domain.jobpost.dto.company.TemporarySaveRequest;
+import jikgong.domain.jobpost.dto.company.TemporaryUpdateRequest;
 import jikgong.domain.jobpost.entity.JobPost;
 import jikgong.domain.jobpost.entity.JobPostStatus;
 import jikgong.domain.jobpost.repository.JobPostRepository;
@@ -8,15 +21,14 @@ import jikgong.domain.jobpostimage.entity.JobPostImage;
 import jikgong.domain.jobpostimage.repository.JobPostImageRepository;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
-import jikgong.domain.jobpost.dto.company.JobPostResponseForOffer;
 import jikgong.domain.pickup.entity.Pickup;
 import jikgong.domain.pickup.repository.PickupRepository;
 import jikgong.domain.project.entity.Project;
 import jikgong.domain.project.repository.ProjectRepository;
 import jikgong.domain.workdate.entity.WorkDate;
 import jikgong.domain.workdate.repository.WorkDateRepository;
-import jikgong.global.exception.JikgongException;
 import jikgong.global.exception.ErrorCode;
+import jikgong.global.exception.JikgongException;
 import jikgong.global.s3.ImageDto;
 import jikgong.global.s3.S3Handler;
 import lombok.RequiredArgsConstructor;
@@ -25,11 +37,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +51,7 @@ public class JobPostCompanyService {
     private final WorkDateRepository workDateRepository;
     private final S3Handler s3Handler;
     private final ProjectRepository projectRepository;
+    private final ApplyRepository applyRepository;
 
     /**
      * 모집 공고 등록
@@ -55,6 +63,9 @@ public class JobPostCompanyService {
 
         Project project = projectRepository.findByIdAndMember(company.getId(), request.getProjectId())
             .orElseThrow(() -> new JikgongException(ErrorCode.PROJECT_NOT_FOUND));
+
+        // 모집 공고 날짜가 프로젝트 기간에 속하는지 검사
+        validateWorkDateRange(request, project);
 
         // 모집 공고 저장
         JobPost jobPost = JobPost.createEntityByJobPost(request, company, project);
@@ -82,6 +93,19 @@ public class JobPostCompanyService {
         jobPostImageRepository.saveAll(jobPostImageList);
 
         return savedJobPost.getId();
+    }
+
+    // 모집 공고 날짜가 프로젝트 기간에 속하는지 검사
+    private void validateWorkDateRange(JobPostSaveRequest request, Project project) {
+        List<LocalDate> dateList = request.getDateList();
+        LocalDate startDate = project.getStartDate();
+        LocalDate endDate = project.getEndDate();
+
+        for (LocalDate date : dateList) {
+            if (date.isBefore(startDate) || date.isAfter(endDate)) {
+                throw new JikgongException(ErrorCode.WORK_DATE_INVALID_RANGE);
+            }
+        }
     }
 
     /**
@@ -146,10 +170,9 @@ public class JobPostCompanyService {
         JobPost jobPost = jobPostRepository.findTemporaryForDelete(company.getId(), jobPostId, true)
             .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
 
-        // todo: cascade 빼고 delete 쿼리 날리는 방향으로 생각 해보자
-
         // 관련 엔티티 삭제 (WorkDate, AddressInfo)
-        jobPost.deleteChildEntity(jobPost);
+        workDateRepository.deleteByJobPost(jobPost.getId());
+        pickupRepository.deleteByJobPost(jobPost.getId());
 
         // 임시 저장 삭제
         jobPostRepository.delete(jobPost);
@@ -228,5 +251,51 @@ public class JobPostCompanyService {
         List<JobPost> jobPostList = jobPostRepository.findByProject(project.getId());
 
         return JobPostResponseForOffer.from(jobPostList, worker);
+    }
+
+    public void deleteJobPost(Long companyId, Long jobPostId) {
+        Member company = memberRepository.findById(companyId)
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+
+        JobPost jobPost = jobPostRepository.findById(jobPostId)
+            .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
+
+        List<WorkDate> workDateList = jobPost.getWorkDateList();
+
+        // WorkDate.getDate() 값 중 가장 큰 날짜를 찾기
+        LocalDate maxDate = findMaxDate(workDateList);
+
+        // 오늘 날짜
+        LocalDate today = LocalDate.now();
+
+        // 7일 이상 지난 공고: 삭제
+        // 아닌 공고: 확정된 지원자 없다면 삭제
+        validationBeforeDelete(today, maxDate, workDateList);
+
+        // 조건이 충족되면 논리 삭제 실행
+        jobPostRepository.delete(jobPost);
+    }
+
+    // 공고 삭제 전 조건 검사
+    private void validationBeforeDelete(LocalDate today, LocalDate maxDate, List<WorkDate> workDateList) {
+        if (!today.isAfter(maxDate.plusWeeks(1))) {
+            // 일주일이 지나지 않은 경우 확정된 지원자가 없는지 확인
+            List<Long> workDateListId = workDateList.stream()
+                .map(WorkDate::getId)
+                .collect(Collectors.toList());
+            List<Apply> applyList = applyRepository.checkAcceptedApplyBeforeDeleteJobPost(workDateListId);
+            if (!applyList.isEmpty()) {
+                throw new JikgongException(ErrorCode.JOB_POST_DELETE_FAIL);
+            }
+        }
+    }
+
+    // 가장 마지막 날짜 추출
+    private LocalDate findMaxDate(List<WorkDate> workDateList) {
+        LocalDate maxDate = workDateList.stream()
+            .map(WorkDate::getDate)
+            .max(Comparator.naturalOrder())
+            .orElseThrow(() -> new JikgongException(ErrorCode.WORK_DATE_NOT_FOUND));
+        return maxDate;
     }
 }

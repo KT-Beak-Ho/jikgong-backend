@@ -77,6 +77,14 @@ public class JobPostCompanyController {
             new Response(jobPostListResponsePage, "등록한 모집 공고 중 " + jobPostStatus.getDescription() + " 모집 공고 조회"));
     }
 
+    @Operation(summary = "모집 공고 삭제", description = "이미 지난 공고일 경우 삭제, 그렇지 않은 경우 ACCEPTED된 지원자가 없어야 함")
+    @DeleteMapping("/api/job-post/company/{jobPostId}")
+    public ResponseEntity<Response> deleteJobPost(@AuthenticationPrincipal PrincipalDetails principalDetails,
+        @PathVariable("jobPostId") Long jobPostId) {
+        jobPostCompanyService.deleteJobPost(principalDetails.getMember().getId(), jobPostId);
+        return ResponseEntity.ok(new Response("모집 공고 삭제 완료"));
+    }
+
     @Operation(summary = "인력 관리: 모집 공고 정보 반환", description = "인력 관리 버튼 클릭 시 모집 공고에 대한 정보 반환")
     @GetMapping("/api/job-post/company/{jobPostId}")
     public ResponseEntity<Response> findJobPostForManage(@PathVariable("jobPostId") Long jobPostId) {

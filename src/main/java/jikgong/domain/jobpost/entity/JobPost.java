@@ -1,27 +1,44 @@
 package jikgong.domain.jobpost.entity;
 
-import jakarta.persistence.*;
-import jikgong.domain.pickup.entity.Pickup;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import jikgong.domain.common.Address;
 import jikgong.domain.common.BaseEntity;
 import jikgong.domain.jobpost.dto.company.JobPostSaveRequest;
 import jikgong.domain.jobpost.dto.company.TemporarySaveRequest;
 import jikgong.domain.jobpostimage.entity.JobPostImage;
 import jikgong.domain.member.entity.Member;
+import jikgong.domain.pickup.entity.Pickup;
 import jikgong.domain.project.entity.Project;
 import jikgong.domain.scrap.entity.Scrap;
 import jikgong.domain.workdate.entity.WorkDate;
-import lombok.*;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@SQLDelete(sql = "UPDATE job_post SET deleted_at = NOW() WHERE job_post_id = ?")
+@Where(clause = "deleted_at IS NULL")
 public class JobPost extends BaseEntity {
 
     @Id
@@ -42,7 +59,11 @@ public class JobPost extends BaseEntity {
     private String preparation; // 준비 사항
     private String managerName; // 담당자 명
     private String phone; // 연락 번호
+    @Column(columnDefinition = "TEXT")
+    private String description; // 모집 공고 설명
+
     private Boolean isTemporary; // 임시 저장 여부
+    private LocalDateTime deletedAt; // 논리 삭제
 
     @Embedded
     private AvailableInfo availableInfo; // 가능 여부 정보
@@ -58,9 +79,9 @@ public class JobPost extends BaseEntity {
     private Project project;
 
     // 양방향 매핑
-    @OneToMany(mappedBy = "jobPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "jobPost")
     private List<WorkDate> workDateList = new ArrayList<>();
-    @OneToMany(mappedBy = "jobPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "jobPost")
     private List<Pickup> pickupList = new ArrayList<>();
     @OneToMany(mappedBy = "jobPost")
     private List<Scrap> scrapList = new ArrayList<>();
@@ -70,7 +91,8 @@ public class JobPost extends BaseEntity {
     @Builder
     public JobPost(String title, Tech tech, LocalDate startDate, LocalDate endDate, LocalTime startTime,
         LocalTime endTime, Integer recruitNum, Integer wage, String parkDetail, String preparation, String managerName,
-        String phone, Boolean isTemporary, AvailableInfo availableInfo, Address address, Member member,
+        String phone, String description, Boolean isTemporary, AvailableInfo availableInfo, Address address,
+        Member member,
         Project project) {
         this.title = title;
         this.tech = tech;
@@ -84,6 +106,7 @@ public class JobPost extends BaseEntity {
         this.preparation = preparation;
         this.managerName = managerName;
         this.phone = phone;
+        this.description = description;
         this.isTemporary = isTemporary;
         this.availableInfo = availableInfo;
         this.address = address;
@@ -118,6 +141,7 @@ public class JobPost extends BaseEntity {
             .preparation(request.getPreparation())
             .managerName(request.getManagerName())
             .phone(request.getPhone())
+            .description(request.getDescription())
             .isTemporary(true)
             .availableInfo(new AvailableInfo(request.getMeal(), request.getPickup(), request.getPark()))
             .address(new Address(request.getAddress(), request.getLatitude(), request.getLongitude()))
@@ -144,18 +168,12 @@ public class JobPost extends BaseEntity {
             .preparation(request.getPreparation())
             .managerName(request.getManagerName())
             .phone(request.getPhone())
+            .description(request.getDescription())
             .isTemporary(false)
             .availableInfo(new AvailableInfo(request.getMeal(), request.getPickup(), request.getPark()))
             .address(new Address(request.getAddress(), request.getLatitude(), request.getLongitude()))
             .member(member)
             .project(project)
             .build();
-    }
-
-    public void deleteChildEntity(JobPost jobPost) {
-        // 근무 날짜 정보 삭제
-        jobPost.getWorkDateList().clear();
-        // 위치 관련 정보 삭제
-        jobPost.getPickupList().clear();
     }
 }
