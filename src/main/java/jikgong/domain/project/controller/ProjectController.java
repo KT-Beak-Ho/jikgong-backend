@@ -3,6 +3,7 @@ package jikgong.domain.project.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import jikgong.domain.project.dto.ProjectDetailResponse;
+import jikgong.domain.project.dto.ProjectInfoResponse;
 import jikgong.domain.project.dto.ProjectListResponse;
 import jikgong.domain.project.dto.ProjectSaveRequest;
 import jikgong.domain.project.dto.ProjectUpdateRequest;
@@ -50,6 +51,15 @@ public class ProjectController {
             new Response(projectListResponseList, "프로젝트 중 " + projectStatus.getDescription() + " 프로젝트 조회"));
     }
 
+    @Operation(summary = "프로젝트 상세 조회 - 수정 시 사용", description = "수정 시 정보 조회에 사용")
+    @GetMapping("/api/project/{projectId}")
+    public ResponseEntity<Response> findProjectDetail(@AuthenticationPrincipal PrincipalDetails principalDetails,
+        @PathVariable("projectId") Long projectId) {
+        ProjectInfoResponse projectInfoResponse = projectService.findProjectInfo(principalDetails.getMember().getId(),
+            projectId);
+        return ResponseEntity.ok(new Response(projectInfoResponse, "프로젝트 상세 조회"));
+    }
+
     @Operation(summary = "프로젝트 수정")
     @PutMapping("/api/project")
     public ResponseEntity<Response> updateProject(@AuthenticationPrincipal PrincipalDetails principalDetails,
@@ -66,9 +76,9 @@ public class ProjectController {
     }
 
     @Operation(summary = "기업 검색: 프로젝트 상세 정보", description = "현장정보, 건설 시공정보, 현장에 등록된 일자리 조회")
-    @GetMapping("/api/project/{projectId}")
-    public ResponseEntity<Response> getProjectDetail(@PathVariable(name = "projectId") Long projectId) {
-        ProjectDetailResponse projectDetailResponse = projectService.getProjectDetail(projectId);
+    @GetMapping("/api/project/search/{projectId}")
+    public ResponseEntity<Response> getProjectDetailForSearch(@PathVariable(name = "projectId") Long projectId) {
+        ProjectDetailResponse projectDetailResponse = projectService.getProjectDetailForSearch(projectId);
         return ResponseEntity.ok(new Response(projectDetailResponse, "기업이 등록한 프로젝트 상세 조회 완료"));
     }
 }

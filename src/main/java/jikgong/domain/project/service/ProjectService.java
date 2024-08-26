@@ -1,8 +1,13 @@
 package jikgong.domain.project.service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
 import jikgong.domain.project.dto.ProjectDetailResponse;
+import jikgong.domain.project.dto.ProjectInfoResponse;
 import jikgong.domain.project.dto.ProjectListResponse;
 import jikgong.domain.project.dto.ProjectSaveRequest;
 import jikgong.domain.project.dto.ProjectUpdateRequest;
@@ -11,17 +16,12 @@ import jikgong.domain.project.entity.ProjectStatus;
 import jikgong.domain.project.repository.ProjectRepository;
 import jikgong.domain.workdate.entity.WorkDate;
 import jikgong.domain.workdate.repository.WorkDateRepository;
-import jikgong.global.exception.JikgongException;
 import jikgong.global.exception.ErrorCode;
+import jikgong.global.exception.JikgongException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -105,7 +105,7 @@ public class ProjectService {
      * 기업 검색 시 기업의 프로젝트 상세 조회
      */
     @Transactional(readOnly = true)
-    public ProjectDetailResponse getProjectDetail(Long projectId) {
+    public ProjectDetailResponse getProjectDetailForSearch(Long projectId) {
         Project project = projectRepository.findById(projectId)
             .orElseThrow(() -> new JikgongException(ErrorCode.PROJECT_NOT_FOUND));
 
@@ -113,5 +113,19 @@ public class ProjectService {
         List<WorkDate> workDateList = workDateRepository.findByProject(project.getId());
 
         return ProjectDetailResponse.from(project, workDateList);
+    }
+
+    /**
+     * 프로젝트 수정에 필요한 정보 반환
+     */
+    @Transactional(readOnly = true)
+    public ProjectInfoResponse findProjectInfo(Long companyId, Long projectId) {
+        Member company = memberRepository.findById(companyId)
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Project project = projectRepository.findById(projectId)
+            .orElseThrow(() -> new JikgongException(ErrorCode.PROJECT_NOT_FOUND));
+
+        return ProjectInfoResponse.from(project);
     }
 }
