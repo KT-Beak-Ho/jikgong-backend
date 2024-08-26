@@ -1,7 +1,6 @@
 package jikgong.domain.project.service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import jikgong.domain.member.entity.Member;
@@ -20,6 +19,9 @@ import jikgong.global.exception.ErrorCode;
 import jikgong.global.exception.JikgongException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,26 +52,26 @@ public class ProjectService {
      * 필터: 완료됨, 진행 중, 예정
      */
     @Transactional(readOnly = true)
-    public List<ProjectListResponse> findProjects(Long companyId, ProjectStatus projectStatus) {
+    public Page<ProjectListResponse> findProjects(Long companyId, ProjectStatus projectStatus, Pageable pageable) {
         Member company = memberRepository.findById(companyId)
             .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         LocalDate now = LocalDate.now();
-        List<Project> projectList = new ArrayList<>();
+        Page<Project> projectPage = Page.empty();
 
         if (projectStatus == ProjectStatus.COMPLETED) {
-            projectList = projectRepository.findCompletedProject(company.getId(), now);
+            projectPage = projectRepository.findCompletedProject(company.getId(), now, pageable);
         } else if (projectStatus == ProjectStatus.IN_PROGRESS) {
-            projectList = projectRepository.findInProgressProject(company.getId(), now);
+            projectPage = projectRepository.findInProgressProject(company.getId(), now, pageable);
         } else if (projectStatus == ProjectStatus.PLANNED) {
-            projectList = projectRepository.findPlannedProject(company.getId(), now);
+            projectPage = projectRepository.findPlannedProject(company.getId(), now, pageable);
         }
 
-        List<ProjectListResponse> projectListResponseList = projectList.stream()
+        List<ProjectListResponse> projectListResponseList = projectPage.getContent().stream()
             .map(ProjectListResponse::from)
             .collect(Collectors.toList());
 
-        return projectListResponseList;
+        return new PageImpl<>(projectListResponseList, pageable, projectPage.getTotalElements());
     }
 
     /**

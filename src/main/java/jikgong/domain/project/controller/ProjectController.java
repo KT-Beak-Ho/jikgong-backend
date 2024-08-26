@@ -13,6 +13,10 @@ import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,14 +45,15 @@ public class ProjectController {
     @Operation(summary = "프로젝트 리스트 조회")
     @GetMapping("/api/project/list")
     public ResponseEntity<Response> findProjects(@AuthenticationPrincipal PrincipalDetails principalDetails,
-        @RequestParam("projectStatus") ProjectStatus projectStatus) {
+        @RequestParam("projectStatus") ProjectStatus projectStatus,
+        @RequestParam(name = "page", defaultValue = "0") int page,
+        @RequestParam(name = "size", defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("startDate")));
 
-        // todo: 페이징 처리 추가
-
-        List<ProjectListResponse> projectListResponseList = projectService.findProjects(
-            principalDetails.getMember().getId(), projectStatus);
+        Page<ProjectListResponse> projectListResponsePage = projectService.findProjects(
+            principalDetails.getMember().getId(), projectStatus, pageable);
         return ResponseEntity.ok(
-            new Response(projectListResponseList, "프로젝트 중 " + projectStatus.getDescription() + " 프로젝트 조회"));
+            new Response(projectListResponsePage, "프로젝트 중 " + projectStatus.getDescription() + " 프로젝트 조회"));
     }
 
     @Operation(summary = "프로젝트 상세 조회 - 수정 시 사용", description = "수정 시 정보 조회에 사용")
