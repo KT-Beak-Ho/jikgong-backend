@@ -262,13 +262,11 @@ public class JobPostCompanyService {
 
         List<WorkDate> workDateList = jobPost.getWorkDateList();
 
-        // WorkDate.getDate() 값 중 가장 큰 날짜를 찾기
+        // 모집 공고의 근무일자 중 가장 큰 날짜 찾기
         LocalDate maxDate = findMaxDate(workDateList);
-
-        // 오늘 날짜
         LocalDate today = LocalDate.now();
 
-        // 7일 이상 지난 공고: 삭제
+        // 근무일이 7일 이상 지난 공고: 삭제
         // 아닌 공고: 확정된 지원자 없다면 삭제
         validationBeforeDelete(today, maxDate, workDateList);
 

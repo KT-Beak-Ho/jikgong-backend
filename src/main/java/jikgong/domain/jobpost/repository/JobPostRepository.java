@@ -1,15 +1,14 @@
 package jikgong.domain.jobpost.repository;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 import jikgong.domain.jobpost.entity.JobPost;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface JobPostRepository extends JpaRepository<JobPost, Long>, JobPostRepositoryCustom {
@@ -71,4 +70,11 @@ public interface JobPostRepository extends JpaRepository<JobPost, Long>, JobPost
      */
     @Query("select j from JobPost j join fetch j.member m where j.id = :jobPostId")
     Optional<JobPost> findByIdWithMember(@Param("jobPostId") Long jobPostId);
+
+    /**
+     * 프로젝트 삭제 전 검사
+     */
+    @Query("select count(j) > 0 from JobPost j where j.project.id = :projectId")
+    boolean existsNotDeletedJobPost(@Param("projectId") Long projectId);
+
 }

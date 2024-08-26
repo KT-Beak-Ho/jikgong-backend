@@ -3,6 +3,7 @@ package jikgong.domain.project.service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
+import jikgong.domain.jobpost.repository.JobPostRepository;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
 import jikgong.domain.project.dto.ProjectDetailResponse;
@@ -34,6 +35,7 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final MemberRepository memberRepository;
     private final WorkDateRepository workDateRepository;
+    private final JobPostRepository jobPostRepository;
 
     /**
      * 프로젝트 등록
@@ -129,5 +131,22 @@ public class ProjectService {
             .orElseThrow(() -> new JikgongException(ErrorCode.PROJECT_NOT_FOUND));
 
         return ProjectInfoResponse.from(project);
+    }
+
+    // todo: 잘 되는지 테스트
+    public void deleteProject(Long companyId, Long projectId) {
+        Member company = memberRepository.findById(companyId)
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Project project = projectRepository.findByIdAndMember(company.getId(), projectId)
+            .orElseThrow(() -> new JikgongException(ErrorCode.PROJECT_NOT_FOUND));
+
+        // 프로젝트에 등록된 모집 공고가 있을 시 삭제 실패
+        if (jobPostRepository.existsNotDeletedJobPost(project.getId())) {
+            throw new JikgongException(ErrorCode.PROJECT_DELETE_FAIL);
+        }
+
+        // 조건이 충족되면 논리 삭제 실행
+        projectRepository.delete(project);
     }
 }

@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -85,5 +86,13 @@ public class ProjectController {
     public ResponseEntity<Response> getProjectDetailForSearch(@PathVariable(name = "projectId") Long projectId) {
         ProjectDetailResponse projectDetailResponse = projectService.getProjectDetailForSearch(projectId);
         return ResponseEntity.ok(new Response(projectDetailResponse, "기업이 등록한 프로젝트 상세 조회 완료"));
+    }
+
+    @Operation(summary = "프로젝트 삭제", description = "관련된 모집 공고가 전부 삭제된 후 삭제 가능")
+    @DeleteMapping("/api/project/{projectId}")
+    public ResponseEntity<Response> deleteProject(@AuthenticationPrincipal PrincipalDetails principalDetails,
+        @PathVariable("projectId") Long projectId) {
+        projectService.deleteProject(principalDetails.getMember().getId(), projectId);
+        return ResponseEntity.ok(new Response("프로젝트 삭제 완료"));
     }
 }
