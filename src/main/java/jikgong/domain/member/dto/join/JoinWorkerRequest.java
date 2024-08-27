@@ -2,8 +2,13 @@ package jikgong.domain.member.dto.join;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jikgong.domain.member.entity.Gender;
+import jikgong.domain.member.entity.Nationality;
 import jikgong.domain.member.entity.Role;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @AllArgsConstructor
 @Builder
@@ -39,8 +44,8 @@ public class JoinWorkerRequest {
     private String rrn; // 생년월일
     @Schema(description = "성별 [MALE or FEMAILE]", example = "MALE")
     private Gender gender; // 성별
-    @Schema(description = "국적", example = "대한민국")
-    private String nationality; // 국적
+    @Schema(description = "국적 [KOREAN or FOREIGNER]", example = "KOREAN")
+    private Nationality nationality; // 국적
 
     // 위치 정보
     @Schema(description = "도로명 주소", example = "부산광역시 사하구 낙동대로 550번길 37")

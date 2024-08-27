@@ -19,20 +19,22 @@ public class Worker {
     private String rrn; // 주민등록번호
     @Enumerated(value = EnumType.STRING)
     private Gender gender; // 성별
-    private String nationality; // 국적
+    private Nationality nationality; // 국적
+    private String visa; // 비자 (외국인만 입력)
     private Boolean isOffer; // 헤드헌팅 여부
 
     @Embedded
     private WorkerNotificationInfo workerNotificationInfo; // 노동자 알림 정보
 
     @Builder
-    public Worker(String workerName, String birth, String rrn, Gender gender, String nationality,
+    public Worker(String workerName, String birth, String rrn, Gender gender, Nationality nationality, String visa,
         Boolean isNotification) {
         this.workerName = workerName;
         this.brith = birth;
         this.rrn = rrn;
         this.gender = gender;
         this.nationality = nationality;
+        this.visa = visa;
         this.isOffer = true; // 기본 true
         this.workerNotificationInfo = new WorkerNotificationInfo(isNotification);
     }

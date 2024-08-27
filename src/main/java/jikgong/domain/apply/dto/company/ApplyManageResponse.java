@@ -7,6 +7,7 @@ import jikgong.domain.history.entity.History;
 import jikgong.domain.history.entity.WorkStatus;
 import jikgong.domain.member.entity.Gender;
 import jikgong.domain.member.entity.Member;
+import jikgong.domain.member.entity.Nationality;
 import jikgong.global.utils.AgeTransfer;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,7 +38,7 @@ public class ApplyManageResponse {
         private String phone; // 휴대폰 번호
         private Integer age; // 나이
         private Gender gender; // 성별
-        private String nationality; // 국적
+        private Nationality nationality; // 국적
         private Integer workTimes; // 출역 횟수
         private Float participationRate; // 참여율
 

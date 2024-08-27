@@ -133,7 +133,6 @@ public class ProjectService {
         return ProjectInfoResponse.from(project);
     }
 
-    // todo: 잘 되는지 테스트
     public void deleteProject(Long companyId, Long projectId) {
         Member company = memberRepository.findById(companyId)
             .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
