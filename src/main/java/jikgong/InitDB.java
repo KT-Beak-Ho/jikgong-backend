@@ -22,6 +22,7 @@ import jikgong.domain.jobpost.service.JobPostCompanyService;
 import jikgong.domain.member.dto.join.JoinCompanyRequest;
 import jikgong.domain.member.dto.join.JoinWorkerRequest;
 import jikgong.domain.member.entity.Gender;
+import jikgong.domain.member.entity.Nationality;
 import jikgong.domain.member.entity.Role;
 import jikgong.domain.member.service.LoginService;
 import jikgong.domain.project.dto.ProjectSaveRequest;
@@ -135,7 +136,7 @@ public class InitDB {
                 .birth(birth)
                 .rrn(rrn)
                 .gender(Gender.MALE)
-                .nationality("대한민국")
+                .nationality(Nationality.KOREAN)
                 .address("부산광역시 사하구 낙동대로 550번길 37")
                 .latitude(latitude)
                 .longitude(longitude)
