@@ -1,5 +1,9 @@
 package jikgong.domain.resume.dto.company;
 
+import java.time.LocalTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import jikgong.domain.history.entity.History;
 import jikgong.domain.history.entity.WorkStatus;
 import jikgong.domain.jobpost.entity.Park;
@@ -11,11 +15,6 @@ import jikgong.domain.skill.dto.SkillResponse;
 import jikgong.global.utils.AgeTransfer;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.time.LocalTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Getter
 @Builder
@@ -91,7 +90,7 @@ public class ResumeDetailResponse {
             return MemberResponse.builder()
                 .memberId(member.getId())
                 .workerName(member.getWorkerInfo().getWorkerName())
-                .age(AgeTransfer.getAgeByBirth(member.getWorkerInfo().getBrith()))
+                .age(AgeTransfer.getAgeByBirth(member.getWorkerInfo().getBirth()))
                 .gender(member.getWorkerInfo().getGender())
                 .address(mainLocation.map(location -> location.getAddress().getAddress()).orElse(null))
                 .workTimes(workTimes)

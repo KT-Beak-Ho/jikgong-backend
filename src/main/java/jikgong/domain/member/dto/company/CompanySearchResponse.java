@@ -1,4 +1,4 @@
-package jikgong.domain.member.dto;
+package jikgong.domain.member.dto.company;
 
 import jikgong.domain.member.entity.Member;
 import lombok.AllArgsConstructor;

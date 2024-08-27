@@ -1,8 +1,8 @@
 package jikgong.domain.history.dto;
 
+import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.history.entity.History;
 import jikgong.domain.history.entity.WorkStatus;
-import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.member.entity.Gender;
 import jikgong.domain.member.entity.Member;
 import jikgong.global.utils.AgeTransfer;
@@ -62,7 +62,7 @@ public class HistoryManageResponse {
                 .memberId(member.getId())
                 .workerName(member.getWorkerInfo().getWorkerName())
                 .phone(member.getPhone())
-                .age(AgeTransfer.getAgeByBirth(member.getWorkerInfo().getBrith()))
+                .age(AgeTransfer.getAgeByBirth(member.getWorkerInfo().getBirth()))
                 .gender(member.getWorkerInfo().getGender())
                 .build();
         }

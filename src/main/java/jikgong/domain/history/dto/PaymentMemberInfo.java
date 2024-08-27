@@ -52,7 +52,7 @@ public class PaymentMemberInfo {
             return MemberResponse.builder()
                 .memberId(member.getId())
                 .workerName(member.getWorkerInfo().getWorkerName())
-                .age(AgeTransfer.getAgeByBirth(member.getWorkerInfo().getBrith()))
+                .age(AgeTransfer.getAgeByBirth(member.getWorkerInfo().getBirth()))
                 .gender(member.getWorkerInfo().getGender())
                 .build();
         }

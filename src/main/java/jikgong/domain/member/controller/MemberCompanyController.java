@@ -1,7 +1,8 @@
 package jikgong.domain.member.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jikgong.domain.member.dto.CompanySearchResponse;
+import java.util.List;
+import jikgong.domain.member.dto.company.CompanySearchResponse;
 import jikgong.domain.member.service.MemberCompanyService;
 import jikgong.global.common.Response;
 import lombok.RequiredArgsConstructor;
@@ -10,8 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

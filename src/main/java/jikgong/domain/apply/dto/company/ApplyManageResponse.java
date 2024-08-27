@@ -44,7 +44,7 @@ public class ApplyManageResponse {
 
         public static MemberResponse from(Member member) {
             // 나이 계산
-            int age = AgeTransfer.getAgeByBirth(member.getWorkerInfo().getBrith());
+            int age = AgeTransfer.getAgeByBirth(member.getWorkerInfo().getBirth());
 
             // 출역 횟수, 참여율
             List<History> workHistory = member.getHistoryList().stream()

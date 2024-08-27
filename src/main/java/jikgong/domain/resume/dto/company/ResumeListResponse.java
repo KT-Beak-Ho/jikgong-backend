@@ -1,5 +1,8 @@
 package jikgong.domain.resume.dto.company;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import jikgong.domain.common.Address;
 import jikgong.domain.history.entity.History;
 import jikgong.domain.history.entity.WorkStatus;
@@ -13,10 +16,6 @@ import jikgong.global.utils.DistanceCal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Getter
@@ -78,7 +77,7 @@ public class ResumeListResponse {
             .resumeId(resume.getId())
             .memberId(member.getId())
             .workerName(member.getWorkerInfo().getWorkerName())
-            .age(AgeTransfer.getAgeByBirth(member.getWorkerInfo().getBrith()))
+            .age(AgeTransfer.getAgeByBirth(member.getWorkerInfo().getBirth()))
             .gender(member.getWorkerInfo().getGender())
             .career(resume.getCareer())
             .address(mainLocation.map(location -> location.getAddress().getAddress()).orElse(null))
