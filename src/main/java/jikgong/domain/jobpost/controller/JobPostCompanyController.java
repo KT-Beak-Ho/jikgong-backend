@@ -12,6 +12,7 @@ import jikgong.domain.jobpost.dto.company.TemporarySaveRequest;
 import jikgong.domain.jobpost.dto.company.TemporaryUpdateRequest;
 import jikgong.domain.jobpost.entity.JobPostStatus;
 import jikgong.domain.jobpost.service.JobPostCompanyService;
+import jikgong.global.annotation.CompanyRoleRequired;
 import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@CompanyRoleRequired
 public class JobPostCompanyController {
 
     private final JobPostCompanyService jobPostCompanyService;
@@ -125,8 +127,6 @@ public class JobPostCompanyController {
         jobPostCompanyService.deleteTemporaryJobPost(principalDetails.getMember().getId(), jobPostId);
         return ResponseEntity.ok(new Response("임시 저장 게시물 삭제 완료"));
     }
-
-    // todo: 임시 저장 단건 조회 개발
 
     @Operation(summary = "일자리 제안: 출역 가능한 현장 목록")
     @GetMapping("/api/job-post/company/offer-available")

@@ -3,6 +3,8 @@ package jikgong.domain.certification.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import jikgong.domain.certification.dto.CertificationResponse;
 import jikgong.domain.certification.service.CertificationService;
+import jikgong.global.annotation.AuthenticatedRequired;
+import jikgong.global.annotation.WorkerRoleRequired;
 import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,7 @@ public class CertificationController {
 
     @Operation(summary = "경력 증명서 등록 & 업데이트", description = "이미 업로드된 경력 증명서가 있다면 제거 후 다시 업로드")
     @PostMapping(value = "/api/certification/worker", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @WorkerRoleRequired
     public ResponseEntity<Response> saveCertification(@AuthenticationPrincipal PrincipalDetails principalDetails,
         @RequestPart("file") MultipartFile file) {
         // 기존에 업로드된 경력 증명서 제거
@@ -37,6 +40,7 @@ public class CertificationController {
 
     @Operation(summary = "회원의 경력 증명서 조회")
     @GetMapping("/api/certification/{workerId}")
+    @AuthenticatedRequired
     public ResponseEntity<Response> findCertification(@PathVariable("workerId") Long workerId) {
         CertificationResponse certificationResponse = certificationService.findCertification(workerId);
         return ResponseEntity.ok(new Response(certificationResponse, "경력 증명서 등록 완료"));
@@ -44,6 +48,7 @@ public class CertificationController {
 
     @Operation(summary = "경력 증명서 제거")
     @DeleteMapping("/api/certification/worker")
+    @WorkerRoleRequired
     public ResponseEntity<Response> deleteCertification(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         certificationService.checkAndDeleteCertification(principalDetails.getMember().getId());
         return ResponseEntity.ok(new Response("등록된 경력 증명서 제거 완료"));

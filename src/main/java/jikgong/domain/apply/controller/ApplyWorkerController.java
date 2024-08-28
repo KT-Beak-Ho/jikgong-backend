@@ -8,6 +8,7 @@ import jikgong.domain.apply.dto.worker.ApplyHistoryResponse;
 import jikgong.domain.apply.dto.worker.ApplyResponseMonthly;
 import jikgong.domain.apply.dto.worker.ApplySaveRequest;
 import jikgong.domain.apply.service.ApplyWorkerService;
+import jikgong.global.annotation.WorkerRoleRequired;
 import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@WorkerRoleRequired
 public class ApplyWorkerController {
 
     private final ApplyWorkerService applyWorkerService;

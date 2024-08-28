@@ -9,6 +9,7 @@ import jikgong.domain.project.dto.ProjectSaveRequest;
 import jikgong.domain.project.dto.ProjectUpdateRequest;
 import jikgong.domain.project.entity.ProjectStatus;
 import jikgong.domain.project.service.ProjectService;
+import jikgong.global.annotation.CompanyRoleRequired;
 import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@CompanyRoleRequired // 권한 설정
 public class ProjectController {
 
     private final ProjectService projectService;

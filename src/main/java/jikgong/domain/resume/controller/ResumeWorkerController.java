@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jikgong.domain.resume.dto.worker.ResumeDetailResponse;
 import jikgong.domain.resume.dto.worker.ResumeSaveRequest;
 import jikgong.domain.resume.service.ResumeWorkerService;
+import jikgong.global.annotation.WorkerRoleRequired;
 import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@WorkerRoleRequired
 public class ResumeWorkerController {
 
     private final ResumeWorkerService resumeWorkerService;

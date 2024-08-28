@@ -5,6 +5,7 @@ import java.util.List;
 import jikgong.domain.searchlog.dto.SearchLogSaveRequest;
 import jikgong.domain.searchlog.entity.SearchLog;
 import jikgong.domain.searchlog.service.SearchLogService;
+import jikgong.global.annotation.AuthenticatedRequired;
 import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@AuthenticatedRequired
 public class SearchLogController {
 
     private final SearchLogService searchLogService;

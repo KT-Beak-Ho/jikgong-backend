@@ -2,10 +2,11 @@ package jikgong.domain.resume.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jikgong.domain.jobpost.entity.Tech;
-import jikgong.domain.resume.dto.company.ResumeDetailResponse;
 import jikgong.domain.offer.entity.SortType;
+import jikgong.domain.resume.dto.company.ResumeDetailResponse;
 import jikgong.domain.resume.dto.company.ResumeListResponse;
 import jikgong.domain.resume.service.ResumeCompanyService;
+import jikgong.global.annotation.CompanyRoleRequired;
 import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +16,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@CompanyRoleRequired
 public class ResumeCompanyController {
 
     private final ResumeCompanyService resumeCompanyService;

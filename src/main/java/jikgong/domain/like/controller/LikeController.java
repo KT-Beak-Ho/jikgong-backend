@@ -2,17 +2,22 @@ package jikgong.domain.like.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jikgong.domain.like.service.LikeService;
+import jikgong.global.annotation.CompanyRoleRequired;
 import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@CompanyRoleRequired
 public class LikeController {
 
     private final LikeService likeService;

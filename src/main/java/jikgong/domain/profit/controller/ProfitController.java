@@ -11,6 +11,7 @@ import jikgong.domain.profit.dto.history.ProfitModifyRequest;
 import jikgong.domain.profit.dto.history.ProfitSaveRequest;
 import jikgong.domain.profit.dto.history.ProfitSummaryInfoResponse;
 import jikgong.domain.profit.service.ProfitService;
+import jikgong.global.annotation.WorkerRoleRequired;
 import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@WorkerRoleRequired // 권한 설정
 public class ProfitController {
 
     private final ProfitService profitService;

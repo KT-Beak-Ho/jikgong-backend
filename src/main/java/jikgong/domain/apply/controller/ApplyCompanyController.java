@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jikgong.domain.apply.dto.company.ApplyManageResponse;
 import jikgong.domain.apply.dto.company.ApplyProcessRequest;
 import jikgong.domain.apply.service.ApplyCompanyService;
+import jikgong.global.annotation.CompanyRoleRequired;
 import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@CompanyRoleRequired
 public class ApplyCompanyController {
 
     private final ApplyCompanyService applyCompanyService;
