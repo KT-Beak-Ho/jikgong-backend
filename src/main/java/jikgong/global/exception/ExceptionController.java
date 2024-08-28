@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -46,6 +47,12 @@ public class ExceptionController {
         ErrorResponse errorResponse = buildErrorResponse(exception.getStatus(), exception.getErrorCode(),
             exception.getErrorMessage());
         return ResponseEntity.status(exception.getStatus()).body(new Response<>(errorResponse, "낙관적 락 예외 반환"));
+    }
+
+    // 시큐리티 필터에서 예외 처리하도록
+    @ExceptionHandler(AccessDeniedException.class)
+    public void handleOptimisticLockException(AccessDeniedException e) {
+        throw e;
     }
 
     @ExceptionHandler(Exception.class)

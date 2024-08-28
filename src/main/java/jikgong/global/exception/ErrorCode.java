@@ -18,6 +18,8 @@ public enum ErrorCode {
     MEMBER_INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "MEMBER-006", "비밀번호가 올바르지 않습니다."),
     MEMBER_LOGIN_ID_EXIST(HttpStatus.CONFLICT, "MEMBER-007", "이미 등록된 id입니다."),
     ROLE_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER-008", "요청된 회원의 ROLE을 특정할 수 없습니다."),
+    MEMBER_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "MEMBER-009", "인증이 필요합니다."),
+    MEMBER_FORBIDDEN(HttpStatus.FORBIDDEN, "MEMBER-010", "권한이 필요합니다."),
 
     /**
      * 알림
