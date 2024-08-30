@@ -77,7 +77,7 @@ public class JobPostDetailResponse {
             .endTime(jobPost.getEndTime())
             .wage(jobPost.getWage())
 
-            .workAddress(jobPost.getAddress().getAddress())
+            .workAddress(jobPost.getJobPostAddress().getAddress())
             .distance((location == null) ? null : DistanceCal.getDistance(jobPost, location))
 
             .meal(jobPost.getAvailableInfo().getMeal())

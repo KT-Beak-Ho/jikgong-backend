@@ -14,8 +14,8 @@ public class DistanceCal {
         double lon1 = Math.toRadians(location.getAddress().getLongitude());
 
         // 일자리 위치
-        double lat2 = Math.toRadians(jobPost.getAddress().getLatitude());
-        double lon2 = Math.toRadians(jobPost.getAddress().getLongitude());
+        double lat2 = Math.toRadians(jobPost.getJobPostAddress().getLatitude());
+        double lon2 = Math.toRadians(jobPost.getJobPostAddress().getLongitude());
 
         // 위도 및 경도 간의 차이 계산
         double dLat = lat2 - lat1;

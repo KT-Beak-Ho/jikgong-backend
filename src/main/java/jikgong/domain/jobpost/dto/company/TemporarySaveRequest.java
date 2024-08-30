@@ -55,6 +55,10 @@ public class TemporarySaveRequest {
     private Float latitude; // 위도
     @Schema(description = "작업 장소 경도", example = "128.9685393114043")
     private Float longitude; // 경도
+    @Schema(description = "시", example = "부산광역시")
+    private String city; // 시
+    @Schema(description = "구", example = "사하구")
+    private String district; // 구
 
     // 리스트 정보
     @NotEmpty(message = "일하는 날짜 리스트는 최소한 하나의 날짜가 필요합니다.")

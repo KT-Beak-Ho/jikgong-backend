@@ -17,7 +17,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import jikgong.domain.common.Address;
 import jikgong.domain.common.BaseEntity;
 import jikgong.domain.jobpost.dto.company.JobPostSaveRequest;
 import jikgong.domain.jobpost.dto.company.TemporarySaveRequest;
@@ -68,7 +67,7 @@ public class JobPost extends BaseEntity {
     @Embedded
     private AvailableInfo availableInfo; // 가능 여부 정보
     @Embedded
-    private Address address;
+    private JobPostAddress jobPostAddress;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -91,7 +90,8 @@ public class JobPost extends BaseEntity {
     @Builder
     public JobPost(String title, Tech tech, LocalDate startDate, LocalDate endDate, LocalTime startTime,
         LocalTime endTime, Integer recruitNum, Integer wage, String parkDetail, String preparation, String managerName,
-        String phone, String description, Boolean isTemporary, AvailableInfo availableInfo, Address address,
+        String phone, String description, Boolean isTemporary, AvailableInfo availableInfo,
+        JobPostAddress jobPostAddress,
         Member member,
         Project project) {
         this.title = title;
@@ -109,7 +109,7 @@ public class JobPost extends BaseEntity {
         this.description = description;
         this.isTemporary = isTemporary;
         this.availableInfo = availableInfo;
-        this.address = address;
+        this.jobPostAddress = jobPostAddress;
         this.member = member;
         this.project = project;
 
@@ -128,6 +128,16 @@ public class JobPost extends BaseEntity {
             // 가장 느린 날짜 찾기
             maxDate = Collections.max(request.getWorkDateList());
         }
+
+        // 모집 공고 위치 정보
+        JobPostAddress jobPostAddress = JobPostAddress.builder()
+            .address(request.getAddress())
+            .latitude(request.getLatitude())
+            .longitude(request.getLongitude())
+            .city(request.getCity())
+            .district(request.getDistrict())
+            .build();
+
         return JobPost.builder()
             .title(request.getTitle())
             .tech(request.getTech())
@@ -144,7 +154,7 @@ public class JobPost extends BaseEntity {
             .description(request.getDescription())
             .isTemporary(true)
             .availableInfo(new AvailableInfo(request.getMeal(), request.getPickup(), request.getPark()))
-            .address(new Address(request.getAddress(), request.getLatitude(), request.getLongitude()))
+            .jobPostAddress(jobPostAddress)
             .member(member)
             .project(project)
             .build();
@@ -155,6 +165,16 @@ public class JobPost extends BaseEntity {
         LocalDate minDate = Collections.min(request.getDateList());
         // 가장 느린 날짜 찾기
         LocalDate maxDate = Collections.max(request.getDateList());
+
+        // 모집 공고 위치 정보
+        JobPostAddress jobPostAddress = JobPostAddress.builder()
+            .address(request.getAddress())
+            .latitude(request.getLatitude())
+            .longitude(request.getLongitude())
+            .city(request.getCity())
+            .district(request.getDistrict())
+            .build();
+
         return JobPost.builder()
             .title(request.getTitle())
             .tech(request.getTech())
@@ -171,7 +191,7 @@ public class JobPost extends BaseEntity {
             .description(request.getDescription())
             .isTemporary(false)
             .availableInfo(new AvailableInfo(request.getMeal(), request.getPickup(), request.getPark()))
-            .address(new Address(request.getAddress(), request.getLatitude(), request.getLongitude()))
+            .jobPostAddress(jobPostAddress)
             .member(member)
             .project(project)
             .build();

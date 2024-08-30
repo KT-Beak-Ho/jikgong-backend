@@ -69,7 +69,7 @@ public class ApplyAcceptedResponse {
                 .recruitNum(jobPost.getRecruitNum())
                 .startTime(jobPost.getStartTime())
                 .wage(jobPost.getWage())
-                .address(jobPost.getAddress().getAddress())
+                .address(jobPost.getJobPostAddress().getAddress())
                 .build();
         }
     }

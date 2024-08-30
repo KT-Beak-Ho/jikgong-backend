@@ -1,9 +1,16 @@
 package jikgong.domain.member.service;
 
+import java.util.Optional;
+import java.util.Random;
 import jikgong.domain.common.Address;
 import jikgong.domain.location.entity.Location;
 import jikgong.domain.location.repository.LocationRepository;
-import jikgong.domain.member.dto.join.*;
+import jikgong.domain.member.dto.join.JoinCompanyRequest;
+import jikgong.domain.member.dto.join.JoinWorkerRequest;
+import jikgong.domain.member.dto.join.VerificationAccountRequest;
+import jikgong.domain.member.dto.join.VerificationAccountResponse;
+import jikgong.domain.member.dto.join.VerificationSmsRequest;
+import jikgong.domain.member.dto.join.VerificationSmsResponse;
 import jikgong.domain.member.dto.login.LoginRequest;
 import jikgong.domain.member.dto.login.LoginResponse;
 import jikgong.domain.member.dto.login.RefreshTokenRequest;
@@ -11,8 +18,8 @@ import jikgong.domain.member.entity.Company;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.entity.Worker;
 import jikgong.domain.member.repository.MemberRepository;
-import jikgong.global.exception.JikgongException;
 import jikgong.global.exception.ErrorCode;
+import jikgong.global.exception.JikgongException;
 import jikgong.global.security.filter.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,9 +27,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
-import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -53,6 +57,7 @@ public class LoginService {
             .rrn(request.getRrn())
             .gender(request.getGender())
             .nationality(request.getNationality())
+            .hasWorkerCard(request.getHasWorkerCard())
             .isNotification(request.getIsNotification())
             .build();
         // 공통 부분

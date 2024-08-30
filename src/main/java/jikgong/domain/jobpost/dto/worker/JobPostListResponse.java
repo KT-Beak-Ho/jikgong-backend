@@ -89,7 +89,7 @@ public class JobPostListResponse {
             .endDate(jobPost.getEndDate())
             .startTime(jobPost.getStartTime())
             .endTime(jobPost.getEndTime())
-            .address(jobPost.getAddress().getAddress())
+            .address(jobPost.getJobPostAddress().getAddress())
             .distance((location == null) ? null : DistanceCal.getDistance(jobPost, location))
 
             .companyName(jobPost.getMember().getCompanyInfo().getCompanyName())
@@ -97,7 +97,7 @@ public class JobPostListResponse {
 
             .isScrap(null)
             .workDateResponseList(workDateResponseList)
-            
+
             .thumbnailOriginUrl(thumbnailOriginUrl)
             .thumbnailResizeUrl(thumbnailResizeUrl)
 

@@ -67,8 +67,8 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
         return queryFactory
             .selectFrom(jobPost)
             .where(
-                jobPost.address.latitude.between(southWestLat, northEastLat)
-                    .and(jobPost.address.longitude.between(southWestLng, northEastLng)),
+                jobPost.jobPostAddress.latitude.between(southWestLat, northEastLat)
+                    .and(jobPost.jobPostAddress.longitude.between(southWestLng, northEastLng)),
                 eqTech(techList),
                 eqWorkDate(dateList),
                 eqScrap(memberId, scrap)
@@ -85,17 +85,18 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
         NumberExpression<Double> cosLatitude =
             Expressions.numberTemplate(Double.class, "cos({0})", radiansLatitude);
         NumberExpression<Double> cosSubwayLatitude =
-            Expressions.numberTemplate(Double.class, "cos(radians({0}))", jobPost.address.latitude);
+            Expressions.numberTemplate(Double.class, "cos(radians({0}))", jobPost.jobPostAddress.latitude);
 
         // 계산된 latitude -> 사인 계산
         NumberExpression<Double> sinLatitude =
             Expressions.numberTemplate(Double.class, "sin({0})", radiansLatitude);
         NumberExpression<Double> sinSubWayLatitude =
-            Expressions.numberTemplate(Double.class, "sin(radians({0}))", jobPost.address.latitude);
+            Expressions.numberTemplate(Double.class, "sin(radians({0}))", jobPost.jobPostAddress.latitude);
 
         // 사이 거리 계산
         NumberExpression<Double> cosLongitude =
-            Expressions.numberTemplate(Double.class, "cos(radians({0}) - radians({1}))", jobPost.address.longitude,
+            Expressions.numberTemplate(Double.class, "cos(radians({0}) - radians({1}))",
+                jobPost.jobPostAddress.longitude,
                 location.getAddress().getLongitude());
 
         NumberExpression<Double> acosExpression =

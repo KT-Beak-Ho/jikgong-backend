@@ -18,8 +18,8 @@ public class JobPostMapResponse {
         return JobPostMapResponse.builder()
             .jobPostId(jobPost.getId())
             .tech(jobPost.getTech())
-            .latitude(jobPost.getAddress().getLatitude())
-            .longitude(jobPost.getAddress().getLongitude())
+            .latitude(jobPost.getJobPostAddress().getLatitude())
+            .longitude(jobPost.getJobPostAddress().getLongitude())
             .build();
     }
 }
