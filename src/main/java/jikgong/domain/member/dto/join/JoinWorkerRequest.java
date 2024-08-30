@@ -46,6 +46,8 @@ public class JoinWorkerRequest {
     private Gender gender; // 성별
     @Schema(description = "국적 [KOREAN or FOREIGNER]", example = "KOREAN")
     private Nationality nationality; // 국적
+    @Schema(description = "근로자 카드 여부", example = "true")
+    private Boolean hasWorkerCard; // 근로자 카드 여부
 
     // 위치 정보
     @Schema(description = "도로명 주소", example = "부산광역시 사하구 낙동대로 550번길 37")
