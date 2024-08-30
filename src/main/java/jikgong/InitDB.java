@@ -137,6 +137,7 @@ public class InitDB {
                 .rrn(rrn)
                 .gender(Gender.MALE)
                 .nationality(Nationality.KOREAN)
+                .hasWorkerCard(true)
                 .address("부산광역시 사하구 낙동대로 550번길 37")
                 .latitude(latitude)
                 .longitude(longitude)
@@ -179,6 +180,8 @@ public class InitDB {
                 .address(address)
                 .latitude(latitude)
                 .longitude(longitude)
+                .city("부산광역시")
+                .district("사하구")
                 .dateList(generateRandomDates(3))
                 .pickupList(Arrays.asList(
                     "부산광역시 사하구 낙동대로 550번길 37",
