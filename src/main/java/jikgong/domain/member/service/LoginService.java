@@ -21,6 +21,7 @@ import jikgong.domain.member.repository.MemberRepository;
 import jikgong.global.exception.ErrorCode;
 import jikgong.global.exception.JikgongException;
 import jikgong.global.security.filter.JwtTokenProvider;
+import jikgong.global.sms.SmsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -39,6 +40,7 @@ public class LoginService {
     private final PasswordEncoder encoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate<String, String> redisTemplate;
+    private final SmsService smsService;
 
     /**
      * 노동자 회원가입
@@ -146,7 +148,11 @@ public class LoginService {
     public VerificationSmsResponse verificationSms(VerificationSmsRequest request) {
         String authCode = createAuthCode();
 
-        // todo: 문자 발송
+        try {
+            smsService.sendSms(request.getPhone(), authCode);
+        } catch (Exception e) {
+            throw new JikgongException(ErrorCode.SMS_SEND_FAIL);
+        }
 
         return new VerificationSmsResponse(authCode);
     }
