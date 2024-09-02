@@ -7,7 +7,6 @@ import jikgong.global.feignclient.client.AlimTalkClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,14 +16,14 @@ public class AlimTalkService {
 
     private final AlimTalkClient alimTalkClient;
 
-    @Value("${ncp.service-id}")
-    private String serviceID;
-    @Value("${ncp.access-key}")
-    private String ncpAccessKey;
-    @Value("${ncp.secret-key}")
-    private String ncpSecretKey;
-    @Value("${ncp.plus-friend-id}")
-    private String plusFriendId;
+//    @Value("${ncp.service-id}")
+//    private String serviceID;
+//    @Value("${ncp.access-key}")
+//    private String ncpAccessKey;
+//    @Value("${ncp.secret-key}")
+//    private String ncpSecretKey;
+//    @Value("${ncp.plus-friend-id}")
+//    private String plusFriendId;
 
     /**
      * 사업자 등록 시 AlimTalk 개발 진행
