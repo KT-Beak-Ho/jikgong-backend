@@ -5,46 +5,46 @@ import lombok.Getter;
 @Getter
 public enum Tech {
 
-    NORM("보통 인부"), // Normal
+    FOREMAN("작업반장"), // Foreman
+    NORMAL("보통인부"), // Normal
+    SKILLED_LABORER("특별인부"), // Skilled Laborer
+    HELPER("조력공"), // Helper
+    SCAFFOLDER("비계공"), // Scaffolder
+    FORMWORK_CARPENTER("형틀목공"), // Formwork Carpenter
+    REBAR_WORKER("철근공"), // Rebar Worker
+    STEEL_STRUCTURE_WORKER("철골공"), // Steel Structure Worker
+    WELDER("용접공"), // Welder
+    CONCRETE_WORKER("콘크리트공"), // Concrete Worker
+    BRICKLAYER("조적공"), // Bricklayer
+    DRYWALL_FINISHER("견출공"), // Drywall Finisher
+    CONSTRUCTION_CARPENTER("건축목공"), // Construction Carpenter
+    WINDOW_DOOR_INSTALLER("창호공"), // Window Door Installer
+    GLAZIER("유리공"), // Glazier
+    WATERPROOFING_WORKER("방수공"), // Waterproofing Worker
+    PLASTERER("미장공"), // Plasterer
     TILE("타일공"), // Tile
-    FMAN("작업반장"), // Foreman
-    SKLB("특별인부"), // Skilled Laborer
-    HELP("조력공"), // Helper
-    SCAF("비계공"), // Scaffolder
-    FWC("형틀목공"), // Formwork Carpenter
-    REBW("철근공"), // Rebar Worker
-    SSTW("철골공"), // Steel Structure Worker
-    WELD("용접공"), // Welder
-    CONC("콘크리트공"), // Concrete Worker
-    BRICK("조적공"), // Bricklayer
-    DRWF("견출공"), // Drywall Finisher
-    CCON("건축목공"), // Construction Carpenter
-    WIND("창호공"), // Window Door Installer
-    GLAZ("유리공"), // Glazier
-    WTRP("방수공"), // Waterproofing Worker
-    PLAS("미장공"), // Plasterer
-    PAINT("도장공"), // Painter
-    INTF("내장공"), // Interior Finisher
-    WALL("도배공"), // Wallpaper Installer
-    POLI("연마공"), // Polisher
-    STON("석공"), // Stonemason
-    GROUT("줄눈공"), // Grout Worker
-    PNAS("판넬조립공"), // Panel Assembler
-    ROOF("지붕잇기공"), // Roofer
-    LAND("조경공"), // Landscaper
-    CAULK("코킹공"), // Caulker
-    PLUM("배관공"), // Plumber
-    BOIL("보일러공"), // Boiler Technician
-    SANI("위생공"), // Sanitary Technician
-    DUCT("덕트공"), // Duct Installer
-    INSW("보온공"), // Insulation Worker
-    MEQT("기계설비공"), // Mechanical Equipment Technician
-    ELEC("내선전공"), // Electrician
-    TCOM("통신내선공"), // Telecommunications Installer
-    TEQ("통신설비공"); // Telecommunications Equipment Installer
+    PAINTER("도장공"), // Painter
+    INTERIOR_FINISHER("내장공"), // Interior Finisher
+    WALLPAPER_INSTALLER("도배공"), // Wallpaper Installer
+    POLISHER("연마공"), // Polisher
+    STONEMASON("석공"), // Stonemason
+    GROUT_WORKER("줄눈공"), // Grout Worker
+    PANEL_ASSEMBLER("판넬조립공"), // Panel Assembler
+    ROOFER("지붕잇기공"), // Roofer
+    LANDSCAPER("조경공"), // Landscaper
+    CAULKER("코킹공"), // Caulker
+    PLUMBER("배관공"), // Plumber
+    BOILER_TECHNICIAN("보일러공"), // Boiler Technician
+    SANITARY_TECHNICIAN("위생공"), // Sanitary Technician
+    DUCT_INSTALLER("덕트공"), // Duct Installer
+    INSULATION_WORKER("보온공"), // Insulation Worker
+    MECHANICAL_EQUIPMENT_TECHNICIAN("기계설비공"), // Mechanical Equipment Technician
+    ELECTRICIAN("내선전공"), // Electrician
+    TELECOMMUNICATIONS_INSTALLER("통신내선공"), // Telecommunications Installer
+    TELECOMMUNICATIONS_EQUIPMENT_INSTALLER("통신설비공"); // Telecommunications Equipment Installer
+
     private final String description;
 
-    // todo: 추가 예정
     Tech(String description) {
         this.description = description;
     }

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Tech Enum Documentation</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    .enum-group {
+      margin-bottom: 40px; /* 각 그룹 사이에 간격을 추가합니다 */
+    }
+
+    .fixed-width-table th, .fixed-width-table td {
+      word-wrap: break-word; /* 내용이 길어질 경우 줄 바꿈을 허용합니다 */
+    }
+
+    .fixed-width-table th:nth-child(1),
+    .fixed-width-table td:nth-child(1) {
+      width: 25%; /* 첫 번째 열의 너비를 25%로 설정합니다 */
+    }
+
+    .fixed-width-table th:nth-child(2),
+    .fixed-width-table td:nth-child(2) {
+      width: 25%; /* 두 번째 열의 너비를 25%로 설정합니다 */
+    }
+
+    .fixed-width-table th:nth-child(3),
+    .fixed-width-table td:nth-child(3) {
+      width: 50%; /* 세 번째 열의 너비를 50%로 설정합니다 */
+    }
+  </style>
+</head>
+<body>
+<div class="container mt-5">
+  <h1 class="mb-4">Tech Enum Documentation</h1>
+  <div class="enum-group">
+    <table class="table table-bordered fixed-width-table">
+      <thead>
+      <tr>
+        <th>Enum Name</th>
+        <th>Code</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="tech : ${techEnums}">
+        <td th:text="${tech.name()}">Enum Name</td>
+        <td th:text="${tech.description}">Description</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>
