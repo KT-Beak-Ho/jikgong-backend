@@ -1,6 +1,8 @@
 package jikgong.domain.jobpost.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import java.time.LocalDate;
+import java.util.List;
 import jikgong.domain.jobpost.dto.worker.JobPostDetailResponse;
 import jikgong.domain.jobpost.dto.worker.JobPostListResponse;
 import jikgong.domain.jobpost.dto.worker.JobPostMapResponse;
@@ -23,9 +25,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -34,6 +33,7 @@ public class JobPostWorkerController {
     private final JobPostWorkerService jobPostWorkerService;
 
     // todo: 검색 기능 추가
+    // todo: 시, 구 필터 추가
     @Operation(summary = "모집 공고 조회", description = "직종, 날짜, 스크랩 여부, [식사, 주차 여부], [거리순, 일급 높은 순]")
     @GetMapping("/api/job-post/worker/list")
     public ResponseEntity<Response> getMainPage(@AuthenticationPrincipal PrincipalDetails principalDetails,
