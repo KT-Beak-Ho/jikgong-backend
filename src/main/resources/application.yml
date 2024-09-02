@@ -60,10 +60,10 @@ cloud:
 
 # naver alimtalk
 ncp:
-  service-id: abc
-  access-key: abc
-  secret-key: abc
-  plus-friend-id: abc
+  service-id: ${NCP_SERVICE_ID}
+  access-key: ${NCP_ACCESS_KEY}
+  secret-key: ${NCP_SECRET_KEY}
+  send-number: ${NCP_SEND_NUMBER}
 
 management:
   endpoints:
