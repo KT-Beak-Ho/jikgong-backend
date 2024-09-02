@@ -124,7 +124,18 @@ public enum ErrorCode {
     /**
      * 동시성
      */
-    CONCURRENCY_FAILURE(HttpStatus.CONFLICT, "CONCURRENCY-001", "동시성 문제가 발생하였습니다. 다시 시도해주세요.");
+    CONCURRENCY_FAILURE(HttpStatus.CONFLICT, "CONCURRENCY-001", "동시성 문제가 발생하였습니다. 다시 시도해주세요."),
+
+    /**
+     * SMS 발송
+     */
+    SMS_SEND_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "SMS-001", "문자 발송 중 에러가 발생했습니다."),
+    SMS_BAD_REQUEST(HttpStatus.BAD_REQUEST, "SMS-002", "잘못된 요청입니다."),
+    SMS_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "SMS-003", "인증되지 않은 요청입니다."),
+    SMS_FORBIDDEN(HttpStatus.FORBIDDEN, "SMS-004", "접근이 금지되었습니다."),
+    SMS_NOT_FOUND(HttpStatus.NOT_FOUND, "SMS-005", "요청한 리소스를 찾을 수 없습니다."),
+    SMS_TOO_MANY_REQUESTS(HttpStatus.TOO_MANY_REQUESTS, "SMS-006", "요청이 너무 많습니다. 나중에 다시 시도하세요."),
+    SMS_INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "SMS-007", "서버 내부 오류가 발생했습니다.");
 
     private final HttpStatus status;
     private final String code;
