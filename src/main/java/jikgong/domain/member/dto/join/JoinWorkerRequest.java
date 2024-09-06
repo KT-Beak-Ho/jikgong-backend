@@ -46,6 +46,10 @@ public class JoinWorkerRequest {
     private Gender gender; // 성별
     @Schema(description = "국적 [KOREAN or FOREIGNER]", example = "KOREAN")
     private Nationality nationality; // 국적
+    @Schema(description = "비자 여부", example = "true")
+    private Boolean hasVisa; // 비자 여부
+    @Schema(description = "교육 이수증 여부", example = "true")
+    private Boolean hasEducationCertificate; // 교육 이수증 여부
     @Schema(description = "근로자 카드 여부", example = "true")
     private Boolean hasWorkerCard; // 근로자 카드 여부
 

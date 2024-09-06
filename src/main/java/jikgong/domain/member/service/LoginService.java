@@ -59,6 +59,8 @@ public class LoginService {
             .rrn(request.getRrn())
             .gender(request.getGender())
             .nationality(request.getNationality())
+            .hasVisa(request.getHasVisa())
+            .hasEducationCertificate(request.getHasEducationCertificate())
             .hasWorkerCard(request.getHasWorkerCard())
             .isNotification(request.getIsNotification())
             .build();

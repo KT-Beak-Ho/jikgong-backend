@@ -21,7 +21,8 @@ public class Worker {
     @Enumerated(value = EnumType.STRING)
     private Gender gender; // 성별
     private Nationality nationality; // 국적
-    //    private String visa; // 비자 (외국인만 입력)
+    private Boolean hasVisa; // 비자 여부 (외국인만 입력)
+    private Boolean hasEducationCertificate; // 교육 증명서
     private Boolean hasWorkerCard; // 근로자 카드 여부
 
     private Boolean isOffer; // 헤드헌팅 여부
@@ -31,12 +32,14 @@ public class Worker {
 
     @Builder
     public Worker(String workerName, String birth, String rrn, Gender gender, Nationality nationality,
-        Boolean hasWorkerCard, Boolean isNotification) {
+        Boolean hasVisa, Boolean hasEducationCertificate, Boolean hasWorkerCard, Boolean isNotification) {
         this.workerName = workerName;
         this.birth = birth;
         this.rrn = rrn;
         this.gender = gender;
         this.nationality = nationality;
+        this.hasVisa = hasVisa;
+        this.hasEducationCertificate = hasEducationCertificate;
         this.hasWorkerCard = hasWorkerCard;
         this.isOffer = true; // 기본 true
         this.workerNotificationInfo = new WorkerNotificationInfo(isNotification);
@@ -48,5 +51,8 @@ public class Worker {
         this.rrn = request.getRrn();
         this.gender = request.getGender();
         this.nationality = request.getNationality();
+        this.hasVisa = request.getHasVisa();
+        this.hasEducationCertificate = request.getHasEducationCertificate();
+        this.hasWorkerCard = request.getHasWorkerCard();
     }
 }

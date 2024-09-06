@@ -29,8 +29,6 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Member extends BaseEntity {
 
-    // todo: 비자 필드 추가해야 할 듯, 
-
     @Id
     @GeneratedValue
     @Column(name = "member_id")

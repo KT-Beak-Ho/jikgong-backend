@@ -6,7 +6,6 @@
 
 package jikgong;
 
-
 import jakarta.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -137,6 +136,8 @@ public class InitDB {
                 .rrn(rrn)
                 .gender(Gender.MALE)
                 .nationality(Nationality.KOREAN)
+                .hasVisa(true)
+                .hasEducationCertificate(true)
                 .hasWorkerCard(true)
                 .address("부산광역시 사하구 낙동대로 550번길 37")
                 .latitude(latitude)

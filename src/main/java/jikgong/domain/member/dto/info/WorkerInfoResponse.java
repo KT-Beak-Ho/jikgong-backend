@@ -20,6 +20,8 @@ public class WorkerInfoResponse {
     private String rrn; // 주민등록번호
     private Gender gender; // 성별
     private Nationality nationality; // 국적
+    private Boolean hasVisa; // 비자 여부 (외국인만 입력)
+    private Boolean hasEducationCertificate; // 교육 증명서
     private Boolean hasWorkerCard; // 근로자 카드 여부
 
     public static WorkerInfoResponse from(Member worker) {
@@ -34,6 +36,9 @@ public class WorkerInfoResponse {
             .rrn(worker.getWorkerInfo().getRrn())
             .gender(worker.getWorkerInfo().getGender())
             .nationality(worker.getWorkerInfo().getNationality())
+
+            .hasVisa(worker.getWorkerInfo().getHasVisa())
+            .hasEducationCertificate(worker.getWorkerInfo().getHasEducationCertificate())
             .hasWorkerCard(worker.getWorkerInfo().getHasWorkerCard())
 
             .build();
