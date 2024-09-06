@@ -29,7 +29,8 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
 
     @Override
     public Page<JobPost> getMainPage(Long memberId, List<Tech> techList, List<LocalDate> dateList, Boolean isScrap,
-        Boolean meal, Park park, Location location, SortType sortType, Pageable pageable) {
+        Boolean meal, Park park, String city, String district, Location location, SortType sortType,
+        Pageable pageable) {
         List<JobPost> jobPostList = queryFactory
             .selectFrom(jobPost)
             .leftJoin(jobPost.member, member).fetchJoin()
@@ -39,6 +40,8 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
                 eqScrap(memberId, isScrap),
                 eqMeal(meal),
                 eqPark(park),
+                eqCity(city),
+                eqDistrict(district),
                 workDateAfterToday() // 모든 날짜가 과거일 땐 조회 X
             )
             .offset(pageable.getOffset())
@@ -138,6 +141,14 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
 
     private BooleanExpression eqPark(Park park) {
         return park == null ? null : jobPost.availableInfo.park.eq(park);
+    }
+
+    private BooleanExpression eqCity(String city) {
+        return city == null ? null : jobPost.jobPostAddress.city.eq(city);
+    }
+
+    private BooleanExpression eqDistrict(String district) {
+        return district == null ? null : jobPost.jobPostAddress.district.eq(district);
     }
 
     private BooleanExpression workDateAfterToday() {

@@ -33,7 +33,6 @@ public class JobPostWorkerController {
     private final JobPostWorkerService jobPostWorkerService;
 
     // todo: 검색 기능 추가
-    // todo: 시, 구 필터 추가
     @Operation(summary = "모집 공고 조회", description = "직종, 날짜, 스크랩 여부, [식사, 주차 여부], [거리순, 일급 높은 순]")
     @GetMapping("/api/job-post/worker/list")
     public ResponseEntity<Response> getMainPage(@AuthenticationPrincipal PrincipalDetails principalDetails,
@@ -42,6 +41,8 @@ public class JobPostWorkerController {
         @RequestParam(name = "scrap", required = false) Boolean scrap,
         @RequestParam(name = "meal", required = false) Boolean meal,
         @RequestParam(name = "park", required = false) Park park,
+        @RequestParam(name = "city", required = false) String city,
+        @RequestParam(name = "district", required = false) String district,
         @RequestParam(name = "sortType", required = false, defaultValue = "DISTANCE") SortType sortType,
         @RequestParam(name = "page", defaultValue = "0") int page,
         @RequestParam(name = "size", defaultValue = "10") int size) {
@@ -50,10 +51,10 @@ public class JobPostWorkerController {
         Page<JobPostListResponse> jobPostListResponsePage;
         if (principalDetails != null) {
             jobPostListResponsePage = jobPostWorkerService.getMainPageForMember(principalDetails.getMember().getId(),
-                techList, workDateList, scrap, meal, park, sortType, pageable);
+                techList, workDateList, scrap, meal, park, city, district, sortType, pageable);
         } else {
             jobPostListResponsePage = jobPostWorkerService.getMainPageForNonMember(techList, workDateList, scrap, meal,
-                park, sortType, pageable);
+                park, city, district, sortType, pageable);
         }
 
         return ResponseEntity.ok(new Response(jobPostListResponsePage, "구직자 홈화면 정보 반환 완료"));

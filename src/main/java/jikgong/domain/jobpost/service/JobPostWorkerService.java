@@ -44,7 +44,8 @@ public class JobPostWorkerService {
      */
     @Transactional(readOnly = true)
     public Page<JobPostListResponse> getMainPageForMember(Long memberId, List<Tech> techList,
-        List<LocalDate> workDateList, Boolean scrap, Boolean meal, Park park, SortType sortType, Pageable pageable) {
+        List<LocalDate> workDateList, Boolean scrap, Boolean meal, Park park, String city, String district,
+        SortType sortType, Pageable pageable) {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
         Location location = locationRepository.findMainLocationByMemberId(member.getId())
@@ -52,6 +53,7 @@ public class JobPostWorkerService {
 
         // querydsl
         Page<JobPost> jobPostPage = jobPostRepository.getMainPage(memberId, techList, workDateList, scrap, meal, park,
+            city, district,
             location, sortType, pageable);
         List<JobPostListResponse> jobPostListResponseList = jobPostPage.getContent().stream()
             .map(jobPost -> JobPostListResponse.from(jobPost, location))
@@ -77,10 +79,11 @@ public class JobPostWorkerService {
      */
     @Transactional(readOnly = true)
     public Page<JobPostListResponse> getMainPageForNonMember(List<Tech> techList, List<LocalDate> workDateList,
-        Boolean scrap, Boolean meal, Park park, SortType sortType, Pageable pageable) {
+        Boolean scrap, Boolean meal, Park park, String city, String district, SortType sortType, Pageable pageable) {
 
         // querydsl
-        Page<JobPost> jobPostPage = jobPostRepository.getMainPage(null, techList, workDateList, scrap, meal, park, null,
+        Page<JobPost> jobPostPage = jobPostRepository.getMainPage(null, techList, workDateList, scrap, meal, park, city,
+            district, null,
             sortType, pageable);
         List<JobPostListResponse> jobPostListResponseList = jobPostPage.getContent().stream()
             .map(jobPost -> JobPostListResponse.from(jobPost, null))
