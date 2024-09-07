@@ -1,5 +1,9 @@
 package jikgong.domain.member.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import jikgong.domain.member.dto.company.CompanySearchResponse;
+import jikgong.domain.member.dto.info.CompanyInfoRequest;
 import jikgong.domain.member.dto.info.PasswordRequest;
 import jikgong.domain.member.dto.info.WorkerInfoRequest;
 import jikgong.domain.member.dto.info.WorkerInfoResponse;
@@ -44,6 +48,21 @@ public class MemberInfoService {
     }
 
     /**
+     * 기업: 회원 정보 조회
+     */
+    @Transactional(readOnly = true)
+    public void findCompanyInfo(Long companyId) {
+        // todo: 구현
+    }
+
+    /**
+     * 기업: 회원 정보 수정
+     */
+    public void updateCompanyInfo(Long companyId, CompanyInfoRequest request) {
+        // todo: 구현
+    }
+
+    /**
      * 비밀번호 확인 후 변경
      */
     public void validationPassword(Long memberId, PasswordRequest request) {
@@ -55,5 +74,15 @@ public class MemberInfoService {
         }
 
         member.updatePassword(encoder.encode(request.getNewPassword()));
+    }
+
+    /**
+     * 기업 검색
+     */
+    @Transactional(readOnly = true)
+    public List<CompanySearchResponse> searchCompany(String keyword) {
+        return memberRepository.findByCompanyName(keyword).stream()
+            .map(CompanySearchResponse::from)
+            .collect(Collectors.toList());
     }
 }
