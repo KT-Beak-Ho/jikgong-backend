@@ -18,6 +18,7 @@ import jikgong.domain.certification.entity.Certification;
 import jikgong.domain.common.BaseEntity;
 import jikgong.domain.history.entity.History;
 import jikgong.domain.location.entity.Location;
+import jikgong.domain.member.dto.info.CompanyInfoRequest;
 import jikgong.domain.member.dto.info.WorkerInfoRequest;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -101,6 +102,10 @@ public class Member extends BaseEntity {
 
     public void updateWorkerInfo(WorkerInfoRequest request) {
         this.workerInfo.updateWorkerInfo(request);
+    }
+
+    public void updateCompanyInfo(CompanyInfoRequest request) {
+        this.companyInfo.updateWorkerInfo(request);
     }
 
     public void updatePassword(String newPassword) {

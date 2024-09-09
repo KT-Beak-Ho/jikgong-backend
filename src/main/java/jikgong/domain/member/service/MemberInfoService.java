@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import jikgong.domain.member.dto.company.CompanySearchResponse;
 import jikgong.domain.member.dto.info.CompanyInfoRequest;
+import jikgong.domain.member.dto.info.CompanyInfoResponse;
 import jikgong.domain.member.dto.info.PasswordRequest;
 import jikgong.domain.member.dto.info.WorkerInfoRequest;
 import jikgong.domain.member.dto.info.WorkerInfoResponse;
@@ -51,15 +52,21 @@ public class MemberInfoService {
      * 기업: 회원 정보 조회
      */
     @Transactional(readOnly = true)
-    public void findCompanyInfo(Long companyId) {
-        // todo: 구현
+    public CompanyInfoResponse findCompanyInfo(Long companyId) {
+        Member company = memberRepository.findById(companyId)
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+
+        return CompanyInfoResponse.from(company);
     }
 
     /**
      * 기업: 회원 정보 수정
      */
     public void updateCompanyInfo(Long companyId, CompanyInfoRequest request) {
-        // todo: 구현
+        Member company = memberRepository.findById(companyId)
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+
+        company.updateCompanyInfo(request);
     }
 
     /**
