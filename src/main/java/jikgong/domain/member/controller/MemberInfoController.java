@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import jikgong.domain.member.dto.company.CompanySearchResponse;
 import jikgong.domain.member.dto.info.CompanyInfoRequest;
+import jikgong.domain.member.dto.info.CompanyInfoResponse;
 import jikgong.domain.member.dto.info.PasswordRequest;
 import jikgong.domain.member.dto.info.WorkerInfoRequest;
 import jikgong.domain.member.dto.info.WorkerInfoResponse;
@@ -53,8 +54,9 @@ public class MemberInfoController {
     @GetMapping("/api/member-info/company")
     @CompanyRoleRequired
     public ResponseEntity<Response> findCompanyInfo(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        memberInfoService.findCompanyInfo(principalDetails.getMember().getId());
-        return ResponseEntity.ok(new Response("노동자 정보 조회 완료"));
+        CompanyInfoResponse companyInfoResponse = memberInfoService.findCompanyInfo(
+            principalDetails.getMember().getId());
+        return ResponseEntity.ok(new Response(companyInfoResponse, "노동자 정보 조회 완료"));
     }
 
     @Operation(summary = "회원 정보 수정 (기업)")
