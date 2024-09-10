@@ -1,7 +1,7 @@
 package jikgong.domain.skill.dto;
 
-import jikgong.domain.jobpost.entity.Tech;
 import jikgong.domain.skill.entity.Skill;
+import jikgong.domain.workexperience.entity.Tech;
 import lombok.Builder;
 import lombok.Getter;
 

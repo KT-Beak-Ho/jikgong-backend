@@ -1,27 +1,26 @@
 package jikgong.domain.resume.repository;
 
+import static jikgong.domain.location.entity.QLocation.location;
+import static jikgong.domain.member.entity.QMember.member;
+import static jikgong.domain.resume.entity.QResume.resume;
+
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.List;
+import java.util.stream.Collectors;
 import jikgong.domain.common.Address;
-import jikgong.domain.resume.dto.company.ResumeListResponse;
-import jikgong.domain.offer.entity.SortType;
-import jikgong.domain.jobpost.entity.Tech;
 import jikgong.domain.location.entity.QLocation;
+import jikgong.domain.offer.entity.SortType;
+import jikgong.domain.resume.dto.company.ResumeListResponse;
 import jikgong.domain.resume.entity.Resume;
+import jikgong.domain.workexperience.entity.Tech;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static jikgong.domain.location.entity.QLocation.*;
-import static jikgong.domain.member.entity.QMember.*;
-import static jikgong.domain.resume.entity.QResume.*;
 
 @RequiredArgsConstructor
 public class ResumeRepositoryImpl implements ResumeRepositoryCustom {

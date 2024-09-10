@@ -1,12 +1,12 @@
-package jikgong.domain.jobpost.entity;
+package jikgong.domain.workexperience.entity;
 
 import lombok.Getter;
 
 @Getter
 public enum Tech {
 
-    FOREMAN("작업반장"), // Foreman
     NORMAL("보통인부"), // Normal
+    FOREMAN("작업반장"), // Foreman
     SKILLED_LABORER("특별인부"), // Skilled Laborer
     HELPER("조력공"), // Helper
     SCAFFOLDER("비계공"), // Scaffolder

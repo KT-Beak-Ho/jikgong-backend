@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import jikgong.domain.jobpost.entity.Park;
-import jikgong.domain.jobpost.entity.Tech;
+import jikgong.domain.workexperience.entity.Tech;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;

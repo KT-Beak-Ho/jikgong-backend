@@ -1,11 +1,11 @@
 package jikgong.domain.resume.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jikgong.domain.jobpost.entity.Tech;
 import jikgong.domain.offer.entity.SortType;
 import jikgong.domain.resume.dto.company.ResumeDetailResponse;
 import jikgong.domain.resume.dto.company.ResumeListResponse;
 import jikgong.domain.resume.service.ResumeCompanyService;
+import jikgong.domain.workexperience.entity.Tech;
 import jikgong.global.annotation.CompanyRoleRequired;
 import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;

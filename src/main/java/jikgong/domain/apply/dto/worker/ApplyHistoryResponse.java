@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.jobpost.entity.JobPost;
-import jikgong.domain.jobpost.entity.Tech;
+import jikgong.domain.workexperience.entity.Tech;
 import jikgong.global.utils.TimeTransfer;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,14 +1,13 @@
 package jikgong.domain.profit.dto.history;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jikgong.domain.jobpost.entity.Tech;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import jikgong.domain.profit.entity.ProfitType;
+import jikgong.domain.workexperience.entity.Tech;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 @NoArgsConstructor
 @Getter

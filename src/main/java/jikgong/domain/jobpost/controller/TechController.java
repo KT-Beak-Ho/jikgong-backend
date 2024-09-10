@@ -1,6 +1,6 @@
 package jikgong.domain.jobpost.controller;
 
-import jikgong.domain.jobpost.entity.Tech;
+import jikgong.domain.workexperience.entity.Tech;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

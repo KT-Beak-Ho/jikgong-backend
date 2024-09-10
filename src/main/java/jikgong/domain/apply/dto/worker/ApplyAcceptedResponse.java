@@ -8,7 +8,7 @@ import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.history.entity.History;
 import jikgong.domain.history.entity.WorkStatus;
 import jikgong.domain.jobpost.entity.JobPost;
-import jikgong.domain.jobpost.entity.Tech;
+import jikgong.domain.workexperience.entity.Tech;
 import lombok.Builder;
 import lombok.Getter;
 

@@ -1,18 +1,17 @@
 package jikgong.domain.project.dto;
 
-import jikgong.domain.jobpost.entity.JobPost;
-import jikgong.domain.jobpost.entity.Park;
-import jikgong.domain.jobpost.entity.Tech;
-import jikgong.domain.member.entity.Member;
-import jikgong.domain.project.entity.Project;
-import jikgong.domain.workdate.entity.WorkDate;
-import lombok.Builder;
-import lombok.Getter;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import jikgong.domain.jobpost.entity.JobPost;
+import jikgong.domain.jobpost.entity.Park;
+import jikgong.domain.member.entity.Member;
+import jikgong.domain.project.entity.Project;
+import jikgong.domain.workdate.entity.WorkDate;
+import jikgong.domain.workexperience.entity.Tech;
+import lombok.Builder;
+import lombok.Getter;
 
 @Getter
 @Builder

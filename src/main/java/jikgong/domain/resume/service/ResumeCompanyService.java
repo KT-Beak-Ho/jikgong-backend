@@ -1,6 +1,5 @@
 package jikgong.domain.resume.service;
 
-import jikgong.domain.jobpost.entity.Tech;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
 import jikgong.domain.offer.entity.SortType;
@@ -10,6 +9,7 @@ import jikgong.domain.resume.dto.company.ResumeDetailResponse;
 import jikgong.domain.resume.dto.company.ResumeListResponse;
 import jikgong.domain.resume.entity.Resume;
 import jikgong.domain.resume.repository.ResumeRepository;
+import jikgong.domain.workexperience.entity.Tech;
 import jikgong.global.exception.ErrorCode;
 import jikgong.global.exception.JikgongException;
 import lombok.RequiredArgsConstructor;

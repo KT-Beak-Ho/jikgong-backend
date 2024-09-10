@@ -2,9 +2,9 @@ package jikgong.domain.profit.dto.history;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import jikgong.domain.jobpost.entity.Tech;
 import jikgong.domain.profit.entity.Profit;
 import jikgong.domain.profit.entity.ProfitType;
+import jikgong.domain.workexperience.entity.Tech;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

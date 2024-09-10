@@ -26,6 +26,7 @@ import jikgong.domain.pickup.entity.Pickup;
 import jikgong.domain.project.entity.Project;
 import jikgong.domain.scrap.entity.Scrap;
 import jikgong.domain.workdate.entity.WorkDate;
+import jikgong.domain.workexperience.entity.Tech;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
