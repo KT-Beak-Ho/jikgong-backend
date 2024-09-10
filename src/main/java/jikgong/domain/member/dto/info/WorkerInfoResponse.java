@@ -1,8 +1,11 @@
 package jikgong.domain.member.dto.info;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import jikgong.domain.member.entity.Gender;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.entity.Nationality;
+import jikgong.domain.workexperience.dto.WorkExperienceResponse;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -24,7 +27,13 @@ public class WorkerInfoResponse {
     private Boolean hasEducationCertificate; // 교육 증명서
     private Boolean hasWorkerCard; // 근로자 카드 여부
 
+    private List<WorkExperienceResponse> workExperienceResponseList; // 경력 정보
+
     public static WorkerInfoResponse from(Member worker) {
+        List<WorkExperienceResponse> workExperienceResponseList = worker.getWorkExperienceList().stream()
+            .map(WorkExperienceResponse::from)
+            .collect(Collectors.toList());
+
         return WorkerInfoResponse.builder()
             .loginId(worker.getLoginId())
             .phone(worker.getPhone())
@@ -40,6 +49,8 @@ public class WorkerInfoResponse {
             .hasVisa(worker.getWorkerInfo().getHasVisa())
             .hasEducationCertificate(worker.getWorkerInfo().getHasEducationCertificate())
             .hasWorkerCard(worker.getWorkerInfo().getHasWorkerCard())
+
+            .workExperienceResponseList(workExperienceResponseList)
 
             .build();
     }
