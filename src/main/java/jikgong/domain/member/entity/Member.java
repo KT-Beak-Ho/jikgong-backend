@@ -5,16 +5,12 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import java.util.ArrayList;
 import java.util.List;
 import jikgong.domain.apply.entity.Apply;
-import jikgong.domain.certification.entity.Certification;
 import jikgong.domain.common.BaseEntity;
 import jikgong.domain.history.entity.History;
 import jikgong.domain.location.entity.Location;
@@ -55,10 +51,6 @@ public class Member extends BaseEntity {
     @Embedded
     private Company companyInfo;
 
-    @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true)
-    @JoinColumn(name = "certification_id")
-    private Certification certification;
-
     // 양방향 매핑
     @OneToMany(mappedBy = "member")
     List<Location> locationList = new ArrayList<>();
@@ -74,7 +66,7 @@ public class Member extends BaseEntity {
 
     @Builder
     public Member(String loginId, String password, String phone, String account, String bank, String deviceToken,
-        Role role, Worker workerInfo, Company companyInfo, Certification certification) {
+        Role role, Worker workerInfo, Company companyInfo) {
         this.loginId = loginId;
         this.password = password;
         this.phone = phone;
@@ -85,15 +77,10 @@ public class Member extends BaseEntity {
         this.role = role;
         this.workerInfo = workerInfo;
         this.companyInfo = companyInfo;
-        this.certification = certification;
 
         this.locationList = new ArrayList<>();
         this.historyList = new ArrayList<>();
         this.applyList = new ArrayList<>();
-    }
-
-    public void setCertification(Certification certification) {
-        this.certification = certification;
     }
 
     public void updateDeviceToken(String deviceToken) {
