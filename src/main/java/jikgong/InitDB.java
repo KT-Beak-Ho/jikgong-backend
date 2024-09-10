@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import jikgong.domain.jobpost.dto.company.JobPostSaveRequest;
 import jikgong.domain.jobpost.entity.Park;
-import jikgong.domain.jobpost.entity.Tech;
 import jikgong.domain.jobpost.service.JobPostCompanyService;
 import jikgong.domain.member.dto.join.JoinCompanyRequest;
 import jikgong.domain.member.dto.join.JoinWorkerRequest;
@@ -26,6 +25,8 @@ import jikgong.domain.member.entity.Role;
 import jikgong.domain.member.service.LoginService;
 import jikgong.domain.project.dto.ProjectSaveRequest;
 import jikgong.domain.project.service.ProjectService;
+import jikgong.domain.workexperience.dto.WorkExperienceRequest;
+import jikgong.domain.workexperience.entity.Tech;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -122,6 +123,10 @@ public class InitDB {
         private JoinWorkerRequest createJoinWorkerRequest(String loginId, String phone, Role role, String account,
             String workerName,
             String birth, String rrn, Float latitude, Float longitude) {
+
+            // 랜덤한 2개의 경력 사항 생성
+            List<WorkExperienceRequest> workExperienceRequestList = createTechList();
+
             return JoinWorkerRequest.builder()
                 .loginId(loginId)
                 .password("abcdefg1")
@@ -139,10 +144,38 @@ public class InitDB {
                 .hasVisa(true)
                 .hasEducationCertificate(true)
                 .hasWorkerCard(true)
+                .workExperienceRequest(workExperienceRequestList)
                 .address("부산광역시 사하구 낙동대로 550번길 37")
                 .latitude(latitude)
                 .longitude(longitude)
                 .build();
+        }
+
+        private List<WorkExperienceRequest> createTechList() {
+            // 랜덤 객체 생성
+            Random random = new Random();
+
+            // Tech enum에서 랜덤으로 하나 선택
+            Tech[] techValues = Tech.values();
+
+            // 첫 번째 WorkExperienceRequest 생성
+            Tech randomTech1 = techValues[random.nextInt(techValues.length)];
+            int randomMonths1 = random.nextInt(49) + 12; // 12 ~ 60개월 사이의 값
+            WorkExperienceRequest workExperienceRequest1 = WorkExperienceRequest.builder()
+                .tech(randomTech1)
+                .experienceMonths(randomMonths1)
+                .build();
+
+            // 두 번째 WorkExperienceRequest 생성
+            Tech randomTech2 = techValues[random.nextInt(techValues.length)];
+            int randomMonths2 = random.nextInt(49) + 12; // 12 ~ 60개월 사이의 값
+            WorkExperienceRequest workExperienceRequest2 = WorkExperienceRequest.builder()
+                .tech(randomTech2)
+                .experienceMonths(randomMonths2)
+                .build();
+
+            // 두 객체를 리스트에 추가하고 반환
+            return Arrays.asList(workExperienceRequest1, workExperienceRequest2);
         }
 
         private JoinCompanyRequest createJoinCompanyRequest(String loginId, String phone, Role role) {
