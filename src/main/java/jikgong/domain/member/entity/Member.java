@@ -16,6 +16,7 @@ import jikgong.domain.history.entity.History;
 import jikgong.domain.location.entity.Location;
 import jikgong.domain.member.dto.info.CompanyInfoRequest;
 import jikgong.domain.member.dto.info.WorkerInfoRequest;
+import jikgong.domain.workexperience.entity.WorkExperience;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -53,6 +54,8 @@ public class Member extends BaseEntity {
 
     // 양방향 매핑
     @OneToMany(mappedBy = "member")
+    List<WorkExperience> workExperienceList = new ArrayList<>();
+    @OneToMany(mappedBy = "member")
     List<Location> locationList = new ArrayList<>();
     @OneToMany(mappedBy = "member")
     List<History> historyList = new ArrayList<>();
@@ -78,6 +81,7 @@ public class Member extends BaseEntity {
         this.workerInfo = workerInfo;
         this.companyInfo = companyInfo;
 
+        this.workExperienceList = new ArrayList<>();
         this.locationList = new ArrayList<>();
         this.historyList = new ArrayList<>();
         this.applyList = new ArrayList<>();

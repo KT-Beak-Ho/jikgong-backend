@@ -1,9 +1,11 @@
 package jikgong.domain.member.dto.join;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
 import jikgong.domain.member.entity.Gender;
 import jikgong.domain.member.entity.Nationality;
 import jikgong.domain.member.entity.Role;
+import jikgong.domain.workexperience.dto.WorkExperienceRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -52,6 +54,9 @@ public class JoinWorkerRequest {
     private Boolean hasEducationCertificate; // 교육 이수증 여부
     @Schema(description = "근로자 카드 여부", example = "true")
     private Boolean hasWorkerCard; // 근로자 카드 여부
+    // 경력 정보
+    @Schema(description = "경력 정보", example = "[{ \"tech\": \"NORMAL\", \"experienceMonths\": 24 }, { \"tech\": \"LANDSCAPER\", \"experienceMonths\": 18 }]")
+    private List<WorkExperienceRequest> workExperienceRequest;
 
     // 위치 정보
     @Schema(description = "도로명 주소", example = "부산광역시 사하구 낙동대로 550번길 37")

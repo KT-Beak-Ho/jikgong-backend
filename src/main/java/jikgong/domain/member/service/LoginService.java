@@ -1,7 +1,9 @@
 package jikgong.domain.member.service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 import jikgong.domain.common.Address;
 import jikgong.domain.location.entity.Location;
 import jikgong.domain.location.repository.LocationRepository;
@@ -18,6 +20,8 @@ import jikgong.domain.member.entity.Company;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.entity.Worker;
 import jikgong.domain.member.repository.MemberRepository;
+import jikgong.domain.workexperience.entity.WorkExperience;
+import jikgong.domain.workexperience.repository.WorkExperienceRepository;
 import jikgong.global.exception.ErrorCode;
 import jikgong.global.exception.JikgongException;
 import jikgong.global.security.filter.JwtTokenProvider;
@@ -37,6 +41,7 @@ public class LoginService {
 
     private final MemberRepository memberRepository;
     private final LocationRepository locationRepository;
+    private final WorkExperienceRepository workExperienceRepository;
     private final PasswordEncoder encoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate<String, String> redisTemplate;
@@ -64,6 +69,7 @@ public class LoginService {
             .hasWorkerCard(request.getHasWorkerCard())
             .isNotification(request.getIsNotification())
             .build();
+
         // 공통 부분
         Member member = Member.builder()
             .loginId(request.getLoginId())
@@ -82,14 +88,19 @@ public class LoginService {
             .member(member)
             .build();
 
+        List<WorkExperience> workExperienceList = request.getWorkExperienceRequest().stream()
+            .map(req -> WorkExperience.from(req, member))
+            .collect(Collectors.toList());
+
         Member savedMember = memberRepository.save(member); // 회원 저장
+        workExperienceRepository.saveAll(workExperienceList); // 경력 정보 저장
         locationRepository.save(location); // 위치 정보 저장
         log.info("노동자 회원 가입 완료");
         return savedMember.getId();
     }
 
     /**
-     * 노동자 회원가입
+     * 기업 회원가입
      */
     public Long joinCompanyMember(JoinCompanyRequest request) {
         // loginId 중복 체크
