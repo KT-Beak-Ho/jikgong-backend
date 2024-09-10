@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class WorkExperienceRequest {
 
+    private Long workExperienceId;
     private Tech tech; // 직종
     private Integer experienceMonths; // 경력 기간 (월)
 }

@@ -1,8 +1,10 @@
 package jikgong.domain.member.dto.info;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
 import jikgong.domain.member.entity.Gender;
 import jikgong.domain.member.entity.Nationality;
+import jikgong.domain.workexperience.dto.WorkExperienceRequest;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,4 +28,8 @@ public class WorkerInfoRequest {
     private Boolean hasEducationCertificate; // 교육 이수증 여부
     @Schema(description = "근로자 카드 여부", example = "true")
     private Boolean hasWorkerCard; // 근로자 카드 여부
+
+    // 경력 정보
+    @Schema(description = "경력 정보 리스트", example = "[{ \"workExperienceId\": 1, \"tech\": \"NORMAL\", \"experienceMonths\": 36 }, { \"workExperienceId\": null, \"tech\": \"TILE\", \"experienceMonths\": 12 }]")
+    private List<WorkExperienceRequest> workExperienceRequestList; // 경력 정보 리스트
 }

@@ -1,6 +1,9 @@
 package jikgong.domain.member.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import jikgong.domain.member.dto.company.CompanySearchResponse;
 import jikgong.domain.member.dto.info.CompanyInfoRequest;
@@ -10,6 +13,9 @@ import jikgong.domain.member.dto.info.WorkerInfoRequest;
 import jikgong.domain.member.dto.info.WorkerInfoResponse;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
+import jikgong.domain.workexperience.dto.WorkExperienceRequest;
+import jikgong.domain.workexperience.entity.WorkExperience;
+import jikgong.domain.workexperience.repository.WorkExperienceRepository;
 import jikgong.global.exception.ErrorCode;
 import jikgong.global.exception.JikgongException;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Slf4j
 public class MemberInfoService {
+
+    private final WorkExperienceRepository workExperienceRepository;
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder encoder;
@@ -45,7 +53,41 @@ public class MemberInfoService {
         Member worker = memberRepository.findById(workerId)
             .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
-        worker.updateWorkerInfo(request);
+        // 경력 정보 업데이트
+        updateWorkExperiences(request.getWorkExperienceRequestList(), worker);
+    }
+
+    /**
+     * 경력 정보 업데이트 로직
+     */
+    private void updateWorkExperiences(List<WorkExperienceRequest> workExperienceRequestList, Member worker) {
+        List<WorkExperience> currentWorkExperiences = worker.getWorkExperienceList();
+        List<WorkExperience> newWorkExperiences = new ArrayList<>();
+
+        // 수정 요청으로 온 WorkExperienceRequest에서 해당 ID가 있으면 수정, null 이면 새로 추가
+        for (WorkExperienceRequest workExperienceRequest : workExperienceRequestList) {
+            Optional<WorkExperience> existingExperience = currentWorkExperiences.stream()
+                .filter(we -> we.getId().equals(workExperienceRequest.getWorkExperienceId()))
+                .findFirst();
+
+            if (existingExperience.isPresent()) {
+                // 경력 수정
+                WorkExperience workExperience = existingExperience.get();
+                workExperience.updateExperienceMonths(workExperienceRequest); // 필요한 필드 업데이트
+            } else {
+                // 경력 추가
+                newWorkExperiences.add(WorkExperience.from(workExperienceRequest, worker));
+            }
+        }
+        // 수정 요청이 오지 않은 경력에 대해선 제거
+        List<Long> workExperienceIdList = workExperienceRequestList.stream()
+            .map(WorkExperienceRequest::getWorkExperienceId)
+            .filter(Objects::nonNull) // null 값 필터링
+            .collect(Collectors.toList());
+        workExperienceRepository.deleteWorkExperienceNotInIdList(worker.getId(), workExperienceIdList);
+
+        // 경력 추가
+        workExperienceRepository.saveAll(newWorkExperiences);
     }
 
     /**

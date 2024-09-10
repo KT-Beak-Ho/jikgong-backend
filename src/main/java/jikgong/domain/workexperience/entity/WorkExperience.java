@@ -48,4 +48,8 @@ public class WorkExperience {
             .member(member)
             .build();
     }
+
+    public void updateExperienceMonths(WorkExperienceRequest request) {
+        this.experienceMonths = request.getExperienceMonths();
+    }
 }
