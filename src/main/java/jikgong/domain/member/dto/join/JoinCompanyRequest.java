@@ -2,7 +2,11 @@ package jikgong.domain.member.dto.join;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jikgong.domain.member.entity.Role;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @AllArgsConstructor
 @Builder
@@ -24,6 +28,8 @@ public class JoinCompanyRequest {
     private String account; // 게좌 번호
     @Schema(description = "은행 종류", example = "국민은행")
     private String bank; // 은행
+    @Schema(description = "개인 정보 동의 여부", example = "true")
+    private Boolean privacyConsent; // 개인 정보 동의 여부
     @Schema(description = "device token", example = "token")
     private String deviceToken; // 기기 토큰
     @Schema(description = "알림 수신 여부", example = "true")
