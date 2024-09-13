@@ -30,7 +30,7 @@ public class S3Handler {
     private String resize_bucket;
 
 
-    public ImageDto uploadCertification(MultipartFile file) {
+    public ImageDto uploadImage(MultipartFile file) {
         String extension; //확장자명
         String contentType = file.getContentType();
 
