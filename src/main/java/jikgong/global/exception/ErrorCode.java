@@ -135,7 +135,12 @@ public enum ErrorCode {
     SMS_FORBIDDEN(HttpStatus.FORBIDDEN, "SMS-004", "접근이 금지되었습니다."),
     SMS_NOT_FOUND(HttpStatus.NOT_FOUND, "SMS-005", "요청한 리소스를 찾을 수 없습니다."),
     SMS_TOO_MANY_REQUESTS(HttpStatus.TOO_MANY_REQUESTS, "SMS-006", "요청이 너무 많습니다. 나중에 다시 시도하세요."),
-    SMS_INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "SMS-007", "서버 내부 오류가 발생했습니다.");
+    SMS_INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "SMS-007", "서버 내부 오류가 발생했습니다."),
+
+    /**
+     * 비자 사진
+     */
+    VISA_IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "VISA-001", "비자 사진 정보가 없습니다.");
 
     private final HttpStatus status;
     private final String code;
