@@ -1,7 +1,12 @@
 package jikgong.domain.jobpostimage.entity;
 
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jikgong.domain.jobpost.entity.JobPost;
 import jikgong.global.s3.ImageDto;
 import lombok.AccessLevel;
@@ -16,7 +21,7 @@ public class JobPostImage {
 
     @Id
     @GeneratedValue
-    @Column(name = "job_post_image")
+    @Column(name = "job_post_image_id")
     private Long id;
 
     private String storeImgName; // 저장된 이미지 명 (uuid)
