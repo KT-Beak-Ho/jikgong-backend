@@ -1,7 +1,14 @@
 package jikgong.domain.member.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jikgong.domain.member.dto.join.*;
+import jikgong.domain.member.dto.join.JoinCompanyRequest;
+import jikgong.domain.member.dto.join.JoinWorkerRequest;
+import jikgong.domain.member.dto.join.ValidationLoginIdRequest;
+import jikgong.domain.member.dto.join.ValidationPhoneRequest;
+import jikgong.domain.member.dto.join.VerificationAccountRequest;
+import jikgong.domain.member.dto.join.VerificationAccountResponse;
+import jikgong.domain.member.dto.join.VerificationSmsRequest;
+import jikgong.domain.member.dto.join.VerificationSmsResponse;
 import jikgong.domain.member.dto.login.LoginRequest;
 import jikgong.domain.member.dto.login.LoginResponse;
 import jikgong.domain.member.dto.login.RefreshTokenRequest;
@@ -9,10 +16,13 @@ import jikgong.domain.member.service.LoginService;
 import jikgong.global.common.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,9 +32,10 @@ public class LoginController {
     private final LoginService loginService;
 
     @Operation(summary = "회원 가입: 노동자")
-    @PostMapping("/api/join/worker/join")
-    public ResponseEntity<Response> joinWorkerMember(@RequestBody JoinWorkerRequest request) {
-        Long savedMemberId = loginService.joinWorkerMember(request);
+    @PostMapping(value = "/api/join/worker/join", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<Response> joinWorkerMember(@RequestPart JoinWorkerRequest request,
+        @RequestPart(required = false) MultipartFile visaImage) {
+        Long savedMemberId = loginService.joinWorkerMember(request, visaImage);
         return ResponseEntity.ok(new Response("노동자 회원 가입 완료"));
     }
 

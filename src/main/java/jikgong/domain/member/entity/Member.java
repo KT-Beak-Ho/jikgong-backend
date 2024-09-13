@@ -5,9 +5,12 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import java.util.ArrayList;
 import java.util.List;
 import jikgong.domain.apply.entity.Apply;
@@ -16,6 +19,7 @@ import jikgong.domain.history.entity.History;
 import jikgong.domain.location.entity.Location;
 import jikgong.domain.member.dto.info.CompanyInfoRequest;
 import jikgong.domain.member.dto.info.WorkerInfoRequest;
+import jikgong.domain.visaimage.entity.VisaImage;
 import jikgong.domain.workexperience.entity.WorkExperience;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -52,6 +56,10 @@ public class Member extends BaseEntity {
     private Worker workerInfo;
     @Embedded
     private Company companyInfo;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "visa_image_id")
+    private VisaImage visaImage; // 비자 사진
 
     // 양방향 매핑
     @OneToMany(mappedBy = "member")
@@ -103,5 +111,9 @@ public class Member extends BaseEntity {
 
     public void updatePassword(String newPassword) {
         this.password = newPassword;
+    }
+
+    public void updateVisaImage(VisaImage visaImage) {
+        this.visaImage = visaImage;
     }
 }
