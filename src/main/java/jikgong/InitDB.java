@@ -79,34 +79,34 @@ public class InitDB {
 
             jobPostCompanyService.saveJobPost(savedId,
                 createJobPostSaveRequest("부산 남구 우암1구역 주택재개발", 120000, Park.FREE, true, true, "부산 남구 우암로 168-1",
-                    35.11607388697734F, 128.9605373114043F), null);
+                    35.11607388697734F, 128.9605373114043F, "부산광역시", "남구"), null);
             jobPostCompanyService.saveJobPost(savedId,
                 createJobPostSaveRequest("부산 강서구 명지동 빌리브 명시 듀클래스", 150000, Park.FREE, false, true, "부산 강서구 명지동 3605-6",
-                    35.11607388697734F, 128.9605393134043F), null);
+                    35.11607388697734F, 128.9605393134043F, "부산광역시", "강서구"), null);
             jobPostCompanyService.saveJobPost(savedId,
                 createJobPostSaveRequest("역세권 청년주택 신축공사", 110000, Park.NONE, true, true, "서울 중랑구 상봉동",
-                    35.12607388697734F, 128.9625393114043F), null);
+                    35.12607388697734F, 128.9625393114043F, "서울특별시", "중량구"), null);
             jobPostCompanyService.saveJobPost(savedId,
                 createJobPostSaveRequest("분당 느티마을 4단지 리모델링 현장", 90000, Park.FREE, true, true, "경기 성남시 분당 느티마을 4단지",
-                    35.11607388697734F, 128.9605393134043F), null);
+                    35.11607388697734F, 128.9605393134043F, "성남시", "분당구"), null);
             jobPostCompanyService.saveJobPost(savedId,
                 createJobPostSaveRequest("경기 의왕시 초평 스마트시티퀀텀", 130000, Park.PAID, true, true, "경기 의왕시",
-                    35.13607388697734F, 128.8605393114043F), null);
+                    35.13607388697734F, 128.8605393114043F, "의왕시", null), null);
             jobPostCompanyService.saveJobPost(savedId,
                 createJobPostSaveRequest("서울 강남구 근린생활시설 리노베이션 공사", 80000, Park.FREE, true, false, "서울 강남구 상섬동 130-5",
-                    35.11607318697734F, 128.9605393114043F), null);
+                    35.11607318697734F, 128.9605393114043F, "서울특별시", "강남구"), null);
             jobPostCompanyService.saveJobPost(savedId,
                 createJobPostSaveRequest("서울 서초구 GDC&Office 신축공사", 88000, Park.PAID, true, true, "서울 서초구",
-                    35.11607388697734F, 128.9608393114043F), null);
+                    35.11607388697734F, 128.9608393114043F, "서울특별시", "서초구"), null);
             jobPostCompanyService.saveJobPost(savedId,
                 createJobPostSaveRequest("서울 강서구 염창동 등촌역 지식산업센터 개발사업", 145000, Park.FREE, true, true, "서울 강서구 염창동 등촌역",
-                    35.11607288697734F, 128.9605393114043F), null);
+                    35.11607288697734F, 128.9605393114043F, "서울특별시", "강서구"), null);
             jobPostCompanyService.saveJobPost(savedId,
                 createJobPostSaveRequest("서울 중구 필동1가 3-1 업무시설 신축공사", 150000, Park.NONE, true, false, "서울 중구 필동1가 3-1",
-                    35.11607348697734F, 128.9605393114043F), null);
+                    35.11607348697734F, 128.9605393114043F, "서울특별시", "중구"), null);
             jobPostCompanyService.saveJobPost(savedId,
                 createJobPostSaveRequest("서울 서대문구 창천동 청년주택 신축공사", 117000, Park.PAID, false, true, "서울 서대문구 창천동",
-                    35.12607388697734F, 128.9305393114043F), null);
+                    35.12607388697734F, 128.9305393114043F, "서울특별시", "서대문구"), null);
         }
 
         private ProjectSaveRequest createProjectSaveRequest() {
@@ -200,7 +200,7 @@ public class InitDB {
         }
 
         private JobPostSaveRequest createJobPostSaveRequest(String title, Integer wage, Park park, boolean meal,
-            boolean pickup, String address, Float latitude, Float longitude) {
+            boolean pickup, String address, Float latitude, Float longitude, String city, String district) {
             return JobPostSaveRequest.builder()
                 .title(title)
                 .tech(Tech.NORMAL)
@@ -216,8 +216,8 @@ public class InitDB {
                 .address(address)
                 .latitude(latitude)
                 .longitude(longitude)
-                .city("부산광역시")
-                .district("사하구")
+                .city(city)
+                .district(district)
                 .dateList(generateRandomDates(3))
                 .pickupList(Arrays.asList(
                     "부산광역시 사하구 낙동대로 550번길 37",
