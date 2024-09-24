@@ -68,13 +68,30 @@ public class MemberInfoController {
         return ResponseEntity.ok(new Response("노동자 정보 수정 완료"));
     }
 
-    @Operation(summary = "비밀번호 수정", description = "회원 정보 수정 시 비밀번호 체크 및 수정")
+    @Operation(summary = "비밀번호 변경", description = "회원 정보 수정 시 비밀번호 체크 및 수정")
     @PostMapping("/api/member-info/password-validation")
     @AuthenticatedRequired
     public ResponseEntity<Response> validationPassword(@AuthenticationPrincipal PrincipalDetails principalDetails,
         @RequestBody PasswordRequest request) {
         memberInfoService.validationPassword(principalDetails.getMember().getId(), request);
         return ResponseEntity.ok(new Response("비밀번호 확인 완료"));
+    }
+
+    @Operation(summary = "비밀번호 임시 발급 - 비밀번호 찾기", description = "비밀번호를 찾기 기능")
+    @PostMapping("/api/member-info/password-reset")
+    public ResponseEntity<Response> validationPassword(@RequestBody PasswordRequest request) {
+        // todo: 개발 필요
+        return ResponseEntity.ok(new Response("개발 중"));
+    }
+
+    // todo: 비밀번호 찾기 개발
+
+    @Operation(summary = "체류 만료일 불러오기", description = "codef api를 활용하여 체류 만료일 정보 저장")
+    @PostMapping("/api/member-info/visaExpiryDate")
+    @WorkerRoleRequired
+    public ResponseEntity<Response> updateVisaExpiryDate(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        // todo: 개발 필요
+        return ResponseEntity.ok(new Response("개발 중"));
     }
 
     @Operation(summary = "기업 검색")
