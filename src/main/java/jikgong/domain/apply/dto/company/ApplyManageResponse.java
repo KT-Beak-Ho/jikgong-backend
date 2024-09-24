@@ -8,6 +8,7 @@ import jikgong.domain.history.entity.WorkStatus;
 import jikgong.domain.member.entity.Gender;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.entity.Nationality;
+import jikgong.domain.workexperience.dto.WorkExperienceResponse;
 import jikgong.global.utils.AgeTransfer;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,6 +42,8 @@ public class ApplyManageResponse {
         private Nationality nationality; // 국적
         private Integer workTimes; // 출역 횟수
         private Float participationRate; // 참여율
+        private Boolean hasVisa; // 비자 유무
+        private List<WorkExperienceResponse> workExperienceResponseList; // 경력 사항
 
         public static MemberResponse from(Member member) {
             // 나이 계산
@@ -58,6 +61,11 @@ public class ApplyManageResponse {
                 participationRate = -1;
             }
 
+            // 경력 사항
+            List<WorkExperienceResponse> workExperienceResponseList = member.getWorkExperienceList().stream()
+                .map(WorkExperienceResponse::from)
+                .collect(Collectors.toList());
+
             return MemberResponse.builder()
                 .memberId(member.getId())
                 .workerName(member.getWorkerInfo().getWorkerName())
@@ -67,6 +75,8 @@ public class ApplyManageResponse {
                 .nationality(member.getWorkerInfo().getNationality())
                 .workTimes(workTimes)
                 .participationRate(participationRate)
+                .hasVisa(member.getWorkerInfo().getHasVisa())
+                .workExperienceResponseList(workExperienceResponseList)
                 .build();
         }
     }
