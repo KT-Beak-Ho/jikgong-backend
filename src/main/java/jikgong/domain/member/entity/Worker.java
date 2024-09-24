@@ -4,6 +4,7 @@ import jakarta.persistence.Embeddable;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import java.time.LocalDate;
 import jikgong.domain.member.dto.info.WorkerInfoRequest;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -22,6 +23,7 @@ public class Worker {
     private Gender gender; // 성별
     private Nationality nationality; // 국적
     private Boolean hasVisa; // 비자 여부 (외국인만 입력)
+    private LocalDate visaExpiryDate; // 체류 만료일
     private Boolean hasEducationCertificate; // 교육 증명서
     private Boolean hasWorkerCard; // 근로자 카드 여부
 
@@ -54,5 +56,9 @@ public class Worker {
         this.hasVisa = request.getHasVisa();
         this.hasEducationCertificate = request.getHasEducationCertificate();
         this.hasWorkerCard = request.getHasWorkerCard();
+    }
+
+    public void updateVisaExpiryDate(LocalDate visaExpiryDate) {
+        this.visaExpiryDate = visaExpiryDate;
     }
 }

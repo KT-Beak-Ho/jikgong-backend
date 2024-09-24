@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import jikgong.domain.apply.entity.Apply;
@@ -111,6 +112,10 @@ public class Member extends BaseEntity {
 
     public void updatePassword(String newPassword) {
         this.password = newPassword;
+    }
+
+    private void updateVisaExpiryDate(LocalDate visaExpiryDate) {
+        this.workerInfo.updateVisaExpiryDate(visaExpiryDate);
     }
 
     public void updateVisaImage(VisaImage visaImage) {
