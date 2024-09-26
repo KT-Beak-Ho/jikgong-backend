@@ -27,6 +27,8 @@ public class Worker {
     private Boolean hasEducationCertificate; // 교육 증명서
     private Boolean hasWorkerCard; // 근로자 카드 여부
 
+    private Boolean credentialLiabilityConsent; // 자격증명 법적 책임 동의 여부
+
     private Boolean isOffer; // 헤드헌팅 여부
 
     @Embedded
@@ -34,7 +36,8 @@ public class Worker {
 
     @Builder
     public Worker(String workerName, String birth, String rrn, Gender gender, Nationality nationality,
-        Boolean hasVisa, Boolean hasEducationCertificate, Boolean hasWorkerCard, Boolean isNotification) {
+        Boolean hasVisa, Boolean hasEducationCertificate, Boolean hasWorkerCard, Boolean credentialLiabilityConsent,
+        Boolean isNotification) {
         this.workerName = workerName;
         this.birth = birth;
         this.rrn = rrn;
@@ -43,6 +46,7 @@ public class Worker {
         this.hasVisa = hasVisa;
         this.hasEducationCertificate = hasEducationCertificate;
         this.hasWorkerCard = hasWorkerCard;
+        this.credentialLiabilityConsent = credentialLiabilityConsent;
         this.isOffer = true; // 기본 true
         this.workerNotificationInfo = new WorkerNotificationInfo(isNotification);
     }

@@ -56,6 +56,9 @@ public class JoinWorkerRequest {
     private Boolean hasEducationCertificate; // 교육 이수증 여부
     @Schema(description = "근로자 카드 여부", example = "true")
     private Boolean hasWorkerCard; // 근로자 카드 여부
+    @Schema(description = "자격증명 법적 책임 동의 여부", example = "true")
+    private Boolean credentialLiabilityConsent; // 자격증명 법적 책임 동의 여부
+
     // 경력 정보
     @Schema(description = "경력 정보", example = "[{ \"tech\": \"NORMAL\", \"experienceMonths\": 24 }, { \"tech\": \"LANDSCAPER\", \"experienceMonths\": 18 }]")
     private List<WorkExperienceRequest> workExperienceRequest;

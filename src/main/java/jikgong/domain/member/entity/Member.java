@@ -47,7 +47,7 @@ public class Member extends BaseEntity {
     @Column(unique = true)
     private String account; // 계좌
     private String bank; // 은행 종류
-    private Boolean privacyConsent; // 개인정보 동의
+    private Boolean privacyConsent; // 개인정보 동의 여부
     private String deviceToken; // 기기 토큰
     private Boolean isDeleted; // 회원 탈퇴 여부
 

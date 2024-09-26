@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,9 +32,8 @@ public class LoginController {
 
     @Operation(summary = "회원 가입: 노동자")
     @PostMapping(value = "/api/join/worker/join", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Response> joinWorkerMember(@RequestPart JoinWorkerRequest request,
-        @RequestPart(required = false) MultipartFile visaImage) {
-        Long savedMemberId = loginService.joinWorkerMember(request, visaImage);
+    public ResponseEntity<Response> joinWorkerMember(@RequestPart JoinWorkerRequest request) {
+        Long savedMemberId = loginService.joinWorkerMember(request);
         return ResponseEntity.ok(new Response("노동자 회원 가입 완료"));
     }
 
