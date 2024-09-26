@@ -1,6 +1,7 @@
 package jikgong.domain.member.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import jikgong.domain.member.dto.join.JoinCompanyRequest;
 import jikgong.domain.member.dto.join.JoinWorkerRequest;
 import jikgong.domain.member.dto.join.ValidationLoginIdRequest;
@@ -32,14 +33,14 @@ public class LoginController {
 
     @Operation(summary = "회원 가입: 노동자")
     @PostMapping(value = "/api/join/worker/join", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Response> joinWorkerMember(@RequestPart JoinWorkerRequest request) {
+    public ResponseEntity<Response> joinWorkerMember(@Valid @RequestPart JoinWorkerRequest request) {
         Long savedMemberId = loginService.joinWorkerMember(request);
         return ResponseEntity.ok(new Response("노동자 회원 가입 완료"));
     }
 
     @Operation(summary = "회원 가입: 기업")
     @PostMapping("/api/join/company/join")
-    public ResponseEntity<Response> joinCompanyMember(@RequestBody JoinCompanyRequest request) {
+    public ResponseEntity<Response> joinCompanyMember(@Valid @RequestBody JoinCompanyRequest request) {
         Long savedMemberId = loginService.joinCompanyMember(request);
         return ResponseEntity.ok(new Response("기업 회원 가입 완료"));
     }

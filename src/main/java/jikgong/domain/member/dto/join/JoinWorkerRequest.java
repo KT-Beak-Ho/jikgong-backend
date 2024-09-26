@@ -1,6 +1,9 @@
 package jikgong.domain.member.dto.join;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import jikgong.domain.member.entity.Gender;
 import jikgong.domain.member.entity.Nationality;
@@ -21,42 +24,61 @@ public class JoinWorkerRequest {
 
     // 공통 정보
     @Schema(description = "로그인 아이디", example = "abcdefg1")
+    @NotBlank
     private String loginId; // 인증 코드
     @Schema(description = "로그인 패스워드", example = "abcdefg1")
+    @NotBlank
     private String password; // 인증 코드
     @Schema(description = "휴대폰 번호", example = "01012345678")
+    @NotBlank
     private String phone;
     @Schema(description = "회원 타입 [ROLE_WORKER or ROLE_REGISTER]", example = "ROLE_WORKER")
+    @NotNull
     private Role role; // 회원 타입
     @Schema(description = "계좌 번호", example = "12341234123412")
+    @NotBlank
     private String account; // 계좌 번호
     @Schema(description = "은행 종류", example = "국민은행")
+    @NotBlank
     private String bank; // 은행
     @Schema(description = "개인 정보 동의 여부", example = "true")
+    @AssertTrue
+    @NotNull
     private Boolean privacyConsent; // 개인 정보 동의 여부
     @Schema(description = "device token", example = "token")
     private String deviceToken; // 기기 토큰
     @Schema(description = "알림 수신 여부", example = "true")
+    @NotNull
     private Boolean isNotification; // 알림 수신 여부
 
     // 노동자 정보
     @Schema(description = "노동자 이름", example = "홍길동")
+    @NotBlank
     private String workerName; // 노동자 이름
     @Schema(description = "생년월일", example = "19750101")
+    @NotBlank
     private String birth; // 생년월일
     @Schema(description = "주민등록번호", example = "750101-1752442")
+    @NotBlank
     private String rrn; // 생년월일
     @Schema(description = "성별 [MALE or FEMAILE]", example = "MALE")
+    @NotNull
     private Gender gender; // 성별
     @Schema(description = "국적 [KOREAN or FOREIGNER]", example = "KOREAN")
+    @NotNull
     private Nationality nationality; // 국적
     @Schema(description = "비자 여부", example = "true")
+    @NotNull
     private Boolean hasVisa; // 비자 여부
     @Schema(description = "교육 이수증 여부", example = "true")
+    @NotNull
     private Boolean hasEducationCertificate; // 교육 이수증 여부
     @Schema(description = "근로자 카드 여부", example = "true")
+    @NotNull
     private Boolean hasWorkerCard; // 근로자 카드 여부
     @Schema(description = "자격증명 법적 책임 동의 여부", example = "true")
+    @AssertTrue
+    @NotNull
     private Boolean credentialLiabilityConsent; // 자격증명 법적 책임 동의 여부
 
     // 경력 정보

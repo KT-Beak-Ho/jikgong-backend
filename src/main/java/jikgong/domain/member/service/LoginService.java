@@ -56,8 +56,6 @@ public class LoginService {
         validationLoginId(request.getLoginId());
         // 휴대폰 중복 체크
         validationPhone(request.getPhone());
-        // 각종 동의 체크
-        validationConsent(request);
 
         // 노동자 정보
         Worker worker = Worker.builder()
@@ -115,13 +113,6 @@ public class LoginService {
         return savedMember.getId();
     }
 
-    // 각종 동의 체크
-    private void validationConsent(JoinWorkerRequest request) {
-        if (!request.getPrivacyConsent() || request.getCredentialLiabilityConsent()) {
-            throw new JikgongException(ErrorCode.MEMBER_CONSENTS_NEED_TO_AGREE);
-        }
-    }
-
     /**
      * 기업 회원가입
      */
@@ -130,8 +121,6 @@ public class LoginService {
         validationLoginId(request.getLoginId());
         // 휴대폰 중복 체크
         validationPhone(request.getPhone());
-        // 각종 동의 체크
-        validationConsent(request);
 
         // 기업 정보
         Company company = Company.builder()
@@ -159,13 +148,6 @@ public class LoginService {
 
         log.info("기업 회원 가입 완료");
         return memberRepository.save(member).getId(); // 회원 저장
-    }
-
-    // 각종 동의 체크
-    private void validationConsent(JoinCompanyRequest request) {
-        if (!request.getPrivacyConsent()) {
-            throw new JikgongException(ErrorCode.MEMBER_CONSENTS_NEED_TO_AGREE);
-        }
     }
 
     /**
