@@ -61,19 +61,19 @@ public class InitDB {
             loginService.joinWorkerMember(
                 createJoinWorkerRequest("abcdefg1", "01011111111", Role.ROLE_WORKER, "111122223333", "김진수",
                     "2000-09-30", "000930",
-                    35.116777388697734F, 128.9685393114043F), null);
+                    35.116777388697734F, 128.9685393114043F));
             loginService.joinWorkerMember(
                 createJoinWorkerRequest("abcdefg2", "01022222222", Role.ROLE_WORKER, "222233334444", "이승민",
                     "2001-02-12", "010212",
-                    35.086777388697734F, 128.9585393114043F), null);
+                    35.086777388697734F, 128.9585393114043F));
             loginService.joinWorkerMember(
                 createJoinWorkerRequest("abcdefg3", "01033333333", Role.ROLE_WORKER, "333344445555", "조영훈",
                     "2002-07-20", "020720",
-                    35.092233188697734F, 128.9485393114043F), null);
+                    35.092233188697734F, 128.9485393114043F));
             loginService.joinWorkerMember(
                 createJoinWorkerRequest("abcdefg4", "01044444444", Role.ROLE_WORKER, "444455556666", "안병기",
                     "2002-12-04", "021204",
-                    35.142157388697734F, 128.9385393114043F), null);
+                    35.142157388697734F, 128.9385393114043F));
 
             projectService.saveProject(savedId, createProjectSaveRequest());
 
@@ -145,6 +145,7 @@ public class InitDB {
                 .hasVisa(true)
                 .hasEducationCertificate(true)
                 .hasWorkerCard(true)
+                .credentialLiabilityConsent(true)
                 .workExperienceRequest(workExperienceRequestList)
                 .address("부산광역시 사하구 낙동대로 550번길 37")
                 .latitude(latitude)
