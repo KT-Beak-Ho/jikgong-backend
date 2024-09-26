@@ -20,14 +20,10 @@ import jikgong.domain.member.entity.Company;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.entity.Worker;
 import jikgong.domain.member.repository.MemberRepository;
-import jikgong.domain.visaimage.entity.VisaImage;
-import jikgong.domain.visaimage.repository.VisaImageRepository;
 import jikgong.domain.workexperience.entity.WorkExperience;
 import jikgong.domain.workexperience.repository.WorkExperienceRepository;
 import jikgong.global.exception.ErrorCode;
 import jikgong.global.exception.JikgongException;
-import jikgong.global.s3.ImageDto;
-import jikgong.global.s3.S3Handler;
 import jikgong.global.security.filter.JwtTokenProvider;
 import jikgong.global.sms.SmsService;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +32,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -51,18 +46,18 @@ public class LoginService {
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate<String, String> redisTemplate;
     private final SmsService smsService;
-    private final S3Handler s3Handler;
-    private final VisaImageRepository visaImageRepository;
 
     /**
      * 노동자 회원가입
      * 위치 정보 저장
      */
-    public Long joinWorkerMember(JoinWorkerRequest request, MultipartFile visaImageRequest) {
+    public Long joinWorkerMember(JoinWorkerRequest request) {
         // loginId 중복 체크
         validationLoginId(request.getLoginId());
         // 휴대폰 중복 체크
         validationPhone(request.getPhone());
+        // 각종 동의 체크
+        validationConsent(request);
 
         // 노동자 정보
         Worker worker = Worker.builder()
@@ -74,6 +69,7 @@ public class LoginService {
             .hasVisa(request.getHasVisa())
             .hasEducationCertificate(request.getHasEducationCertificate())
             .hasWorkerCard(request.getHasWorkerCard())
+            .credentialLiabilityConsent(request.getCredentialLiabilityConsent())
             .isNotification(request.getIsNotification())
             .build();
 
@@ -103,13 +99,13 @@ public class LoginService {
             .collect(Collectors.toList());
 
         // 회원에 비자 사진 등록 및 저장
-        if (request.getHasVisa() && visaImageRequest != null) {
-            ImageDto imageDto = s3Handler.uploadImage(visaImageRequest);
-            VisaImage visaImage = VisaImage.createEntity(imageDto);
-
-            member.updateVisaImage(visaImage);
-            visaImageRepository.save(visaImage);
-        }
+//        if (request.getHasVisa() && visaImageRequest != null) {
+//            ImageDto imageDto = s3Handler.uploadImage(visaImageRequest);
+//            VisaImage visaImage = VisaImage.createEntity(imageDto);
+//
+//            member.updateVisaImage(visaImage);
+//            visaImageRepository.save(visaImage);
+//        }
 
         Member savedMember = memberRepository.save(member); // 회원 저장
         workExperienceRepository.saveAll(workExperienceList); // 경력 정보 저장
@@ -117,6 +113,13 @@ public class LoginService {
 
         log.info("노동자 회원 가입 완료");
         return savedMember.getId();
+    }
+
+    // 각종 동의 체크
+    private void validationConsent(JoinWorkerRequest request) {
+        if (!request.getPrivacyConsent() || request.getCredentialLiabilityConsent()) {
+            throw new JikgongException(ErrorCode.MEMBER_CONSENTS_NEED_TO_AGREE);
+        }
     }
 
     /**
@@ -127,6 +130,8 @@ public class LoginService {
         validationLoginId(request.getLoginId());
         // 휴대폰 중복 체크
         validationPhone(request.getPhone());
+        // 각종 동의 체크
+        validationConsent(request);
 
         // 기업 정보
         Company company = Company.builder()
@@ -154,6 +159,13 @@ public class LoginService {
 
         log.info("기업 회원 가입 완료");
         return memberRepository.save(member).getId(); // 회원 저장
+    }
+
+    // 각종 동의 체크
+    private void validationConsent(JoinCompanyRequest request) {
+        if (!request.getPrivacyConsent()) {
+            throw new JikgongException(ErrorCode.MEMBER_CONSENTS_NEED_TO_AGREE);
+        }
     }
 
     /**

@@ -20,6 +20,7 @@ public enum ErrorCode {
     ROLE_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER-008", "요청된 회원의 ROLE을 특정할 수 없습니다."),
     MEMBER_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "MEMBER-009", "인증이 필요합니다."),
     MEMBER_FORBIDDEN(HttpStatus.FORBIDDEN, "MEMBER-010", "권한이 필요합니다."),
+    MEMBER_CONSENTS_NEED_TO_AGREE(HttpStatus.FORBIDDEN, "MEMBER-011", "회원가입을 위해선 각종 내용에 동의해야합니다."),
 
     /**
      * 알림
