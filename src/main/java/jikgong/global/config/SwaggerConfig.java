@@ -14,14 +14,14 @@ import org.springframework.context.annotation.Configuration;
 @OpenAPIDefinition(
     info = @Info(title = "jikgong API 명세서",
         description = "기업 계정: 아래 1개   " +
-            "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZGVmZzAiLCJleHAiOjE3MjYyMjY3NDB9.fztvihYHiIqMviCdHRxu5CBbCv9yN3gOIQy_8U4olMI    "
+            "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZGVmZzAiLCJleHAiOjE3Mzc3MDMyMTZ9.c-UN8qz7EzBrIDk7Mj03ohW7yXcDxcD6xtjyNV4__9Y    "
             +
             "\n노동자 계정: 아래 4개    " +
-            "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZGVmZzEiLCJleHAiOjE3MjYyMjY3NjZ9.wKJLM50gYXZ-xDxalx13xsTBJRuVILG72Y4uyflTq3Y    "
+            "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZGVmZzEiLCJleHAiOjE3Mzc3MDMyNDl9.QQcmJqutM61IqFTe-a4BPL8QCrnHdQGx9kOcoLw9yEQ    "
             +
-            "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZGVmZzIiLCJleHAiOjE3MjYyMjY3OTB9.KD1B-mmOeOa-k2wvgaFLMZ7RLwCfhzhB8EBFSFtbJao    "
+            "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZGVmZzIiLCJleHAiOjE3Mzc3MDMyNjN9.PzT8hs8T9K6EpEZ1C4fD_rU_2Q91ezdJOUEJX8xqv9A    "
             +
-            "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZGVmZzMiLCJleHAiOjE3MjYyMjY4MDd9.bnMXxKmBBSXVufJ8wvI7RDcK62WhrWJdH9abRTxuC-E    "
+            "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZGVmZzMiLCJleHAiOjE3Mzc3MDMyNzh9.nUuAmr330GYeyHO6UUffBQpIxn8civq6cD6C6kKIB1E    "
             +
             "\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZGVmZzQiLCJleHAiOjE3MjYyMjY4MjB9.pCs2S7lzylPgIxD0t0IQ7bO89GaRZi1QoFcvjIc2W2c",
         version = "v1"),

@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class JwtTokenProvider {
 
-    private static final Long ACCESS_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 60L; // 60 days
+    private static final Long ACCESS_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 120L; // 120 days
     //    private static final Long ACCESS_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 2L; // 2 hours
     private static final Long REFRESH_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 90L; // 90 days
     private final RedisTemplate<String, String> redisTemplate;
