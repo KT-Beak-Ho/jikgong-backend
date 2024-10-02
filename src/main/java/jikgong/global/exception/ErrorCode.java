@@ -63,7 +63,7 @@ public enum ErrorCode {
     APPLY_ALREADY_EXIST(HttpStatus.CONFLICT, "APPLY-002", "이미 신청한 모집 공고 입니다."),
     APPLY_OVER_RECRUIT_NUM(HttpStatus.BAD_REQUEST, "APPLY-003", "모집 인원을 초과했습니다."),
     APPLY_ALREADY_ACCEPTED_IN_WORK_DATE(HttpStatus.CONFLICT, "APPLY-004", "이미 승인된 지원 내역이 있습니다."),
-    APPLY_CAN_TWO_DAYS_AGO(HttpStatus.BAD_REQUEST, "APPLY-005", "일자리 신청은 출역일 기준 2일 전까지 가능합니다."),
+    APPLY_CAN_TEN_MINUTE_AGO(HttpStatus.BAD_REQUEST, "APPLY-005", "일자리 신청은 출역 시간 10분 전 까지 가능합니다."),
     APPLY_CANCEL_IMPOSSIBLE(HttpStatus.BAD_REQUEST, "APPLY-006", "취소가 불가한 내역입니다."),
     APPLY_OFFERED_NOT_FOUND(HttpStatus.BAD_REQUEST, "APPLY-007", "제안 받으며 자동으로 생성된 지원 내역이 없습니다."),
     APPLY_NEED_TO_PENDING(HttpStatus.BAD_REQUEST, "APPLY-008", "대기 중인 요청에 대해서만 처리할 수 있습니다."),

@@ -2,8 +2,10 @@ package jikgong.domain.apply.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,8 +62,8 @@ public class ApplyWorkerService {
         // 신청할 날짜 validation 체크
         List<WorkDate> workDateList = validateWorkDate(request, jobPost);
 
-        // 가장 빠른 신청 날짜가 2일 후인지 체크
-        validateTwoDaysBefore(workDateList);
+        // 승인 가능 시각 체크
+        validateApplyTime(workDateList);
 
         // 중복 신청 체크
         validateDuplication(request, worker, jobPost);
@@ -94,19 +96,22 @@ public class ApplyWorkerService {
         }
     }
 
-    // 가장 빠른 신청 날짜가 2일 후인지 체크
-    private void validateTwoDaysBefore(List<WorkDate> workDateList) {
-        // 신청한 날짜 중 가장 빠른 날짜 추출
-        LocalDate minWorkDate = workDateList.stream()
-            .map(WorkDate::getDate)
-            .min(LocalDate::compareTo)
+    // 신청 가능 시각 체크
+    private void validateApplyTime(List<WorkDate> workDateList) {
+        // 신청한 날짜 중 가장 빠른 WorkDate 추출
+        WorkDate workDate = workDateList.stream()
+            .min(Comparator.comparing(WorkDate::getDate))
             .orElseThrow(() -> new JikgongException(ErrorCode.WORK_DATE_LIST_NOT_FOUND));
 
-        // 1일날 3일 공고를 신청했을 경우 가능
-        // 1일날 2일 공고를 신청했을 경우 불가능
-        LocalDate twoDaysInFuture = LocalDate.now().plusDays(2);
-        if (twoDaysInFuture.isAfter(minWorkDate)) {
-            throw new JikgongException(ErrorCode.APPLY_CAN_TWO_DAYS_AGO);
+        JobPost jobPost = workDate.getJobPost();
+
+        LocalTime startTime = jobPost.getStartTime(); // 출역 시각
+        LocalDate date = workDate.getDate(); // 출역 날짜
+        LocalDateTime now = LocalDateTime.now();
+
+        // 출역 시각 10분 전 까지 신청 가능
+        if (now.isAfter(LocalDateTime.of(date, startTime).minusMinutes(10))) {
+            throw new JikgongException(ErrorCode.APPLY_CAN_TEN_MINUTE_AGO);
         }
     }
 
