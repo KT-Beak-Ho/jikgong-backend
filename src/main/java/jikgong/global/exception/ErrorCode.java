@@ -67,6 +67,7 @@ public enum ErrorCode {
     APPLY_CANCEL_IMPOSSIBLE(HttpStatus.BAD_REQUEST, "APPLY-006", "취소가 불가한 내역입니다."),
     APPLY_OFFERED_NOT_FOUND(HttpStatus.BAD_REQUEST, "APPLY-007", "제안 받으며 자동으로 생성된 지원 내역이 없습니다."),
     APPLY_NEED_TO_PENDING(HttpStatus.BAD_REQUEST, "APPLY-008", "대기 중인 요청에 대해서만 처리할 수 있습니다."),
+    APPLY_ACCEPT_NEED_TO_PAST(HttpStatus.BAD_REQUEST, "APPLY-009", "요청 승인은 출역 시각 이전만 가능합니다.."),
 
     /**
      * 모집 공고 관련 (JobPost, WorkDate, Project)
@@ -76,9 +77,8 @@ public enum ErrorCode {
     WORK_DATE_NOT_FOUND(HttpStatus.NOT_FOUND, "WORKDATE-001", "채용 공고의 날짜 정보가 존재하지 않습니다."),
     WORK_DATE_LIST_NOT_FOUND(HttpStatus.NOT_FOUND, "WORKDATE-002", "요청한 날짜 중 모집 공고에 맞지 않는 날짜가 있습니다."),
     WORK_DATE_RECRUITMENT_FULL(HttpStatus.BAD_REQUEST, "WORKDATE-003", "이미 모집 인원이 충족되었습니다."),
-    WORK_DATE_NEED_TO_FUTURE(HttpStatus.BAD_REQUEST, "WORKDATE-004", "해당 날짜는 처리를 위한 조건에 부합하지 않습니다. 조건을 확인해주세요."),
-    WORK_DATE_NOT_MATCH(HttpStatus.BAD_REQUEST, "WORKDATE-005", "공고에 해당하는 workdate의 id값이 아닙니다."),
-    WORK_DATE_INVALID_RANGE(HttpStatus.BAD_REQUEST, "WORKDATE-006", "모집 공고 날짜가 프로젝트 기간에 포함되지 않습니다"),
+    WORK_DATE_NOT_MATCH(HttpStatus.BAD_REQUEST, "WORKDATE-004", "공고에 해당하는 workdate의 id값이 아닙니다."),
+    WORK_DATE_INVALID_RANGE(HttpStatus.BAD_REQUEST, "WORKDATE-005", "모집 공고 날짜가 프로젝트 기간에 포함되지 않습니다"),
     PROJECT_NOT_FOUND(HttpStatus.NOT_FOUND, "PROJECT-001", "프로젝트 정보가 없습니다."),
     PROJECT_DELETE_FAIL(HttpStatus.CONFLICT, "PROJECT-002", "프로젝트에 등록된 모집 공고가 있을 시 삭제할 수 없습니다."),
 

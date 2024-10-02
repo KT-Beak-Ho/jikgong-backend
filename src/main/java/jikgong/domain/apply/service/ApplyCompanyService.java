@@ -94,7 +94,7 @@ public class ApplyCompanyService {
             .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
 
         // workDate에 대한 Lock
-        WorkDate workDate = workDateRepository.findByIdWithLock(request.getWorkDateId())
+        WorkDate workDate = workDateRepository.findByIdWithLock(jobPost.getId(), request.getWorkDateId())
             .orElseThrow(() -> new JikgongException(ErrorCode.WORK_DATE_NOT_FOUND));
 
         // 회원들의 apply에 대한 Lock
@@ -156,9 +156,9 @@ public class ApplyCompanyService {
         LocalDate date = workDate.getDate(); // 출역 날짜
         LocalDateTime now = LocalDateTime.now();
 
-        // 출역 시각 10분 전 까지 수락 가능
+        // 출역 시각 전 까지 수락 가능
         if (now.isAfter(LocalDateTime.of(date, startTime))) {
-            throw new JikgongException(ErrorCode.WORK_DATE_NEED_TO_FUTURE);
+            throw new JikgongException(ErrorCode.APPLY_ACCEPT_NEED_TO_PAST);
         }
     }
 
@@ -166,6 +166,12 @@ public class ApplyCompanyService {
     private List<Apply> checkPendingApply(ApplyProcessRequest request, WorkDate workDate, JobPost jobPost) {
         List<Apply> applyList = applyRepository.findByIdList(request.getApplyIdList(), workDate.getId(),
             jobPost.getId());
+
+        // 조회된 apply 내역이 없을 경우
+        if (applyList.isEmpty()) {
+            throw new JikgongException(ErrorCode.APPLY_NOT_FOUND);
+        }
+
         for (Apply apply : applyList) {
             if (apply.getStatus() != ApplyStatus.PENDING) {
                 throw new JikgongException(ErrorCode.APPLY_NEED_TO_PENDING);

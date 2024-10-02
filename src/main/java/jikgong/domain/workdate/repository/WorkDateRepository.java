@@ -43,8 +43,8 @@ public interface WorkDateRepository extends JpaRepository<WorkDate, Long> {
      * 지원 수락
      */
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("select w from WorkDate w join fetch w.jobPost j where w.id = :workDateId")
-    Optional<WorkDate> findByIdWithLock(@Param("workDateId") Long workDateId);
+    @Query("select w from WorkDate w join fetch w.jobPost j where j.id = :jobPostId and w.id = :workDateId")
+    Optional<WorkDate> findByIdWithLock(@Param("jobPostId") Long jobPostId, @Param("workDateId") Long workDateId);
 
     /**
      * 임시 공고
