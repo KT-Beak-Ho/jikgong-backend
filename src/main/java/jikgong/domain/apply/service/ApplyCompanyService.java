@@ -2,6 +2,7 @@ package jikgong.domain.apply.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import jikgong.domain.apply.dto.company.ApplyManageResponse;
@@ -111,8 +112,8 @@ public class ApplyCompanyService {
             // 이미 다른 일자리에 승인된 노동자가 있는지 체크
             checkAcceptedWorker(workerIdList, workDate);
 
-            // 모집 인원 및 날짜 체크
-            checkRegisteredNumAndDate(workDate);
+            // 승인 가능 시각 체크
+            validateAcceptTime(workDate);
 
             // applyStatus 갱신
             int updatedCount = updateApplyStatus(ApplyStatus.ACCEPTED, applyList);
@@ -149,12 +150,14 @@ public class ApplyCompanyService {
         }
     }
 
-    // 날짜 체크
-    private void checkRegisteredNumAndDate(WorkDate workDate) {
-        // 출역일 2일 전까지 수락 가능
-        // 5일이 출역일이면
-        // 3일 수락 가능  |  4일 수락 불가능
-        if (LocalDate.now().isAfter(workDate.getDate().minusDays(2))) {
+    // 승인 가능 시각 체크
+    private void validateAcceptTime(WorkDate workDate) {
+        LocalTime startTime = workDate.getJobPost().getStartTime(); // 출역 시각
+        LocalDate date = workDate.getDate(); // 출역 날짜
+        LocalDateTime now = LocalDateTime.now();
+
+        // 출역 시각 10분 전 까지 수락 가능
+        if (now.isAfter(LocalDateTime.of(date, startTime))) {
             throw new JikgongException(ErrorCode.WORK_DATE_NEED_TO_FUTURE);
         }
     }
