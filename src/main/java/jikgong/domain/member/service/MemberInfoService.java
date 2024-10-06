@@ -18,6 +18,8 @@ import jikgong.domain.workexperience.entity.WorkExperience;
 import jikgong.domain.workexperience.repository.WorkExperienceRepository;
 import jikgong.global.exception.ErrorCode;
 import jikgong.global.exception.JikgongException;
+import jikgong.global.sms.SmsService;
+import jikgong.global.utils.RandomCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,9 +33,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberInfoService {
 
     private final WorkExperienceRepository workExperienceRepository;
-
     private final MemberRepository memberRepository;
     private final PasswordEncoder encoder;
+    private final SmsService smsService;
 
     /**
      * 노동자: 회원 정보 조회
@@ -114,7 +116,7 @@ public class MemberInfoService {
     /**
      * 비밀번호 확인 후 변경
      */
-    public void validationPassword(Long memberId, PasswordRequest request) {
+    public void updatePassword(Long memberId, PasswordRequest request) {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
@@ -133,5 +135,19 @@ public class MemberInfoService {
         return memberRepository.findByCompanyName(keyword).stream()
             .map(CompanySearchResponse::from)
             .collect(Collectors.toList());
+    }
+
+    // 임시 비밀번호 생성
+    public void sendTemporaryPassword(Long memberId) throws Exception {
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+
+        // 임시 비밀번호 생성
+        String temporaryPassword = RandomCode.createTemporaryPassword();
+        String content = "[직공]\n발급된 임시 비밀번호: [" + temporaryPassword + "]";
+        member.updatePassword(encoder.encode(temporaryPassword));
+
+        // 임시 비밀번호 발송
+        smsService.sendSms(member.getPhone(), content);
     }
 }

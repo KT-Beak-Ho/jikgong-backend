@@ -73,15 +73,16 @@ public class MemberInfoController {
     @AuthenticatedRequired
     public ResponseEntity<Response> validationPassword(@AuthenticationPrincipal PrincipalDetails principalDetails,
         @RequestBody PasswordRequest request) {
-        memberInfoService.validationPassword(principalDetails.getMember().getId(), request);
+        memberInfoService.updatePassword(principalDetails.getMember().getId(), request);
         return ResponseEntity.ok(new Response("비밀번호 확인 완료"));
     }
 
-    @Operation(summary = "비밀번호 임시 발급 - 비밀번호 찾기", description = "비밀번호를 찾기 기능")
+    @Operation(summary = "비밀번호 임시 발급", description = "sms로 임시 비밀번호 발급")
     @PostMapping("/api/member-info/password-reset")
-    public ResponseEntity<Response> validationPassword(@RequestBody PasswordRequest request) {
-        // todo: 개발 필요
-        return ResponseEntity.ok(new Response("개발 중"));
+    public ResponseEntity<Response> validationPassword(@AuthenticationPrincipal PrincipalDetails principalDetails)
+        throws Exception {
+        memberInfoService.sendTemporaryPassword(principalDetails.getMember().getId());
+        return ResponseEntity.ok(new Response("sms로 임시 비밀번호 발급 및 비밀번호 업데이트 완료"));
     }
 
     // todo: 비밀번호 찾기 개발
