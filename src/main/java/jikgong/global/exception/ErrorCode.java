@@ -99,7 +99,7 @@ public enum ErrorCode {
      */
     OFFER_NOT_FOUND(HttpStatus.NOT_FOUND, "OFFER-001", "제안(여러 날짜 묶음) 내역이 없습니다."),
     OFFER_WORK_DATE_NOT_FOUND(HttpStatus.NOT_FOUND, "OFFER-002", "제안(개별 날짜) 내역이 없습니다."),
-    OFFER_PROCESS_NEED_TO_ONE_DAY_AGO(HttpStatus.BAD_REQUEST, "OFFER-003", "제안 수락은 출역일 하루 전 날까지 가능합니다."),
+    OFFER_INVALID_DATE(HttpStatus.BAD_REQUEST, "OFFER-003", "제안을 처리할 수 있는 시점이 아닙니다."),
     OFFER_CANCEL_FAIL(HttpStatus.BAD_REQUEST, "OFFER-004", "노동자가 처리하지 않은 제안에 대해서만 취소할 수 있습니다."),
 
     /**

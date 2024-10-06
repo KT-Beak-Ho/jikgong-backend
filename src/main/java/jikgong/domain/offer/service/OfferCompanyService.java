@@ -127,11 +127,11 @@ public class OfferCompanyService {
         // 출역 시각 3시간 전까지 처리 가능
         for (WorkDate workDate : workDateEntityList) {
             if (LocalDate.now().isAfter(workDate.getDate())) {
-                throw new JikgongException(ErrorCode.WORK_DATE_NEED_TO_FUTURE);
+                throw new JikgongException(ErrorCode.OFFER_INVALID_DATE);
             }
             if (LocalDate.now().isEqual(workDate.getDate()) && LocalTime.now().plusHours(3L)
                 .isAfter(workDate.getJobPost().getStartTime())) {
-                throw new JikgongException(ErrorCode.WORK_DATE_NEED_TO_FUTURE);
+                throw new JikgongException(ErrorCode.OFFER_INVALID_DATE);
             }
             dateList.add(workDate.getDate());
         }

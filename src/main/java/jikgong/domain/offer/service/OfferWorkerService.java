@@ -117,7 +117,7 @@ public class OfferWorkerService {
 
         // 출역일 최소 2일전 승인
         if (LocalDate.now().isAfter(workDate.getDate().minusDays(2L))) {
-            throw new JikgongException(ErrorCode.WORK_DATE_NEED_TO_FUTURE);
+            throw new JikgongException(ErrorCode.OFFER_INVALID_DATE);
         }
 
         // 수락 하려는 날짜에 출역 날짜가 확정된 기록이 있는지 체크
