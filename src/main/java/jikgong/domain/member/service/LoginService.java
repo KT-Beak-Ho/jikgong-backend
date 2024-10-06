@@ -2,7 +2,6 @@ package jikgong.domain.member.service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.stream.Collectors;
 import jikgong.domain.common.Address;
 import jikgong.domain.location.entity.Location;
@@ -26,6 +25,7 @@ import jikgong.global.exception.ErrorCode;
 import jikgong.global.exception.JikgongException;
 import jikgong.global.security.filter.JwtTokenProvider;
 import jikgong.global.sms.SmsService;
+import jikgong.global.utils.RandomCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -174,10 +174,11 @@ public class LoginService {
      * 휴대폰 인증
      */
     public VerificationSmsResponse verificationSms(VerificationSmsRequest request) {
-        String authCode = createAuthCode();
-
+        // 6자리 랜덤 코드 생성
+        String authCode = RandomCode.createAuthCode();
+        String content = "[직공]\n본인확인 인증번호: [" + authCode + "]";
         try {
-            smsService.sendSms(request.getPhone(), authCode);
+            smsService.sendSms(request.getPhone(), content);
         } catch (Exception e) {
             throw new JikgongException(ErrorCode.SMS_SEND_FAIL);
         }
@@ -185,21 +186,6 @@ public class LoginService {
         return new VerificationSmsResponse(authCode);
     }
 
-    // 6자리 랜덤 코드 생성
-    private static String createAuthCode() {
-        String characters = "0123456789";
-
-        Random random = new Random();
-        StringBuilder codeBuilder = new StringBuilder(6); // 6자리 랜덤 코드
-
-        // 지정된 길이만큼 랜덤 코드 생성
-        for (int i = 0; i < 6; i++) {
-            // 랜덤으로 문자 선택
-            char randomChar = characters.charAt(random.nextInt(characters.length()));
-            codeBuilder.append(randomChar);
-        }
-        return codeBuilder.toString();
-    }
 
     /**
      * 계좌 인증

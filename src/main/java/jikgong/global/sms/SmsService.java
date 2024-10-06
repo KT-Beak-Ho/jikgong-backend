@@ -14,6 +14,7 @@ import jikgong.global.feignclient.client.SmsClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,13 +35,14 @@ public class SmsService {
     /**
      * sms 발송
      */
-    public void sendSms(String phoneNumber, String authCode) throws Exception {
+    @Async
+    public void sendSms(String phoneNumber, String content) throws Exception {
         Long time = System.currentTimeMillis();
         String timestamp = time.toString();
         String signature = makeSignature(timestamp);
 
         SmsRequest.Message message = new SmsRequest.Message(phoneNumber, null, null);
-        String content = "[직공]\n본인확인 인증번호: [" + authCode + "]";
+
         // 요청 request 생성
         SmsRequest smsRequest = new SmsRequest(
             "SMS",
