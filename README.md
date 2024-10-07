@@ -33,45 +33,51 @@
 
 ## 🗂 디렉토리 구조
 ```markdown
-📦jikgong
- ┣ 📂domain
- ┃ ┣ 📂apply
- ┃ ┣ 📂certification
- ┃ ┣ 📂common
- ┃ ┣ 📂etc
- ┃ ┣ 📂history
- ┃ ┣ 📂jobpost
- ┃ ┣ 📂jobpostimage
- ┃ ┣ 📂like
- ┃ ┣ 📂location
- ┃ ┣ 📂member
- ┃ ┣ 📂notification
- ┃ ┣ 📂offer
- ┃ ┣ 📂offerworkdate
- ┃ ┣ 📂pickup
- ┃ ┣ 📂profit
- ┃ ┣ 📂project
- ┃ ┣ 📂resume
- ┃ ┣ 📂scrap
- ┃ ┣ 📂searchlog
- ┃ ┣ 📂skill
- ┃ ┗ 📂workdate
- ┣ 📂global
- ┃ ┣ 📂alimtalk
- ┃ ┣ 📂aop
- ┃ ┣ 📂batch
- ┃ ┣ 📂common
- ┃ ┣ 📂config
- ┃ ┣ 📂event
- ┃ ┣ 📂exception
- ┃ ┣ 📂fcm
- ┃ ┣ 📂feignclient
- ┃ ┣ 📂querycount
- ┃ ┣ 📂s3
- ┃ ┣ 📂security
- ┃ ┣ 📂slack
- ┃ ┗ 📂utils
- ┗ 📜JikgongApplication.java
+📦src
+ ┣ 📂main
+ ┃ ┣ 📂java
+ ┃ ┃ ┗ 📂jikgong
+ ┃ ┃ ┃ ┣ 📂domain
+ ┃ ┃ ┃ ┃ ┣ 📂apply
+ ┃ ┃ ┃ ┃ ┣ 📂common
+ ┃ ┃ ┃ ┃ ┣ 📂etc
+ ┃ ┃ ┃ ┃ ┣ 📂history
+ ┃ ┃ ┃ ┃ ┣ 📂jobpost
+ ┃ ┃ ┃ ┃ ┣ 📂jobpostimage
+ ┃ ┃ ┃ ┃ ┣ 📂like
+ ┃ ┃ ┃ ┃ ┣ 📂location
+ ┃ ┃ ┃ ┃ ┣ 📂member
+ ┃ ┃ ┃ ┃ ┣ 📂notification
+ ┃ ┃ ┃ ┃ ┣ 📂offer
+ ┃ ┃ ┃ ┃ ┣ 📂offerworkdate
+ ┃ ┃ ┃ ┃ ┣ 📂pickup
+ ┃ ┃ ┃ ┃ ┣ 📂profit
+ ┃ ┃ ┃ ┃ ┣ 📂project
+ ┃ ┃ ┃ ┃ ┣ 📂resume
+ ┃ ┃ ┃ ┃ ┣ 📂scrap
+ ┃ ┃ ┃ ┃ ┣ 📂searchlog
+ ┃ ┃ ┃ ┃ ┣ 📂skill
+ ┃ ┃ ┃ ┃ ┣ 📂visaimage
+ ┃ ┃ ┃ ┃ ┣ 📂workdate
+ ┃ ┃ ┃ ┃ ┗ 📂workexperience
+ ┃ ┃ ┃ ┣ 📂global
+ ┃ ┃ ┃ ┃ ┣ 📂alimtalk
+ ┃ ┃ ┃ ┃ ┣ 📂annotation
+ ┃ ┃ ┃ ┃ ┣ 📂aop
+ ┃ ┃ ┃ ┃ ┣ 📂batch
+ ┃ ┃ ┃ ┃ ┣ 📂common
+ ┃ ┃ ┃ ┃ ┣ 📂config
+ ┃ ┃ ┃ ┃ ┣ 📂event
+ ┃ ┃ ┃ ┃ ┣ 📂exception
+ ┃ ┃ ┃ ┃ ┣ 📂fcm
+ ┃ ┃ ┃ ┃ ┣ 📂feignclient
+ ┃ ┃ ┃ ┃ ┣ 📂querycount
+ ┃ ┃ ┃ ┃ ┣ 📂s3
+ ┃ ┃ ┃ ┃ ┣ 📂security
+ ┃ ┃ ┃ ┃ ┣ 📂slack
+ ┃ ┃ ┃ ┃ ┣ 📂sms
+ ┃ ┃ ┃ ┃ ┗ 📂utils
+ ┃ ┃ ┃ ┗ 📜JikgongApplication.java
 ```
 <br><br><br><br>
 
