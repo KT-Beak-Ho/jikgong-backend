@@ -6,7 +6,11 @@ import java.util.List;
 import jikgong.domain.member.dto.company.CompanySearchResponse;
 import jikgong.domain.member.dto.info.CompanyInfoRequest;
 import jikgong.domain.member.dto.info.CompanyInfoResponse;
-import jikgong.domain.member.dto.info.PasswordRequest;
+import jikgong.domain.member.dto.info.LoginIdAuthCodeRequest;
+import jikgong.domain.member.dto.info.LoginIdFindRequest;
+import jikgong.domain.member.dto.info.LoginIdFindResponse;
+import jikgong.domain.member.dto.info.PasswordFindRequest;
+import jikgong.domain.member.dto.info.PasswordUpdateRequest;
 import jikgong.domain.member.dto.info.WorkerInfoRequest;
 import jikgong.domain.member.dto.info.WorkerInfoResponse;
 import jikgong.domain.member.service.MemberInfoService;
@@ -68,24 +72,37 @@ public class MemberInfoController {
         return ResponseEntity.ok(new Response("노동자 정보 수정 완료"));
     }
 
+
     @Operation(summary = "비밀번호 변경", description = "회원 정보 수정 시 비밀번호 체크 및 수정")
     @PostMapping("/api/member-info/password-validation")
     @AuthenticatedRequired
-    public ResponseEntity<Response> validationPassword(@AuthenticationPrincipal PrincipalDetails principalDetails,
-        @RequestBody PasswordRequest request) {
+    public ResponseEntity<Response> updatePassword(@AuthenticationPrincipal PrincipalDetails principalDetails,
+        @RequestBody PasswordUpdateRequest request) {
         memberInfoService.updatePassword(principalDetails.getMember().getId(), request);
         return ResponseEntity.ok(new Response("비밀번호 확인 완료"));
     }
 
-    @Operation(summary = "비밀번호 임시 발급", description = "sms로 임시 비밀번호 발급")
-    @PostMapping("/api/member-info/password-reset")
-    public ResponseEntity<Response> validationPassword(@AuthenticationPrincipal PrincipalDetails principalDetails)
-        throws Exception {
-        memberInfoService.sendTemporaryPassword(principalDetails.getMember().getId());
-        return ResponseEntity.ok(new Response("sms로 임시 비밀번호 발급 및 비밀번호 업데이트 완료"));
+    @Operation(summary = "아이디 찾기 전 본인 인증")
+    @PostMapping("/api/member-info/loginId-verification")
+    public ResponseEntity<Response> verificationFindLoginId(@RequestBody LoginIdFindRequest request) {
+        memberInfoService.verificationBeforeFindLoginId(request);
+        return ResponseEntity.ok(new Response("아이디 찾기 인증 코드 발송 완료"));
     }
 
-    // todo: 비밀번호 찾기 개발
+    @Operation(summary = "아이디 찾기", description = "본인 인증으로 발송된 authCode를 사용하여 아이디 찾기")
+    @PostMapping("/api/member-info/loginId/retrieve")
+    public ResponseEntity<Response> findLoginId(@RequestBody LoginIdAuthCodeRequest request) {
+        LoginIdFindResponse loginIdFindResponse = memberInfoService.findLoginId(request);
+        return ResponseEntity.ok(new Response(loginIdFindResponse, "비밀번호 확인 완료"));
+    }
+
+    @Operation(summary = "비밀번호 찾기 (임시 발급)", description = "sms로 임시 비밀번호 발급")
+    @PostMapping("/api/member-info/password-reset")
+    public ResponseEntity<Response> findPassword(@RequestBody PasswordFindRequest request)
+        throws Exception {
+        memberInfoService.sendTemporaryPassword(request);
+        return ResponseEntity.ok(new Response("sms로 임시 비밀번호 발급 및 비밀번호 업데이트 완료"));
+    }
 
     @Operation(summary = "체류 만료일 불러오기", description = "codef api를 활용하여 체류 만료일 정보 저장")
     @PostMapping("/api/member-info/visaExpiryDate")

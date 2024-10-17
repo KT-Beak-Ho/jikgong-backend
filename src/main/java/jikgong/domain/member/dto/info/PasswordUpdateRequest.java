@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-public class PasswordRequest {
+public class PasswordUpdateRequest {
 
     @Schema(description = "현재 비밀번호", example = "abcdefg1")
     private String currentPassword;
