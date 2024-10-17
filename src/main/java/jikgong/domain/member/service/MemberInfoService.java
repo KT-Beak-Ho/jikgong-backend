@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import jikgong.domain.member.dto.company.CompanySearchResponse;
 import jikgong.domain.member.dto.info.CompanyInfoRequest;
 import jikgong.domain.member.dto.info.CompanyInfoResponse;
-import jikgong.domain.member.dto.info.PasswordRequest;
+import jikgong.domain.member.dto.info.PasswordUpdateRequest;
 import jikgong.domain.member.dto.info.WorkerInfoRequest;
 import jikgong.domain.member.dto.info.WorkerInfoResponse;
 import jikgong.domain.member.entity.Member;
@@ -116,7 +116,7 @@ public class MemberInfoService {
     /**
      * 비밀번호 확인 후 변경
      */
-    public void updatePassword(Long memberId, PasswordRequest request) {
+    public void updatePassword(Long memberId, PasswordUpdateRequest request) {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
