@@ -21,6 +21,8 @@ public enum ErrorCode {
     MEMBER_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "MEMBER-009", "인증이 필요합니다."),
     MEMBER_FORBIDDEN(HttpStatus.FORBIDDEN, "MEMBER-010", "권한이 필요합니다."),
     MEMBER_CONSENTS_NEED_TO_AGREE(HttpStatus.FORBIDDEN, "MEMBER-011", "회원가입을 위해선 각종 내용에 동의해야합니다."),
+    MEMBER_PHONE_NOT_MATCH(HttpStatus.BAD_REQUEST, "MEMBER-012", "회원 정보에 입력된 핸드폰 번호와 일치하지 않습니다."),
+    MEMBER_INVALID_AUTH_CODE(HttpStatus.BAD_REQUEST, "MEMBER-013", "아이디를 찾기 위해 입력한 인증 코드가 올바르지 않습니다."),
 
     /**
      * 알림

@@ -1,13 +1,12 @@
 package jikgong.domain.member.repository;
 
+import java.util.List;
+import java.util.Optional;
 import jikgong.domain.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
@@ -32,4 +31,11 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
      */
     @Query("select m from Member m where m.companyInfo.companyName like %:keyword% and m.role = 'ROLE_COMPANY'")
     List<Member> findByCompanyName(@Param("keyword") String keyword);
+
+    /**
+     * 아이디 찾기
+     */
+    @Query("select m from Member m where m.phone = :phone and " +
+        "(m.workerInfo.workerName = :name or m.companyInfo.companyName = :name)")
+    Optional<Member> findMemberForForgottenLoginId(@Param("phone") String phone, @Param("name") String name);
 }
