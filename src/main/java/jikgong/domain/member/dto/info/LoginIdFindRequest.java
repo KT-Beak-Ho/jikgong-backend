@@ -12,6 +12,4 @@ public class LoginIdFindRequest {
     private String name;
     @Schema(description = "휴대폰 번호", example = "01011111111")
     private String phone;
-    @Schema(description = "노동자: true  |  기업: false", example = "true")
-    private Boolean isWorker;
 }

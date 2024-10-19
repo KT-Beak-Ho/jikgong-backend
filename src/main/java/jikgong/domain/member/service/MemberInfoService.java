@@ -183,7 +183,6 @@ public class MemberInfoService {
 
         // Redis에 인증 코드와 회원 정보를 저장 (TTL 5분)
         redisTemplate.opsForValue().set(member.getPhone(), authCode, 5, TimeUnit.MINUTES);
-
     }
 
     /**
