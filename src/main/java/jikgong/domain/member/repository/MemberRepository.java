@@ -38,4 +38,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("select m from Member m where m.phone = :phone and " +
         "(m.workerInfo.workerName = :name or m.companyInfo.companyName = :name)")
     Optional<Member> findMemberForForgottenLoginId(@Param("phone") String phone, @Param("name") String name);
+
+    /**
+     * 비밀번호 찾기
+     */
+    @Query("select m from Member m where m.loginId = :loginId and m.phone = :phone")
+    Optional<Member> findMemberForForgottenPassword(@Param("loginId") String loginId, @Param("phone") String phone);
 }

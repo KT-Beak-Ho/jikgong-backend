@@ -4,12 +4,13 @@ package jikgong.domain.member.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import jikgong.domain.member.dto.company.CompanySearchResponse;
+import jikgong.domain.member.dto.info.AuthCodeForFindRequest;
 import jikgong.domain.member.dto.info.CompanyInfoRequest;
 import jikgong.domain.member.dto.info.CompanyInfoResponse;
-import jikgong.domain.member.dto.info.LoginIdAuthCodeRequest;
 import jikgong.domain.member.dto.info.LoginIdFindRequest;
 import jikgong.domain.member.dto.info.LoginIdFindResponse;
 import jikgong.domain.member.dto.info.PasswordFindRequest;
+import jikgong.domain.member.dto.info.PasswordFindResponse;
 import jikgong.domain.member.dto.info.PasswordUpdateRequest;
 import jikgong.domain.member.dto.info.WorkerInfoRequest;
 import jikgong.domain.member.dto.info.WorkerInfoResponse;
@@ -84,24 +85,32 @@ public class MemberInfoController {
 
     @Operation(summary = "아이디 찾기 전 본인 인증")
     @PostMapping("/api/member-info/loginId-verification")
-    public ResponseEntity<Response> verificationFindLoginId(@RequestBody LoginIdFindRequest request) {
+    public ResponseEntity<Response> verificationBeforeFindLoginId(@RequestBody LoginIdFindRequest request) {
         memberInfoService.verificationBeforeFindLoginId(request);
         return ResponseEntity.ok(new Response("아이디 찾기 인증 코드 발송 완료"));
     }
 
     @Operation(summary = "아이디 찾기", description = "본인 인증으로 발송된 authCode를 사용하여 아이디 찾기")
     @PostMapping("/api/member-info/loginId/retrieve")
-    public ResponseEntity<Response> findLoginId(@RequestBody LoginIdAuthCodeRequest request) {
+    public ResponseEntity<Response> findLoginId(@RequestBody AuthCodeForFindRequest request) {
         LoginIdFindResponse loginIdFindResponse = memberInfoService.findLoginId(request);
         return ResponseEntity.ok(new Response(loginIdFindResponse, "비밀번호 확인 완료"));
     }
 
-    @Operation(summary = "비밀번호 찾기 (임시 발급)", description = "sms로 임시 비밀번호 발급")
-    @PostMapping("/api/member-info/password-reset")
-    public ResponseEntity<Response> findPassword(@RequestBody PasswordFindRequest request)
+    @Operation(summary = "비밀번호 찾기 전 본인 인증")
+    @PostMapping("/api/member-info/password-verification")
+    public ResponseEntity<Response> verificationBeforeFindPassword(@RequestBody PasswordFindRequest request)
         throws Exception {
-        memberInfoService.sendTemporaryPassword(request);
-        return ResponseEntity.ok(new Response("sms로 임시 비밀번호 발급 및 비밀번호 업데이트 완료"));
+        memberInfoService.verificationBeforeFindPassword(request);
+        return ResponseEntity.ok(new Response("비밀번호 찾기 인증 코드 발송 완료"));
+    }
+
+    @Operation(summary = "비밀번호 임시 발급", description = "문자 인증 코드 입력 후 임시 비밀번호 발급")
+    @PostMapping("/api/member-info/password-temporary")
+    public ResponseEntity<Response> updateTemporaryPassword(@RequestBody AuthCodeForFindRequest request)
+        throws Exception {
+        PasswordFindResponse passwordFindResponse = memberInfoService.updateTemporaryPassword(request);
+        return ResponseEntity.ok(new Response(passwordFindResponse, "임시 비밀번호로 업데이트 및 반환 완료"));
     }
 
     @Operation(summary = "체류 만료일 불러오기", description = "codef api를 활용하여 체류 만료일 정보 저장")

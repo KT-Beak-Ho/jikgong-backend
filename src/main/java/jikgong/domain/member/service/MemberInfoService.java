@@ -7,12 +7,13 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import jikgong.domain.member.dto.company.CompanySearchResponse;
+import jikgong.domain.member.dto.info.AuthCodeForFindRequest;
 import jikgong.domain.member.dto.info.CompanyInfoRequest;
 import jikgong.domain.member.dto.info.CompanyInfoResponse;
-import jikgong.domain.member.dto.info.LoginIdAuthCodeRequest;
 import jikgong.domain.member.dto.info.LoginIdFindRequest;
 import jikgong.domain.member.dto.info.LoginIdFindResponse;
 import jikgong.domain.member.dto.info.PasswordFindRequest;
+import jikgong.domain.member.dto.info.PasswordFindResponse;
 import jikgong.domain.member.dto.info.PasswordUpdateRequest;
 import jikgong.domain.member.dto.info.WorkerInfoRequest;
 import jikgong.domain.member.dto.info.WorkerInfoResponse;
@@ -145,24 +146,44 @@ public class MemberInfoService {
     }
 
     /**
-     * 임시 비밀번호 생성
+     * 비밀번호 찾기 전 문자 인증
      */
-    public void sendTemporaryPassword(PasswordFindRequest request) throws Exception {
-        Member member = memberRepository.findByLoginId(request.getLoginId())
+    public void verificationBeforeFindPassword(PasswordFindRequest request) throws Exception {
+        Member member = memberRepository.findMemberForForgottenPassword(request.getLoginId(), request.getPhone())
             .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
-        // 휴대폰 번호 확인
-        if (member.getPhone().equals(request.getPhone())) {
-            throw new JikgongException(ErrorCode.MEMBER_PHONE_NOT_MATCH);
+        // 6자리 랜덤 코드 생성
+        String authCode = RandomCode.createAuthCode();
+        String content = "[직공]\n비밀번호 찾기 본인확인 인증번호: [" + authCode + "]";
+        try {
+            smsService.sendSms(member.getPhone(), content);
+        } catch (Exception e) {
+            throw new JikgongException(ErrorCode.SMS_SEND_FAIL);
         }
 
-        // 임시 비밀번호 생성
+        // Redis에 인증 코드와 회원 정보를 저장 (TTL 5분)
+        redisTemplate.opsForValue().set(member.getPhone(), authCode, 5, TimeUnit.MINUTES);
+    }
+
+    /**
+     * 임시 비밀번호 발급
+     */
+    public PasswordFindResponse updateTemporaryPassword(AuthCodeForFindRequest request) {
+        // Redis에 저장된 인증 코드 가져오기
+        String savedAuthCode = redisTemplate.opsForValue().get(request.getPhone());
+
+        // 인증 코드가 일치하는지 체크
+        if (savedAuthCode == null || !savedAuthCode.equals(request.getAuthCode())) {
+            throw new JikgongException(ErrorCode.MEMBER_INVALID_AUTH_CODE);  // 인증 코드 불일치
+        }
+
+        // 임시 번호 생성, 업데이트 및 반환
         String temporaryPassword = RandomCode.createTemporaryPassword();
-        String content = "[직공]\n발급된 임시 비밀번호: [" + temporaryPassword + "]";
+        Member member = memberRepository.findByPhone(request.getPhone())
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
         member.updatePassword(encoder.encode(temporaryPassword));
 
-        // 임시 비밀번호 발송
-        smsService.sendSms(member.getPhone(), content);
+        return PasswordFindResponse.from(temporaryPassword);
     }
 
     /**
@@ -188,7 +209,7 @@ public class MemberInfoService {
     /**
      * 문자로 인증된 코드로 아이디 찾기
      */
-    public LoginIdFindResponse findLoginId(LoginIdAuthCodeRequest request) {
+    public LoginIdFindResponse findLoginId(AuthCodeForFindRequest request) {
         // Redis에 저장된 인증 코드 가져오기
         String savedAuthCode = redisTemplate.opsForValue().get(request.getPhone());
 
