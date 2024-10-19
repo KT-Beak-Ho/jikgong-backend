@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-public class LoginIdAuthCodeRequest {
+public class AuthCodeForFindRequest {
 
     @Schema(description = "휴대폰 번호", example = "01011111111")
     private String phone;
