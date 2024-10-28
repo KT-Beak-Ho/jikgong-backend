@@ -17,11 +17,9 @@ import jikgong.domain.member.service.LoginService;
 import jikgong.global.common.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -32,8 +30,8 @@ public class LoginController {
     private final LoginService loginService;
 
     @Operation(summary = "회원 가입: 노동자")
-    @PostMapping(value = "/api/join/worker/join", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Response> joinWorkerMember(@Valid @RequestPart JoinWorkerRequest request) {
+    @PostMapping(value = "/api/join/worker/join")
+    public ResponseEntity<Response> joinWorkerMember(@Valid @RequestBody JoinWorkerRequest request) {
         Long savedMemberId = loginService.joinWorkerMember(request);
         return ResponseEntity.ok(new Response("노동자 회원 가입 완료"));
     }
