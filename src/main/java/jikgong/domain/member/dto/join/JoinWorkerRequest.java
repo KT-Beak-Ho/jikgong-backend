@@ -11,14 +11,14 @@ import jikgong.domain.member.entity.Role;
 import jikgong.domain.workexperience.dto.WorkExperienceRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
-@Getter
+@Data
 @ToString
 public class JoinWorkerRequest {
 

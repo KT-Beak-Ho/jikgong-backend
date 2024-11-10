@@ -22,7 +22,7 @@ import jikgong.domain.member.dto.join.JoinWorkerRequest;
 import jikgong.domain.member.entity.Gender;
 import jikgong.domain.member.entity.Nationality;
 import jikgong.domain.member.entity.Role;
-import jikgong.domain.member.service.LoginService;
+import jikgong.domain.member.service.JoinService;
 import jikgong.domain.project.dto.ProjectSaveRequest;
 import jikgong.domain.project.service.ProjectService;
 import jikgong.domain.workexperience.dto.WorkExperienceRequest;
@@ -50,27 +50,27 @@ public class InitDB {
     @Transactional
     public static class InitService {
 
-        private final LoginService loginService;
+        private final JoinService joinService;
         private final ProjectService projectService;
         private final JobPostCompanyService jobPostCompanyService;
 
         public void initMember() {
-            Long savedId = loginService.joinCompanyMember(
+            Long savedId = joinService.joinCompanyMember(
                 createJoinCompanyRequest("abcdefg0", "01012345678", Role.ROLE_COMPANY));
 
-            loginService.joinWorkerMember(
+            joinService.joinWorkerMember(
                 createJoinWorkerRequest("abcdefg1", "01011111111", Role.ROLE_WORKER, "111122223333", "김진수",
                     "2000-09-30", "000930",
                     35.116777388697734F, 128.9685393114043F));
-            loginService.joinWorkerMember(
+            joinService.joinWorkerMember(
                 createJoinWorkerRequest("abcdefg2", "01022222222", Role.ROLE_WORKER, "222233334444", "이승민",
                     "2001-02-12", "010212",
                     35.086777388697734F, 128.9585393114043F));
-            loginService.joinWorkerMember(
+            joinService.joinWorkerMember(
                 createJoinWorkerRequest("abcdefg3", "01033333333", Role.ROLE_WORKER, "333344445555", "조영훈",
                     "2002-07-20", "020720",
                     35.092233188697734F, 128.9485393114043F));
-            loginService.joinWorkerMember(
+            joinService.joinWorkerMember(
                 createJoinWorkerRequest("abcdefg4", "01044444444", Role.ROLE_WORKER, "444455556666", "안병기",
                     "2002-12-04", "021204",
                     35.142157388697734F, 128.9385393114043F));
