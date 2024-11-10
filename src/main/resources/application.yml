@@ -51,12 +51,11 @@ cloud:
     region:
       static: ap-northeast-2
 
-#feign:
-#  url:
-#    sms-prefix: https://sens.apigw.ntruss.com
-#  client:
-#    default:
-#      loggerLevel: FULL
+# codef
+codef:
+  client-id: ${CODEF_CLIENT_ID}
+  client-secret: ${CODEF_CLIENT_SECRET}
+  public-key: ${CODEF_PUBLIC_KEY}
 
 # naver alimtalk
 ncp:
