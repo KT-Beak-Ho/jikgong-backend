@@ -1,63 +1,80 @@
 spring:
   profiles:
-    active: test
+    active: test  # 테스트 프로필 설정
 
   datasource:
-    url: jdbc:h2:mem:test
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1  # H2 인메모리 데이터베이스 사용
     username: sa
     password:
-    driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop  # 테스트 후 테이블 제거
+    properties:
+      hibernate:
+        default_batch_fetch_size: 1000
+        dialect: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    generate-ddl: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379  # 실제 Redis 사용 시 필요한 설정, 모의 환경에선 Redis 설정 무시 가능
 
   batch:
     jdbc:
       initialize-schema: always
     job:
-      enabled: false # 시작과 동시에 실행되는 것 방지
+      enabled: false
 
-  jpa:
-    properties:
-      hibernate:
-        create_empty_composites:
-          enabled: true
-  data:
-    redis:
-      host: localhost
-      port: 6379
+  servlet:
+    multipart:
+      enabled: true
 
+  lifecycle:
+    timeout-per-shutdown-phase: 10s  # 테스트 환경에서는 더 짧게 설정 가능
 
 app:
   auth:
-    secret-key: "mockmockmockmockmockmockmockmockmockmockmockmockmockmockmockmockmockmockmockmockmockmockmockmock"
+    secret-key: zesgdrhcjfkftgszedrhxsegrhjdxeghzrdxfxsehxrdh  # 테스트용 시크릿 키
+
+# S3 및 외부 API와 같은 설정들은 테스트 목적으로 임의의 값을 사용
+cloud:
+  aws:
+    credentials:
+      access-key: test-access-key
+      secret-key: test-secret-key
+    s3:
+      bucket: test-bucket
+      resize-bucket: test-resize-bucket
+    stack.auto: false
+    region:
+      static: ap-northeast-2
+
+# 외부 API 키 모킹
+codef:
+  client-id: test-codef-client-id
+  client-secret: test-codef-client-secret
+  public-key: test-codef-public-key
 
 ncp:
-  service-id: "mock"
-  access-key: "mock"
-  secret-key: "mock"
-  plus-friend-id: "mock"
+  service-id: test-service-id
+  access-key: test-ncp-access-key
+  secret-key: test-ncp-secret-key
+  send-number: 01000000000  # 테스트용 전화번호
+
+fcm:
+  path: test-fcm-path.json  # FCM 테스트용 경로
+
+webhook:
+  slack:
+    url: https://hooks.slack.com/services/test/mock-url  # 테스트용 Slack Webhook URL
 
 management:
   endpoints:
     web:
-      base-path: /jikgong
+      base-path: /test/jikgong
       exposure:
-        include: prometheus, health
-
-fcm:
-  path: firebase/jikgong-firebase-local.json
-
-webhook:
-  slack:
-    url: "mock"
-
-
-cloud:
-  aws:
-    credentials:
-      access-key: "mock"
-      secret-key: "mock"
-    s3:
-      bucket: "mock"
-      resize-bucket: "mock"
-    stack.auto: false #기본 cloudFormation 구성 시작 사용 x
-    region:
-      static: ap-northeast-2
+        include: health
