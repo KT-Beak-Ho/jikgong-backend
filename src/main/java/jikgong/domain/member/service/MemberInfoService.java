@@ -233,7 +233,7 @@ public class MemberInfoService {
      * 체류 만료일 조회 api 호출
      * 체류 만료일 정보 업데이트
      */
-    public void updateStayExpiration(Long workerId, StayExpirationRequest request) throws JsonProcessingException {
+    public void updateVisaExpiryDate(Long workerId, StayExpirationRequest request) throws JsonProcessingException {
         // codef api 호출
         StayExpirationResponse stayExpirationResponse = stayExpirationService.checkStayExpiration(request);
 

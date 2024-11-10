@@ -123,7 +123,7 @@ public class MemberInfoController {
     public ResponseEntity<Response> updateVisaExpiryDate(@AuthenticationPrincipal PrincipalDetails principalDetails,
         @RequestBody StayExpirationRequest request)
         throws JsonProcessingException {
-        memberInfoService.updateStayExpiration(principalDetails.getMember().getId(), request);
+        memberInfoService.updateVisaExpiryDate(principalDetails.getMember().getId(), request);
         return ResponseEntity.ok(new Response(stayExpirationService.checkStayExpiration(request), "개발 미완성"));
     }
 
