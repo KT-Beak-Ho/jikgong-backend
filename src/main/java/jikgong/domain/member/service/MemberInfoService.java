@@ -1,5 +1,6 @@
 package jikgong.domain.member.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -15,6 +16,8 @@ import jikgong.domain.member.dto.info.LoginIdFindResponse;
 import jikgong.domain.member.dto.info.PasswordFindRequest;
 import jikgong.domain.member.dto.info.PasswordFindResponse;
 import jikgong.domain.member.dto.info.PasswordUpdateRequest;
+import jikgong.domain.member.dto.info.StayExpirationRequest;
+import jikgong.domain.member.dto.info.StayExpirationResponse;
 import jikgong.domain.member.dto.info.WorkerInfoRequest;
 import jikgong.domain.member.dto.info.WorkerInfoResponse;
 import jikgong.domain.member.entity.Member;
@@ -44,6 +47,7 @@ public class MemberInfoService {
     private final PasswordEncoder encoder;
     private final RedisTemplate<String, String> redisTemplate;
     private final SmsService smsService;
+    private final StayExpirationService stayExpirationService;
 
     /**
      * 노동자: 회원 정보 조회
@@ -223,5 +227,23 @@ public class MemberInfoService {
 
         // 로그인 아이디 반환
         return LoginIdFindResponse.from(member);
+    }
+
+    /**
+     * 체류 만료일 조회 api 호출
+     * 체류 만료일 정보 업데이트
+     */
+    public void updateStayExpiration(Long workerId, StayExpirationRequest request) throws JsonProcessingException {
+        // codef api 호출
+        StayExpirationResponse stayExpirationResponse = stayExpirationService.checkStayExpiration(request);
+
+        if (!"CF-00000".equals(stayExpirationResponse.getResult().getCode())) {
+            throw new JikgongException(ErrorCode.CODEF_UNKNOWN_ERROR);
+        }
+
+        Member member = memberRepository.findById(workerId)
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+
+        member.updateVisaExpiryDate(stayExpirationResponse);
     }
 }

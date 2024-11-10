@@ -17,10 +17,10 @@ import jikgong.domain.member.dto.info.StayExpirationRequest;
 import jikgong.domain.member.dto.info.WorkerInfoRequest;
 import jikgong.domain.member.dto.info.WorkerInfoResponse;
 import jikgong.domain.member.service.MemberInfoService;
+import jikgong.domain.member.service.StayExpirationService;
 import jikgong.global.annotation.AuthenticatedRequired;
 import jikgong.global.annotation.CompanyRoleRequired;
 import jikgong.global.annotation.WorkerRoleRequired;
-import jikgong.global.codef.service.StayExpirationService;
 import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
@@ -120,8 +120,10 @@ public class MemberInfoController {
     @Operation(summary = "체류 만료일 정보 불러오기", description = "codef api를 활용하여 체류 만료일 정보 저장")
     @PostMapping("/api/member-info/visaExpiryDate")
     @WorkerRoleRequired
-    public ResponseEntity<Response> updateVisaExpiryDate(@RequestBody StayExpirationRequest request)
+    public ResponseEntity<Response> updateVisaExpiryDate(@AuthenticationPrincipal PrincipalDetails principalDetails,
+        @RequestBody StayExpirationRequest request)
         throws JsonProcessingException {
+        memberInfoService.updateStayExpiration(principalDetails.getMember().getId(), request);
         return ResponseEntity.ok(new Response(stayExpirationService.checkStayExpiration(request), "개발 미완성"));
     }
 

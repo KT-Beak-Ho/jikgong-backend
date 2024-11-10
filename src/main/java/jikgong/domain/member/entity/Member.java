@@ -19,9 +19,12 @@ import jikgong.domain.common.BaseEntity;
 import jikgong.domain.history.entity.History;
 import jikgong.domain.location.entity.Location;
 import jikgong.domain.member.dto.info.CompanyInfoRequest;
-import jikgong.domain.member.dto.info.WorkerInfoRequest;
+import jikgong.domain.member.dto.info.StayExpirationResponse;
 import jikgong.domain.visaimage.entity.VisaImage;
 import jikgong.domain.workexperience.entity.WorkExperience;
+import jikgong.global.exception.ErrorCode;
+import jikgong.global.exception.JikgongException;
+import jikgong.global.utils.DateConverter;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -102,9 +105,6 @@ public class Member extends BaseEntity {
         this.deviceToken = deviceToken;
     }
 
-    public void updateWorkerInfo(WorkerInfoRequest request) {
-        this.workerInfo.updateWorkerInfo(request);
-    }
 
     public void updateCompanyInfo(CompanyInfoRequest request) {
         this.companyInfo.updateWorkerInfo(request);
@@ -114,11 +114,14 @@ public class Member extends BaseEntity {
         this.password = newPassword;
     }
 
-    private void updateVisaExpiryDate(LocalDate visaExpiryDate) {
-        this.workerInfo.updateVisaExpiryDate(visaExpiryDate);
-    }
+    public void updateVisaExpiryDate(StayExpirationResponse stayExpirationResponse) {
+        // 국내에 체류중인 외국인이 아닐 경우
+        if ("0".equals(stayExpirationResponse.getData().getResAuthenticity())) {
+            throw new JikgongException(ErrorCode.MEMBER_NOT_STAY_WITH_IN_THE_COUNTRY);
+        }
 
-    public void updateVisaImage(VisaImage visaImage) {
-        this.visaImage = visaImage;
+        LocalDate visaExpiryDate = DateConverter.convertToLocalDate(
+            stayExpirationResponse.getData().getResExpirationDate());
+        this.workerInfo.updateVisaExpiryDate(visaExpiryDate);
     }
 }
