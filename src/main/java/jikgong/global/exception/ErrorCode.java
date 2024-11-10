@@ -142,7 +142,12 @@ public enum ErrorCode {
     /**
      * 비자 사진
      */
-    VISA_IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "VISA-001", "비자 사진 정보가 없습니다.");
+    VISA_IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "VISA-001", "비자 사진 정보가 없습니다."),
+
+    /**
+     * codef
+     */
+    CODEF_UNKNOWN_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "CODEF-001", "codef 관련 로직 수행 중 에러가 발생했습니다.");
 
     private final HttpStatus status;
     private final String code;
