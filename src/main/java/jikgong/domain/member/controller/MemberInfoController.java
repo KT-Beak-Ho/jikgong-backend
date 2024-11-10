@@ -1,6 +1,7 @@
 package jikgong.domain.member.controller;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import jikgong.domain.member.dto.company.CompanySearchResponse;
@@ -12,12 +13,14 @@ import jikgong.domain.member.dto.info.LoginIdFindResponse;
 import jikgong.domain.member.dto.info.PasswordFindRequest;
 import jikgong.domain.member.dto.info.PasswordFindResponse;
 import jikgong.domain.member.dto.info.PasswordUpdateRequest;
+import jikgong.domain.member.dto.info.StayExpirationRequest;
 import jikgong.domain.member.dto.info.WorkerInfoRequest;
 import jikgong.domain.member.dto.info.WorkerInfoResponse;
 import jikgong.domain.member.service.MemberInfoService;
 import jikgong.global.annotation.AuthenticatedRequired;
 import jikgong.global.annotation.CompanyRoleRequired;
 import jikgong.global.annotation.WorkerRoleRequired;
+import jikgong.global.codef.service.StayExpirationService;
 import jikgong.global.common.Response;
 import jikgong.global.security.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberInfoController {
 
     private final MemberInfoService memberInfoService;
+    private final StayExpirationService stayExpirationService;
 
     @Operation(summary = "회원 정보 조회 (노동자)")
     @GetMapping("/api/member-info/worker")
@@ -113,12 +117,12 @@ public class MemberInfoController {
         return ResponseEntity.ok(new Response(passwordFindResponse, "임시 비밀번호로 업데이트 및 반환 완료"));
     }
 
-    @Operation(summary = "체류 만료일 불러오기", description = "codef api를 활용하여 체류 만료일 정보 저장")
+    @Operation(summary = "체류 만료일 정보 불러오기", description = "codef api를 활용하여 체류 만료일 정보 저장")
     @PostMapping("/api/member-info/visaExpiryDate")
     @WorkerRoleRequired
-    public ResponseEntity<Response> updateVisaExpiryDate(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        // todo: 개발 필요
-        return ResponseEntity.ok(new Response("개발 중"));
+    public ResponseEntity<Response> updateVisaExpiryDate(@RequestBody StayExpirationRequest request)
+        throws JsonProcessingException {
+        return ResponseEntity.ok(new Response(stayExpirationService.checkStayExpiration(request), "개발 미완성"));
     }
 
     @Operation(summary = "기업 검색")
