@@ -15,6 +15,7 @@ public class WorkerInfoResponse {
 
     private String loginId; // 로그인 아이디
     private String phone; // 휴대폰 번호
+    private String email;
     private String account; // 계좌
     private String bank; // 은행 종류
 
@@ -37,6 +38,7 @@ public class WorkerInfoResponse {
         return WorkerInfoResponse.builder()
             .loginId(worker.getLoginId())
             .phone(worker.getPhone())
+            .email(worker.getEmail())
             .account(worker.getAccount())
             .bank(worker.getBank())
 

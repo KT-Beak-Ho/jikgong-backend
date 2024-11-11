@@ -20,6 +20,7 @@ import jikgong.domain.history.entity.History;
 import jikgong.domain.location.entity.Location;
 import jikgong.domain.member.dto.info.CompanyInfoRequest;
 import jikgong.domain.member.dto.info.StayExpirationResponse;
+import jikgong.domain.member.dto.info.WorkerInfoRequest;
 import jikgong.domain.visaimage.entity.VisaImage;
 import jikgong.domain.workexperience.entity.WorkExperience;
 import jikgong.global.exception.ErrorCode;
@@ -40,30 +41,31 @@ public class Member extends BaseEntity {
     @Column(name = "member_id")
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String loginId; // 로그인 아이디
+    @Column(nullable = false)
     private String password; // 패스워드
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String phone; // 휴대폰 번호
+    @Column(unique = true, nullable = false)
+    private String email; // 이메일
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String account; // 계좌
+    @Column(nullable = false)
     private String bank; // 은행 종류
     private Boolean privacyConsent; // 개인정보 동의 여부
     private String deviceToken; // 기기 토큰
     private Boolean isDeleted; // 회원 탈퇴 여부
 
     @Enumerated(value = EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
     @Embedded
     private Worker workerInfo;
     @Embedded
     private Company companyInfo;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "visa_image_id")
-    private VisaImage visaImage; // 비자 사진
 
     // 양방향 매핑
     @OneToMany(mappedBy = "member")
@@ -81,11 +83,12 @@ public class Member extends BaseEntity {
     }
 
     @Builder
-    public Member(String loginId, String password, String phone, String account, String bank, Boolean privacyConsent,
+    public Member(String loginId, String password, String phone, String email, String account, String bank, Boolean privacyConsent,
         String deviceToken, Role role, Worker workerInfo, Company companyInfo) {
         this.loginId = loginId;
         this.password = password;
         this.phone = phone;
+        this.email = email;
         this.account = account;
         this.bank = bank;
         this.privacyConsent = privacyConsent;
@@ -107,7 +110,13 @@ public class Member extends BaseEntity {
 
 
     public void updateCompanyInfo(CompanyInfoRequest request) {
-        this.companyInfo.updateWorkerInfo(request);
+        this.email = request.getEmail();
+        this.companyInfo.updateCompanyInfo(request);
+    }
+
+    public void updateWorkerInfo(WorkerInfoRequest request) {
+        this.email = request.getEmail();
+        this.workerInfo.updateWorkerInfo(request);
     }
 
     public void updatePassword(String newPassword) {

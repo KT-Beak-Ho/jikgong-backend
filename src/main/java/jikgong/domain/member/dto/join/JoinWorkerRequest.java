@@ -2,6 +2,7 @@ package jikgong.domain.member.dto.join;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
@@ -31,7 +32,10 @@ public class JoinWorkerRequest {
     private String password; // 인증 코드
     @Schema(description = "휴대폰 번호", example = "01012345678")
     @NotBlank
-    private String phone;
+    private String phone; // 휴대폰 번호
+    @Schema(description = "이메일", example = "gildong@gmail.com")
+    @Email
+    private String email; // 이메일
     @Schema(description = "회원 타입 [ROLE_WORKER or ROLE_REGISTER]", example = "ROLE_WORKER")
     @NotNull
     private Role role; // 회원 타입

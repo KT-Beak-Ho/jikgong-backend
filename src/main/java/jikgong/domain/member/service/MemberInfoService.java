@@ -67,6 +67,9 @@ public class MemberInfoService {
         Member worker = memberRepository.findById(workerId)
             .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
+        // 회원 정보 업데이트
+        worker.updateWorkerInfo(request);
+
         // 경력 정보 업데이트
         updateWorkExperiences(request.getWorkExperienceRequestList(), worker);
     }

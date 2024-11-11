@@ -29,7 +29,7 @@ public class CompanyInfoResponse {
             .businessNumber(company.getCompanyInfo().getBusinessNumber())
             .region(company.getCompanyInfo().getRegion())
             .companyName(company.getCompanyInfo().getCompanyName())
-            .email(company.getCompanyInfo().getEmail())
+            .email(company.getEmail())
             .manager(company.getCompanyInfo().getManager())
 
             .build();

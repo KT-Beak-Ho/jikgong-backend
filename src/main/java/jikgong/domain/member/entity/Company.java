@@ -16,7 +16,6 @@ public class Company {
     private String businessNumber; // 사업자 번호
     private String region; // 지역
     private String companyName; // 회사 명
-    private String email; // 이메일
     private String manager; // 담당자 이름
     @Column(columnDefinition = "TEXT")
     private String requestContent; // 문의 내용
@@ -24,23 +23,21 @@ public class Company {
     private CompanyNotificationInfo companyNotificationInfo; // 기업 알림 정보
 
     @Builder
-    public Company(String businessNumber, String region, String companyName, String email, String manager,
+    public Company(String businessNumber, String region, String companyName, String manager,
         String requestContent, Boolean isNotification) {
         this.businessNumber = businessNumber;
         this.region = region;
         this.companyName = companyName;
-        this.email = email;
         this.manager = manager;
         this.requestContent = requestContent;
 
         this.companyNotificationInfo = new CompanyNotificationInfo(isNotification);
     }
 
-    public void updateWorkerInfo(CompanyInfoRequest request) {
+    public void updateCompanyInfo(CompanyInfoRequest request) {
         this.businessNumber = request.getBusinessNumber();
         this.region = request.getRegion();
         this.companyName = request.getCompanyName();
-        this.email = request.getEmail();
         this.manager = request.getManager();
     }
 }

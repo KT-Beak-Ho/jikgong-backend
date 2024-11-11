@@ -41,8 +41,7 @@ public class JoinService {
     private final SmsService smsService;
 
     /**
-     * 노동자 회원가입
-     * 위치 정보 저장
+     * 노동자 회원가입 위치 정보 저장
      */
     public Long joinWorkerMember(JoinWorkerRequest request) {
         // loginId 중복 체크
@@ -69,6 +68,7 @@ public class JoinService {
             .loginId(request.getLoginId())
             .password(encoder.encode(request.getPassword()))
             .phone(request.getPhone())
+            .email(request.getEmail())
             .account(request.getAccount())
             .bank(request.getBank())
             .privacyConsent((request.getPrivacyConsent()))
@@ -79,7 +79,8 @@ public class JoinService {
 
         // 위치 정보 생성
         Location location = Location.builder()
-            .address(new Address(request.getAddress(), request.getLatitude(), request.getLongitude()))
+            .address(
+                new Address(request.getAddress(), request.getLatitude(), request.getLongitude()))
             .isMain(true)
             .member(member)
             .build();
@@ -111,7 +112,6 @@ public class JoinService {
             .businessNumber(request.getBusinessNumber())
             .region(request.getRegion())
             .companyName(request.getCompanyName())
-            .email(request.getEmail())
             .manager(request.getManager())
             .requestContent(request.getRequestContent())
             .isNotification(request.getIsNotification())
@@ -122,6 +122,7 @@ public class JoinService {
             .loginId(request.getLoginId())
             .password(encoder.encode(request.getPassword()))
             .phone(request.getPhone())
+            .email(request.getEmail())
             .account(request.getAccount())
             .bank(request.getBank())
             .privacyConsent((request.getPrivacyConsent()))

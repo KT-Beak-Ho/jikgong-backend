@@ -131,6 +131,7 @@ public class InitDB {
                 .loginId(loginId)
                 .password("abcdefg1")
                 .phone(phone)
+                .email("gildong@gmail.com")
                 .role(role)
                 .account(account)
                 .bank("국민은행")
