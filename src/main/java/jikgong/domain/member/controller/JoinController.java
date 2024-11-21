@@ -54,10 +54,10 @@ public class JoinController {
         return ResponseEntity.ok(new Response("사용 가능한 휴대폰 입니다."));
     }
 
-    @Operation(summary = "회원 가입: 휴대폰 인증")
+    @Operation(summary = "회원 가입: 휴대폰 인증 (인증 코드 발송)")
     @PostMapping("/api/join/sms-verification")
-    public ResponseEntity<Response> verificationSms(@RequestBody VerificationSmsRequest request) {
-        VerificationSmsResponse verificationSmsResponse = joinService.verificationSms(request);
+    public ResponseEntity<Response> sendVerificationCode(@RequestBody VerificationSmsRequest request) {
+        VerificationSmsResponse verificationSmsResponse = joinService.sendVerificationSms(request);
         return ResponseEntity.ok(new Response(verificationSmsResponse, "6자리 인증 코드 반환"));
     }
 

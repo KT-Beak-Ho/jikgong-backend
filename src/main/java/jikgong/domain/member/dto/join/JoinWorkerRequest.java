@@ -33,9 +33,6 @@ public class JoinWorkerRequest {
     @Schema(description = "휴대폰 번호", example = "01012345678")
     @NotBlank
     private String phone;
-    @Schema(description = "본인 확인 인증 번호", example = "123456")
-    @NotBlank
-    private String authCode;
     @Schema(description = "이메일", example = "gildong@gmail.com")
     @Email
     private String email; // 이메일

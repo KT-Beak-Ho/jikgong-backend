@@ -220,7 +220,7 @@ public class MemberInfoService {
      * 문자로 인증된 코드로 아이디 찾기
      */
     public LoginIdFindResponse findLoginId(AuthCodeForFindRequest request) {
-        // // 인증 코드가 일치하는지 체크
+        // 인증 코드가 일치하는지 체크
         validationAuthCode(request);
 
         Member member = memberRepository.findByPhone(request.getPhone())

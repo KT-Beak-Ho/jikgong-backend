@@ -28,9 +28,6 @@ public class JoinCompanyRequest {
     @Schema(description = "휴대폰 번호", example = "01012345678")
     @NotBlank
     private String phone;
-    @Schema(description = "본인 확인 인증 번호", example = "123456")
-    @NotBlank
-    private String authCode;
     @Schema(description = "회원 타입 [ROLE_WORKER or ROLE_COMPANY]", example = "ROLE_COMPANY")
     @NotNull
     private Role role; // 회원 타입
