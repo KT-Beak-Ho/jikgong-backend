@@ -42,7 +42,7 @@ public class InitDB {
 
     @PostConstruct
     public void init() {
-        initService.initMember();
+//        initService.initMember();
     }
 
     @Service
