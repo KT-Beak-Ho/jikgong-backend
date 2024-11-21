@@ -49,6 +49,8 @@ public class MemberInfoService {
     private final SmsService smsService;
     private final StayExpirationService stayExpirationService;
 
+    private static final String REDIS_PREFIX_PASSWORD_RESET = "password_reset:";
+
     /**
      * 노동자: 회원 정보 조회
      */
@@ -210,26 +212,33 @@ public class MemberInfoService {
         }
 
         // Redis에 인증 코드와 회원 정보를 저장 (TTL 5분)
-        redisTemplate.opsForValue().set(member.getPhone(), authCode, 5, TimeUnit.MINUTES);
+        String redisKey = REDIS_PREFIX_PASSWORD_RESET + member.getPhone();
+        redisTemplate.opsForValue().set(redisKey, authCode, 5, TimeUnit.MINUTES);
     }
 
     /**
      * 문자로 인증된 코드로 아이디 찾기
      */
     public LoginIdFindResponse findLoginId(AuthCodeForFindRequest request) {
-        // Redis에 저장된 인증 코드 가져오기
-        String savedAuthCode = redisTemplate.opsForValue().get(request.getPhone());
-
-        // 인증 코드가 일치하는지 체크
-        if (savedAuthCode == null || !savedAuthCode.equals(request.getAuthCode())) {
-            throw new JikgongException(ErrorCode.MEMBER_INVALID_AUTH_CODE);  // 인증 코드 불일치
-        }
+        // // 인증 코드가 일치하는지 체크
+        validationAuthCode(request);
 
         Member member = memberRepository.findByPhone(request.getPhone())
             .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 로그인 아이디 반환
         return LoginIdFindResponse.from(member);
+    }
+
+    // 인증 코드가 일치하는지 체크
+    private void validationAuthCode(AuthCodeForFindRequest request) {
+        // Redis에 저장된 인증 코드 가져오기
+        String redisKey = REDIS_PREFIX_PASSWORD_RESET + request.getPhone();
+        String savedAuthCode = redisTemplate.opsForValue().get(redisKey);
+
+        if (savedAuthCode == null || !savedAuthCode.equals(request.getAuthCode())) {
+            throw new JikgongException(ErrorCode.MEMBER_INVALID_AUTH_CODE);  // 인증 코드 불일치
+        }
     }
 
     /**

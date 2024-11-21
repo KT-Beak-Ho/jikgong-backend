@@ -2,6 +2,7 @@ package jikgong.domain.member.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import jikgong.domain.common.Address;
 import jikgong.domain.location.entity.Location;
@@ -24,6 +25,7 @@ import jikgong.global.sms.SmsService;
 import jikgong.global.utils.RandomCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,11 +41,16 @@ public class JoinService {
     private final WorkExperienceRepository workExperienceRepository;
     private final PasswordEncoder encoder;
     private final SmsService smsService;
+    private final RedisTemplate<String, String> redisTemplate;
+
+    private static final String REDIS_PREFIX_SIGNUP_VERIFICATION = "signup_verification:";
 
     /**
      * 노동자 회원가입 위치 정보 저장
      */
     public Long joinWorkerMember(JoinWorkerRequest request) {
+        // 인증 코드 유효 시간 검사
+        validationAuthCode(request);
         // loginId 중복 체크
         validationLoginId(request.getLoginId());
         // 휴대폰 중복 체크
@@ -96,6 +103,15 @@ public class JoinService {
 
         log.info("노동자 회원 가입 완료");
         return savedMember.getId();
+    }
+
+    // 인증 코드 유효 시간 검사
+    private void validationAuthCode(JoinWorkerRequest request) {
+        String redisKey = REDIS_PREFIX_SIGNUP_VERIFICATION + request.getPhone();
+        String savedAuthCode = redisTemplate.opsForValue().get(redisKey);
+        if (savedAuthCode == null || !savedAuthCode.equals(request.getAuthCode())) {
+            throw new JikgongException(ErrorCode.MEMBER_INVALID_AUTH_CODE); // 인증 코드 불일치
+        }
     }
 
     /**
@@ -167,6 +183,10 @@ public class JoinService {
         } catch (Exception e) {
             throw new JikgongException(ErrorCode.SMS_SEND_FAIL);
         }
+
+        // Redis에 인증 코드와 회원 정보를 저장 (TTL 5분)
+        String redisKey = REDIS_PREFIX_SIGNUP_VERIFICATION + request.getPhone();
+        redisTemplate.opsForValue().set(redisKey, authCode, 5, TimeUnit.MINUTES);
 
         return new VerificationSmsResponse(authCode);
     }
