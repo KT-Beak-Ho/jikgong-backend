@@ -1,13 +1,13 @@
 package jikgong.domain.member.dto.login;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
+@AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@ToString
+@Data
 public class LoginRequest {
 
     @Schema(description = "로그인 아이디", example = "abcdefg1")
