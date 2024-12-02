@@ -16,6 +16,7 @@ public class JoinWorkerRequestFixture {
             .loginId("worker1")
             .password("password123")
             .phone("01012345678")
+            .email("email@naver.com")
             .role(Role.ROLE_WORKER)
             .account("12341234123412")
             .bank("국민은행")

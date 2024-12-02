@@ -2,17 +2,26 @@ package jikgong.domain.member.service;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+import jikgong.domain.location.entity.Location;
+import jikgong.domain.location.repository.LocationRepository;
+import jikgong.domain.member.dto.join.JoinCompanyRequest;
 import jikgong.domain.member.dto.join.JoinWorkerRequest;
 import jikgong.domain.member.entity.Member;
+import jikgong.domain.member.fixture.JoinCompanyRequestFixture;
 import jikgong.domain.member.fixture.JoinWorkerRequestFixture;
 import jikgong.domain.member.repository.MemberRepository;
+import jikgong.domain.workexperience.repository.WorkExperienceRepository;
+import jikgong.global.exception.ErrorCode;
+import jikgong.global.exception.JikgongException;
 import jikgong.global.sms.SmsService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,6 +40,10 @@ class JoinServiceTest {
     @Mock
     private MemberRepository memberRepository;
     @Mock
+    private WorkExperienceRepository workExperienceRepository;
+    @Mock
+    private LocationRepository locationRepository;
+    @Mock
     private PasswordEncoder encoder;
     @Mock
     private SmsService smsService;
@@ -47,7 +60,8 @@ class JoinServiceTest {
 
         when(encoder.encode(anyString())).thenReturn("encodedPassword");
         when(memberRepository.save(any(Member.class))).thenReturn(member);
-        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+        when(memberRepository.findByLoginId(any(String.class))).thenReturn(Optional.empty());
+        when(memberRepository.findByPhone(any(String.class))).thenReturn(Optional.empty());
 
         // when
         Long memberId = joinService.joinWorkerMember(request);
@@ -55,73 +69,105 @@ class JoinServiceTest {
         // then
         assertThat(memberId).isEqualTo(1L);
         verify(memberRepository, times(1)).save(any(Member.class));
+        verify(workExperienceRepository, times(1)).saveAll(anyList());
+        verify(locationRepository, times(1)).save(any(Location.class));
     }
 
-//    @Test
-//    @DisplayName("회원가입 실패 - 중복된 전화번호")
-//    void joinWorkerMember_duplicatePhone() {
-//        // given
-//        JoinWorkerRequest request = new JoinWorkerRequest();
-//        request.setLoginId("worker2");
-//        request.setPhone("01012345678");
-//
-//        when(memberRepository.findByPhone("01012345678")).thenReturn(Optional.of(new Member()));
-//
-//        // when & then
-//        JikgongException exception = assertThrows(JikgongException.class, () -> joinService.joinWorkerMember(request));
-//        assertThat(exception.getErrorCode()).isEqualTo(ErrorCode.MEMBER_PHONE_EXIST);
-//    }
+    @Test
+    @DisplayName("회원가입 실패 - 중복된 아이디")
+    void joinWorkerMember_fail_duplicateLoginId() {
+        // given
+        JoinWorkerRequest request = JoinWorkerRequestFixture.createDefault();
 
-//    @Test
-//    @DisplayName("기업 회원가입 성공")
-//    void joinCompanyMember_success() {
-//        // given
-//        JoinCompanyRequest request = new JoinCompanyRequest();
-//        request.setLoginId("company1");
-//        request.setPhone("01098765432");
-//        request.setPassword("password123");
-//
-//        when(encoder.encode(anyString())).thenReturn("encodedPassword");
-//        when(memberRepository.save(any(Member.class))).thenAnswer(invocation -> {
-//            Member member = invocation.getArgument(0);
-//            member.setId(2L);
-//            return member;
-//        });
-//
-//        // when
-//        Long memberId = joinService.joinCompanyMember(request);
-//
-//        // then
-//        assertThat(memberId).isEqualTo(2L);
-//        verify(memberRepository, times(1)).save(any(Member.class));
-//    }
-//
-//    @Test
-//    @DisplayName("전화번호 중복 체크 실패")
-//    void validationPhone_duplicate() {
-//        // given
-//        String phone = "01012345678";
-//        when(memberRepository.findByPhone(phone)).thenReturn(Optional.of(new Member()));
-//
-//        // when & then
-//        JikgongException exception = assertThrows(JikgongException.class, () -> joinService.validationPhone(phone));
-//        assertThat(exception.getErrorCode()).isEqualTo(ErrorCode.MEMBER_PHONE_EXIST);
-//    }
-//
-//    @Test
-//    @DisplayName("SMS 인증 성공")
-//    void verificationSms_success() {
-//        // given
-//        VerificationSmsRequest request = new VerificationSmsRequest();
-//        request.setPhone("01012345678");
-//
-//        doNothing().when(smsService).sendSms(anyString(), anyString());
-//
-//        // when
-//        VerificationSmsResponse response = joinService.verificationSms(request);
-//
-//        // then
-//        assertThat(response.getAuthCode()).isNotNull();
-//        verify(smsService, times(1)).sendSms(anyString(), anyString());
-//    }
+        // 중복된 아이디가 존재하도록 설정
+        when(memberRepository.findByLoginId(anyString()))
+            .thenReturn(Optional.of(Member.builder().loginId(request.getLoginId()).build()));
+
+        // when & then
+        assertThatThrownBy(() -> joinService.joinWorkerMember(request))
+            .isInstanceOf(JikgongException.class)
+            .hasMessage(ErrorCode.MEMBER_LOGIN_ID_EXIST.getErrorMessage());
+
+        verify(memberRepository, times(1)).findByLoginId(request.getLoginId());
+        verify(memberRepository, times(0)).save(any(Member.class));
+    }
+
+    @Test
+    @DisplayName("회원가입 실패 - 중복된 휴대폰 번호")
+    void joinWorkerMember_fail_duplicatePhone() {
+        // given
+        JoinWorkerRequest request = JoinWorkerRequestFixture.createDefault();
+
+        // 중복된 휴대폰 번호가 존재하도록 설정
+        when(memberRepository.findByPhone(anyString()))
+            .thenReturn(Optional.of(Member.builder().phone(request.getPhone()).build()));
+
+        // when & then
+        assertThatThrownBy(() -> joinService.joinWorkerMember(request))
+            .isInstanceOf(JikgongException.class)
+            .hasMessage(ErrorCode.MEMBER_PHONE_EXIST.getErrorMessage());
+
+        verify(memberRepository, times(1)).findByPhone(request.getPhone());
+        verify(memberRepository, times(0)).save(any(Member.class));
+    }
+
+    @Test
+    @DisplayName("기업 회원가입 성공")
+    void joinCompanyMember_success() {
+        // given
+        JoinCompanyRequest request = JoinCompanyRequestFixture.createDefault();
+
+        Member member = Member.builder().build();
+        ReflectionTestUtils.setField(member, "id", 1L); // ID 설정
+
+        when(encoder.encode(anyString())).thenReturn("encodedPassword");
+        when(memberRepository.save(any(Member.class))).thenReturn(member);
+        when(memberRepository.findByLoginId(anyString())).thenReturn(Optional.empty());
+        when(memberRepository.findByPhone(anyString())).thenReturn(Optional.empty());
+
+        // when
+        Long memberId = joinService.joinCompanyMember(request);
+
+        // then
+        assertThat(memberId).isEqualTo(1L);
+        verify(memberRepository, times(1)).save(any(Member.class));
+    }
+
+    @Test
+    @DisplayName("기업 회원가입 실패 - 중복된 로그인 아이디")
+    void joinCompanyMember_fail_dueToDuplicateLoginId() {
+        // given
+        JoinCompanyRequest request = JoinCompanyRequestFixture.createDefault();
+
+        // 로그인 아이디 중복 설정
+        when(memberRepository.findByLoginId(anyString()))
+            .thenReturn(Optional.of(Member.builder().loginId(request.getLoginId()).build()));
+
+        // when & then
+        assertThatThrownBy(() -> joinService.joinCompanyMember(request))
+            .isInstanceOf(JikgongException.class)
+            .hasMessage(ErrorCode.MEMBER_LOGIN_ID_EXIST.getErrorMessage());
+
+        verify(memberRepository, times(1)).findByLoginId(request.getLoginId());
+        verify(memberRepository, times(0)).save(any(Member.class));
+    }
+
+    @Test
+    @DisplayName("기업 회원가입 실패 - 중복된 휴대폰 번호")
+    void joinCompanyMember_fail_dueToDuplicatePhone() {
+        // given
+        JoinCompanyRequest request = JoinCompanyRequestFixture.createDefault();
+
+        // 휴대폰 번호 중복 설정
+        when(memberRepository.findByPhone(anyString()))
+            .thenReturn(Optional.of(Member.builder().phone(request.getPhone()).build()));
+
+        // when & then
+        assertThatThrownBy(() -> joinService.joinCompanyMember(request))
+            .isInstanceOf(JikgongException.class)
+            .hasMessage(ErrorCode.MEMBER_PHONE_EXIST.getErrorMessage());
+
+        verify(memberRepository, times(1)).findByPhone(request.getPhone());
+        verify(memberRepository, times(0)).save(any(Member.class));
+    }
 }
