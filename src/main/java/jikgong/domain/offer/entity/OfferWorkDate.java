@@ -1,4 +1,4 @@
-package jikgong.domain.offerworkdate.entity;
+package jikgong.domain.offer.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,7 +11,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.util.ArrayList;
 import java.util.List;
-import jikgong.domain.offer.entity.Offer;
 import jikgong.domain.workdate.entity.WorkDate;
 import lombok.AccessLevel;
 import lombok.Builder;

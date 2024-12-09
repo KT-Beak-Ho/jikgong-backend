@@ -1,9 +1,9 @@
-package jikgong.domain.offerworkdate.repository;
+package jikgong.domain.offer.repository;
 
 import java.util.List;
 import java.util.Optional;
-import jikgong.domain.offerworkdate.entity.OfferWorkDate;
-import jikgong.domain.offerworkdate.entity.OfferWorkDateStatus;
+import jikgong.domain.offer.entity.OfferWorkDate;
+import jikgong.domain.offer.entity.OfferWorkDateStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

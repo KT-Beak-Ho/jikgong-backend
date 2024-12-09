@@ -1,4 +1,4 @@
-package jikgong.domain.offerworkdate.entity;
+package jikgong.domain.offer.entity;
 
 import lombok.Getter;
 

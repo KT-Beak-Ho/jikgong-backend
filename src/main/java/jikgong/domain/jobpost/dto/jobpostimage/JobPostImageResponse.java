@@ -1,6 +1,6 @@
-package jikgong.domain.jobpostimage.dto;
+package jikgong.domain.jobpost.dto.jobpostimage;
 
-import jikgong.domain.jobpostimage.entity.JobPostImage;
+import jikgong.domain.jobpost.entity.JobPostImage;
 import lombok.Builder;
 import lombok.Getter;
 
