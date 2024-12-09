@@ -8,7 +8,7 @@ import jikgong.domain.jobpost.entity.JobPost;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.offer.entity.Offer;
 import jikgong.domain.offer.entity.OfferStatus;
-import jikgong.domain.offerworkdate.entity.OfferWorkDate;
+import jikgong.domain.offer.entity.OfferWorkDate;
 import jikgong.domain.workdate.dto.WorkDateResponse;
 import jikgong.domain.workdate.entity.WorkDate;
 import jikgong.domain.workexperience.entity.Tech;

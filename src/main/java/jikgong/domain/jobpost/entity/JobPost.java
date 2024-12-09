@@ -20,7 +20,6 @@ import java.util.List;
 import jikgong.domain.common.BaseEntity;
 import jikgong.domain.jobpost.dto.company.JobPostSaveRequest;
 import jikgong.domain.jobpost.dto.company.TemporarySaveRequest;
-import jikgong.domain.jobpostimage.entity.JobPostImage;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.pickup.entity.Pickup;
 import jikgong.domain.project.entity.Project;
