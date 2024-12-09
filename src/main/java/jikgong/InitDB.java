@@ -15,7 +15,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import jikgong.domain.jobpost.dto.company.JobPostSaveRequest;
-import jikgong.domain.jobpost.entity.Park;
+import jikgong.domain.jobpost.entity.jobpost.Park;
 import jikgong.domain.jobpost.service.JobPostCompanyService;
 import jikgong.domain.member.dto.join.JoinCompanyRequest;
 import jikgong.domain.member.dto.join.JoinWorkerRequest;

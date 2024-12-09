@@ -10,7 +10,7 @@ import jikgong.domain.jobpost.dto.company.JobPostSaveRequest;
 import jikgong.domain.jobpost.dto.company.TemporaryListResponse;
 import jikgong.domain.jobpost.dto.company.TemporarySaveRequest;
 import jikgong.domain.jobpost.dto.company.TemporaryUpdateRequest;
-import jikgong.domain.jobpost.entity.JobPostStatus;
+import jikgong.domain.jobpost.entity.jobpost.JobPostStatus;
 import jikgong.domain.jobpost.service.JobPostCompanyService;
 import jikgong.global.annotation.CompanyRoleRequired;
 import jikgong.global.common.Response;

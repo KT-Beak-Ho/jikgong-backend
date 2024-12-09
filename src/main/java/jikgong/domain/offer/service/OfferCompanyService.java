@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.repository.ApplyRepository;
-import jikgong.domain.jobpost.entity.JobPost;
+import jikgong.domain.jobpost.entity.jobpost.JobPost;
 import jikgong.domain.jobpost.repository.JobPostRepository;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;

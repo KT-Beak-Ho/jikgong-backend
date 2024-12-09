@@ -1,4 +1,4 @@
-package jikgong.domain.pickup.entity;
+package jikgong.domain.jobpost.entity.pickup;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -6,7 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jikgong.domain.jobpost.entity.JobPost;
+import jikgong.domain.jobpost.entity.jobpost.JobPost;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

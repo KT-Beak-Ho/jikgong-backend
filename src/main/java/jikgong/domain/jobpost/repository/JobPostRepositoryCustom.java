@@ -2,9 +2,9 @@ package jikgong.domain.jobpost.repository;
 
 import java.time.LocalDate;
 import java.util.List;
-import jikgong.domain.jobpost.entity.JobPost;
-import jikgong.domain.jobpost.entity.Park;
-import jikgong.domain.jobpost.entity.SortType;
+import jikgong.domain.jobpost.entity.jobpost.JobPost;
+import jikgong.domain.jobpost.entity.jobpost.Park;
+import jikgong.domain.jobpost.entity.jobpost.SortType;
 import jikgong.domain.location.entity.Location;
 import jikgong.domain.workexperience.entity.Tech;
 import org.springframework.data.domain.Page;

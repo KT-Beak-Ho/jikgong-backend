@@ -1,7 +1,7 @@
 package jikgong.domain.scrap.service;
 
 import java.util.Optional;
-import jikgong.domain.jobpost.entity.JobPost;
+import jikgong.domain.jobpost.entity.jobpost.JobPost;
 import jikgong.domain.jobpost.repository.JobPostRepository;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;

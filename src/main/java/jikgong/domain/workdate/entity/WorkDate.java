@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import jikgong.domain.apply.entity.Apply;
-import jikgong.domain.jobpost.entity.JobPost;
+import jikgong.domain.jobpost.entity.jobpost.JobPost;
 import jikgong.global.exception.ErrorCode;
 import jikgong.global.exception.JikgongException;
 import lombok.AccessLevel;

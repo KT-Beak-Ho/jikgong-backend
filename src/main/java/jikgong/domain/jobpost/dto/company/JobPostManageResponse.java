@@ -5,7 +5,7 @@ import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import jikgong.domain.jobpost.entity.JobPost;
+import jikgong.domain.jobpost.entity.jobpost.JobPost;
 import jikgong.domain.workdate.dto.WorkDateResponse;
 import jikgong.domain.workexperience.entity.Tech;
 import lombok.Builder;

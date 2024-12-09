@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.entity.ApplyStatus;
-import jikgong.domain.jobpost.entity.JobPost;
+import jikgong.domain.jobpost.entity.jobpost.JobPost;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.notification.entity.NotificationType;
 import jikgong.domain.notification.service.NotificationService;

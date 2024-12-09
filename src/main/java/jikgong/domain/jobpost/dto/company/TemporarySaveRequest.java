@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import jikgong.domain.jobpost.entity.Park;
+import jikgong.domain.jobpost.entity.jobpost.Park;
 import jikgong.domain.workexperience.entity.Tech;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

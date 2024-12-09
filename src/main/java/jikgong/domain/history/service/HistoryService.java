@@ -7,7 +7,7 @@ import jikgong.domain.history.dto.*;
 import jikgong.domain.history.entity.History;
 import jikgong.domain.history.entity.WorkStatus;
 import jikgong.domain.history.repository.HistoryRepository;
-import jikgong.domain.jobpost.entity.JobPost;
+import jikgong.domain.jobpost.entity.jobpost.JobPost;
 import jikgong.domain.jobpost.repository.JobPostRepository;
 import jikgong.domain.history.dto.HistoryManageResponse;
 import jikgong.domain.member.entity.Member;

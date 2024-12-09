@@ -1,4 +1,4 @@
-package jikgong.domain.jobpost.entity;
+package jikgong.domain.jobpost.entity.jobpostimage;
 
 
 import jakarta.persistence.Column;
@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jikgong.domain.jobpost.entity.jobpost.JobPost;
 import jikgong.global.s3.ImageDto;
 import lombok.AccessLevel;
 import lombok.Builder;

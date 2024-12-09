@@ -1,4 +1,4 @@
-package jikgong.domain.jobpost.entity;
+package jikgong.domain.jobpost.entity.jobpost;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;

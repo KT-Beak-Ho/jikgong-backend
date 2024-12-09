@@ -4,7 +4,7 @@ import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import jikgong.domain.jobpost.entity.JobPost;
+import jikgong.domain.jobpost.entity.jobpost.JobPost;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.offer.entity.Offer;
 import jikgong.domain.offer.entity.OfferStatus;

@@ -3,7 +3,7 @@ package jikgong.domain.jobpost.dto.company;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-import jikgong.domain.jobpost.entity.JobPost;
+import jikgong.domain.jobpost.entity.jobpost.JobPost;
 import jikgong.domain.workdate.dto.WorkDateResponse;
 import jikgong.domain.workdate.entity.WorkDate;
 import lombok.Builder;

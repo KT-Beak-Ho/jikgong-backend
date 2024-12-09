@@ -1,6 +1,6 @@
 package jikgong.domain.offer.dto.worker;
 
-import jikgong.domain.jobpost.entity.JobPost;
+import jikgong.domain.jobpost.entity.jobpost.JobPost;
 import jikgong.domain.offer.entity.OfferWorkDate;
 import jikgong.domain.offer.entity.OfferWorkDateStatus;
 import jikgong.domain.workdate.dto.WorkDateResponse;

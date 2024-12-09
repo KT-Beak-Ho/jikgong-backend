@@ -1,6 +1,6 @@
-package jikgong.domain.pickup.repository;
+package jikgong.domain.jobpost.repository;
 
-import jikgong.domain.pickup.entity.Pickup;
+import jikgong.domain.jobpost.entity.pickup.Pickup;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

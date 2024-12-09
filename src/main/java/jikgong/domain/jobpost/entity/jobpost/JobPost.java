@@ -1,4 +1,4 @@
-package jikgong.domain.jobpost.entity;
+package jikgong.domain.jobpost.entity.jobpost;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -20,8 +20,9 @@ import java.util.List;
 import jikgong.domain.common.BaseEntity;
 import jikgong.domain.jobpost.dto.company.JobPostSaveRequest;
 import jikgong.domain.jobpost.dto.company.TemporarySaveRequest;
+import jikgong.domain.jobpost.entity.jobpostimage.JobPostImage;
 import jikgong.domain.member.entity.Member;
-import jikgong.domain.pickup.entity.Pickup;
+import jikgong.domain.jobpost.entity.pickup.Pickup;
 import jikgong.domain.project.entity.Project;
 import jikgong.domain.scrap.entity.Scrap;
 import jikgong.domain.workdate.entity.WorkDate;
