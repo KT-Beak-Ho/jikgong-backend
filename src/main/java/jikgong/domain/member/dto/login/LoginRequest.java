@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 public class LoginRequest {
 
     @Schema(description = "로그인 아이디", example = "abcdefg1")
-    private String loginId; // 인증 코드
+    private String loginId;
     @Schema(description = "로그인 패스워드", example = "abcdefg1")
-    private String password; // 인증 코드
+    private String password;
     @Schema(description = "device token")
     private String deviceToken;
 }

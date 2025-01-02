@@ -1,6 +1,6 @@
 package jikgong.domain.jobpost.repository;
 
-import static jikgong.domain.jobpost.entity.QJobPost.jobPost;
+import static jikgong.domain.jobpost.entity.jobpost.QJobPost.jobPost;
 import static jikgong.domain.member.entity.QMember.member;
 
 import com.querydsl.core.types.OrderSpecifier;

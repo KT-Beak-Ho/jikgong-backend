@@ -1,19 +1,18 @@
 package jikgong.domain.offer.repository;
 
+import static jikgong.domain.jobpost.entity.jobpost.QJobPost.jobPost;
+import static jikgong.domain.member.entity.QMember.member;
+import static jikgong.domain.offer.entity.QOffer.offer;
+
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.List;
 import jikgong.domain.offer.entity.Offer;
 import jikgong.domain.offer.entity.OfferStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
-
-import static jikgong.domain.jobpost.entity.QJobPost.*;
-import static jikgong.domain.member.entity.QMember.*;
-import static jikgong.domain.offer.entity.QOffer.*;
 
 @RequiredArgsConstructor
 public class OfferRepositoryImpl implements OfferRepositoryCustom {

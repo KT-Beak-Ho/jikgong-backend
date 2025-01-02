@@ -5,12 +5,9 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +18,6 @@ import jikgong.domain.location.entity.Location;
 import jikgong.domain.member.dto.info.CompanyInfoRequest;
 import jikgong.domain.member.dto.info.StayExpirationResponse;
 import jikgong.domain.member.dto.info.WorkerInfoRequest;
-import jikgong.domain.visaimage.entity.VisaImage;
 import jikgong.domain.workexperience.entity.WorkExperience;
 import jikgong.global.exception.ErrorCode;
 import jikgong.global.exception.JikgongException;
@@ -83,7 +79,8 @@ public class Member extends BaseEntity {
     }
 
     @Builder
-    public Member(String loginId, String password, String phone, String email, String account, String bank, Boolean privacyConsent,
+    public Member(String loginId, String password, String phone, String email, String account, String bank,
+        Boolean privacyConsent,
         String deviceToken, Role role, Worker workerInfo, Company companyInfo) {
         this.loginId = loginId;
         this.password = password;
