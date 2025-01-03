@@ -1,52 +1,52 @@
-package jikgong.global.fcm.service;
-
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.Message;
-import com.google.firebase.messaging.Notification;
-import jikgong.domain.member.entity.Member;
-import jikgong.domain.member.repository.MemberRepository;
-import jikgong.global.exception.ErrorCode;
-import jikgong.global.exception.JikgongException;
-import jikgong.global.fcm.dto.FCMNotificationRequestDto;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
-@RequiredArgsConstructor
-@Service
-@Slf4j
-public class FCMNotificationService {
-
-    private final FirebaseMessaging firebaseMessaging;
-    private final MemberRepository memberRepository;
-
-    public void sendNotificationByToken(FCMNotificationRequestDto requestDto) {
-
-        Member member = memberRepository.findById(requestDto.getTargetMemberId())
-            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
-
-        if (member.getDeviceToken() != null) {
-            Notification notification = Notification.builder()
-                .setTitle(requestDto.getTitle())
-                .setBody(requestDto.getBody())
-                // .setImage(requestDto.getImage())
-                .build();
-
-            Message message = Message.builder()
-                .setToken(member.getDeviceToken())
-                .setNotification(notification)
-                // .putAllData(requestDto.getData())
-                .build();
-            // todo: 프론트 연동 시 fcm 로직 주석 해제
-//            try {
-//                firebaseMessaging.send(message);
-//                log.info("FCM 알림 전송 완료. targetMember: " + member.getPhone());
-//            } catch (FirebaseMessagingException e) {
-//                log.error("FCM 발송 중 에러");
-//                throw new CustomException(ErrorCode.FCM_ERROR);
-//            }
-        } else {
-            throw new JikgongException(ErrorCode.FCM_FIREBASE_TOKEN_NOT_FOUND);
-        }
-    }
-}
+//package jikgong.global.fcm.service;
+//
+//import com.google.firebase.messaging.FirebaseMessaging;
+//import com.google.firebase.messaging.Message;
+//import com.google.firebase.messaging.Notification;
+//import jikgong.domain.member.entity.Member;
+//import jikgong.domain.member.repository.MemberRepository;
+//import jikgong.global.exception.ErrorCode;
+//import jikgong.global.exception.JikgongException;
+//import jikgong.global.fcm.dto.FCMNotificationRequestDto;
+//import lombok.RequiredArgsConstructor;
+//import lombok.extern.slf4j.Slf4j;
+//import org.springframework.stereotype.Service;
+//
+//@RequiredArgsConstructor
+//@Service
+//@Slf4j
+//public class FCMNotificationService {
+//
+//    private final FirebaseMessaging firebaseMessaging;
+//    private final MemberRepository memberRepository;
+//
+//    public void sendNotificationByToken(FCMNotificationRequestDto requestDto) {
+//
+//        Member member = memberRepository.findById(requestDto.getTargetMemberId())
+//            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+//
+//        if (member.getDeviceToken() != null) {
+//            Notification notification = Notification.builder()
+//                .setTitle(requestDto.getTitle())
+//                .setBody(requestDto.getBody())
+//                // .setImage(requestDto.getImage())
+//                .build();
+//
+//            Message message = Message.builder()
+//                .setToken(member.getDeviceToken())
+//                .setNotification(notification)
+//                // .putAllData(requestDto.getData())
+//                .build();
+//            // todo: 프론트 연동 시 fcm 로직 주석 해제
+////            try {
+////                firebaseMessaging.send(message);
+////                log.info("FCM 알림 전송 완료. targetMember: " + member.getPhone());
+////            } catch (FirebaseMessagingException e) {
+////                log.error("FCM 발송 중 에러");
+////                throw new CustomException(ErrorCode.FCM_ERROR);
+////            }
+//        } else {
+//            throw new JikgongException(ErrorCode.FCM_FIREBASE_TOKEN_NOT_FOUND);
+//        }
+//    }
+//}

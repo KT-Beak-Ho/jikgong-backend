@@ -3,7 +3,6 @@ package jikgong.global.event.handler;
 import jikgong.global.alimtalk.service.AlimTalkService;
 import jikgong.global.event.dto.AlarmEvent;
 import jikgong.global.fcm.dto.FCMNotificationRequestDto;
-import jikgong.global.fcm.service.FCMNotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -14,7 +13,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @RequiredArgsConstructor
 public class AlarmHandler {
 
-    private final FCMNotificationService fcmNotificationService;
+    //    private final FCMNotificationService fcmNotificationService;
     private final AlimTalkService alimTalkService;
 
     @Async
@@ -26,7 +25,7 @@ public class AlarmHandler {
             .title(event.getContent())
             .body(event.getContent())
             .build();
-        fcmNotificationService.sendNotificationByToken(request);
+//        fcmNotificationService.sendNotificationByToken(request);
     }
 
     @Async
