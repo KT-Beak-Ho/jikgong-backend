@@ -70,6 +70,7 @@ jobs:
           port: 22
           source: "./docker-compose.a.yml"
           target: "/home/ubuntu/"
+          debug: true
 
       # docker compose b 파일 scp
       - uses: actions/checkout@master
@@ -83,19 +84,19 @@ jobs:
           source: "./docker-compose.b.yml"
           target: "/home/ubuntu/"
 
-#      - name: executing remote ssh commands using password
-#        uses: appleboy/ssh-action@master
-#        with:
-#          host: ${{ secrets.SSH_HOST }}
-#          username: ubuntu
-#          password: ${{ secrets.SSH_PASSWORD }}
-#          port: 22
-#          script: |
-#            sudo docker rm -f $(sudo docker ps -q -f "expose=8080")
-#            sudo docker rm -f $(sudo docker ps -q -f "expose=6379")
-#            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/jikgong
-#            sudo docker-compose up -d
-#            sudo docker image prune -f
+      #      - name: executing remote ssh commands using password
+      #        uses: appleboy/ssh-action@master
+      #        with:
+      #          host: ${{ secrets.SSH_HOST }}
+      #          username: ubuntu
+      #          password: ${{ secrets.SSH_PASSWORD }}
+      #          port: 22
+      #          script: |
+      #            sudo docker rm -f $(sudo docker ps -q -f "expose=8080")
+      #            sudo docker rm -f $(sudo docker ps -q -f "expose=6379")
+      #            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/jikgong
+      #            sudo docker-compose up -d
+      #            sudo docker image prune -f
 
       - name: copy deploy.sh to remote server
         uses: appleboy/scp-action@master
