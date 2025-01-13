@@ -10,9 +10,9 @@ public class CompanyInfoResponse {
 
     private String loginId; // 로그인 아이디
     private String phone; // 휴대폰 번호
-    private String account; // 계좌
-    private String bank; // 은행 종류
 
+    private String bank; // 은행 종류
+    private String account; // 계좌 번호
     private String businessNumber; // 사업자 번호
     private String region; // 지역
     private String companyName; // 회사 명
@@ -23,9 +23,9 @@ public class CompanyInfoResponse {
         return CompanyInfoResponse.builder()
             .loginId(company.getLoginId())
             .phone(company.getPhone())
-            .account(company.getAccount())
-            .bank(company.getBank())
 
+            .bank(company.getCompanyInfo().getBank())
+            .bank(company.getCompanyInfo().getAccount())
             .businessNumber(company.getCompanyInfo().getBusinessNumber())
             .region(company.getCompanyInfo().getRegion())
             .companyName(company.getCompanyInfo().getCompanyName())

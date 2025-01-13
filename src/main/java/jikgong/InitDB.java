@@ -59,25 +59,17 @@ public class InitDB {
                 createJoinCompanyRequest("abcdefg0", "01012345678", Role.ROLE_COMPANY));
 
             joinService.joinWorkerMember(
-                createJoinWorkerRequest("abcdefg1", "01011111111", "email1@naver.com", Role.ROLE_WORKER, "111122223333",
-                    "김진수",
-                    "2000-09-30", "000930",
-                    35.116777388697734F, 128.9685393114043F));
+                createJoinWorkerRequest("abcdefg1", "01011111111", "email1@naver.com", Role.ROLE_WORKER,
+                    "김진수", "2000-09-30", 35.116777388697734F, 128.9685393114043F));
             joinService.joinWorkerMember(
-                createJoinWorkerRequest("abcdefg2", "01022222222", "email2@naver.com", Role.ROLE_WORKER, "222233334444",
-                    "이승민",
-                    "2001-02-12", "010212",
-                    35.086777388697734F, 128.9585393114043F));
+                createJoinWorkerRequest("abcdefg2", "01022222222", "email2@naver.com", Role.ROLE_WORKER,
+                    "이승민", "2001-02-12", 35.086777388697734F, 128.9585393114043F));
             joinService.joinWorkerMember(
-                createJoinWorkerRequest("abcdefg3", "01033333333", "email3@naver.com", Role.ROLE_WORKER, "333344445555",
-                    "조영훈",
-                    "2002-07-20", "020720",
-                    35.092233188697734F, 128.9485393114043F));
+                createJoinWorkerRequest("abcdefg3", "01033333333", "email3@naver.com", Role.ROLE_WORKER,
+                    "조영훈", "2002-07-20", 35.092233188697734F, 128.9485393114043F));
             joinService.joinWorkerMember(
-                createJoinWorkerRequest("abcdefg4", "01044444444", "email4@naver.com", Role.ROLE_WORKER, "444455556666",
-                    "안병기",
-                    "2002-12-04", "021204",
-                    35.142157388697734F, 128.9385393114043F));
+                createJoinWorkerRequest("abcdefg4", "01044444444", "email4@naver.com", Role.ROLE_WORKER,
+                    "안병기", "2002-12-04", 35.142157388697734F, 128.9385393114043F));
 
             projectService.saveProject(savedId, createProjectSaveRequest());
 
@@ -125,9 +117,7 @@ public class InitDB {
         }
 
         private JoinWorkerRequest createJoinWorkerRequest(String loginId, String phone, String email, Role role,
-            String account,
-            String workerName,
-            String birth, String rrn, Float latitude, Float longitude) {
+            String workerName, String birth, Float latitude, Float longitude) {
 
             // 랜덤한 2개의 경력 사항 생성
             List<WorkExperienceRequest> workExperienceRequestList = createTechList();
@@ -138,14 +128,11 @@ public class InitDB {
                 .phone(phone)
                 .email(email)
                 .role(role)
-                .account(account)
-                .bank("국민은행")
                 .privacyConsent(true)
                 .deviceToken("deviceToken")
                 .isNotification(true)
                 .workerName(workerName)
                 .birth(birth)
-                .rrn(rrn)
                 .gender(Gender.MALE)
                 .nationality(Nationality.KOREAN)
                 .hasVisa(true)

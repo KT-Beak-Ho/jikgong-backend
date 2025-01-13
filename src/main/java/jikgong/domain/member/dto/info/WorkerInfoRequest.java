@@ -19,8 +19,6 @@ public class WorkerInfoRequest {
     private String workerName; // 노동자 이름
     @Schema(description = "생년월일", example = "20200930")
     private String birth; // 생년월일
-    @Schema(description = "주민등록번호", example = "000930")
-    private String rrn; // 주민등록번호
     @Schema(description = "성별", example = "FEMALE")
     private Gender gender; // 성별
     @Schema(description = "국적", example = "FOREIGNER")

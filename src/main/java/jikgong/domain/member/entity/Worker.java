@@ -52,7 +52,6 @@ public class Worker {
     public void updateWorkerInfo(WorkerInfoRequest request) {
         this.workerName = request.getWorkerName();
         this.birth = request.getBirth();
-        this.rrn = request.getRrn();
         this.gender = request.getGender();
         this.nationality = request.getNationality();
         this.hasVisa = request.getHasVisa();

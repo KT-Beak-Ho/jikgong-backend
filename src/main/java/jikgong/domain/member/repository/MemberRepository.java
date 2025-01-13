@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
     /**
-     * 회원 가입
+     * 회원 가입 or 로그인
      */
     Optional<Member> findByLoginId(String loginId);
 

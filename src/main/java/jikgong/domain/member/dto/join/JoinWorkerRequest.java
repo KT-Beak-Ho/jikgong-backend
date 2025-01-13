@@ -39,9 +39,6 @@ public class JoinWorkerRequest {
     @Schema(description = "회원 타입 [ROLE_WORKER or ROLE_REGISTER]", example = "ROLE_WORKER")
     @NotNull
     private Role role; // 회원 타입
-    @Schema(description = "은행 종류", example = "국민은행")
-    @NotBlank
-    private String bank; // 은행
     @Schema(description = "개인 정보 동의 여부", example = "true")
     @AssertTrue
     @NotNull

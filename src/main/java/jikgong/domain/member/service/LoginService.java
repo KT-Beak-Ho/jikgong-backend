@@ -1,5 +1,6 @@
 package jikgong.domain.member.service;
 
+import java.util.Optional;
 import jikgong.domain.member.dto.login.LoginRequest;
 import jikgong.domain.member.dto.login.LoginResponse;
 import jikgong.domain.member.dto.login.RefreshTokenRequest;
@@ -27,13 +28,19 @@ public class LoginService {
     private final RedisTemplate<String, String> redisTemplate;
 
     /**
-     * 로그인
+     * 로그인 (LoginId 혹은 전화번호로 로그인)
      * device Token 변경 시 update
      */
     public LoginResponse login(LoginRequest request) {
-        // id 체크
-        Member member = memberRepository.findByLoginId(request.getLoginId())
-            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+        String loginIdOrPhone = request.getLoginIdOrPhone();
+
+        Optional<Member> optionalMember = isPhoneNumber(loginIdOrPhone)
+            ? memberRepository.findByPhone(loginIdOrPhone)
+            : memberRepository.findByLoginId(loginIdOrPhone);
+
+        // 회원 존재 여부 확인
+        Member member = optionalMember.orElseThrow(() ->
+            new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         // authCode 체크
         if (!encoder.matches(request.getPassword(), member.getPassword())) {
@@ -48,6 +55,10 @@ public class LoginService {
         member.updateDeviceToken(request.getDeviceToken());
 
         return new LoginResponse(accessToken, refreshToken, member.getRole());
+    }
+
+    private boolean isPhoneNumber(String identifier) {
+        return identifier.matches("^01[0-9]{8,9}$"); // 간단한 전화번호 정규식
     }
 
     /**

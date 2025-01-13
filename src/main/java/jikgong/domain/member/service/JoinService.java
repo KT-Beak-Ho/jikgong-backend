@@ -68,7 +68,6 @@ public class JoinService {
             .password(encoder.encode(request.getPassword()))
             .phone(request.getPhone())
             .email(request.getEmail())
-            .bank(request.getBank())
             .privacyConsent((request.getPrivacyConsent()))
             .role(request.getRole())
             .deviceToken(request.getDeviceToken())
@@ -111,6 +110,7 @@ public class JoinService {
 
         // 기업 정보
         Company company = Company.builder()
+            .bank(request.getBank())
             .account(request.getAccount())
             .businessNumber(request.getBusinessNumber())
             .region(request.getRegion())
@@ -126,7 +126,6 @@ public class JoinService {
             .password(encoder.encode(request.getPassword()))
             .phone(request.getPhone())
             .email(request.getEmail())
-            .bank(request.getBank())
             .privacyConsent((request.getPrivacyConsent()))
             .role(request.getRole())
             .deviceToken(request.getDeviceToken())

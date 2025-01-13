@@ -3,6 +3,7 @@ package jikgong.domain.member.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -44,15 +45,15 @@ class LoginServiceTest {
     private RedisTemplate<String, String> redisTemplate;
 
     @Test
-    @DisplayName("로그인 성공")
-    void login_success() {
+    @DisplayName("LoginId 로 로그인 성공")
+    void login_with_loginId_success() {
         // given
-        String loginId = "testLoginId";
+        String loginIdOrPhone = "testLoginId";
         String password = "testPassword";
         String deviceToken = "deviceToken";
         String accessToken = "accessToken";
         String refreshToken = "refreshToken";
-        LoginRequest request = new LoginRequest(loginId, password, deviceToken);
+        LoginRequest request = new LoginRequest(loginIdOrPhone, password, deviceToken);
         Member member = Member.builder()
             .loginId("testLoginId")
             .password("encodedPassword")
@@ -72,7 +73,42 @@ class LoginServiceTest {
         assertThat(response.getRefreshToken()).isEqualTo(refreshToken);
         assertThat(response.getRole()).isEqualTo(Role.ROLE_WORKER);
 
-        verify(memberRepository, times(1)).findByLoginId(loginId);
+        verify(memberRepository, times(1)).findByLoginId(loginIdOrPhone);
+        verify(memberRepository, never()).findByPhone(loginIdOrPhone);
+        verify(encoder, times(1)).matches(password, member.getPassword());
+    }
+
+    @Test
+    @DisplayName("phone 으로 로그인 성공")
+    void login_with_phone_success() {
+        // given
+        String loginIdOrPhone = "01012345678";
+        String password = "testPassword";
+        String deviceToken = "deviceToken";
+        String accessToken = "accessToken";
+        String refreshToken = "refreshToken";
+        LoginRequest request = new LoginRequest(loginIdOrPhone, password, deviceToken);
+        Member member = Member.builder()
+            .loginId("testLoginId")
+            .password("encodedPassword")
+            .role(Role.ROLE_WORKER)
+            .build();
+
+        when(memberRepository.findByPhone(anyString())).thenReturn(Optional.of(member));
+        when(encoder.matches(anyString(), anyString())).thenReturn(true);
+        when(jwtTokenProvider.createAccessToken(anyString())).thenReturn(accessToken);
+        when(jwtTokenProvider.createRefreshToken(anyString())).thenReturn(refreshToken);
+
+        // when
+        LoginResponse response = loginService.login(request);
+
+        // then
+        assertThat(response.getAccessToken()).isEqualTo(accessToken);
+        assertThat(response.getRefreshToken()).isEqualTo(refreshToken);
+        assertThat(response.getRole()).isEqualTo(Role.ROLE_WORKER);
+
+        verify(memberRepository, times(1)).findByPhone(loginIdOrPhone);
+        verify(memberRepository, never()).findByLoginId(loginIdOrPhone);
         verify(encoder, times(1)).matches(password, member.getPassword());
     }
 

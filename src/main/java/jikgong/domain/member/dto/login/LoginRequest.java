@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @Data
 public class LoginRequest {
 
-    @Schema(description = "로그인 아이디", example = "abcdefg1")
-    private String loginId;
+    @Schema(description = "로그인 아이디 또는 전화번호", example = "abcdefg1")
+    private String loginIdOrPhone;
     @Schema(description = "로그인 패스워드", example = "abcdefg1")
     private String password;
     @Schema(description = "device token")
