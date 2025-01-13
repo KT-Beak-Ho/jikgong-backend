@@ -53,7 +53,6 @@ public class JoinService {
         Worker worker = Worker.builder()
             .workerName(request.getWorkerName())
             .birth(request.getBirth())
-            .rrn(request.getRrn())
             .gender(request.getGender())
             .nationality(request.getNationality())
             .hasVisa(request.getHasVisa())
@@ -69,7 +68,6 @@ public class JoinService {
             .password(encoder.encode(request.getPassword()))
             .phone(request.getPhone())
             .email(request.getEmail())
-            .account(request.getAccount())
             .bank(request.getBank())
             .privacyConsent((request.getPrivacyConsent()))
             .role(request.getRole())
@@ -80,7 +78,11 @@ public class JoinService {
         // 위치 정보 생성
         Location location = Location.builder()
             .address(
-                new Address(request.getAddress(), request.getLatitude(), request.getLongitude()))
+                new Address(
+                    request.getAddress(),
+                    request.getLatitude(),
+                    request.getLongitude())
+            )
             .isMain(true)
             .member(member)
             .build();
@@ -109,6 +111,7 @@ public class JoinService {
 
         // 기업 정보
         Company company = Company.builder()
+            .account(request.getAccount())
             .businessNumber(request.getBusinessNumber())
             .region(request.getRegion())
             .companyName(request.getCompanyName())
@@ -123,7 +126,6 @@ public class JoinService {
             .password(encoder.encode(request.getPassword()))
             .phone(request.getPhone())
             .email(request.getEmail())
-            .account(request.getAccount())
             .bank(request.getBank())
             .privacyConsent((request.getPrivacyConsent()))
             .role(request.getRole())

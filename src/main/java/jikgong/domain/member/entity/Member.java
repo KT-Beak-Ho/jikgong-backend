@@ -47,8 +47,6 @@ public class Member extends BaseEntity {
     @Column(unique = true, nullable = false)
     private String email; // 이메일
 
-    @Column(unique = true, nullable = false)
-    private String account; // 계좌
     @Column(nullable = false)
     private String bank; // 은행 종류
     private Boolean privacyConsent; // 개인정보 동의 여부
@@ -79,14 +77,13 @@ public class Member extends BaseEntity {
     }
 
     @Builder
-    public Member(String loginId, String password, String phone, String email, String account, String bank,
+    public Member(String loginId, String password, String phone, String email, String bank,
         Boolean privacyConsent,
         String deviceToken, Role role, Worker workerInfo, Company companyInfo) {
         this.loginId = loginId;
         this.password = password;
         this.phone = phone;
         this.email = email;
-        this.account = account;
         this.bank = bank;
         this.privacyConsent = privacyConsent;
         this.deviceToken = deviceToken;

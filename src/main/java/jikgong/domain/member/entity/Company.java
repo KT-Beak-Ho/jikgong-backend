@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Company {
 
+    @Column(unique = true, nullable = false)
+    private String account; // 계좌
     private String businessNumber; // 사업자 번호
     private String region; // 지역
     private String companyName; // 회사 명
@@ -23,8 +25,9 @@ public class Company {
     private CompanyNotificationInfo companyNotificationInfo; // 기업 알림 정보
 
     @Builder
-    public Company(String businessNumber, String region, String companyName, String manager,
+    public Company(String account, String businessNumber, String region, String companyName, String manager,
         String requestContent, Boolean isNotification) {
+        this.account = account;
         this.businessNumber = businessNumber;
         this.region = region;
         this.companyName = companyName;

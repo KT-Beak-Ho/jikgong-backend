@@ -39,9 +39,6 @@ public class JoinWorkerRequest {
     @Schema(description = "회원 타입 [ROLE_WORKER or ROLE_REGISTER]", example = "ROLE_WORKER")
     @NotNull
     private Role role; // 회원 타입
-    @Schema(description = "계좌 번호", example = "12341234123412")
-    @NotBlank
-    private String account; // 계좌 번호
     @Schema(description = "은행 종류", example = "국민은행")
     @NotBlank
     private String bank; // 은행
@@ -62,9 +59,6 @@ public class JoinWorkerRequest {
     @Schema(description = "생년월일", example = "19750101")
     @NotBlank
     private String birth; // 생년월일
-    @Schema(description = "주민등록번호", example = "750101-1752442")
-    @NotBlank
-    private String rrn; // 생년월일
     @Schema(description = "성별 [MALE or FEMAILE]", example = "MALE")
     @NotNull
     private Gender gender; // 성별

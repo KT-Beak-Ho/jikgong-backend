@@ -18,7 +18,6 @@ public class Worker {
 
     private String workerName; // 노동자 이름
     private String birth; // 생년월일
-    private String rrn; // 주민등록번호
     @Enumerated(value = EnumType.STRING)
     private Gender gender; // 성별
     private Nationality nationality; // 국적
@@ -35,12 +34,11 @@ public class Worker {
     private WorkerNotificationInfo workerNotificationInfo; // 노동자 알림 정보
 
     @Builder
-    public Worker(String workerName, String birth, String rrn, Gender gender, Nationality nationality,
+    public Worker(String workerName, String birth, Gender gender, Nationality nationality,
         Boolean hasVisa, Boolean hasEducationCertificate, Boolean hasWorkerCard, Boolean credentialLiabilityConsent,
         Boolean isNotification) {
         this.workerName = workerName;
         this.birth = birth;
-        this.rrn = rrn;
         this.gender = gender;
         this.nationality = nationality;
         this.hasVisa = hasVisa;
