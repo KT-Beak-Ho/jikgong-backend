@@ -21,6 +21,8 @@ public class Worker {
     @Enumerated(value = EnumType.STRING)
     private Gender gender; // 성별
     private Nationality nationality; // 국적
+    private String bank; // 은행 종류
+    private String account; // 계좌
     private Boolean hasVisa; // 비자 여부 (외국인만 입력)
     private LocalDate visaExpiryDate; // 체류 만료일
     private Boolean hasEducationCertificate; // 교육 증명서
@@ -35,12 +37,14 @@ public class Worker {
 
     @Builder
     public Worker(String workerName, String birth, Gender gender, Nationality nationality,
-        Boolean hasVisa, Boolean hasEducationCertificate, Boolean hasWorkerCard, Boolean credentialLiabilityConsent,
-        Boolean isNotification) {
+        String bank, String account, Boolean hasVisa, Boolean hasEducationCertificate,
+        Boolean hasWorkerCard, Boolean credentialLiabilityConsent, Boolean isNotification) {
         this.workerName = workerName;
         this.birth = birth;
         this.gender = gender;
         this.nationality = nationality;
+        this.bank = bank;
+        this.account = account;
         this.hasVisa = hasVisa;
         this.hasEducationCertificate = hasEducationCertificate;
         this.hasWorkerCard = hasWorkerCard;

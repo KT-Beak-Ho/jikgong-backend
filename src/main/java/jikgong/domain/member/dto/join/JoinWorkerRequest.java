@@ -62,6 +62,12 @@ public class JoinWorkerRequest {
     @Schema(description = "국적 [KOREAN or FOREIGNER]", example = "KOREAN")
     @NotNull
     private Nationality nationality; // 국적
+    @Schema(description = "계좌 번호", example = "12341234123412")
+    @NotBlank
+    private String account; // 게좌 번호
+    @Schema(description = "은행 종류", example = "국민은행")
+    @NotBlank
+    private String bank; // 은행
     @Schema(description = "비자 여부", example = "true")
     @NotNull
     private Boolean hasVisa; // 비자 여부

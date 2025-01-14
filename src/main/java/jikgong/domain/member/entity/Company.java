@@ -13,8 +13,6 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Company {
 
-    private String bank; // 은행 종류
-    private String account; // 계좌
     private String businessNumber; // 사업자 번호
     private String region; // 지역
     private String companyName; // 회사 명
@@ -25,10 +23,8 @@ public class Company {
     private CompanyNotificationInfo companyNotificationInfo; // 기업 알림 정보
 
     @Builder
-    public Company(String bank, String account, String businessNumber, String region,
+    public Company(String businessNumber, String region,
         String companyName, String manager, String requestContent, Boolean isNotification) {
-        this.bank = bank;
-        this.account = account;
         this.businessNumber = businessNumber;
         this.region = region;
         this.companyName = companyName;

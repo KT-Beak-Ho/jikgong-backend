@@ -22,6 +22,10 @@ public class QWorker extends BeanPath<Worker> {
 
     public static final QWorker worker = new QWorker("worker");
 
+    public final StringPath account = createString("account");
+
+    public final StringPath bank = createString("bank");
+
     public final StringPath birth = createString("birth");
 
     public final BooleanPath credentialLiabilityConsent = createBoolean("credentialLiabilityConsent");

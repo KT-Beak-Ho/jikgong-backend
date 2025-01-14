@@ -22,10 +22,6 @@ public class QCompany extends BeanPath<Company> {
 
     public static final QCompany company = new QCompany("company");
 
-    public final StringPath account = createString("account");
-
-    public final StringPath bank = createString("bank");
-
     public final StringPath businessNumber = createString("businessNumber");
 
     public final StringPath companyName = createString("companyName");

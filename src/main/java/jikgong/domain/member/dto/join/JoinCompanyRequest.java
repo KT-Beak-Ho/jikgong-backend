@@ -31,12 +31,6 @@ public class JoinCompanyRequest {
     @Schema(description = "회원 타입 [ROLE_WORKER or ROLE_COMPANY]", example = "ROLE_COMPANY")
     @NotNull
     private Role role; // 회원 타입
-    @Schema(description = "계좌 번호", example = "12341234123412")
-    @NotBlank
-    private String account; // 게좌 번호
-    @Schema(description = "은행 종류", example = "국민은행")
-    @NotBlank
-    private String bank; // 은행
     @Schema(description = "개인 정보 동의 여부", example = "true")
     @AssertTrue
     @NotNull

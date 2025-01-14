@@ -55,6 +55,8 @@ public class JoinService {
             .birth(request.getBirth())
             .gender(request.getGender())
             .nationality(request.getNationality())
+            .bank(request.getBank())
+            .account(request.getAccount())
             .hasVisa(request.getHasVisa())
             .hasEducationCertificate(request.getHasEducationCertificate())
             .hasWorkerCard(request.getHasWorkerCard())
@@ -110,8 +112,6 @@ public class JoinService {
 
         // 기업 정보
         Company company = Company.builder()
-            .bank(request.getBank())
-            .account(request.getAccount())
             .businessNumber(request.getBusinessNumber())
             .region(request.getRegion())
             .companyName(request.getCompanyName())
@@ -163,11 +163,7 @@ public class JoinService {
         // 6자리 랜덤 코드 생성
         String authCode = RandomCode.createAuthCode();
         String content = "[직공]\n본인확인 인증번호: [" + authCode + "]";
-        try {
-            smsService.sendSms(request.getPhone(), content);
-        } catch (Exception e) {
-            throw new JikgongException(ErrorCode.SMS_SEND_FAIL);
-        }
+        smsService.sendSms(request.getPhone(), content);
 
         return new VerificationSmsResponse(authCode);
     }

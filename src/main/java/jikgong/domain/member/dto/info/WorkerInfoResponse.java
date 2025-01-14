@@ -21,6 +21,8 @@ public class WorkerInfoResponse {
     private String birth; // 생년월일
     private Gender gender; // 성별
     private Nationality nationality; // 국적
+    private String account; // 게좌 번호
+    private String bank; // 은행
     private Boolean hasVisa; // 비자 여부 (외국인만 입력)
     private Boolean hasEducationCertificate; // 교육 증명서
     private Boolean hasWorkerCard; // 근로자 카드 여부
@@ -41,6 +43,8 @@ public class WorkerInfoResponse {
             .birth(worker.getWorkerInfo().getBirth())
             .gender(worker.getWorkerInfo().getGender())
             .nationality(worker.getWorkerInfo().getNationality())
+            .account(worker.getWorkerInfo().getAccount())
+            .bank(worker.getWorkerInfo().getBank())
 
             .hasVisa(worker.getWorkerInfo().getHasVisa())
             .hasEducationCertificate(worker.getWorkerInfo().getHasEducationCertificate())
