@@ -36,10 +36,15 @@ public class SmsService {
      * sms 발송
      */
     @Async
-    public void sendSms(String phoneNumber, String content) throws Exception {
+    public void sendSms(String phoneNumber, String content)  {
         Long time = System.currentTimeMillis();
         String timestamp = time.toString();
-        String signature = makeSignature(timestamp);
+        String signature = null;
+        try {
+            signature = makeSignature(timestamp);
+        } catch (Exception e) {
+            throw new JikgongException(ErrorCode.SMS_SEND_FAIL);
+        }
 
         SmsRequest.Message message = new SmsRequest.Message(phoneNumber, null, null);
 

@@ -50,6 +50,7 @@ public class MemberInfoService {
     private final StayExpirationService stayExpirationService;
 
     private static final String REDIS_PREFIX_PASSWORD_RESET = "password_reset:";
+    private static final String REDIS_PREFIX_LOGIN_ID_FIND = "loginId_find:";
 
     /**
      * 노동자: 회원 정보 조회
@@ -79,7 +80,8 @@ public class MemberInfoService {
     /**
      * 경력 정보 업데이트 로직
      */
-    private void updateWorkExperiences(List<WorkExperienceRequest> workExperienceRequestList, Member worker) {
+    private void updateWorkExperiences(List<WorkExperienceRequest> workExperienceRequestList,
+        Member worker) {
         List<WorkExperience> currentWorkExperiences = worker.getWorkExperienceList();
         List<WorkExperience> newWorkExperiences = new ArrayList<>();
 
@@ -103,7 +105,8 @@ public class MemberInfoService {
             .map(WorkExperienceRequest::getWorkExperienceId)
             .filter(Objects::nonNull) // null 값 필터링
             .collect(Collectors.toList());
-        workExperienceRepository.deleteWorkExperienceNotInIdList(worker.getId(), workExperienceIdList);
+        workExperienceRepository.deleteWorkExperienceNotInIdList(worker.getId(),
+            workExperienceIdList);
 
         // 경력 추가
         workExperienceRepository.saveAll(newWorkExperiences);
@@ -158,33 +161,26 @@ public class MemberInfoService {
      * 비밀번호 찾기 전 문자 인증
      */
     public void verificationBeforeFindPassword(PasswordFindRequest request) throws Exception {
-        Member member = memberRepository.findMemberForForgottenPassword(request.getLoginId(), request.getPhone())
+        Member member = memberRepository.findMemberForForgottenPassword(request.getLoginId(),
+                request.getPhone())
             .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 6자리 랜덤 코드 생성
         String authCode = RandomCode.createAuthCode();
         String content = "[직공]\n비밀번호 찾기 본인확인 인증번호: [" + authCode + "]";
-        try {
-            smsService.sendSms(member.getPhone(), content);
-        } catch (Exception e) {
-            throw new JikgongException(ErrorCode.SMS_SEND_FAIL);
-        }
+        smsService.sendSms(member.getPhone(), content);
 
         // Redis에 인증 코드와 회원 정보를 저장 (TTL 5분)
-        redisTemplate.opsForValue().set(member.getPhone(), authCode, 5, TimeUnit.MINUTES);
+        String redisKey = REDIS_PREFIX_PASSWORD_RESET + member.getPhone();
+        redisTemplate.opsForValue().set(redisKey, authCode, 5, TimeUnit.MINUTES);
     }
 
     /**
      * 임시 비밀번호 발급
      */
     public PasswordFindResponse updateTemporaryPassword(AuthCodeForFindRequest request) {
-        // Redis에 저장된 인증 코드 가져오기
-        String savedAuthCode = redisTemplate.opsForValue().get(request.getPhone());
-
-        // 인증 코드가 일치하는지 체크
-        if (savedAuthCode == null || !savedAuthCode.equals(request.getAuthCode())) {
-            throw new JikgongException(ErrorCode.MEMBER_INVALID_AUTH_CODE);  // 인증 코드 불일치
-        }
+        // 인증 코드 검증
+        validateAuthCode(request, REDIS_PREFIX_PASSWORD_RESET);
 
         // 임시 번호 생성, 업데이트 및 반환
         String temporaryPassword = RandomCode.createTemporaryPassword();
@@ -199,20 +195,17 @@ public class MemberInfoService {
      * 아이디 찾기 전 문자 인증
      */
     public void verificationBeforeFindLoginId(LoginIdFindRequest request) {
-        Member member = memberRepository.findMemberForForgottenLoginId(request.getPhone(), request.getName())
+        Member member = memberRepository.findMemberForForgottenLoginId(request.getPhone(),
+                request.getName())
             .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 6자리 랜덤 코드 생성
         String authCode = RandomCode.createAuthCode();
         String content = "[직공]\n아이디 찾기 본인확인 인증번호: [" + authCode + "]";
-        try {
-            smsService.sendSms(member.getPhone(), content);
-        } catch (Exception e) {
-            throw new JikgongException(ErrorCode.SMS_SEND_FAIL);
-        }
+        smsService.sendSms(member.getPhone(), content);
 
         // Redis에 인증 코드와 회원 정보를 저장 (TTL 5분)
-        String redisKey = REDIS_PREFIX_PASSWORD_RESET + member.getPhone();
+        String redisKey = REDIS_PREFIX_LOGIN_ID_FIND + member.getPhone();
         redisTemplate.opsForValue().set(redisKey, authCode, 5, TimeUnit.MINUTES);
     }
 
@@ -221,7 +214,7 @@ public class MemberInfoService {
      */
     public LoginIdFindResponse findLoginId(AuthCodeForFindRequest request) {
         // 인증 코드가 일치하는지 체크
-        validationAuthCode(request);
+        validateAuthCode(request, REDIS_PREFIX_LOGIN_ID_FIND);
 
         Member member = memberRepository.findByPhone(request.getPhone())
             .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
@@ -230,10 +223,9 @@ public class MemberInfoService {
         return LoginIdFindResponse.from(member);
     }
 
-    // 인증 코드가 일치하는지 체크
-    private void validationAuthCode(AuthCodeForFindRequest request) {
+    private void validateAuthCode(AuthCodeForFindRequest request, String prefix) {
         // Redis에 저장된 인증 코드 가져오기
-        String redisKey = REDIS_PREFIX_PASSWORD_RESET + request.getPhone();
+        String redisKey = prefix + request.getPhone();
         String savedAuthCode = redisTemplate.opsForValue().get(redisKey);
 
         if (savedAuthCode == null || !savedAuthCode.equals(request.getAuthCode())) {
@@ -241,13 +233,15 @@ public class MemberInfoService {
         }
     }
 
+
     /**
-     * 체류 만료일 조회 api 호출
-     * 체류 만료일 정보 업데이트
+     * 체류 만료일 조회 api 호출 체류 만료일 정보 업데이트
      */
-    public void updateVisaExpiryDate(Long workerId, StayExpirationRequest request) throws JsonProcessingException {
+    public void updateVisaExpiryDate(Long workerId, StayExpirationRequest request)
+        throws JsonProcessingException {
         // codef api 호출
-        StayExpirationResponse stayExpirationResponse = stayExpirationService.checkStayExpiration(request);
+        StayExpirationResponse stayExpirationResponse = stayExpirationService.checkStayExpiration(
+            request);
 
         if (!"CF-00000".equals(stayExpirationResponse.getResult().getCode())) {
             throw new JikgongException(ErrorCode.CODEF_UNKNOWN_ERROR);
