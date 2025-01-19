@@ -31,7 +31,7 @@ public class JoinController {
     private final JoinService joinService;
 
     @Operation(summary = "회원 가입: 노동자")
-    @PostMapping(value = "/api/join/worker/join", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/api/join/worker/join", consumes = {"multipart/form-data"})
     public ResponseEntity<Response> joinWorkerMember(
         @RequestPart(name = "request") @Valid JoinWorkerRequest request,
         @RequestPart(name = "educationCertificateImage", required = false) MultipartFile educationCertificateImage,

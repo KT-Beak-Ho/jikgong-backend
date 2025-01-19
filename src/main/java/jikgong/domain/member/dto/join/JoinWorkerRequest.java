@@ -69,6 +69,8 @@ public class JoinWorkerRequest {
     @Schema(description = "은행 종류", example = "국민은행")
     @NotBlank
     private String bank; // 은행
+    @Schema(description = "건설 노동자 카드 번호", example = "null")
+    private String workerCardNumber;
     @Schema(description = "비자 여부", example = "true")
     @NotNull
     private Boolean hasVisa; // 비자 여부

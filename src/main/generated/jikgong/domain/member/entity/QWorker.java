@@ -44,6 +44,8 @@ public class QWorker extends BeanPath<Worker> {
 
     public final StringPath workerCardImgPath = createString("workerCardImgPath");
 
+    public final StringPath workerCardNumber = createString("workerCardNumber");
+
     public final StringPath workerName = createString("workerName");
 
     public final QWorkerNotificationInfo workerNotificationInfo;

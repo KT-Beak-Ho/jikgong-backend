@@ -7,6 +7,8 @@ import jakarta.persistence.Enumerated;
 import java.time.LocalDate;
 import jikgong.domain.member.dto.info.WorkerInfoRequest;
 import jikgong.domain.member.dto.join.JoinWorkerRequest;
+import jikgong.global.exception.ErrorCode;
+import jikgong.global.exception.JikgongException;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,6 +31,7 @@ public class Worker {
 
     private String educationCertificateImgPath; // 교육 증명서 이미지 경로
     private String workerCardImgPath; // 근로자 카드 이미지 경로
+    private String workerCardNumber; // 근로자 카드 번호
 
     private Boolean credentialLiabilityConsent; // 자격증명 법적 책임 동의 여부
 
@@ -81,8 +84,12 @@ public class Worker {
         this.educationCertificateImgPath = educationCertificateImgPath;
     }
 
-    public void updateWorkerCardImgPath(String workerCardImgPath) {
+    public void updateWorkerCardImgPath(String workerCardImgPath, String workerCardNumber) {
+        if (workerCardImgPath == null || workerCardNumber == null) {
+            throw new JikgongException(ErrorCode.MEMBER_UPDATE_WORKER_CARD_FAIL);
+        }
         this.workerCardImgPath = workerCardImgPath;
+        this.workerCardNumber = workerCardNumber;
     }
 
     public void updateVisaExpiryDate(LocalDate visaExpiryDate) {

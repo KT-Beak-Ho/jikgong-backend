@@ -68,7 +68,9 @@ public class JoinService {
         if (workerCardImage != null) {
             ImageDto workerCardImagePath = s3Handler.uploadImageWithImgType(
                 workerCardImage, ImgType.WORKER_CARD);
-            worker.updateWorkerCardImgPath(workerCardImagePath.getS3Url());
+            worker.updateWorkerCardImgPath(
+                workerCardImagePath.getS3Url(), request.getWorkerCardNumber()
+            );
         }
 
         // 공통 부분

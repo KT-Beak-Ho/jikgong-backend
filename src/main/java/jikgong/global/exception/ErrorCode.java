@@ -23,6 +23,7 @@ public enum ErrorCode {
     MEMBER_CONSENTS_NEED_TO_AGREE(HttpStatus.FORBIDDEN, "MEMBER-011", "회원가입을 위해선 각종 내용에 동의해야합니다."),
     MEMBER_INVALID_AUTH_CODE(HttpStatus.BAD_REQUEST, "MEMBER-012", "인증 코드가 올바르지 않습니다."),
     MEMBER_NOT_STAY_WITH_IN_THE_COUNTRY(HttpStatus.BAD_REQUEST, "MEMBER-013", "현재 체류 중인 외국인이 아닙니다."),
+    MEMBER_UPDATE_WORKER_CARD_FAIL(HttpStatus.BAD_REQUEST, "MEMBER-014", "노동자 카드 정보 업데이트에 실패했습니다."),
 
     /**
      * 알림
