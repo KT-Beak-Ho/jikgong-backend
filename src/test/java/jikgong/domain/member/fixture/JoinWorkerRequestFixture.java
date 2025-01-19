@@ -25,6 +25,8 @@ public class JoinWorkerRequestFixture {
             .birth("19750101")
             .gender(Gender.MALE)
             .nationality(Nationality.KOREAN)
+            .account("12341234123412")
+            .bank("국민은행")
             .hasVisa(false)
             .hasEducationCertificate(true)
             .hasWorkerCard(true)

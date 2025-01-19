@@ -11,8 +11,6 @@ public class JoinCompanyRequestFixture {
             .password("password123")
             .phone("01012345678")
             .role(Role.ROLE_COMPANY)
-            .account("12341234123412")
-            .bank("국민은행")
             .privacyConsent(true)
             .deviceToken("sampleDeviceToken")
             .isNotification(true)
@@ -30,8 +28,6 @@ public class JoinCompanyRequestFixture {
         String password,
         String phone,
         Role role,
-        String account,
-        String bank,
         Boolean privacyConsent,
         String deviceToken,
         Boolean isNotification,
@@ -47,8 +43,6 @@ public class JoinCompanyRequestFixture {
             .password(password)
             .phone(phone)
             .role(role)
-            .account(account)
-            .bank(bank)
             .privacyConsent(privacyConsent)
             .deviceToken(deviceToken)
             .isNotification(isNotification)
