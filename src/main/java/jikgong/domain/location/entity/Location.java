@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jikgong.domain.common.Address;
 import jikgong.domain.common.BaseEntity;
 import jikgong.domain.location.dto.LocationUpdateRequest;
+import jikgong.domain.member.dto.join.JoinWorkerRequest;
 import jikgong.domain.member.entity.Member;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -33,6 +34,16 @@ public class Location extends BaseEntity {
         this.address = address;
         this.isMain = isMain;
         this.member = member;
+    }
+
+    public static Location createEntity(JoinWorkerRequest request, Member member, boolean isMain) {
+        return Location.builder()
+            .address(
+                new Address(request.getAddress(), request.getLatitude(), request.getLatitude())
+            )
+            .isMain(isMain)
+            .member(member)
+            .build();
     }
 
     // 대표 위치 변경
