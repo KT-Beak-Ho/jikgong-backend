@@ -3,6 +3,7 @@ package jikgong.domain.member.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jikgong.domain.member.dto.info.CompanyInfoRequest;
+import jikgong.domain.member.dto.join.JoinCompanyRequest;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,6 +33,17 @@ public class Company {
         this.requestContent = requestContent;
 
         this.companyNotificationInfo = new CompanyNotificationInfo(isNotification);
+    }
+
+    public static Company createCompany(JoinCompanyRequest request) {
+        return Company.builder()
+            .businessNumber(request.getBusinessNumber())
+            .region(request.getRegion())
+            .companyName(request.getCompanyName())
+            .manager(request.getManager())
+            .requestContent(request.getRequestContent())
+            .isNotification(request.getIsNotification())
+            .build();
     }
 
     public void updateCompanyInfo(CompanyInfoRequest request) {

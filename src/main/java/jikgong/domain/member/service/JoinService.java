@@ -13,6 +13,7 @@ import jikgong.domain.member.dto.join.VerificationAccountResponse;
 import jikgong.domain.member.dto.join.VerificationSmsRequest;
 import jikgong.domain.member.dto.join.VerificationSmsResponse;
 import jikgong.domain.member.entity.Company;
+import jikgong.domain.member.entity.ImgType;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.entity.Worker;
 import jikgong.domain.member.repository.MemberRepository;
@@ -20,6 +21,8 @@ import jikgong.domain.workexperience.entity.WorkExperience;
 import jikgong.domain.workexperience.repository.WorkExperienceRepository;
 import jikgong.global.exception.ErrorCode;
 import jikgong.global.exception.JikgongException;
+import jikgong.global.s3.ImageDto;
+import jikgong.global.s3.S3Handler;
 import jikgong.global.sms.SmsService;
 import jikgong.global.utils.RandomCode;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -37,61 +41,47 @@ public class JoinService {
     private final MemberRepository memberRepository;
     private final LocationRepository locationRepository;
     private final WorkExperienceRepository workExperienceRepository;
+    private final S3Handler s3Handler;
     private final PasswordEncoder encoder;
     private final SmsService smsService;
 
     /**
      * 노동자 회원가입 위치 정보 저장
      */
-    public Long joinWorkerMember(JoinWorkerRequest request) {
+    public Long joinWorkerMember(JoinWorkerRequest request,
+        MultipartFile educationCertificateImage,
+        MultipartFile workerCardImage) {
         // loginId 중복 체크
         validationLoginId(request.getLoginId());
         // 휴대폰 중복 체크
         validationPhone(request.getPhone());
 
         // 노동자 정보
-        Worker worker = Worker.builder()
-            .workerName(request.getWorkerName())
-            .birth(request.getBirth())
-            .gender(request.getGender())
-            .nationality(request.getNationality())
-            .bank(request.getBank())
-            .account(request.getAccount())
-            .hasVisa(request.getHasVisa())
-            .hasEducationCertificate(request.getHasEducationCertificate())
-            .hasWorkerCard(request.getHasWorkerCard())
-            .credentialLiabilityConsent(request.getCredentialLiabilityConsent())
-            .isNotification(request.getIsNotification())
-            .build();
+        Worker worker = Worker.createWorker(request);
+
+        // 교육 이수증, 근로자 카드 이미지
+        if (educationCertificateImage != null) {
+            ImageDto educationCertificateImagePath = s3Handler.uploadImageWithImgType(
+                educationCertificateImage, ImgType.EDUCATION_CERTIFICATE);
+            worker.updateEducationCertificateImgPath(educationCertificateImagePath.getS3Url());
+        }
+        if (workerCardImage != null) {
+            ImageDto workerCardImagePath = s3Handler.uploadImageWithImgType(
+                workerCardImage, ImgType.WORKER_CARD);
+            worker.updateWorkerCardImgPath(workerCardImagePath.getS3Url());
+        }
 
         // 공통 부분
-        Member member = Member.builder()
-            .loginId(request.getLoginId())
-            .password(encoder.encode(request.getPassword()))
-            .phone(request.getPhone())
-            .email(request.getEmail())
-            .privacyConsent((request.getPrivacyConsent()))
-            .role(request.getRole())
-            .deviceToken(request.getDeviceToken())
-            .workerInfo(worker)
-            .build();
+        Member member = Member.createMember(
+            request, encoder.encode(request.getPassword()), worker
+        );
 
         // 위치 정보 생성
-        Location location = Location.builder()
-            .address(
-                new Address(
-                    request.getAddress(),
-                    request.getLatitude(),
-                    request.getLongitude())
-            )
-            .isMain(true)
-            .member(member)
-            .build();
+        Location location = Location.createEntity(request, member, true);
 
         // 경력 정보 생성
-        List<WorkExperience> workExperienceList = request.getWorkExperienceRequest().stream()
-            .map(req -> WorkExperience.from(req, member))
-            .collect(Collectors.toList());
+        List<WorkExperience> workExperienceList =
+            WorkExperience.from(request.getWorkExperienceRequest(), member);
 
         Member savedMember = memberRepository.save(member); // 회원 저장
         workExperienceRepository.saveAll(workExperienceList); // 경력 정보 저장
@@ -111,26 +101,12 @@ public class JoinService {
         validationPhone(request.getPhone());
 
         // 기업 정보
-        Company company = Company.builder()
-            .businessNumber(request.getBusinessNumber())
-            .region(request.getRegion())
-            .companyName(request.getCompanyName())
-            .manager(request.getManager())
-            .requestContent(request.getRequestContent())
-            .isNotification(request.getIsNotification())
-            .build();
+        Company company = Company.createCompany(request);
 
         // 공통 부분
-        Member member = Member.builder()
-            .loginId(request.getLoginId())
-            .password(encoder.encode(request.getPassword()))
-            .phone(request.getPhone())
-            .email(request.getEmail())
-            .privacyConsent((request.getPrivacyConsent()))
-            .role(request.getRole())
-            .deviceToken(request.getDeviceToken())
-            .companyInfo(company)
-            .build();
+        Member member = Member.createMember(
+            request, encoder.encode(request.getPassword()), company
+        );
 
         log.info("기업 회원 가입 완료");
         return memberRepository.save(member).getId(); // 회원 저장

@@ -30,19 +30,19 @@ public class QWorker extends BeanPath<Worker> {
 
     public final BooleanPath credentialLiabilityConsent = createBoolean("credentialLiabilityConsent");
 
+    public final StringPath educationCertificateImgPath = createString("educationCertificateImgPath");
+
     public final EnumPath<Gender> gender = createEnum("gender", Gender.class);
 
-    public final BooleanPath hasEducationCertificate = createBoolean("hasEducationCertificate");
-
     public final BooleanPath hasVisa = createBoolean("hasVisa");
-
-    public final BooleanPath hasWorkerCard = createBoolean("hasWorkerCard");
 
     public final BooleanPath isOffer = createBoolean("isOffer");
 
     public final EnumPath<Nationality> nationality = createEnum("nationality", Nationality.class);
 
     public final DatePath<java.time.LocalDate> visaExpiryDate = createDate("visaExpiryDate", java.time.LocalDate.class);
+
+    public final StringPath workerCardImgPath = createString("workerCardImgPath");
 
     public final StringPath workerName = createString("workerName");
 

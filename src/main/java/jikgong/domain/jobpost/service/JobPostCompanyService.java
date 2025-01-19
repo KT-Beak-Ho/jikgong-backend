@@ -19,6 +19,7 @@ import jikgong.domain.jobpost.entity.jobpostimage.JobPostImage;
 import jikgong.domain.jobpost.entity.jobpost.JobPostStatus;
 import jikgong.domain.jobpost.repository.JobPostImageRepository;
 import jikgong.domain.jobpost.repository.JobPostRepository;
+import jikgong.domain.member.entity.ImgType;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
 import jikgong.domain.jobpost.entity.pickup.Pickup;
@@ -86,7 +87,7 @@ public class JobPostCompanyService {
         workDateRepository.saveAll(workDateList);
 
         // 이미지 업로드 및 저장
-        List<ImageDto> imageDtoList = s3Handler.uploadImageList(imageList);
+        List<ImageDto> imageDtoList = s3Handler.uploadImagesWithImgType(imageList, ImgType.JOB_POST);
         List<JobPostImage> jobPostImageList = imageDtoList.stream()
             .map(imageDto -> JobPostImage.createEntity(imageDto, savedJobPost))
             .collect(Collectors.toList());

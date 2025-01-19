@@ -28,8 +28,6 @@ public class JoinWorkerRequestFixture {
             .account("12341234123412")
             .bank("국민은행")
             .hasVisa(false)
-            .hasEducationCertificate(true)
-            .hasWorkerCard(true)
             .credentialLiabilityConsent(true)
             .workExperienceRequest(createDefaultWorkExperience())
             .address("부산광역시 사하구 낙동대로 550번길 37")

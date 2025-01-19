@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import jikgong.domain.member.entity.ImgType;
 import jikgong.global.exception.ErrorCode;
 import jikgong.global.exception.JikgongException;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class S3Handler {
     private String resize_bucket;
 
 
-    public ImageDto uploadImage(MultipartFile file) {
+    public ImageDto uploadImageWithImgType(MultipartFile file, ImgType imgType) {
         String extension; //확장자명
         String contentType = file.getContentType();
 
@@ -47,8 +48,8 @@ public class S3Handler {
             }
         }
 
-        // unique 이름 생성
-        String storeImageName = "certification/" + createStoreImageName(extension);
+        // 폴더 경로 결정
+        String storeImageName = getFolderPathByImgType(imgType) + "/" + createStoreImageName(extension);
 
         InputStream inputStream = null;
         try {
@@ -75,7 +76,7 @@ public class S3Handler {
             .build();
     }
 
-    public List<ImageDto> uploadImageList(List<MultipartFile> files) {
+    public List<ImageDto> uploadImagesWithImgType(List<MultipartFile> files, ImgType imgType) {
         List<ImageDto> imageDtoList = new ArrayList<>();
         if (files == null) {
             return imageDtoList;
@@ -100,11 +101,9 @@ public class S3Handler {
                     throw new JikgongException(ErrorCode.FILE_NOT_SUPPORTED);
                 }
             }
-            // unique 이름 생성
-            String storeImageName = createStoreImageName(extension);
-            // 썸네일 이미지라면 Prefix를 등록해 AWS Lambda가 실행되도록 세팅
-            String prefix = isFirst ? "thumbnail_" : "";
-            storeImageName = "jobPost/" + prefix + storeImageName;
+
+            // 폴더 경로 결정
+            String storeImageName = getFolderPathByImgType(imgType) + "/" + createStoreImageName(extension);
 
             InputStream inputStream = null;
             try {
@@ -162,6 +161,16 @@ public class S3Handler {
         } else {
             throw new JikgongException(ErrorCode.S3_NOT_FOUND_FILE_NAME);
         }
+    }
+
+    // 이미지 타입에 따라 S3 폴더 경로 결정
+    private String getFolderPathByImgType(ImgType imgType) {
+        return switch (imgType) {
+            case EDUCATION_CERTIFICATE -> "education-certificates";
+            case WORKER_CARD -> "worker-cards";
+            case JOB_POST -> "job-posts";
+            default -> "";
+        };
     }
 
     // resize버킷에서 이미지 조회

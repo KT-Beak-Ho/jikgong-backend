@@ -24,8 +24,6 @@ public class WorkerInfoResponse {
     private String account; // 게좌 번호
     private String bank; // 은행
     private Boolean hasVisa; // 비자 여부 (외국인만 입력)
-    private Boolean hasEducationCertificate; // 교육 증명서
-    private Boolean hasWorkerCard; // 근로자 카드 여부
 
     private List<WorkExperienceResponse> workExperienceResponseList; // 경력 정보
 
@@ -47,8 +45,6 @@ public class WorkerInfoResponse {
             .bank(worker.getWorkerInfo().getBank())
 
             .hasVisa(worker.getWorkerInfo().getHasVisa())
-            .hasEducationCertificate(worker.getWorkerInfo().getHasEducationCertificate())
-            .hasWorkerCard(worker.getWorkerInfo().getHasWorkerCard())
 
             .workExperienceResponseList(workExperienceResponseList)
 

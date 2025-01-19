@@ -25,10 +25,6 @@ public class WorkerInfoRequest {
     private Nationality nationality; // 국적
     @Schema(description = "비자 여부", example = "true")
     private Boolean hasVisa; // 비자 여부
-    @Schema(description = "교육 이수증 여부", example = "true")
-    private Boolean hasEducationCertificate; // 교육 이수증 여부
-    @Schema(description = "근로자 카드 여부", example = "true")
-    private Boolean hasWorkerCard; // 근로자 카드 여부
 
     // 경력 정보
     @Schema(description = "경력 정보 리스트", example = "[{ \"workExperienceId\": 1, \"tech\": \"NORMAL\", \"experienceMonths\": 36 }, { \"workExperienceId\": null, \"tech\": \"TILE\", \"experienceMonths\": 12 }]")

@@ -15,6 +15,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.web.multipart.MultipartFile;
 
 @AllArgsConstructor
 @Builder
@@ -71,12 +72,6 @@ public class JoinWorkerRequest {
     @Schema(description = "비자 여부", example = "true")
     @NotNull
     private Boolean hasVisa; // 비자 여부
-    @Schema(description = "교육 이수증 여부", example = "true")
-    @NotNull
-    private Boolean hasEducationCertificate; // 교육 이수증 여부
-    @Schema(description = "근로자 카드 여부", example = "true")
-    @NotNull
-    private Boolean hasWorkerCard; // 근로자 카드 여부
     @Schema(description = "자격증명 법적 책임 동의 여부", example = "true")
     @AssertTrue
     @NotNull
@@ -94,3 +89,4 @@ public class JoinWorkerRequest {
     @Schema(description = "경도", example = "128.9685393114043")
     private Float longitude; // 경도
 }
+

@@ -18,6 +18,8 @@ import jikgong.domain.location.entity.Location;
 import jikgong.domain.member.dto.info.CompanyInfoRequest;
 import jikgong.domain.member.dto.info.StayExpirationResponse;
 import jikgong.domain.member.dto.info.WorkerInfoRequest;
+import jikgong.domain.member.dto.join.JoinCompanyRequest;
+import jikgong.domain.member.dto.join.JoinWorkerRequest;
 import jikgong.domain.workexperience.entity.WorkExperience;
 import jikgong.global.exception.ErrorCode;
 import jikgong.global.exception.JikgongException;
@@ -75,7 +77,8 @@ public class Member extends BaseEntity {
     }
 
     @Builder
-    public Member(String loginId, String password, String phone, String email, Boolean privacyConsent,
+    public Member(String loginId, String password, String phone, String email,
+        Boolean privacyConsent,
         String deviceToken, Role role, Worker workerInfo, Company companyInfo) {
         this.loginId = loginId;
         this.password = password;
@@ -92,6 +95,34 @@ public class Member extends BaseEntity {
         this.locationList = new ArrayList<>();
         this.historyList = new ArrayList<>();
         this.applyList = new ArrayList<>();
+    }
+
+    public static Member createMember(JoinWorkerRequest request, String encodedPassword,
+        Worker worker) {
+        return Member.builder()
+            .loginId(request.getLoginId())
+            .password(encodedPassword)
+            .phone(request.getPhone())
+            .email(request.getEmail())
+            .privacyConsent((request.getPrivacyConsent()))
+            .role(request.getRole())
+            .deviceToken(request.getDeviceToken())
+            .workerInfo(worker)
+            .build();
+    }
+
+    public static Member createMember(JoinCompanyRequest request, String encodedPassword,
+        Company company) {
+        return Member.builder()
+            .loginId(request.getLoginId())
+            .password(encodedPassword)
+            .phone(request.getPhone())
+            .email(request.getEmail())
+            .privacyConsent((request.getPrivacyConsent()))
+            .role(request.getRole())
+            .deviceToken(request.getDeviceToken())
+            .companyInfo(company)
+            .build();
     }
 
     public void updateDeviceToken(String deviceToken) {
