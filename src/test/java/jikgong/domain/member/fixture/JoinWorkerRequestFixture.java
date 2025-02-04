@@ -27,6 +27,7 @@ public class JoinWorkerRequestFixture {
             .nationality(Nationality.KOREAN)
             .account("12341234123412")
             .bank("국민은행")
+            .workerCardNumber("123456789")
             .hasVisa(false)
             .credentialLiabilityConsent(true)
             .workExperienceRequest(createDefaultWorkExperience())

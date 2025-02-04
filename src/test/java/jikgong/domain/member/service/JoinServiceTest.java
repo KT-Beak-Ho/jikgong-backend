@@ -25,6 +25,7 @@ import jikgong.global.exception.JikgongException;
 import jikgong.global.s3.ImageDto;
 import jikgong.global.s3.S3Handler;
 import jikgong.global.sms.SmsService;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,16 +55,26 @@ class JoinServiceTest {
     @Mock
     private SmsService smsService;
 
+    // 공통으로 사용할 MockMultipartFile 정적 변수
+    private static MockMultipartFile educationCertificateImage;
+    private static MockMultipartFile workerCardImage;
+    private static MockMultipartFile signatureImage;
+
+    @BeforeAll
+    static void setUp() {
+        educationCertificateImage = new MockMultipartFile(
+            "educationCertificateImage", "education.jpg", "image/jpeg", new byte[0]);
+        workerCardImage = new MockMultipartFile(
+            "workerCardImage", "workerCard.jpg", "image/jpeg", new byte[0]);
+        signatureImage = new MockMultipartFile(
+            "signatureImage", "signature.jpg", "image/jpeg", new byte[0]);
+    }
 
     @Test
     @DisplayName("회원가입 성공 - 노동자")
     void joinWorkerMember_success() {
         // given
         JoinWorkerRequest request = JoinWorkerRequestFixture.createDefault();
-        MockMultipartFile educationCertificateImage = new MockMultipartFile(
-            "educationCertificateImage", "education.jpg", "image/jpeg", new byte[0]);
-        MockMultipartFile workerCardImage = new MockMultipartFile(
-            "workerCardImage", "worker.jpg", "image/jpeg", new byte[0]);
         ImageDto imageDto = ImageDto.builder().s3Url("s3Url").build();
 
         Member member = Member.builder().build();
@@ -78,7 +89,7 @@ class JoinServiceTest {
 
         // when
         Long memberId = joinService.joinWorkerMember(request, educationCertificateImage,
-            workerCardImage);
+            workerCardImage, signatureImage);
 
         // then
         assertThat(memberId).isEqualTo(1L);
@@ -92,18 +103,19 @@ class JoinServiceTest {
     void joinWorkerMember_fail_duplicateLoginId() {
         // given
         JoinWorkerRequest request = JoinWorkerRequestFixture.createDefault();
-        MockMultipartFile educationCertificateImage = new MockMultipartFile(
-            "educationCertificateImage", "education.jpg", "image/jpeg", new byte[0]);
-        MockMultipartFile workerCardImage = new MockMultipartFile(
-            "workerCardImage", "worker.jpg", "image/jpeg", new byte[0]);
 
-        // 중복된 아이디가 존재하도록 설정
         when(memberRepository.findByLoginId(anyString()))
             .thenReturn(Optional.of(Member.builder().loginId(request.getLoginId()).build()));
 
         // when & then
         assertThatThrownBy(
-            () -> joinService.joinWorkerMember(request, educationCertificateImage, workerCardImage))
+            () -> joinService.joinWorkerMember(
+                request,
+                educationCertificateImage,
+                workerCardImage,
+                signatureImage
+            )
+        )
             .isInstanceOf(JikgongException.class)
             .hasMessage(ErrorCode.MEMBER_LOGIN_ID_EXIST.getErrorMessage());
 
@@ -116,18 +128,18 @@ class JoinServiceTest {
     void joinWorkerMember_fail_duplicatePhone() {
         // given
         JoinWorkerRequest request = JoinWorkerRequestFixture.createDefault();
-        MockMultipartFile educationCertificateImage = new MockMultipartFile(
-            "educationCertificateImage", "education.jpg", "image/jpeg", new byte[0]);
-        MockMultipartFile workerCardImage = new MockMultipartFile(
-            "workerCardImage", "worker.jpg", "image/jpeg", new byte[0]);
 
-        // 중복된 휴대폰 번호가 존재하도록 설정
         when(memberRepository.findByPhone(anyString()))
             .thenReturn(Optional.of(Member.builder().phone(request.getPhone()).build()));
 
         // when & then
         assertThatThrownBy(
-            () -> joinService.joinWorkerMember(request, educationCertificateImage, workerCardImage))
+            () -> joinService.joinWorkerMember(
+                request,
+                educationCertificateImage,
+                workerCardImage,
+                signatureImage)
+        )
             .isInstanceOf(JikgongException.class)
             .hasMessage(ErrorCode.MEMBER_PHONE_EXIST.getErrorMessage());
 
@@ -140,17 +152,20 @@ class JoinServiceTest {
     void joinCompanyMember_success() {
         // given
         JoinCompanyRequest request = JoinCompanyRequestFixture.createDefault();
+        ImageDto imageDto = ImageDto.builder().s3Url("s3Url").build();
 
         Member member = Member.builder().build();
-        ReflectionTestUtils.setField(member, "id", 1L); // ID 설정
+        ReflectionTestUtils.setField(member, "id", 1L);
 
         when(encoder.encode(anyString())).thenReturn("encodedPassword");
         when(memberRepository.save(any(Member.class))).thenReturn(member);
         when(memberRepository.findByLoginId(anyString())).thenReturn(Optional.empty());
         when(memberRepository.findByPhone(anyString())).thenReturn(Optional.empty());
+        when(s3Handler.uploadImageWithImgType(any(MultipartFile.class),
+            any(ImgType.class))).thenReturn(imageDto);
 
         // when
-        Long memberId = joinService.joinCompanyMember(request);
+        Long memberId = joinService.joinCompanyMember(request, signatureImage);
 
         // then
         assertThat(memberId).isEqualTo(1L);
@@ -163,12 +178,11 @@ class JoinServiceTest {
         // given
         JoinCompanyRequest request = JoinCompanyRequestFixture.createDefault();
 
-        // 로그인 아이디 중복 설정
         when(memberRepository.findByLoginId(anyString()))
             .thenReturn(Optional.of(Member.builder().loginId(request.getLoginId()).build()));
 
         // when & then
-        assertThatThrownBy(() -> joinService.joinCompanyMember(request))
+        assertThatThrownBy(() -> joinService.joinCompanyMember(request, signatureImage))
             .isInstanceOf(JikgongException.class)
             .hasMessage(ErrorCode.MEMBER_LOGIN_ID_EXIST.getErrorMessage());
 
@@ -182,12 +196,11 @@ class JoinServiceTest {
         // given
         JoinCompanyRequest request = JoinCompanyRequestFixture.createDefault();
 
-        // 휴대폰 번호 중복 설정
         when(memberRepository.findByPhone(anyString()))
             .thenReturn(Optional.of(Member.builder().phone(request.getPhone()).build()));
 
         // when & then
-        assertThatThrownBy(() -> joinService.joinCompanyMember(request))
+        assertThatThrownBy(() -> joinService.joinCompanyMember(request, signatureImage))
             .isInstanceOf(JikgongException.class)
             .hasMessage(ErrorCode.MEMBER_PHONE_EXIST.getErrorMessage());
 
