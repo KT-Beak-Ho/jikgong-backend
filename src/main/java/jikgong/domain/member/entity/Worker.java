@@ -25,6 +25,7 @@ public class Worker {
     private Gender gender; // 성별
     private Nationality nationality; // 국적
     private String bank; // 은행 종류
+    private String accountHolder; // 예금주
     private String account; // 계좌
     private Boolean hasVisa; // 비자 여부 (외국인만 입력)
     private LocalDate visaExpiryDate; // 체류 만료일
@@ -42,7 +43,7 @@ public class Worker {
 
     @Builder
     public Worker(String workerName, String birth, Gender gender, Nationality nationality,
-        String bank,
+        String bank, String accountHolder,
         String account, Boolean hasVisa, LocalDate visaExpiryDate,
         Boolean credentialLiabilityConsent, Boolean isNotification) {
         this.workerName = workerName;
@@ -50,6 +51,7 @@ public class Worker {
         this.gender = gender;
         this.nationality = nationality;
         this.bank = bank;
+        this.accountHolder = accountHolder;
         this.account = account;
         this.hasVisa = hasVisa;
         this.visaExpiryDate = visaExpiryDate;
@@ -65,6 +67,7 @@ public class Worker {
             .gender(request.getGender())
             .nationality(request.getNationality())
             .bank(request.getBank())
+            .accountHolder(request.getAccountHolder())
             .account(request.getAccount())
             .hasVisa(request.getHasVisa())
             .credentialLiabilityConsent(request.getCredentialLiabilityConsent())

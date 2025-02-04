@@ -14,9 +14,7 @@ import jikgong.domain.member.service.JoinService;
 import jikgong.global.common.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -35,17 +33,20 @@ public class JoinController {
     public ResponseEntity<Response> joinWorkerMember(
         @RequestPart(name = "request") @Valid JoinWorkerRequest request,
         @RequestPart(name = "educationCertificateImage", required = false) MultipartFile educationCertificateImage,
-        @RequestPart(name = "workerCardImage", required = false) MultipartFile workerCardImage) {
+        @RequestPart(name = "workerCardImage", required = false) MultipartFile workerCardImage,
+        @RequestPart(name = "signatureImage", required = false) MultipartFile signatureImage) {
         Long savedMemberId = joinService.joinWorkerMember(
-            request, educationCertificateImage, workerCardImage);
+            request, educationCertificateImage, workerCardImage, signatureImage
+        );
         return ResponseEntity.ok(new Response("노동자 회원 가입 완료"));
     }
 
     @Operation(summary = "회원 가입: 기업")
-    @PostMapping("/api/join/company/join")
+    @PostMapping(value = "/api/join/company/join", consumes = {"multipart/form-data"})
     public ResponseEntity<Response> joinCompanyMember(
-        @Valid @RequestBody JoinCompanyRequest request) {
-        Long savedMemberId = joinService.joinCompanyMember(request);
+        @RequestPart(name = "request") @Valid JoinCompanyRequest request,
+        @RequestPart(name = "signatureImage", required = false) MultipartFile signatureImage) {
+        Long savedMemberId = joinService.joinCompanyMember(request, signatureImage);
         return ResponseEntity.ok(new Response("기업 회원 가입 완료"));
     }
 

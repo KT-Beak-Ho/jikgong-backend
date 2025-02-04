@@ -169,6 +169,7 @@ public class S3Handler {
             case EDUCATION_CERTIFICATE -> "education-certificates";
             case WORKER_CARD -> "worker-cards";
             case JOB_POST -> "job-posts";
+            case SIGNATURE -> "signature";
             default -> "";
         };
     }

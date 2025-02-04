@@ -56,6 +56,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final EnumPath<Role> role = createEnum("role", Role.class);
 
+    public final StringPath signatureImagePath = createString("signatureImagePath");
+
     public final QWorker workerInfo;
 
     public final ListPath<jikgong.domain.workexperience.entity.WorkExperience, jikgong.domain.workexperience.entity.QWorkExperience> workExperienceList = this.<jikgong.domain.workexperience.entity.WorkExperience, jikgong.domain.workexperience.entity.QWorkExperience>createList("workExperienceList", jikgong.domain.workexperience.entity.WorkExperience.class, jikgong.domain.workexperience.entity.QWorkExperience.class, PathInits.DIRECT2);

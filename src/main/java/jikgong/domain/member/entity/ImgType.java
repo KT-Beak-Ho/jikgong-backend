@@ -9,7 +9,8 @@ public enum ImgType {
 
     EDUCATION_CERTIFICATE("교육 이수증"),
     WORKER_CARD("근로자 카드"),
-    JOB_POST("모집 공고");
+    JOB_POST("모집 공고"),
+    SIGNATURE("서명");
 
     private final String description;
 }

@@ -24,6 +24,8 @@ public class QWorker extends BeanPath<Worker> {
 
     public final StringPath account = createString("account");
 
+    public final StringPath accountHolder = createString("accountHolder");
+
     public final StringPath bank = createString("bank");
 
     public final StringPath birth = createString("birth");

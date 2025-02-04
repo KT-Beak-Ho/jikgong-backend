@@ -50,7 +50,7 @@ public class JoinService {
      */
     public Long joinWorkerMember(JoinWorkerRequest request,
         MultipartFile educationCertificateImage,
-        MultipartFile workerCardImage) {
+        MultipartFile workerCardImage, MultipartFile signatureImage) {
         // loginId 중복 체크
         validationLoginId(request.getLoginId());
         // 휴대폰 중복 체크
@@ -78,6 +78,13 @@ public class JoinService {
             request, encoder.encode(request.getPassword()), worker
         );
 
+        // 서명 이미지
+        if (signatureImage != null) {
+            ImageDto signatureImagePath = s3Handler.uploadImageWithImgType(
+                signatureImage, ImgType.SIGNATURE);
+            member.updateSignatureImagePath(signatureImagePath.getS3Url());
+        }
+
         // 위치 정보 생성
         Location location = Location.createEntity(request, member, true);
 
@@ -96,7 +103,7 @@ public class JoinService {
     /**
      * 기업 회원가입
      */
-    public Long joinCompanyMember(JoinCompanyRequest request) {
+    public Long joinCompanyMember(JoinCompanyRequest request, MultipartFile signatureImage) {
         // loginId 중복 체크
         validationLoginId(request.getLoginId());
         // 휴대폰 중복 체크
@@ -109,6 +116,13 @@ public class JoinService {
         Member member = Member.createMember(
             request, encoder.encode(request.getPassword()), company
         );
+
+        // 서명 이미지
+        if (signatureImage != null) {
+            ImageDto signatureImagePath = s3Handler.uploadImageWithImgType(
+                signatureImage, ImgType.SIGNATURE);
+            member.updateSignatureImagePath(signatureImagePath.getS3Url());
+        }
 
         log.info("기업 회원 가입 완료");
         return memberRepository.save(member).getId(); // 회원 저장

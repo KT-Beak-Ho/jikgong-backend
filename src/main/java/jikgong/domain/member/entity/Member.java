@@ -50,6 +50,9 @@ public class Member extends BaseEntity {
     private String email; // 이메일
 
     private Boolean privacyConsent; // 개인정보 동의 여부
+
+    private String signatureImagePath;
+
     private String deviceToken; // 기기 토큰
     private Boolean isDeleted; // 회원 탈퇴 여부
 
@@ -78,13 +81,14 @@ public class Member extends BaseEntity {
 
     @Builder
     public Member(String loginId, String password, String phone, String email,
-        Boolean privacyConsent,
+        Boolean privacyConsent, String signatureImagePath,
         String deviceToken, Role role, Worker workerInfo, Company companyInfo) {
         this.loginId = loginId;
         this.password = password;
         this.phone = phone;
         this.email = email;
         this.privacyConsent = privacyConsent;
+        this.signatureImagePath = signatureImagePath;
         this.deviceToken = deviceToken;
         this.isDeleted = false;
         this.role = role;
@@ -153,5 +157,9 @@ public class Member extends BaseEntity {
         LocalDate visaExpiryDate = DateConverter.convertToLocalDate(
             stayExpirationResponse.getData().getResExpirationDate());
         this.workerInfo.updateVisaExpiryDate(visaExpiryDate);
+    }
+
+    public void updateSignatureImagePath(String signatureImagePath) {
+        this.signatureImagePath = signatureImagePath;
     }
 }

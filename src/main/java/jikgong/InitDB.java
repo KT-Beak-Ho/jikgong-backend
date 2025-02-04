@@ -56,20 +56,20 @@ public class InitDB {
 
         public void initMember() {
             Long savedId = joinService.joinCompanyMember(
-                createJoinCompanyRequest("abcdefg0", "01012345678", Role.ROLE_COMPANY));
+                createJoinCompanyRequest("abcdefg0", "01012345678", Role.ROLE_COMPANY), null);
 
             joinService.joinWorkerMember(
                 createJoinWorkerRequest("abcdefg1", "01011111111", "email1@naver.com", Role.ROLE_WORKER,
-                    "김진수", "2000-09-30", 35.116777388697734F, 128.9685393114043F), null, null);
+                    "김진수", "2000-09-30", 35.116777388697734F, 128.9685393114043F), null, null, null);
             joinService.joinWorkerMember(
                 createJoinWorkerRequest("abcdefg2", "01022222222", "email2@naver.com", Role.ROLE_WORKER,
-                    "이승민", "2001-02-12", 35.086777388697734F, 128.9585393114043F), null, null);
+                    "이승민", "2001-02-12", 35.086777388697734F, 128.9585393114043F), null, null, null);
             joinService.joinWorkerMember(
                 createJoinWorkerRequest("abcdefg3", "01033333333", "email3@naver.com", Role.ROLE_WORKER,
-                    "조영훈", "2002-07-20", 35.092233188697734F, 128.9485393114043F), null, null);
+                    "조영훈", "2002-07-20", 35.092233188697734F, 128.9485393114043F), null, null, null);
             joinService.joinWorkerMember(
                 createJoinWorkerRequest("abcdefg4", "01044444444", "email4@naver.com", Role.ROLE_WORKER,
-                    "안병기", "2002-12-04", 35.142157388697734F, 128.9385393114043F), null, null);
+                    "안병기", "2002-12-04", 35.142157388697734F, 128.9385393114043F), null, null, null);
 
             projectService.saveProject(savedId, createProjectSaveRequest());
 
