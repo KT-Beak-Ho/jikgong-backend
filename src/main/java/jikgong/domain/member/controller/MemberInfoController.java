@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import jikgong.domain.member.dto.company.CompanySearchResponse;
+import jikgong.domain.member.dto.info.AccountInfoRequest;
 import jikgong.domain.member.dto.info.AuthCodeForFindRequest;
 import jikgong.domain.member.dto.info.CompanyInfoRequest;
 import jikgong.domain.member.dto.info.CompanyInfoResponse;
@@ -57,6 +58,23 @@ public class MemberInfoController {
         @RequestBody WorkerInfoRequest request) {
         memberInfoService.updateWorkerInfo(principalDetails.getMember().getId(), request);
         return ResponseEntity.ok(new Response("노동자 정보 수정 완료"));
+    }
+
+    @Operation(summary = "계좌 정보 수정 (노동자)")
+    @PutMapping("/api/member-info/worker/account")
+    @WorkerRoleRequired
+    public ResponseEntity<Response> updateWorkerAccountInfo(@AuthenticationPrincipal PrincipalDetails principalDetails,
+        @RequestBody AccountInfoRequest request) {
+        // todo: 개발 예정
+        return ResponseEntity.ok(new Response("계좌 정보 수정 완료"));
+    }
+
+    @Operation(summary = "계좌 정보 조회 (노동자)")
+    @GetMapping("/api/member-info/worker/account")
+    @WorkerRoleRequired
+    public ResponseEntity<Response> getWorkerAccountInfo(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        // todo: 개발 예정
+        return ResponseEntity.ok(new Response("계좌 정보 조회 완료"));
     }
 
     @Operation(summary = "회원 정보 조회 (기업)")

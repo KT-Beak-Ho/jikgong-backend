@@ -65,7 +65,7 @@ public class JoinWorkerRequest {
     private Nationality nationality; // 국적
     @Schema(description = "예금주", example = "홍길동")
     @NotBlank
-    private String accountHolder; // 게좌 번호
+    private String accountHolder; // 예금주
     @Schema(description = "계좌 번호", example = "12341234123412")
     @NotBlank
     private String account; // 게좌 번호
