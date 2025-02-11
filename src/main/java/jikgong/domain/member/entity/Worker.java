@@ -5,6 +5,7 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import java.time.LocalDate;
+import jikgong.domain.member.dto.info.AccountInfoRequest;
 import jikgong.domain.member.dto.info.WorkerInfoRequest;
 import jikgong.domain.member.dto.join.JoinWorkerRequest;
 import jikgong.global.exception.ErrorCode;
@@ -97,5 +98,11 @@ public class Worker {
 
     public void updateVisaExpiryDate(LocalDate visaExpiryDate) {
         this.visaExpiryDate = visaExpiryDate;
+    }
+
+    public void updateAccountInfo(AccountInfoRequest request) {
+        this.bank = request.getBank();
+        this.account = request.getAccount();
+        this.accountHolder = request.getAccountHolder();
     }
 }

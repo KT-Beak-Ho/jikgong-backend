@@ -15,6 +15,7 @@ import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.common.BaseEntity;
 import jikgong.domain.history.entity.History;
 import jikgong.domain.location.entity.Location;
+import jikgong.domain.member.dto.info.AccountInfoRequest;
 import jikgong.domain.member.dto.info.CompanyInfoRequest;
 import jikgong.domain.member.dto.info.StayExpirationResponse;
 import jikgong.domain.member.dto.info.WorkerInfoRequest;
@@ -161,5 +162,9 @@ public class Member extends BaseEntity {
 
     public void updateSignatureImagePath(String signatureImagePath) {
         this.signatureImagePath = signatureImagePath;
+    }
+
+    public void updateAccountInfo(AccountInfoRequest request) {
+        workerInfo.updateAccountInfo(request);
     }
 }

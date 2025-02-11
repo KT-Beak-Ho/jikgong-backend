@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import jikgong.domain.member.dto.company.CompanySearchResponse;
+import jikgong.domain.member.dto.info.AccountInfoRequest;
+import jikgong.domain.member.dto.info.AccountInfoResponse;
 import jikgong.domain.member.dto.info.AuthCodeForFindRequest;
 import jikgong.domain.member.dto.info.CompanyInfoRequest;
 import jikgong.domain.member.dto.info.CompanyInfoResponse;
@@ -251,5 +253,25 @@ public class MemberInfoService {
             .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         member.updateVisaExpiryDate(stayExpirationResponse);
+    }
+
+    /**
+     * 계좌 관련 정보 조회
+     */
+    public AccountInfoResponse getWorkerAccountInfo(Long workerId) {
+        Member member = memberRepository.findById(workerId)
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+
+        return AccountInfoResponse.from(member);
+    }
+
+    /**
+     * 계좌 관련 정보 업데이트
+     */
+    public void updateWorkerAccount(Long workerId, AccountInfoRequest request) {
+        Member member = memberRepository.findById(workerId)
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+
+        member.updateAccountInfo(request);
     }
 }
