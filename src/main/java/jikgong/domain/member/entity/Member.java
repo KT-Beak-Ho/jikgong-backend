@@ -18,6 +18,7 @@ import jikgong.domain.location.entity.Location;
 import jikgong.domain.member.dto.info.AccountInfoRequest;
 import jikgong.domain.member.dto.info.CompanyInfoRequest;
 import jikgong.domain.member.dto.info.StayExpirationResponse;
+import jikgong.domain.member.dto.info.WorkerCardRequest;
 import jikgong.domain.member.dto.info.WorkerInfoRequest;
 import jikgong.domain.member.dto.join.JoinCompanyRequest;
 import jikgong.domain.member.dto.join.JoinWorkerRequest;
@@ -165,6 +166,14 @@ public class Member extends BaseEntity {
     }
 
     public void updateAccountInfo(AccountInfoRequest request) {
-        workerInfo.updateAccountInfo(request);
+        this.workerInfo.updateAccountInfo(request);
+    }
+
+    public void updateEducationCertificateImagePath(String educationCertificateImagePath) {
+        this.workerInfo.updateEducationCertificateImgPath(educationCertificateImagePath);
+    }
+
+    public void updateWorkerCard(String workerCardImagePath, WorkerCardRequest request) {
+        this.workerInfo.updateWorkerCardImgPath(workerCardImagePath, request.getWorkerCardNumber());
     }
 }

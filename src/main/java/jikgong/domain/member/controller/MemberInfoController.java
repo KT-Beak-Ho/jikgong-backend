@@ -16,6 +16,7 @@ import jikgong.domain.member.dto.info.PasswordFindRequest;
 import jikgong.domain.member.dto.info.PasswordFindResponse;
 import jikgong.domain.member.dto.info.PasswordUpdateRequest;
 import jikgong.domain.member.dto.info.StayExpirationRequest;
+import jikgong.domain.member.dto.info.WorkerCardRequest;
 import jikgong.domain.member.dto.info.WorkerInfoRequest;
 import jikgong.domain.member.dto.info.WorkerInfoResponse;
 import jikgong.domain.member.service.MemberInfoService;
@@ -34,7 +35,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -74,7 +77,6 @@ public class MemberInfoController {
     @GetMapping("/api/member-info/worker/account")
     @WorkerRoleRequired
     public ResponseEntity<Response> getWorkerAccountInfo(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        // todo: 개발 예정
         AccountInfoResponse accountInfoResponse = memberInfoService.getWorkerAccountInfo(
             principalDetails.getMember().getId());
         return ResponseEntity.ok(new Response(accountInfoResponse, "계좌 정보 조회 완료"));
@@ -155,4 +157,22 @@ public class MemberInfoController {
         return ResponseEntity.ok(new Response(companySearchResponseList, "기업 검색 결과 반환 완료"));
     }
 
+    @Operation(summary = "교육 이수증 수정")
+    @PutMapping(value = "/api/member-info/educationCertificate", consumes = {"multipart/form-data"})
+    @WorkerRoleRequired
+    public ResponseEntity<Response> updateEducationCertificate(@AuthenticationPrincipal PrincipalDetails principalDetails,
+        @RequestParam(name = "educationCertificateImage") MultipartFile educationCertificateImage) {
+        memberInfoService.updateEducationCertificate(principalDetails.getMember().getId(), educationCertificateImage);
+        return ResponseEntity.ok(new Response("교육 이수증 수정 완료"));
+    }
+
+    @Operation(summary = "근로자 카드 정보 수정")
+    @PutMapping(value = "/api/member-info/workerCard", consumes = {"multipart/form-data"})
+    @WorkerRoleRequired
+    public ResponseEntity<Response> updateWorkerCardImage(@AuthenticationPrincipal PrincipalDetails principalDetails,
+        @RequestPart(name = "request") WorkerCardRequest request,
+        @RequestPart(name = "workerCardImage") MultipartFile workerCardImage) {
+        memberInfoService.updateWorkerCardImage(principalDetails.getMember().getId(), request, workerCardImage);
+        return ResponseEntity.ok(new Response("근로자 카드 정보 수정 완료"));
+    }
 }

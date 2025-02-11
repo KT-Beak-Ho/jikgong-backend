@@ -20,8 +20,10 @@ import jikgong.domain.member.dto.info.PasswordFindResponse;
 import jikgong.domain.member.dto.info.PasswordUpdateRequest;
 import jikgong.domain.member.dto.info.StayExpirationRequest;
 import jikgong.domain.member.dto.info.StayExpirationResponse;
+import jikgong.domain.member.dto.info.WorkerCardRequest;
 import jikgong.domain.member.dto.info.WorkerInfoRequest;
 import jikgong.domain.member.dto.info.WorkerInfoResponse;
+import jikgong.domain.member.entity.ImgType;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
 import jikgong.domain.workexperience.dto.WorkExperienceRequest;
@@ -29,6 +31,8 @@ import jikgong.domain.workexperience.entity.WorkExperience;
 import jikgong.domain.workexperience.repository.WorkExperienceRepository;
 import jikgong.global.exception.ErrorCode;
 import jikgong.global.exception.JikgongException;
+import jikgong.global.s3.ImageDto;
+import jikgong.global.s3.S3Handler;
 import jikgong.global.sms.SmsService;
 import jikgong.global.utils.RandomCode;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +41,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -44,15 +49,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class MemberInfoService {
 
+    private static final String REDIS_PREFIX_PASSWORD_RESET = "password_reset:";
+    private static final String REDIS_PREFIX_LOGIN_ID_FIND = "loginId_find:";
+
     private final WorkExperienceRepository workExperienceRepository;
     private final MemberRepository memberRepository;
     private final PasswordEncoder encoder;
     private final RedisTemplate<String, String> redisTemplate;
     private final SmsService smsService;
     private final StayExpirationService stayExpirationService;
+    private final S3Handler s3Handler;
 
-    private static final String REDIS_PREFIX_PASSWORD_RESET = "password_reset:";
-    private static final String REDIS_PREFIX_LOGIN_ID_FIND = "loginId_find:";
 
     /**
      * 노동자: 회원 정보 조회
@@ -273,5 +280,33 @@ public class MemberInfoService {
             .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         member.updateAccountInfo(request);
+    }
+
+    /**
+     * 교육 이수증 사진 업데이트
+     */
+    public void updateEducationCertificate(Long workerId, MultipartFile educationCertificateImage) {
+        Member member = memberRepository.findById(workerId)
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+
+        s3Handler.deleteImageWithS3Url(member.getWorkerInfo().getEducationCertificateImgPath());
+
+        ImageDto imageDto = s3Handler.uploadImageWithImgType(educationCertificateImage,
+            ImgType.EDUCATION_CERTIFICATE);
+
+        member.updateEducationCertificateImagePath(imageDto.getS3Url());
+    }
+
+    public void updateWorkerCardImage(Long workerId, WorkerCardRequest request,
+        MultipartFile workerCardImage) {
+        Member member = memberRepository.findById(workerId)
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+
+        s3Handler.deleteImageWithS3Url(member.getWorkerInfo().getWorkerCardImgPath());
+
+        ImageDto imageDto = s3Handler.uploadImageWithImgType(workerCardImage,
+            ImgType.WORKER_CARD);
+
+        member.updateWorkerCard(imageDto.getS3Url(), request);
     }
 }
