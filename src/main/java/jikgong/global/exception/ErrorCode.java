@@ -114,6 +114,7 @@ public enum ErrorCode {
      * s3
      */
     S3_NOT_FOUND_FILE_NAME(HttpStatus.NOT_FOUND, "S3-001", "s3 버킷 내 target 파일 명이 존재하지 않습니다."),
+    S3_URL_INVALID(HttpStatus.BAD_REQUEST, "S3-002", "올바른 S3 URL 형식이 아닙니다: "),
 
     /**
      * validation

@@ -49,7 +49,8 @@ public class S3Handler {
         }
 
         // 폴더 경로 결정
-        String storeImageName = getFolderPathByImgType(imgType) + "/" + createStoreImageName(extension);
+        String storeImageName =
+            getFolderPathByImgType(imgType) + "/" + createStoreImageName(extension);
 
         InputStream inputStream = null;
         try {
@@ -61,7 +62,8 @@ public class S3Handler {
         metadata.setContentLength(file.getSize());
         metadata.setContentType(file.getContentType());
 
-        PutObjectRequest request = new PutObjectRequest(bucket, storeImageName, inputStream, metadata);
+        PutObjectRequest request = new PutObjectRequest(bucket, storeImageName, inputStream,
+            metadata);
 
         // s3 put
         amazonS3Client.putObject(request);
@@ -103,7 +105,8 @@ public class S3Handler {
             }
 
             // 폴더 경로 결정
-            String storeImageName = getFolderPathByImgType(imgType) + "/" + createStoreImageName(extension);
+            String storeImageName =
+                getFolderPathByImgType(imgType) + "/" + createStoreImageName(extension);
 
             InputStream inputStream = null;
             try {
@@ -115,7 +118,8 @@ public class S3Handler {
             metadata.setContentLength(file.getSize());
             metadata.setContentType(file.getContentType());
 
-            PutObjectRequest request = new PutObjectRequest(bucket, storeImageName, inputStream, metadata);
+            PutObjectRequest request = new PutObjectRequest(bucket, storeImageName, inputStream,
+                metadata);
 
             // s3 put
             amazonS3Client.putObject(request);
@@ -139,13 +143,40 @@ public class S3Handler {
     public void deleteImage(List<String> storeImgList) {
         for (String storeImgName : storeImgList) {
             if (amazonS3Client.doesObjectExist(bucket, storeImgName)) {
-                DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(bucket, storeImgName);
+                DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(bucket,
+                    storeImgName);
                 amazonS3Client.deleteObject(deleteObjectRequest);
             } else {
                 throw new JikgongException(ErrorCode.S3_NOT_FOUND_FILE_NAME);
             }
         }
         log.info("S3 파일 삭제 작업 완료");
+    }
+
+    public void deleteImageWithS3Url(String s3Url) {
+        if (ObjectUtils.isEmpty(s3Url)) {
+            throw new JikgongException(ErrorCode.S3_NOT_FOUND_FILE_NAME);
+        }
+
+        // S3 URL에서 오브젝트 키 추출
+        String objectKey = extractObjectKey(s3Url);
+
+        // 오브젝트 존재 여부 확인 후 삭제
+        if (amazonS3Client.doesObjectExist(bucket, objectKey)) {
+            amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, objectKey));
+        } else {
+            log.warn("S3 이미지가 존재하지 않습니다: {}", objectKey);
+        }
+    }
+
+    // 버킷 도메인 부분 제거하여 오브젝트 키 추출
+    private String extractObjectKey(String s3Url) {
+        String prefix = "https://" + bucket + ".s3.ap-northeast-2.amazonaws.com/";
+        if (s3Url.startsWith(prefix)) {
+            return s3Url.substring(prefix.length());
+        } else {
+            throw new JikgongException(ErrorCode.S3_URL_INVALID);
+        }
     }
 
     // 저장할 이름 생성
