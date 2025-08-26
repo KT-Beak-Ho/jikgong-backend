@@ -16,6 +16,8 @@ spring:
 
   # embeddable 사용 시 null 허용 X
   jpa:
+    hibernate:
+        ddl-auto: update # 엔티티가 없을 시 자동 생성
     properties:
       hibernate:
         create_empty_composites:
