@@ -67,7 +67,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ubuntu
           key: ${{ secrets.SSH_KEY }}
-          port: 22
+          port: ${{ secrets.SSH_PORT }}
           source: "./docker-compose.a.yml"
           target: "/home/ubuntu/"
           debug: true
@@ -80,7 +80,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ubuntu
           key: ${{ secrets.SSH_KEY }}
-          port: 22
+          port: ${{ secrets.SSH_PORT }}
           source: "./docker-compose.b.yml"
           target: "/home/ubuntu/"
 
@@ -100,7 +100,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ubuntu
           key: ${{ secrets.SSH_KEY }}
-          port: 22
+          port: ${{ secrets.SSH_PORT }}
           script: |
             chmod +x /home/ubuntu/deploy.sh
             /home/ubuntu/deploy.sh
