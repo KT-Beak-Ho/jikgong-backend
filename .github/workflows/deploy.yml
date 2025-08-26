@@ -3,6 +3,7 @@ name: Java CI with Gradle
 on:
   push:
     branches: [ "release" ]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -90,7 +91,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ubuntu
           key: ${{ secrets.SSH_KEY }}
-          port: 22
+          port: ${{ secrets.SSH_PORT }}
           source: "./deploy.sh"
           target: "/home/ubuntu/"
 
