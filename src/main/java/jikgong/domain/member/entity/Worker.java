@@ -32,8 +32,9 @@ public class Worker {
     private String workerCardImgPath; // 근로자 카드 이미지 경로
     private String workerCardNumber; // 근로자 카드 번호
 
-    private Boolean credentialLiabilityConsent; // 자격증명 법적 책임 동의 여부
+    private Float score; // 평점
 
+    private Boolean credentialLiabilityConsent; // 자격증명 법적 책임 동의 여부
     private Boolean isOffer; // 헤드헌팅 여부
 
     @Embedded
@@ -41,8 +42,7 @@ public class Worker {
 
     @Builder
     public Worker(String workerName, String birth, Gender gender, Nationality nationality,
-        String bank, String accountHolder,
-        String account,
+        String bank, String accountHolder, String account, Float score,
         Boolean credentialLiabilityConsent, Boolean isNotification) {
         this.workerName = workerName;
         this.birth = birth;
@@ -51,6 +51,7 @@ public class Worker {
         this.bank = bank;
         this.accountHolder = accountHolder;
         this.account = account;
+        this.score = score;
         this.credentialLiabilityConsent = credentialLiabilityConsent;
         this.isOffer = true; // 기본 true
         this.workerNotificationInfo = new WorkerNotificationInfo(isNotification);
@@ -65,6 +66,7 @@ public class Worker {
             .bank(request.getBank())
             .accountHolder(request.getAccountHolder())
             .account(request.getAccount())
+            .score(3.0F) // 평점은 3.0으로 시작
             .credentialLiabilityConsent(request.getCredentialLiabilityConsent())
             .isNotification(request.getIsNotification())
             .build();
