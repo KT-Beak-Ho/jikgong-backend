@@ -42,7 +42,7 @@ public class InitDB {
 
     @PostConstruct
     public void init() {
-//        initService.initMember();
+        initService.initMember();
     }
 
     @Service
@@ -108,8 +108,8 @@ public class InitDB {
         private ProjectSaveRequest createProjectSaveRequest() {
             return ProjectSaveRequest.builder()
                 .projectName("사하구 낙동5블럭 낙동강 온도 측정 센터 신축공사")
-                .startDate(LocalDate.of(2024, 7, 1))
-                .endDate(LocalDate.of(2024, 12, 1))
+                .startDate(LocalDate.of(2025, 9, 5))
+                .endDate(LocalDate.of(2025, 12, 29))
                 .address("부산광역시 사하구 낙동대로 550번길 37")
                 .latitude(35.116777388697734F)
                 .longitude(128.9685393114043F)
@@ -230,7 +230,7 @@ public class InitDB {
         private List<LocalDate> generateRandomDates(int count) {
             Random random = new Random();
             return IntStream.range(0, count)
-                .mapToObj(i -> LocalDate.of(2024, 10, random.nextInt(30) + 1))
+                .mapToObj(i -> LocalDate.of(2025, 10, random.nextInt(30) + 1))
                 .collect(Collectors.toList());
         }
     }
