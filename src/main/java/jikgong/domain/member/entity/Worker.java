@@ -4,7 +4,6 @@ import jakarta.persistence.Embeddable;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import java.time.LocalDate;
 import jikgong.domain.member.dto.info.AccountInfoRequest;
 import jikgong.domain.member.dto.info.WorkerInfoRequest;
 import jikgong.domain.member.dto.join.JoinWorkerRequest;
@@ -28,8 +27,6 @@ public class Worker {
     private String bank; // 은행 종류
     private String accountHolder; // 예금주
     private String account; // 계좌
-    private Boolean hasVisa; // 비자 여부 (외국인만 입력)
-    private LocalDate visaExpiryDate; // 체류 만료일
 
     private String educationCertificateImgPath; // 교육 증명서 이미지 경로
     private String workerCardImgPath; // 근로자 카드 이미지 경로
@@ -45,7 +42,7 @@ public class Worker {
     @Builder
     public Worker(String workerName, String birth, Gender gender, Nationality nationality,
         String bank, String accountHolder,
-        String account, Boolean hasVisa, LocalDate visaExpiryDate,
+        String account,
         Boolean credentialLiabilityConsent, Boolean isNotification) {
         this.workerName = workerName;
         this.birth = birth;
@@ -54,8 +51,6 @@ public class Worker {
         this.bank = bank;
         this.accountHolder = accountHolder;
         this.account = account;
-        this.hasVisa = hasVisa;
-        this.visaExpiryDate = visaExpiryDate;
         this.credentialLiabilityConsent = credentialLiabilityConsent;
         this.isOffer = true; // 기본 true
         this.workerNotificationInfo = new WorkerNotificationInfo(isNotification);
@@ -70,7 +65,6 @@ public class Worker {
             .bank(request.getBank())
             .accountHolder(request.getAccountHolder())
             .account(request.getAccount())
-            .hasVisa(request.getHasVisa())
             .credentialLiabilityConsent(request.getCredentialLiabilityConsent())
             .isNotification(request.getIsNotification())
             .build();
@@ -81,7 +75,6 @@ public class Worker {
         this.birth = request.getBirth();
         this.gender = request.getGender();
         this.nationality = request.getNationality();
-        this.hasVisa = request.getHasVisa();
     }
 
     public void updateEducationCertificateImgPath(String educationCertificateImgPath) {
@@ -94,10 +87,6 @@ public class Worker {
         }
         this.workerCardImgPath = workerCardImgPath;
         this.workerCardNumber = workerCardNumber;
-    }
-
-    public void updateVisaExpiryDate(LocalDate visaExpiryDate) {
-        this.visaExpiryDate = visaExpiryDate;
     }
 
     public void updateAccountInfo(AccountInfoRequest request) {

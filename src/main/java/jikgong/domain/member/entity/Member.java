@@ -8,7 +8,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import jikgong.domain.apply.entity.Apply;
@@ -17,15 +16,11 @@ import jikgong.domain.history.entity.History;
 import jikgong.domain.location.entity.Location;
 import jikgong.domain.member.dto.info.AccountInfoRequest;
 import jikgong.domain.member.dto.info.CompanyInfoRequest;
-import jikgong.domain.member.dto.info.StayExpirationResponse;
 import jikgong.domain.member.dto.info.WorkerCardRequest;
 import jikgong.domain.member.dto.info.WorkerInfoRequest;
 import jikgong.domain.member.dto.join.JoinCompanyRequest;
 import jikgong.domain.member.dto.join.JoinWorkerRequest;
 import jikgong.domain.workexperience.entity.WorkExperience;
-import jikgong.global.exception.ErrorCode;
-import jikgong.global.exception.JikgongException;
-import jikgong.global.utils.DateConverter;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -148,17 +143,6 @@ public class Member extends BaseEntity {
 
     public void updatePassword(String newPassword) {
         this.password = newPassword;
-    }
-
-    public void updateVisaExpiryDate(StayExpirationResponse stayExpirationResponse) {
-        // 국내에 체류중인 외국인이 아닐 경우
-        if ("0".equals(stayExpirationResponse.getData().getResAuthenticity())) {
-            throw new JikgongException(ErrorCode.MEMBER_NOT_STAY_WITH_IN_THE_COUNTRY);
-        }
-
-        LocalDate visaExpiryDate = DateConverter.convertToLocalDate(
-            stayExpirationResponse.getData().getResExpirationDate());
-        this.workerInfo.updateVisaExpiryDate(visaExpiryDate);
     }
 
     public void updateSignatureImagePath(String signatureImagePath) {

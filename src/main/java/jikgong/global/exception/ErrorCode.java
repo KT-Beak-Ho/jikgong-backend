@@ -22,7 +22,6 @@ public enum ErrorCode {
     MEMBER_FORBIDDEN(HttpStatus.FORBIDDEN, "MEMBER-010", "권한이 필요합니다."),
     MEMBER_CONSENTS_NEED_TO_AGREE(HttpStatus.FORBIDDEN, "MEMBER-011", "회원가입을 위해선 각종 내용에 동의해야합니다."),
     MEMBER_INVALID_AUTH_CODE(HttpStatus.BAD_REQUEST, "MEMBER-012", "인증 코드가 올바르지 않습니다."),
-    MEMBER_NOT_STAY_WITH_IN_THE_COUNTRY(HttpStatus.BAD_REQUEST, "MEMBER-013", "현재 체류 중인 외국인이 아닙니다."),
     MEMBER_UPDATE_WORKER_CARD_FAIL(HttpStatus.BAD_REQUEST, "MEMBER-014", "노동자 카드 정보 업데이트에 실패했습니다."),
 
     /**
@@ -141,11 +140,6 @@ public enum ErrorCode {
     SMS_NOT_FOUND(HttpStatus.NOT_FOUND, "SMS-005", "요청한 리소스를 찾을 수 없습니다."),
     SMS_TOO_MANY_REQUESTS(HttpStatus.TOO_MANY_REQUESTS, "SMS-006", "요청이 너무 많습니다. 나중에 다시 시도하세요."),
     SMS_INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "SMS-007", "서버 내부 오류가 발생했습니다."),
-
-    /**
-     * 비자 사진
-     */
-    VISA_IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "VISA-001", "비자 사진 정보가 없습니다."),
 
     /**
      * codef

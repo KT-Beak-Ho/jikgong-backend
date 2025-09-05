@@ -137,7 +137,6 @@ public class InitDB {
                 .nationality(Nationality.KOREAN)
                 .account("12341234123412")
                 .bank("국민은행")
-                .hasVisa(true)
                 .credentialLiabilityConsent(true)
                 .workExperienceRequest(workExperienceRequestList)
                 .address("부산광역시 사하구 낙동대로 550번길 37")
