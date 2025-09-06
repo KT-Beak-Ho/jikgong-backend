@@ -105,9 +105,7 @@ jobs:
           script: |
             chmod +x /home/ubuntu/deploy.sh
             /home/ubuntu/deploy.sh
-        env: 
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          
+            export DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
 
   notify-slack:
     needs: cd-pipeline
