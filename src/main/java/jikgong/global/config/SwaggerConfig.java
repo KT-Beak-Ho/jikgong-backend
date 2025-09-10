@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 @OpenAPIDefinition(
     info = @Info(title = "jikgong API 명세서", version = "v1"),
     servers = {
-        @Server(url = "http://59.21.223.137:8080", description = "Default Server"),
+        @Server(url = "http://59.21.223.137", description = "Default Server"),
         @Server(url = "http://localhost:8080", description = "Local Server"),
     }
 )
