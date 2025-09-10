@@ -2,10 +2,9 @@ package jikgong.domain.location.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
-import jikgong.domain.location.dto.LocationDeleteRequest;
-import jikgong.domain.location.dto.LocationResponse;
-import jikgong.domain.location.dto.LocationSaveRequest;
-import jikgong.domain.location.dto.LocationUpdateRequest;
+
+import jikgong.domain.location.dto.*;
+import jikgong.domain.location.service.LocationSearchService;
 import jikgong.domain.location.service.LocationService;
 import jikgong.global.annotation.WorkerRoleRequired;
 import jikgong.global.common.Response;
@@ -14,13 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class LocationController {
 
     private final LocationService locationService;
+    private final LocationSearchService locationSearchService;
 
     @Operation(summary = "신규 위치 등록")
     @PostMapping("/api/location")
@@ -76,5 +70,12 @@ public class LocationController {
         @PathVariable("locationId") Long locationId) {
         locationService.changeMainLocation(principalDetails.getMember().getId(), locationId);
         return ResponseEntity.ok(new Response("대표 위치 변경 완료"));
+    }
+
+    @Operation(summary = "위치 후보 검색")
+    @GetMapping("/api/location/candidate/list")
+    public ResponseEntity<Response> searchLocationCandidates(@RequestParam String keyword) {
+        List<LocationSearchResponse> locationSearchResponseList = locationSearchService.searchLocationCandidatesByKeyword(keyword);
+        return ResponseEntity.ok(new Response(locationSearchResponseList, "위치 후보 정보 반환 완료"));
     }
 }

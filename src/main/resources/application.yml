@@ -79,3 +79,6 @@ fcm:
 webhook:
   slack:
     url: ${WEBHOOK_SLACK_URL}
+
+kakao:
+  api-key: ${KAKAO_API_KEY}
