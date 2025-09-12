@@ -65,7 +65,7 @@ public class ApplyWorkerController {
         return ResponseEntity.ok(new Response(applyHistoryResponseList, "일자리 신청 내역 조회 완료"));
     }
 
-    @Operation(summary = "노동자: 근무 일이 지나지 않은 신청 내역 조회 - 대기, 거절, 완료")
+    @Operation(summary = "노동자: 근무 일이 지나지 않은 신청 내역 조회 - 확정/진행중/마감")
     @GetMapping("/api/apply/worker/future")
     public ResponseEntity<Response> findFutureApply(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         List<ApplyHistoryResponse> applyHistoryResponseList = applyWorkerService.findApplyFutureHistory(

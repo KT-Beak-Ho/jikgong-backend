@@ -220,8 +220,8 @@ public class ApplyWorkerService {
         );
 
         return applyRepository.findFutureApply(worker.getId(), statusList, LocalDate.now()).stream()
-            .map(ApplyHistoryResponse::from)
-            .collect(Collectors.toList());
+                .map(ApplyHistoryResponse::from)
+                .toList();
     }
 
     /**

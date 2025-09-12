@@ -16,7 +16,7 @@ import lombok.Getter;
 public class ApplyHistoryResponse {
 
     private Long applyId;
-    private ApplyStatus status;
+    private ApplyEffectiveStatus status;
     private LocalDate applyDate; // 신청 시간
     private String timePassed; // 신청 시간
     private LocalDate workDate; // 지원 날짜
@@ -24,16 +24,42 @@ public class ApplyHistoryResponse {
 
     private JobPostResponse jobPostResponse;
 
+    @Getter
+    public enum ApplyEffectiveStatus {
+        PROCESSING("진행중"),
+        CLOSED("마감"),
+        FINISHED("완료");
+
+        private final String description;
+
+        ApplyEffectiveStatus(String description) {
+            this.description = description;
+        }
+    }
+
     public static ApplyHistoryResponse from(Apply apply) {
+        ApplyEffectiveStatus effectiveStatus = determineEffectiveStatus(apply.getStatus());
+
         return ApplyHistoryResponse.builder()
             .applyId(apply.getId())
-            .status(apply.getStatus())
+            .status(effectiveStatus)
             .applyDate(apply.getCreatedDate().toLocalDate())
             .timePassed(TimeTransfer.getTimeDifference(apply.getCreatedDate()))
             .workDate(apply.getWorkDate().getDate())
             .applyNum(apply.getWorkDate().getApplyList().size())
             .jobPostResponse(JobPostResponse.from(apply.getWorkDate().getJobPost()))
             .build();
+    }
+
+    private static ApplyEffectiveStatus determineEffectiveStatus(ApplyStatus originalStatus) {
+        if (originalStatus == ApplyStatus.ACCEPTED) {
+            return ApplyEffectiveStatus.FINISHED;
+        } else if (originalStatus == ApplyStatus.PENDING || originalStatus == ApplyStatus.OFFERED) {
+            return ApplyEffectiveStatus.PROCESSING;
+        } else {
+            // REJECTED, CANCELED 등 나머지 상태는 모두 "마감"으로 처리
+            return ApplyEffectiveStatus.CLOSED;
+        }
     }
 
     @Getter
