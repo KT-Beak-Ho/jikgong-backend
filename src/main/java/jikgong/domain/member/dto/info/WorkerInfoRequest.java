@@ -1,7 +1,6 @@
 package jikgong.domain.member.dto.info;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Email;
 import java.util.List;
 import jikgong.domain.member.entity.Gender;
 import jikgong.domain.member.entity.Nationality;
@@ -23,8 +22,6 @@ public class WorkerInfoRequest {
     private Gender gender; // 성별
     @Schema(description = "국적", example = "FOREIGNER")
     private Nationality nationality; // 국적
-    @Schema(description = "비자 여부", example = "true")
-    private Boolean hasVisa; // 비자 여부
 
     // 경력 정보
     @Schema(description = "경력 정보 리스트", example = "[{ \"workExperienceId\": 1, \"tech\": \"NORMAL\", \"experienceMonths\": 36 }, { \"workExperienceId\": null, \"tech\": \"TILE\", \"experienceMonths\": 12 }]")

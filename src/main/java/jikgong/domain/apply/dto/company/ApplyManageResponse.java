@@ -42,7 +42,6 @@ public class ApplyManageResponse {
         private Nationality nationality; // 국적
         private Integer workTimes; // 출역 횟수
         private Float participationRate; // 참여율
-        private Boolean hasVisa; // 비자 유무
         private List<WorkExperienceResponse> workExperienceResponseList; // 경력 사항
 
         public static MemberResponse from(Member member) {
@@ -52,7 +51,7 @@ public class ApplyManageResponse {
             // 출역 횟수, 참여율
             List<History> workHistory = member.getHistoryList().stream()
                 .filter(history -> history.getEndStatus() == WorkStatus.FINISH_WORK)
-                .collect(Collectors.toList());
+                .toList();
             int workTimes = workHistory.size();
             float participationRate = (float) workTimes / (float) member.getHistoryList().size();
 
@@ -75,7 +74,6 @@ public class ApplyManageResponse {
                 .nationality(member.getWorkerInfo().getNationality())
                 .workTimes(workTimes)
                 .participationRate(participationRate)
-                .hasVisa(member.getWorkerInfo().getHasVisa())
                 .workExperienceResponseList(workExperienceResponseList)
                 .build();
         }

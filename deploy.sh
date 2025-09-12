@@ -25,8 +25,8 @@ echo "jikgong-${START_CONTAINER} up"
 
 # 실행해야하는 컨테이너 docker-compose로 실행. -p는 docker-compose 프로젝트에 이름을 부여
 # -f는 docker-compose파일 경로를 지정
-sudo docker pull ${DOCKERHUB_USERNAME}/jikgong
-sudo docker-compose -f docker-compose.${START_CONTAINER}.yml up -d --build
+sudo docker pull ${DOCKERHUB_USERNAME}/jikgong-${START_CONTAINER}
+sudo -E docker compose -f docker-compose.${START_CONTAINER}.yml up -d --build
 
 RUNNING_CONTAINER=$(sudo docker ps)
 echo "실행중인 컨테이너 목록: ${RUNNING_CONTAINER}"
@@ -44,8 +44,8 @@ do
                 break
         fi
 
-        echo "wait 10 seconds" # 10 초간 대기
-        sleep 10
+        echo "wait 30 seconds" # 30 초간 대기
+        sleep 30
 done
 
 if [ $cnt -eq 10 ] # 10번동안 실행이 안되었으면 배포 실패, 강제 종료
@@ -68,7 +68,7 @@ sudo service nginx reload
 
 # 기존에 실행 중이었던 docker-compose는 종료. graceful 종료
 echo "jikgong-${TERMINATE_CONTAINER} down"
-sudo docker-compose -f docker-compose.${TERMINATE_CONTAINER}.yml down --rmi all
+sudo docker compose -f docker-compose.${TERMINATE_CONTAINER}.yml down --rmi all
 
 # 컨테이너에 사용되지 않는 이미지 전부 제거
 sudo docker image prune -af

@@ -1,6 +1,5 @@
 package jikgong.domain.member.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -18,8 +17,6 @@ import jikgong.domain.member.dto.info.LoginIdFindResponse;
 import jikgong.domain.member.dto.info.PasswordFindRequest;
 import jikgong.domain.member.dto.info.PasswordFindResponse;
 import jikgong.domain.member.dto.info.PasswordUpdateRequest;
-import jikgong.domain.member.dto.info.StayExpirationRequest;
-import jikgong.domain.member.dto.info.StayExpirationResponse;
 import jikgong.domain.member.dto.info.WorkerCardRequest;
 import jikgong.domain.member.dto.info.WorkerInfoRequest;
 import jikgong.domain.member.dto.info.WorkerInfoResponse;
@@ -57,7 +54,6 @@ public class MemberInfoService {
     private final PasswordEncoder encoder;
     private final RedisTemplate<String, String> redisTemplate;
     private final SmsService smsService;
-    private final StayExpirationService stayExpirationService;
     private final S3Handler s3Handler;
 
 
@@ -240,26 +236,6 @@ public class MemberInfoService {
         if (savedAuthCode == null || !savedAuthCode.equals(request.getAuthCode())) {
             throw new JikgongException(ErrorCode.MEMBER_INVALID_AUTH_CODE);  // 인증 코드 불일치
         }
-    }
-
-
-    /**
-     * 체류 만료일 조회 api 호출 체류 만료일 정보 업데이트
-     */
-    public void updateVisaExpiryDate(Long workerId, StayExpirationRequest request)
-        throws JsonProcessingException {
-        // codef api 호출
-        StayExpirationResponse stayExpirationResponse = stayExpirationService.checkStayExpiration(
-            request);
-
-        if (!"CF-00000".equals(stayExpirationResponse.getResult().getCode())) {
-            throw new JikgongException(ErrorCode.CODEF_UNKNOWN_ERROR);
-        }
-
-        Member member = memberRepository.findById(workerId)
-            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
-
-        member.updateVisaExpiryDate(stayExpirationResponse);
     }
 
     /**

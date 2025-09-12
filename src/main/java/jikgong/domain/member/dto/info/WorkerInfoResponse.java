@@ -23,7 +23,6 @@ public class WorkerInfoResponse {
     private Nationality nationality; // 국적
     private String account; // 게좌 번호
     private String bank; // 은행
-    private Boolean hasVisa; // 비자 여부 (외국인만 입력)
 
     private List<WorkExperienceResponse> workExperienceResponseList; // 경력 정보
 
@@ -43,8 +42,6 @@ public class WorkerInfoResponse {
             .nationality(worker.getWorkerInfo().getNationality())
             .account(worker.getWorkerInfo().getAccount())
             .bank(worker.getWorkerInfo().getBank())
-
-            .hasVisa(worker.getWorkerInfo().getHasVisa())
 
             .workExperienceResponseList(workExperienceResponseList)
 
