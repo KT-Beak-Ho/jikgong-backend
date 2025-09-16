@@ -15,7 +15,7 @@ public enum ErrorCode {
     REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "MEMBER-003", "만료된 refresh token 입니다."),
     REFRESH_TOKEN_NOT_MATCH(HttpStatus.FORBIDDEN, "MEMBER-004", "유효하지 않은 refresh token 입니다. 다시 로그인하세요."),
     MEMBER_PHONE_EXIST(HttpStatus.CONFLICT, "MEMBER-005", "이미 등록된 핸드폰 번호입니다."),
-    MEMBER_INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "MEMBER-006", "비밀번호가 올바르지 않습니다."),
+    MEMBER_INVALID_ID_OR_PASSWORD(HttpStatus.UNAUTHORIZED, "MEMBER-006", "아이디 또는 비밀번호가 올바르지 않습니다."),
     MEMBER_LOGIN_ID_EXIST(HttpStatus.CONFLICT, "MEMBER-007", "이미 등록된 id입니다."),
     ROLE_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER-008", "요청된 회원의 ROLE을 특정할 수 없습니다."),
     MEMBER_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "MEMBER-009", "인증이 필요합니다."),
