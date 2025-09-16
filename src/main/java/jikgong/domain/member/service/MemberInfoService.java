@@ -143,10 +143,10 @@ public class MemberInfoService {
      */
     public void updatePassword(Long memberId, PasswordUpdateRequest request) {
         Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_INVALID_ID_OR_PASSWORD));
 
         if (!encoder.matches(request.getCurrentPassword(), member.getPassword())) {
-            throw new JikgongException(ErrorCode.MEMBER_INVALID_PASSWORD);
+            throw new JikgongException(ErrorCode.MEMBER_INVALID_ID_OR_PASSWORD);
         }
 
         member.updatePassword(encoder.encode(request.getNewPassword()));

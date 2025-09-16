@@ -40,11 +40,11 @@ public class LoginService {
 
         // 회원 존재 여부 확인
         Member member = optionalMember.orElseThrow(() ->
-            new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+            new JikgongException(ErrorCode.MEMBER_INVALID_ID_OR_PASSWORD));
 
         // authCode 체크
         if (!encoder.matches(request.getPassword(), member.getPassword())) {
-            throw new JikgongException(ErrorCode.MEMBER_INVALID_PASSWORD);
+            throw new JikgongException(ErrorCode.MEMBER_INVALID_ID_OR_PASSWORD);
         }
 
         // accessToken & refreshToken 생성
