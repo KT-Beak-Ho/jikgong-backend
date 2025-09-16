@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import jikgong.domain.apply.dto.worker.ApplyAcceptedResponse;
-import jikgong.domain.apply.dto.worker.ApplyHistoryResponse;
-import jikgong.domain.apply.dto.worker.ApplyResponseMonthly;
+import jikgong.domain.apply.dto.worker.ApplyAcceptedGetResponse;
+import jikgong.domain.apply.dto.worker.ApplyDailyGetResponse;
+import jikgong.domain.apply.dto.worker.ApplyMonthlyGetResponse;
 import jikgong.domain.apply.dto.worker.ApplySaveRequest;
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.entity.ApplyStatus;
@@ -130,7 +130,7 @@ public class ApplyWorkerService {
      * 확정된 내역 일별 조회
      */
     @Transactional(readOnly = true)
-    public ApplyAcceptedResponse findApplyHistoryPerDay(Long workerId, LocalDate date) {
+    public ApplyAcceptedGetResponse findApplyHistoryPerDay(Long workerId, LocalDate date) {
         Member worker = memberRepository.findById(workerId)
             .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
@@ -145,7 +145,7 @@ public class ApplyWorkerService {
         Apply apply = optionalApply.get();
         Optional<History> history = historyRepository.findByMemberAndApply(worker.getId(), apply.getWorkDate().getId());
 
-        return ApplyAcceptedResponse.from(apply, history);
+        return ApplyAcceptedGetResponse.from(apply, history);
     }
 
     /**
@@ -155,7 +155,7 @@ public class ApplyWorkerService {
      * 신청한 날짜: 회색으로 표시
      */
     @Transactional(readOnly = true)
-    public List<ApplyResponseMonthly> findApplyHistoryPerMonth(Long workerId, LocalDate workMonth) {
+    public List<ApplyMonthlyGetResponse> findAppliesPerMonth(Long workerId, LocalDate workMonth) {
         Member worker = memberRepository.findById(workerId)
             .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
@@ -168,7 +168,7 @@ public class ApplyWorkerService {
         Map<LocalDate, ApplyStatus> workDateMap = getWorkDateMap(applyList);
 
         return workDateMap.entrySet().stream()
-            .map(entry -> ApplyResponseMonthly.from(entry.getKey(), entry.getValue()))
+            .map(entry -> ApplyMonthlyGetResponse.from(entry.getKey(), entry.getValue()))
             .collect(Collectors.toList());
     }
 
@@ -194,12 +194,12 @@ public class ApplyWorkerService {
      * 신청 진행 중인 내역 조회
      */
     @Transactional(readOnly = true)
-    public List<ApplyHistoryResponse> findPendingApply(Long workerId) {
+    public List<ApplyDailyGetResponse> findAppliesPerDay(Long workerId) {
         Member worker = memberRepository.findById(workerId)
             .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         return applyRepository.findPendingApply(worker.getId()).stream()
-            .map(ApplyHistoryResponse::from)
+            .map(ApplyDailyGetResponse::from)
             .collect(Collectors.toList());
     }
 
@@ -208,7 +208,7 @@ public class ApplyWorkerService {
      * 웹에서 보여주기 위함
      */
     @Transactional(readOnly = true)
-    public List<ApplyHistoryResponse> findApplyFutureHistory(Long workerId) {
+    public List<ApplyDailyGetResponse> findApplyFutureHistory(Long workerId) {
         Member worker = memberRepository.findById(workerId)
             .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
@@ -220,7 +220,7 @@ public class ApplyWorkerService {
         );
 
         return applyRepository.findFutureApply(worker.getId(), statusList, LocalDate.now()).stream()
-                .map(ApplyHistoryResponse::from)
+                .map(ApplyDailyGetResponse::from)
                 .toList();
     }
 
