@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import com.slack.api.model.admin.App;
+import jikgong.domain.apply.controller.ApplyWorkerController.ExpressiveApplyStatus;
 import jikgong.domain.apply.dto.worker.ApplyAcceptedGetResponse;
 import jikgong.domain.apply.dto.worker.ApplyDailyGetResponse;
 import jikgong.domain.apply.dto.worker.ApplyMonthlyGetResponse;
@@ -130,7 +133,7 @@ public class ApplyWorkerService {
      * 확정된 내역 일별 조회
      */
     @Transactional(readOnly = true)
-    public ApplyAcceptedGetResponse findApplyHistoryPerDay(Long workerId, LocalDate date) {
+    public ApplyAcceptedGetResponse findApplyHistoryDaily(Long workerId, LocalDate date) {
         Member worker = memberRepository.findById(workerId)
             .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
@@ -155,7 +158,7 @@ public class ApplyWorkerService {
      * 신청한 날짜: 회색으로 표시
      */
     @Transactional(readOnly = true)
-    public List<ApplyMonthlyGetResponse> findAppliesPerMonth(Long workerId, LocalDate workMonth) {
+    public List<ApplyMonthlyGetResponse> findAppliesMonthly(Long workerId, LocalDate workMonth) {
         Member worker = memberRepository.findById(workerId)
             .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
@@ -191,35 +194,20 @@ public class ApplyWorkerService {
     }
 
     /**
-     * 신청 진행 중인 내역 조회
+     * 신청 내역 조회 (확정/ 진행중/ 마감)
      */
     @Transactional(readOnly = true)
-    public List<ApplyDailyGetResponse> findAppliesPerDay(Long workerId) {
+    public List<ApplyDailyGetResponse> findAppliesDailyByStatus(Long workerId, LocalDate date, ExpressiveApplyStatus status) {
         Member worker = memberRepository.findById(workerId)
             .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
-        return applyRepository.findPendingApply(worker.getId()).stream()
-            .map(ApplyDailyGetResponse::from)
-            .collect(Collectors.toList());
-    }
+        List<ApplyStatus> statusList = switch (status) {
+            case ACCEPTED -> Arrays.asList(ApplyStatus.ACCEPTED);
+            case PROCESSING -> Arrays.asList(ApplyStatus.PENDING, ApplyStatus.OFFERED);
+            case CLOSED -> Arrays.asList(ApplyStatus.REJECTED, ApplyStatus.CANCELED);
+        };
 
-    /**
-     * 근무 일이 지나지 않은 신청 내역 조회 (대기, 거절, 수락)
-     * 웹에서 보여주기 위함
-     */
-    @Transactional(readOnly = true)
-    public List<ApplyDailyGetResponse> findApplyFutureHistory(Long workerId) {
-        Member worker = memberRepository.findById(workerId)
-            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
-
-        // 조회하고자 하는 상태
-        List<ApplyStatus> statusList = Arrays.asList(
-            ApplyStatus.PENDING,
-            ApplyStatus.REJECTED,
-            ApplyStatus.ACCEPTED
-        );
-
-        return applyRepository.findFutureApply(worker.getId(), statusList, LocalDate.now()).stream()
+        return applyRepository.findAppliesByDateAndStatusList(worker.getId(), date, statusList).stream()
                 .map(ApplyDailyGetResponse::from)
                 .toList();
     }
