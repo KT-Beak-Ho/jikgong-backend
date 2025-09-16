@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +11,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.slack.api.model.admin.App;
 import jikgong.domain.apply.controller.ApplyWorkerController.ExpressiveApplyStatus;
 import jikgong.domain.apply.dto.worker.ApplyAcceptedGetResponse;
 import jikgong.domain.apply.dto.worker.ApplyDailyGetResponse;
@@ -202,9 +200,9 @@ public class ApplyWorkerService {
             .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         List<ApplyStatus> statusList = switch (status) {
-            case ACCEPTED -> Arrays.asList(ApplyStatus.ACCEPTED);
-            case PROCESSING -> Arrays.asList(ApplyStatus.PENDING, ApplyStatus.OFFERED);
-            case CLOSED -> Arrays.asList(ApplyStatus.REJECTED, ApplyStatus.CANCELED);
+            case ACCEPTED -> List.of(ApplyStatus.ACCEPTED);
+            case PROCESSING -> List.of(ApplyStatus.PENDING, ApplyStatus.OFFERED);
+            case CLOSED -> List.of(ApplyStatus.REJECTED, ApplyStatus.CANCELED);
         };
 
         return applyRepository.findAppliesByDateAndStatusList(worker.getId(), date, statusList).stream()
