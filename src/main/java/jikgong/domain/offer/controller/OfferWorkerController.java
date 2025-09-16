@@ -2,6 +2,8 @@ package jikgong.domain.offer.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jikgong.domain.offer.dto.worker.OfferJobPostResponse;
 import jikgong.domain.offer.dto.worker.OfferProcessRequest;
 import jikgong.domain.offer.dto.worker.ReceivedOfferResponse;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name="[노동자] 채용 제안")
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -28,7 +31,7 @@ public class OfferWorkerController {
 
     private final OfferWorkerService offerWorkerService;
 
-    @Operation(summary = "노동자: 제안 받은 내역 조회")
+    @Operation(summary = "제안 받은 내역 조회")
     @GetMapping("/api/offer/worker/list")
     public ResponseEntity<Response> findReceivedOffer(@AuthenticationPrincipal PrincipalDetails principalDetails,
         @RequestParam(name = "isPending") Boolean isPending) {
@@ -37,7 +40,7 @@ public class OfferWorkerController {
         return ResponseEntity.ok(new Response(receivedOfferResponseList, "노동자: 제안 받은 내역 조회 완료"));
     }
 
-    @Operation(summary = "노동자: 제안 수락, 거부")
+    @Operation(summary = "제안 수락, 거부")
     @PostMapping("/api/offer/worker")
     public ResponseEntity<Response> processOffer(@AuthenticationPrincipal PrincipalDetails principalDetails,
         @RequestBody OfferProcessRequest request) {

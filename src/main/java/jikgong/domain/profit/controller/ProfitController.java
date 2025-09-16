@@ -3,6 +3,8 @@ package jikgong.domain.profit.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import java.time.LocalDate;
 import java.util.List;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jikgong.domain.profit.dto.graph.DailyGraphResponse;
 import jikgong.domain.profit.dto.graph.MonthlyGraphResponse;
 import jikgong.domain.profit.dto.history.DailyProfitResponse;
@@ -31,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "[공통] 수익금")
 @RestController
 @RequiredArgsConstructor
 @Slf4j

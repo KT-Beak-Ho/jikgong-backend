@@ -3,6 +3,8 @@ package jikgong.domain.member.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jikgong.domain.member.dto.company.CompanySearchResponse;
 import jikgong.domain.member.dto.info.AccountInfoRequest;
 import jikgong.domain.member.dto.info.AccountInfoResponse;
@@ -36,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+@Tag(name="[공통] 회원 정보 조회")
 @RestController
 @RequiredArgsConstructor
 @Slf4j

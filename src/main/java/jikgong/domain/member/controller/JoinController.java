@@ -1,6 +1,7 @@
 package jikgong.domain.member.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jikgong.domain.member.dto.join.JoinCompanyRequest;
 import jikgong.domain.member.dto.join.JoinWorkerRequest;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+@Tag(name="[공통] 회원 가입")
 @RestController
 @RequiredArgsConstructor
 @Slf4j

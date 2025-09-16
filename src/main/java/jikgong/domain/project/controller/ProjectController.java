@@ -2,6 +2,8 @@ package jikgong.domain.project.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jikgong.domain.project.dto.ProjectDetailResponse;
 import jikgong.domain.project.dto.ProjectInfoResponse;
 import jikgong.domain.project.dto.ProjectListResponse;
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "[사업자] 프로젝트")
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -59,7 +62,7 @@ public class ProjectController {
             new Response(projectListResponsePage, "프로젝트 중 " + projectStatus.getDescription() + " 프로젝트 조회"));
     }
 
-    @Operation(summary = "프로젝트 상세 조회 - 수정 시 사용", description = "수정 시 정보 조회에 사용")
+    @Operation(summary = "프로젝트 상세 조회", description = "수정 시 정보 조회에 사용")
     @GetMapping("/api/project/{projectId}")
     public ResponseEntity<Response> findProjectDetail(@AuthenticationPrincipal PrincipalDetails principalDetails,
         @PathVariable("projectId") Long projectId) {
@@ -76,7 +79,7 @@ public class ProjectController {
         return ResponseEntity.ok(new Response("프로젝트 조회"));
     }
 
-    @Operation(summary = "기업 검색: 기업이 등록한 프로젝트 조회")
+    @Operation(summary = "사업자가 등록한 프로젝트 조회")
     @GetMapping("/api/project/list/{companyId}")
     public ResponseEntity<Response> findProjects(@PathVariable(name = "companyId") Long companyId) {
         List<ProjectListResponse> projectListResponseList = projectService.findProjectAtSearch(companyId);

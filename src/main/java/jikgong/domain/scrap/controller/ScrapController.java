@@ -1,6 +1,7 @@
 package jikgong.domain.scrap.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jikgong.domain.scrap.service.ScrapService;
 import jikgong.global.annotation.AuthenticatedRequired;
 import jikgong.global.common.Response;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "[노동자] 모집 공고 스크랩")
 @RestController
 @RequiredArgsConstructor
 @Slf4j

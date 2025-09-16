@@ -3,6 +3,7 @@ package jikgong.domain.location.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jikgong.domain.location.dto.*;
 import jikgong.domain.location.service.LocationSearchService;
 import jikgong.domain.location.service.LocationService;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name="[공통] 위치 정보")
 @RestController
 @RequiredArgsConstructor
 @Slf4j

@@ -82,3 +82,7 @@ webhook:
 
 kakao:
   api-key: ${KAKAO_API_KEY}
+
+springdoc:
+  swagger-ui:
+    tags-sorter: alpha # Swagger UI를 알파벳 순으로 정렬

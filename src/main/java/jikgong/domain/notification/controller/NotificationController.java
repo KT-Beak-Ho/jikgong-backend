@@ -2,6 +2,8 @@ package jikgong.domain.notification.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jikgong.domain.notification.dto.NotificationInfoResponse;
 import jikgong.domain.notification.dto.NotificationResponse;
 import jikgong.domain.notification.dto.UnreadCountResponse;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name="[공통] 알림")
 @RestController
 @RequiredArgsConstructor
 @Slf4j

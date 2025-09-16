@@ -1,6 +1,7 @@
 package jikgong.domain.like.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jikgong.domain.like.service.LikeService;
 import jikgong.global.annotation.CompanyRoleRequired;
 import jikgong.global.common.Response;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name="[사업자] 좋아요")
 @RestController
 @RequiredArgsConstructor
 @Slf4j

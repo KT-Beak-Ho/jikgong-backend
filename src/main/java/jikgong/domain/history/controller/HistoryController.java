@@ -2,6 +2,8 @@ package jikgong.domain.history.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jikgong.domain.history.dto.HistoryAtFinishResponse;
 import jikgong.domain.history.dto.HistoryFinishSaveRequest;
 import jikgong.domain.history.dto.HistoryManageResponse;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name="[공통] 근무 기록")
 @RestController
 @RequiredArgsConstructor
 @Slf4j

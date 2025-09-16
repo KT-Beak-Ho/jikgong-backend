@@ -2,6 +2,8 @@ package jikgong.domain.searchlog.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jikgong.domain.searchlog.dto.SearchLogSaveRequest;
 import jikgong.domain.searchlog.entity.SearchLog;
 import jikgong.domain.searchlog.service.SearchLogService;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "[공통] 최근 검색 기록")
 @RestController
 @RequiredArgsConstructor
 @Slf4j

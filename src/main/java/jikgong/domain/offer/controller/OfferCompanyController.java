@@ -1,6 +1,7 @@
 package jikgong.domain.offer.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jikgong.domain.offer.dto.company.OfferHistoryResponse;
 import jikgong.domain.offer.dto.company.OfferRequest;
 import jikgong.domain.offer.entity.OfferStatus;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name="[사업자] 채용 제안")
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -32,15 +34,15 @@ public class OfferCompanyController {
 
     private final OfferCompanyService offerCompanyService;
 
-    @Operation(summary = "기업: 일자리 제안 하기")
+    @Operation(summary = "채용 제안 하기")
     @PostMapping("/api/offer/company")
     public ResponseEntity<Response> offerJobPost(@AuthenticationPrincipal PrincipalDetails principalDetails,
         @RequestBody OfferRequest request) {
         offerCompanyService.offerJobPost(principalDetails.getMember().getId(), request);
-        return ResponseEntity.ok(new Response("기업: 일자리 제안 완료"));
+        return ResponseEntity.ok(new Response("기업: 채용 제안 완료"));
     }
 
-    @Operation(summary = "기업: 제안 기록 조회")
+    @Operation(summary = "제안 기록 조회")
     @GetMapping("/api/offer/company/list")
     public ResponseEntity<Response> findOfferList(@AuthenticationPrincipal PrincipalDetails principalDetails,
         @RequestParam(name = "offerStatus") OfferStatus offerStatus,
@@ -52,7 +54,7 @@ public class OfferCompanyController {
         return ResponseEntity.ok(new Response(offerHistory, "제안 기록 조회 완료"));
     }
 
-    @Operation(summary = "기업: 제안 취소")
+    @Operation(summary = "제안 취소")
     @DeleteMapping("/api/offer/company/{offerId}")
     public ResponseEntity<Response> cancelOffer(@AuthenticationPrincipal PrincipalDetails principalDetails,
         @PathVariable("offerId") Long offerId) {

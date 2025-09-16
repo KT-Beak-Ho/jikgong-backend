@@ -3,6 +3,8 @@ package jikgong.domain.jobpost.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.Collections;
 import java.util.List;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jikgong.domain.jobpost.dto.company.JobPostListResponse;
 import jikgong.domain.jobpost.dto.company.JobPostManageResponse;
 import jikgong.domain.jobpost.dto.company.JobPostResponseForOffer;
@@ -36,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+@Tag(name="[사업자] 모집 공고")
 @RestController
 @RequiredArgsConstructor
 @Slf4j
