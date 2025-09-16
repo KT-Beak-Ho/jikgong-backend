@@ -14,7 +14,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ApplyAcceptedResponse {
+public class ApplyAcceptedGetResponse {
 
     /**
      * 노동자의 요청 내역 조회(확정) 에 사용
@@ -28,14 +28,14 @@ public class ApplyAcceptedResponse {
     private JobPostResponse jobPostResponse;
     private HistoryResponse historyResponse;
 
-    public static ApplyAcceptedResponse from(Apply apply, Optional<History> history) {
+    public static ApplyAcceptedGetResponse from(Apply apply, Optional<History> history) {
         // 출,퇴근 정보
         HistoryResponse historyResponse = null;
         if (history.isPresent()) {
             historyResponse = HistoryResponse.from(history.get());
         }
 
-        return ApplyAcceptedResponse.builder()
+        return ApplyAcceptedGetResponse.builder()
             .applyId(apply.getId())
             .status(apply.getStatus())
             .isOffer(apply.getIsOffer())
