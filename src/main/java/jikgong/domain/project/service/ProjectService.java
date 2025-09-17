@@ -6,14 +6,12 @@ import java.util.stream.Collectors;
 import jikgong.domain.jobpost.repository.JobPostRepository;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
-import jikgong.domain.project.dto.ProjectDetailResponse;
-import jikgong.domain.project.dto.ProjectInfoResponse;
-import jikgong.domain.project.dto.ProjectListResponse;
-import jikgong.domain.project.dto.ProjectSaveRequest;
-import jikgong.domain.project.dto.ProjectUpdateRequest;
+import jikgong.domain.project.dto.*;
+import jikgong.domain.project.dto.ProjectListResponse.ProjectSummary;
 import jikgong.domain.project.entity.Project;
 import jikgong.domain.project.entity.ProjectStatus;
 import jikgong.domain.project.repository.ProjectRepository;
+import jikgong.domain.workdate.dto.JobStatisticsByProject;
 import jikgong.domain.workdate.entity.WorkDate;
 import jikgong.domain.workdate.repository.WorkDateRepository;
 import jikgong.global.exception.ErrorCode;
@@ -21,7 +19,6 @@ import jikgong.global.exception.JikgongException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,7 +51,7 @@ public class ProjectService {
      * 필터: 완료됨, 진행 중, 예정
      */
     @Transactional(readOnly = true)
-    public Page<ProjectListResponse> findProjects(Long companyId, ProjectStatus projectStatus, Pageable pageable) {
+    public ProjectListResponse findProjects(Long companyId, ProjectStatus projectStatus, Pageable pageable) {
         Member company = memberRepository.findById(companyId)
             .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
@@ -68,12 +65,15 @@ public class ProjectService {
         } else if (projectStatus == ProjectStatus.PLANNED) {
             projectPage = projectRepository.findPlannedProject(company.getId(), now, pageable);
         }
+        List<ProjectSummary> projectSummaries = projectPage.getContent().stream()
+                .map(this::summarizeProject)
+                .toList();
+        return ProjectListResponse.from(projectPage, projectSummaries);
+    }
 
-        List<ProjectListResponse> projectListResponseList = projectPage.getContent().stream()
-            .map(ProjectListResponse::from)
-            .collect(Collectors.toList());
-
-        return new PageImpl<>(projectListResponseList, pageable, projectPage.getTotalElements());
+    private ProjectSummary summarizeProject(Project project) {
+        JobStatisticsByProject jobStatistics = workDateRepository.calculateJobStatisticsByProjectId(project.getId());
+        return ProjectSummary.from(project, jobStatistics);
     }
 
     /**
@@ -94,13 +94,13 @@ public class ProjectService {
      * 기업 선택 시 등록한 프로젝트 리스트 조회
      */
     @Transactional(readOnly = true)
-    public List<ProjectListResponse> findProjectAtSearch(Long companyId) {
+    public List<ProjectListSearchResponse> findProjectsForSearch(Long companyId) {
         Member company = memberRepository.findById(companyId)
             .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 준공일이 지나지 않은 project 조회
-        return projectRepository.findNotCompletedProject(company.getId(), LocalDate.now()).stream()
-            .map(ProjectListResponse::from)
+        return projectRepository.findNotCompletedProjects(company.getId(), LocalDate.now()).stream()
+            .map(ProjectListSearchResponse::from)
             .collect(Collectors.toList());
     }
 

@@ -39,5 +39,5 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
      * 기업 검색
      */
     @Query("select p from Project p where p.member.id = :memberId and p.endDate > :now")
-    List<Project> findNotCompletedProject(@Param("memberId") Long memberId, @Param("now") LocalDate now);
+    List<Project> findNotCompletedProjects(@Param("memberId") Long memberId, @Param("now") LocalDate now);
 }

@@ -3,6 +3,8 @@ package jikgong.domain.workdate.repository;
 import jakarta.persistence.LockModeType;
 import java.util.List;
 import java.util.Optional;
+
+import jikgong.domain.workdate.dto.JobStatisticsByProject;
 import jikgong.domain.workdate.entity.WorkDate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
@@ -45,6 +47,13 @@ public interface WorkDateRepository extends JpaRepository<WorkDate, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select w from WorkDate w join fetch w.jobPost j where j.id = :jobPostId and w.id = :workDateId")
     Optional<WorkDate> findByIdWithLock(@Param("jobPostId") Long jobPostId, @Param("workDateId") Long workDateId);
+
+    /**
+     * 프로젝트 리스트 조회
+     */
+    @Query("SELECT new jikgong.domain.workdate.dto.JobStatisticsByProject(SUM(w.recruitNum), SUM(w.registeredNum)) " +
+            "FROM WorkDate w WHERE w.jobPost.project.id = :projectId")
+    JobStatisticsByProject calculateJobStatisticsByProjectId(@Param("projectId") Long projectId);
 
     /**
      * 임시 공고

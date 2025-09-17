@@ -30,7 +30,7 @@ public class JoinController {
 
     private final JoinService joinService;
 
-    @Operation(summary = "회원 가입: 노동자")
+    @Operation(summary = "노동자")
     @PostMapping(value = "/api/join/worker/join", consumes = {"multipart/form-data"})
     public ResponseEntity<Response> joinWorkerMember(
         @RequestPart(name = "request") @Valid JoinWorkerRequest request,
@@ -43,30 +43,30 @@ public class JoinController {
         return ResponseEntity.ok(new Response("노동자 회원 가입 완료"));
     }
 
-    @Operation(summary = "회원 가입: 기업")
+    @Operation(summary = "사업자")
     @PostMapping(value = "/api/join/company/join", consumes = {"multipart/form-data"})
     public ResponseEntity<Response> joinCompanyMember(
         @RequestPart(name = "request") @Valid JoinCompanyRequest request,
         @RequestPart(name = "signatureImage", required = false) MultipartFile signatureImage) {
         Long savedMemberId = joinService.joinCompanyMember(request, signatureImage);
-        return ResponseEntity.ok(new Response("기업 회원 가입 완료"));
+        return ResponseEntity.ok(new Response("사업자 회원 가입 완료"));
     }
 
-    @Operation(summary = "회원 가입: 아이디 중복 체크")
+    @Operation(summary = "아이디 중복 체크")
     @PostMapping("/api/join/validation-loginId")
     public ResponseEntity<Response> validationPhone(@RequestBody ValidationLoginIdRequest request) {
         joinService.validationLoginId(request.getLoginId());
         return ResponseEntity.ok(new Response("사용 가능한 아이디 입니다."));
     }
 
-    @Operation(summary = "회원 가입: 휴대폰 중복 체크")
+    @Operation(summary = "휴대폰 중복 체크")
     @PostMapping("/api/join/validation-phone")
     public ResponseEntity<Response> validationPhone(@RequestBody ValidationPhoneRequest request) {
         joinService.validationPhone(request.getPhone());
         return ResponseEntity.ok(new Response("사용 가능한 휴대폰 입니다."));
     }
 
-    @Operation(summary = "회원 가입: 휴대폰 인증 (인증 코드 발송)")
+    @Operation(summary = "휴대폰 인증", description = "문자로 인증 코드를 발송하고, 발송한 인증 코드를 반환합니다.")
     @PostMapping("/api/join/sms-verification")
     public ResponseEntity<Response> sendVerificationCode(
         @RequestBody VerificationSmsRequest request) {
@@ -74,7 +74,7 @@ public class JoinController {
         return ResponseEntity.ok(new Response(verificationSmsResponse, "6자리 인증 코드 반환"));
     }
 
-    @Operation(summary = "회원 가입: 계좌 인증")
+    @Operation(summary = "계좌 인증")
     @PostMapping("/api/join/account-verification")
     public ResponseEntity<Response> verificationAccount(
         @RequestBody VerificationAccountRequest request) {

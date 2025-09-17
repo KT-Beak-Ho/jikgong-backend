@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-@Tag(name="[공통] 회원 정보 조회")
+@Tag(name="[공통] 회원 정보")
 @RestController
 @RequiredArgsConstructor
 @Slf4j

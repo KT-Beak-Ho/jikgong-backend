@@ -10,6 +10,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+
 import jikgong.domain.common.Address;
 import jikgong.domain.common.BaseEntity;
 import jikgong.domain.member.entity.Member;
@@ -70,5 +72,21 @@ public class Project extends BaseEntity {
         this.startDate = request.getStartDate();
         this.endDate = request.getEndDate();
         this.address = new Address(request.getAddress(), request.getLatitude(), request.getLongitude());
+    }
+
+    public ProjectStatus calculateStatus() {
+        LocalDate today = LocalDate.now();
+        if (today.isBefore(this.startDate)) return ProjectStatus.PLANNED;
+        if (today.isAfter(this.endDate)) return  ProjectStatus.COMPLETED;
+        return ProjectStatus.IN_PROGRESS;
+    }
+    public Integer calculateProgress() {
+        LocalDate today = LocalDate.now();
+        if (today.isBefore(this.startDate)) return 0;
+        if (today.isAfter(this.endDate)) return 100;
+
+        long totalDuration = ChronoUnit.DAYS.between(startDate, endDate) + 1;
+        long elapsedDuration = ChronoUnit.DAYS.between(startDate, today) + 1;
+        return (int) (((double) elapsedDuration/totalDuration) * 100);
     }
 }
