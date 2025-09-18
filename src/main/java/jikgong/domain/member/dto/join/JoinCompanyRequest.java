@@ -58,5 +58,5 @@ public class JoinCompanyRequest {
     @NotBlank
     private String manager; // 담당자 이름
     @Schema(description = "문의 내용", example = "직공 서비스에 가입하고 싶습니다.")
-    private String requestContent; // 문의 내용
+    private String inquiry; // 문의 내용
 }

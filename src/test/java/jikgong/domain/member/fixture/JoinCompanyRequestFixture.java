@@ -19,7 +19,7 @@ public class JoinCompanyRequestFixture {
             .companyName("삼성")
             .email("jaeyoung@naver.com")
             .manager("이재용")
-            .requestContent("직공 서비스에 가입하고 싶습니다.")
+            .inquiry("직공 서비스에 가입하고 싶습니다.")
             .build();
     }
 
@@ -51,7 +51,7 @@ public class JoinCompanyRequestFixture {
             .companyName(companyName)
             .email(email)
             .manager(manager)
-            .requestContent(requestContent)
+            .inquiry(requestContent)
             .build();
     }
 }

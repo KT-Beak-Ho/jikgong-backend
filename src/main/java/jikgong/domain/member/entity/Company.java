@@ -19,18 +19,18 @@ public class Company {
     private String companyName; // 회사 명
     private String manager; // 담당자 이름
     @Column(columnDefinition = "TEXT")
-    private String requestContent; // 문의 내용
+    private String inquiry; // 문의 내용
 
     private CompanyNotificationInfo companyNotificationInfo; // 기업 알림 정보
 
     @Builder
     public Company(String businessNumber, String region,
-        String companyName, String manager, String requestContent, Boolean isNotification) {
+                   String companyName, String manager, String inquiry, Boolean isNotification) {
         this.businessNumber = businessNumber;
         this.region = region;
         this.companyName = companyName;
         this.manager = manager;
-        this.requestContent = requestContent;
+        this.inquiry = inquiry;
 
         this.companyNotificationInfo = new CompanyNotificationInfo(isNotification);
     }
@@ -41,7 +41,7 @@ public class Company {
             .region(request.getRegion())
             .companyName(request.getCompanyName())
             .manager(request.getManager())
-            .requestContent(request.getRequestContent())
+            .inquiry(request.getInquiry())
             .isNotification(request.getIsNotification())
             .build();
     }
