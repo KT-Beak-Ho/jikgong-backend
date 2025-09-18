@@ -178,15 +178,13 @@ public class InitDB {
                 .password("abcdefg1")
                 .phone(phone)
                 .role(role)
-                .privacyConsent(true)
                 .deviceToken("deviceToken")
-                .isNotification(true)
                 .businessNumber("0000000")
                 .region("서울")
                 .companyName("삼성")
                 .email("jaeyoung@naver.com")
                 .manager("이재용")
-                .requestContent("직공 서비스에 가입하고 싶습니다.")
+                .inquiry("직공 서비스에 가입하고 싶습니다.")
                 .build();
         }
 

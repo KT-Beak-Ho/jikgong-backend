@@ -25,14 +25,14 @@ public class Company {
 
     @Builder
     public Company(String businessNumber, String region,
-                   String companyName, String manager, String inquiry, Boolean isNotification) {
+                   String companyName, String manager, String inquiry) {
         this.businessNumber = businessNumber;
         this.region = region;
         this.companyName = companyName;
         this.manager = manager;
         this.inquiry = inquiry;
 
-        this.companyNotificationInfo = new CompanyNotificationInfo(isNotification);
+        this.companyNotificationInfo = new CompanyNotificationInfo(false);
     }
 
     public static Company createCompany(JoinCompanyRequest request) {
@@ -42,7 +42,6 @@ public class Company {
             .companyName(request.getCompanyName())
             .manager(request.getManager())
             .inquiry(request.getInquiry())
-            .isNotification(request.getIsNotification())
             .build();
     }
 

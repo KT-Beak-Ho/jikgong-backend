@@ -31,15 +31,8 @@ public class JoinCompanyRequest {
     @Schema(description = "회원 타입 [ROLE_WORKER or ROLE_COMPANY]", example = "ROLE_COMPANY")
     @NotNull
     private Role role; // 회원 타입
-    @Schema(description = "개인 정보 동의 여부", example = "true")
-    @AssertTrue
-    @NotNull
-    private Boolean privacyConsent; // 개인 정보 동의 여부
     @Schema(description = "device token", example = "token")
     private String deviceToken; // 기기 토큰
-    @Schema(description = "알림 수신 여부", example = "true")
-    @NotNull
-    private Boolean isNotification; // 알림 수신 여부
 
     // 회사 정보
     @Schema(description = "사업자 번호", example = "00000000")

@@ -119,7 +119,7 @@ public class Member extends BaseEntity {
             .password(encodedPassword)
             .phone(request.getPhone())
             .email(request.getEmail())
-            .privacyConsent((request.getPrivacyConsent()))
+            .privacyConsent(true)
             .role(request.getRole())
             .deviceToken(request.getDeviceToken())
             .companyInfo(company)
