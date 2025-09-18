@@ -3,15 +3,11 @@ package jikgong.domain.member.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jikgong.domain.member.dto.join.JoinCompanyRequest;
-import jikgong.domain.member.dto.join.JoinWorkerRequest;
-import jikgong.domain.member.dto.join.ValidationLoginIdRequest;
-import jikgong.domain.member.dto.join.ValidationPhoneRequest;
-import jikgong.domain.member.dto.join.VerificationAccountRequest;
-import jikgong.domain.member.dto.join.VerificationAccountResponse;
-import jikgong.domain.member.dto.join.VerificationSmsRequest;
-import jikgong.domain.member.dto.join.VerificationSmsResponse;
+import jikgong.domain.member.dto.join.*;
+import jikgong.domain.member.dto.login.LoginRequest;
+import jikgong.domain.member.dto.login.LoginResponse;
 import jikgong.domain.member.service.JoinService;
+import jikgong.domain.member.service.LoginService;
 import jikgong.global.common.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class JoinController {
 
     private final JoinService joinService;
+    private final LoginService loginService;
 
     @Operation(summary = "노동자")
     @PostMapping(value = "/api/join/worker/join", consumes = {"multipart/form-data"})
@@ -49,7 +46,9 @@ public class JoinController {
         @RequestPart(name = "request") @Valid JoinCompanyRequest request,
         @RequestPart(name = "signatureImage", required = false) MultipartFile signatureImage) {
         Long savedMemberId = joinService.joinCompanyMember(request, signatureImage);
-        return ResponseEntity.ok(new Response("사업자 회원 가입 완료"));
+        LoginResponse loginResponse = loginService.login(new LoginRequest(
+                request.getLoginId(), request.getPassword(), request.getDeviceToken()));
+        return ResponseEntity.ok(new Response(JoinCompanyResponse.from(savedMemberId, loginResponse),"사업자 회원 가입 완료"));
     }
 
     @Operation(summary = "아이디 중복 체크")
