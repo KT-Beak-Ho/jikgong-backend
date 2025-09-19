@@ -109,28 +109,27 @@ public class ProjectService {
      * 기업 검색 시 기업의 프로젝트 상세 조회
      */
     @Transactional(readOnly = true)
-    public ProjectDetailResponse getProjectDetailForSearch(Long projectId) {
+    public ProjectDetailForSearchResponse getProjectDetailForSearch(Long projectId) {
         Project project = projectRepository.findById(projectId)
             .orElseThrow(() -> new JikgongException(ErrorCode.PROJECT_NOT_FOUND));
 
         // 프로젝트에 해당하는 workDate 조회
         List<WorkDate> workDateList = workDateRepository.findByProject(project.getId());
 
-        return ProjectDetailResponse.from(project, workDateList);
+        return ProjectDetailForSearchResponse.from(project, workDateList);
     }
 
-    /**
-     * 프로젝트 수정에 필요한 정보 반환
-     */
     @Transactional(readOnly = true)
-    public ProjectInfoResponse findProjectInfo(Long companyId, Long projectId) {
+    public ProjectDetailResponse findProjectDetail(Long companyId, Long projectId) {
         Member company = memberRepository.findById(companyId)
             .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
         Project project = projectRepository.findById(projectId)
             .orElseThrow(() -> new JikgongException(ErrorCode.PROJECT_NOT_FOUND));
 
-        return ProjectInfoResponse.from(project);
+
+        JobStatisticsByProject jobStatistics = workDateRepository.calculateJobStatisticsByProjectId(projectId);
+        return ProjectDetailResponse.from(project, jobStatistics);
     }
 
     public void deleteProject(Long companyId, Long projectId) {

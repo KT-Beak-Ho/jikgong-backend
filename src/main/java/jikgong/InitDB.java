@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import jikgong.domain.common.Address;
 import jikgong.domain.jobpost.dto.company.JobPostSaveRequest;
 import jikgong.domain.jobpost.entity.jobpost.Park;
 import jikgong.domain.jobpost.service.JobPostCompanyService;
@@ -110,9 +112,7 @@ public class InitDB {
                 .projectName("사하구 낙동5블럭 낙동강 온도 측정 센터 신축공사")
                 .startDate(LocalDate.of(2025, 9, 5))
                 .endDate(LocalDate.of(2025, 12, 29))
-                .address("부산광역시 사하구 낙동대로 550번길 37")
-                .latitude(35.116777388697734F)
-                .longitude(128.9685393114043F)
+                .location(new Address("부산광역시 사하구 낙동대로 550번길 37",35.116777388697734F,128.9685393114043F))
                 .build();
         }
 

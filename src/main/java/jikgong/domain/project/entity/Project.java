@@ -39,6 +39,7 @@ public class Project extends BaseEntity {
     private String projectName; // 프로젝트 명
     private LocalDate startDate; // 착공일
     private LocalDate endDate; // 준공일
+    private String description; // 프로젝트 설명
     @Embedded
     private Address address;
 
@@ -49,11 +50,12 @@ public class Project extends BaseEntity {
     private Member member;
 
     @Builder
-    public Project(String projectName, LocalDate startDate, LocalDate endDate, Address address, Member member) {
+    public Project(String projectName, LocalDate startDate, LocalDate endDate, Address address, String description, Member member) {
         this.projectName = projectName;
         this.startDate = startDate;
         this.endDate = endDate;
         this.address = address;
+        this.description = description;
         this.member = member;
     }
 
@@ -62,7 +64,8 @@ public class Project extends BaseEntity {
             .projectName(request.getProjectName())
             .startDate(request.getStartDate())
             .endDate(request.getEndDate())
-            .address(new Address(request.getAddress(), request.getLatitude(), request.getLongitude()))
+            .address(request.getLocation())
+            .description(request.getDescription())
             .member(member)
             .build();
     }

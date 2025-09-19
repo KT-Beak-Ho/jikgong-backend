@@ -39,8 +39,17 @@ public class ProjectController {
     @PostMapping("/api/project")
     public ResponseEntity<Response> saveProject(@AuthenticationPrincipal PrincipalDetails principalDetails,
         @RequestBody ProjectSaveRequest request) {
-        Long projectId = projectService.saveProject(principalDetails.getMember().getId(), request);
-        return ResponseEntity.ok(new Response("프로젝트 생성 완료"));
+        Long companyId = principalDetails.getMember().getId();
+
+        Long projectId = projectService.saveProject(companyId, request);
+
+        ProjectDetailResponse projectDetailResponse = projectService.findProjectDetail(companyId, projectId);
+
+        ProjectSaveResponse projectSaveResponse = ProjectSaveResponse.builder()
+                .projectId(projectId)
+                .project(projectDetailResponse)
+                .build();
+        return ResponseEntity.ok(new Response(projectSaveResponse, "프로젝트 생성 완료"));
     }
 
     @Operation(summary = "프로젝트 리스트 조회")
@@ -57,13 +66,13 @@ public class ProjectController {
             new Response(projectListResponse, "프로젝트 중 " + projectStatus.getDescription() + " 프로젝트 조회"));
     }
 
-    @Operation(summary = "프로젝트 상세 조회", description = "수정 시 정보 조회에 사용")
+    @Operation(summary = "프로젝트 상세 조회")
     @GetMapping("/api/project/{projectId}")
-    public ResponseEntity<Response> findProjectDetail(@AuthenticationPrincipal PrincipalDetails principalDetails,
+    public ResponseEntity<Response> getProjectDetail(@AuthenticationPrincipal PrincipalDetails principalDetails,
         @PathVariable("projectId") Long projectId) {
-        ProjectInfoResponse projectInfoResponse = projectService.findProjectInfo(principalDetails.getMember().getId(),
+        ProjectDetailResponse projectDetailResponse = projectService.findProjectDetail(principalDetails.getMember().getId(),
             projectId);
-        return ResponseEntity.ok(new Response(projectInfoResponse, "프로젝트 상세 조회"));
+        return ResponseEntity.ok(new Response(projectDetailResponse, "프로젝트 상세 조회"));
     }
 
     @Operation(summary = "프로젝트 수정")
@@ -84,8 +93,8 @@ public class ProjectController {
     @Operation(summary = "기업 검색: 프로젝트 상세 정보", description = "현장정보, 건설 시공정보, 현장에 등록된 일자리 조회")
     @GetMapping("/api/project/search/{projectId}")
     public ResponseEntity<Response> getProjectDetailForSearch(@PathVariable(name = "projectId") Long projectId) {
-        ProjectDetailResponse projectDetailResponse = projectService.getProjectDetailForSearch(projectId);
-        return ResponseEntity.ok(new Response(projectDetailResponse, "기업이 등록한 프로젝트 상세 조회 완료"));
+        ProjectDetailForSearchResponse projectDetailForSearchResponse = projectService.getProjectDetailForSearch(projectId);
+        return ResponseEntity.ok(new Response(projectDetailForSearchResponse, "기업이 등록한 프로젝트 상세 조회 완료"));
     }
 
     @Operation(summary = "프로젝트 삭제", description = "관련된 모집 공고가 전부 삭제된 후 삭제 가능")
