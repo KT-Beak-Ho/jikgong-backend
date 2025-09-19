@@ -76,11 +76,16 @@ public class ProjectController {
     }
 
     @Operation(summary = "프로젝트 수정")
-    @PutMapping("/api/project")
+    @PutMapping("/api/project/{projectId}")
     public ResponseEntity<Response> updateProject(@AuthenticationPrincipal PrincipalDetails principalDetails,
-        @RequestBody ProjectUpdateRequest request) {
-        projectService.updateProject(principalDetails.getMember().getId(), request);
-        return ResponseEntity.ok(new Response("프로젝트 조회"));
+        @PathVariable("projectId") Long projectId, @RequestBody ProjectUpdateRequest request) {
+        Long companyId = principalDetails.getMember().getId();
+
+        projectService.updateProject(companyId, projectId, request);
+
+        ProjectDetailResponse project = projectService.findProjectDetail(companyId, projectId);
+
+        return ResponseEntity.ok(new Response(project, "프로젝트 조회"));
     }
 
     @Operation(summary = "기업 검색: 프로젝트 리스트 조회")

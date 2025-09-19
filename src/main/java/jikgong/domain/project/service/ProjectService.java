@@ -79,11 +79,12 @@ public class ProjectService {
     /**
      * 프로젝트 수정
      */
-    public void updateProject(Long companyId, ProjectUpdateRequest request) {
+    @Transactional
+    public void updateProject(Long companyId, Long projectId, ProjectUpdateRequest request) {
         Member company = memberRepository.findById(companyId)
             .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Project project = projectRepository.findByIdAndMember(company.getId(), request.getProjectId())
+        Project project = projectRepository.findByIdAndMember(company.getId(), projectId)
             .orElseThrow(() -> new JikgongException(ErrorCode.PROJECT_NOT_FOUND));
 
         project.updateProject(request);

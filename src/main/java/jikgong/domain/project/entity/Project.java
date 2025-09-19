@@ -71,10 +71,11 @@ public class Project extends BaseEntity {
     }
 
     public void updateProject(ProjectUpdateRequest request) {
-        this.projectName = request.getName();
+        this.projectName = request.getTitle();
         this.startDate = request.getStartDate();
         this.endDate = request.getEndDate();
-        this.address = new Address(request.getAddress(), request.getLatitude(), request.getLongitude());
+        this.address = request.getLocation();
+        this.description = request.getDescription();
     }
 
     public ProjectStatus calculateStatus() {
