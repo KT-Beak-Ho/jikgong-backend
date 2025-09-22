@@ -62,8 +62,14 @@ public class ProjectController {
 
         ProjectListResponse projectListResponse = projectService.findProjects(
             principalDetails.getMember().getId(), projectStatus, pageable);
-        return ResponseEntity.ok(
-            new Response(projectListResponse, "프로젝트 중 " + projectStatus.getDescription() + " 프로젝트 조회"));
+
+        if(projectStatus == null) {
+            return ResponseEntity.ok(new Response(projectListResponse, "모든 프로젝트 조회"));
+
+        }
+        else {
+            return ResponseEntity.ok(new Response(projectListResponse, projectStatus.getDescription() + " 프로젝트 조회"));
+        }
     }
 
     @Operation(summary = "프로젝트 상세 조회")
