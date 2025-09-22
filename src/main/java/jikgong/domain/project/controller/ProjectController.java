@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "[공통] 프로젝트")
+@Tag(name = "[사업자] 프로젝트")
 @RestController
 @RequiredArgsConstructor
 @Slf4j
