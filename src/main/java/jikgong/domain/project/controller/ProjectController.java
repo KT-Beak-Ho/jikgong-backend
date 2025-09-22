@@ -55,7 +55,7 @@ public class ProjectController {
     @Operation(summary = "프로젝트 리스트 조회")
     @GetMapping("/api/project/list")
     public ResponseEntity<Response> getProjects(@AuthenticationPrincipal PrincipalDetails principalDetails,
-        @RequestParam("projectStatus") ProjectStatus projectStatus,
+        @RequestParam(required = false, name = "projectStatus") ProjectStatus projectStatus,
         @RequestParam(name = "page", defaultValue = "0") int page,
         @RequestParam(name = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("startDate")));

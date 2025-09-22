@@ -34,6 +34,8 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     @Query("select p from Project p where p.member.id = :memberId and p.startDate > :now")
     Page<Project> findPlannedProject(@Param("memberId") Long memberId, @Param("now") LocalDate now, Pageable pageable);
 
+    @Query("select p from Prjoect p where p.member.id = :=memberId")
+    Page<Project> findProjects(@Param("memberId") Long memberId, Pageable pageable);
 
     /**
      * 기업 검색
