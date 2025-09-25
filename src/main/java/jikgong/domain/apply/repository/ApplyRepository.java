@@ -17,7 +17,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ApplyRepository extends JpaRepository<Apply, Long> {
+public interface ApplyRepository extends JpaRepository<Apply, Long>, ApplyQuerydslRepository {
 
     /**
      * 인력 관리
@@ -54,6 +54,8 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
     /**
      * 내 일자리, 지원 내역
      */
+
+
     @Query("select a from Apply a join fetch a.workDate w join fetch a.workDate.jobPost j " +
         "where a.member.id = :memberId and w.date = :date and a.status = :applyStatus")
     Optional<Apply> findApplyPerDay(@Param("memberId") Long memberId, @Param("date") LocalDate date,

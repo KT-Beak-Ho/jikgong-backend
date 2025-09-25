@@ -12,10 +12,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import jikgong.domain.apply.controller.ApplyWorkerController.ExpressiveApplyStatus;
-import jikgong.domain.apply.dto.worker.ApplyAcceptedGetResponse;
-import jikgong.domain.apply.dto.worker.ApplyDailyGetResponse;
-import jikgong.domain.apply.dto.worker.ApplyMonthlyGetResponse;
-import jikgong.domain.apply.dto.worker.ApplySaveRequest;
+import jikgong.domain.apply.dto.worker.*;
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.apply.repository.ApplyRepository;
@@ -126,6 +123,8 @@ public class ApplyWorkerService {
         return workDateList;
     }
 
+
+
     /**
      * 내 일자리
      * 확정된 내역 일별 조회
@@ -156,39 +155,29 @@ public class ApplyWorkerService {
      * 신청한 날짜: 회색으로 표시
      */
     @Transactional(readOnly = true)
-    public List<ApplyMonthlyGetResponse> findAppliesMonthly(Long workerId, LocalDate workMonth) {
+    public List<ApplyStatusGetResponse> findApplyStatus(Long workerId, ApplyStatusGetRequest request) {
         Member worker = memberRepository.findById(workerId)
-            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
-        // 한달 간의 신청 내역
-        List<Apply> applyList = applyRepository.findApplyPerMonth(worker.getId(),
-            TimeTransfer.getFirstDayOfMonth(workMonth),
-            TimeTransfer.getLastDayOfMonth(workMonth));
+        List<Apply> applyList = applyRepository.findAppliesWithWorkDate(worker.getId(), request);
 
-        // 지원 날짜와 지원 결과가 담긴 map
         Map<LocalDate, ApplyStatus> workDateMap = getWorkDateMap(applyList);
 
         return workDateMap.entrySet().stream()
-            .map(entry -> ApplyMonthlyGetResponse.from(entry.getKey(), entry.getValue()))
-            .collect(Collectors.toList());
+                .map(entry -> ApplyStatusGetResponse.from(
+                        entry.getKey(),
+                        entry.getValue()))
+                .toList();
     }
 
     // 지원 날짜와 지원 결과가 담긴 map
     private Map<LocalDate, ApplyStatus> getWorkDateMap(List<Apply> applyList) {
-        Map<LocalDate, ApplyStatus> workDateMap = new HashMap<>();
-
-        for (Apply apply : applyList) {
-            LocalDate applyDate = apply.getWorkDate().getDate();
-            ApplyStatus currentStatus = apply.getStatus();
-
-            // Map에 해당 날짜의 키가 없거나,
-            // 현재 저장된 값이 'ACCEPTED'가 아니며, 새로운 상태가 'ACCEPTED'인 경우 값을 업데이트
-            if (!workDateMap.containsKey(applyDate) ||
-                (workDateMap.get(applyDate) != ApplyStatus.ACCEPTED && currentStatus == ApplyStatus.ACCEPTED)) {
-                workDateMap.put(applyDate, currentStatus);
-            }
-        }
-        return workDateMap;
+        return applyList.stream().collect(Collectors.toMap(
+                apply -> apply.getWorkDate().getDate(), // Key: 지원 날짜
+                Apply::getStatus,                             // Value: 지원 상태
+                (existingStatus, newStatus) -> // 중복 시 병합 규칙 (ACCEPTED 우선 결합)
+                        newStatus == ApplyStatus.ACCEPTED ? newStatus : existingStatus)
+        );
     }
 
     /**
