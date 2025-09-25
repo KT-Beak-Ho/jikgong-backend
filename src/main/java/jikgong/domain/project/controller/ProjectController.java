@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "[공통] 프로젝트")
+@Tag(name = "[사업자] 프로젝트")
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -55,15 +55,21 @@ public class ProjectController {
     @Operation(summary = "프로젝트 리스트 조회")
     @GetMapping("/api/project/list")
     public ResponseEntity<Response> getProjects(@AuthenticationPrincipal PrincipalDetails principalDetails,
-        @RequestParam("projectStatus") ProjectStatus projectStatus,
+        @RequestParam(required = false, name = "projectStatus") ProjectStatus projectStatus,
         @RequestParam(name = "page", defaultValue = "0") int page,
         @RequestParam(name = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("startDate")));
 
         ProjectListResponse projectListResponse = projectService.findProjects(
             principalDetails.getMember().getId(), projectStatus, pageable);
-        return ResponseEntity.ok(
-            new Response(projectListResponse, "프로젝트 중 " + projectStatus.getDescription() + " 프로젝트 조회"));
+
+        if(projectStatus == null) {
+            return ResponseEntity.ok(new Response(projectListResponse, "모든 프로젝트 조회"));
+
+        }
+        else {
+            return ResponseEntity.ok(new Response(projectListResponse, projectStatus.getDescription() + " 프로젝트 조회"));
+        }
     }
 
     @Operation(summary = "프로젝트 상세 조회")

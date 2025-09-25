@@ -44,8 +44,8 @@ do
                 break
         fi
 
-        echo "wait 30 seconds" # 30 초간 대기
-        sleep 30
+        echo "wait 15 seconds" # 15 초간 대기
+        sleep 15
 done
 
 if [ $cnt -eq 10 ] # 10번동안 실행이 안되었으면 배포 실패, 강제 종료

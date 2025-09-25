@@ -64,7 +64,10 @@ public class ProjectService {
             projectPage = projectRepository.findInProgressProject(company.getId(), now, pageable);
         } else if (projectStatus == ProjectStatus.PLANNED) {
             projectPage = projectRepository.findPlannedProject(company.getId(), now, pageable);
+        } else {
+            projectPage = projectRepository.findProjects(company.getId(), pageable);
         }
+
         List<ProjectSummary> projectSummaries = projectPage.getContent().stream()
                 .map(this::summarizeProject)
                 .toList();
