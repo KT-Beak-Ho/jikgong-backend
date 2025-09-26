@@ -6,6 +6,7 @@ import jikgong.domain.project.dto.ProjectDetailForSearchResponse;
 import jikgong.domain.project.dto.ProjectListSearchResponse;
 import jikgong.domain.project.service.ProjectService;
 import jikgong.global.annotation.CompanyRoleRequired;
+import jikgong.global.annotation.WorkerRoleRequired;
 import jikgong.global.common.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@CompanyRoleRequired
+@WorkerRoleRequired
 public class ProjectWorkerController {
     private final ProjectService projectService;
 
