@@ -38,7 +38,7 @@ public class HistoryService {
     private final JobPostRepository jobPostRepository;
     private final WorkDateRepository workDateRepository;
 
-    public void createHistoriesByAcceptedApplies(Long companyId, List<Apply> applies) {
+    public void createHistoriesByApplies(Long companyId, List<Apply> applies) {
         Member company = memberRepository.findById(companyId)
                 .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 

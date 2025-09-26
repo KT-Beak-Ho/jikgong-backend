@@ -109,7 +109,7 @@ public class ApplyCompanyService {
             int updatedCount = updateApplyStatus(ApplyStatus.ACCEPTED, applyList);
             
             // history 생성
-            historyService.createHistoriesByAcceptedApplies(company.getId(), applyList);
+            historyService.createHistoriesByApplies(company.getId(), applyList);
             
             // 모집된 인원 갱신
             workDate.plusRegisteredNum(updatedCount);
