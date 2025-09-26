@@ -180,15 +180,16 @@ public class ApplyWorkerService {
         }
 
         // 3. 근무 기록 상태
-        historyRepository.findByWorkDate(workerId, workDate).ifPresent(history -> {
+        historyRepository.findByWorkDateForWorker(workerId, workDate).ifPresent(history -> {
             // 출근 정보
-            StatusDecisionTime workStarted = new StatusDecisionTime(
-                    history.getStartStatus().getDescription(),
-                    history.getStartStatusDecisionTime()
-            );
-            progressBuilder.workStarted(workStarted);
-            lastProgressedRef.set(workStarted);
-
+            if (history.getStartStatus() != null) {
+                StatusDecisionTime workStarted = new StatusDecisionTime(
+                        history.getStartStatus().getDescription(),
+                        history.getStartStatusDecisionTime()
+                );
+                progressBuilder.workStarted(workStarted);
+                lastProgressedRef.set(workStarted);
+            }
             // 퇴근 정보
             if (history.getEndStatus() != null) {
                 StatusDecisionTime workEnded = new StatusDecisionTime(

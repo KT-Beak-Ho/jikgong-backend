@@ -10,6 +10,7 @@ import jikgong.domain.apply.dto.company.ApplyProcessRequest;
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.apply.repository.ApplyRepository;
+import jikgong.domain.history.service.HistoryService;
 import jikgong.domain.jobpost.entity.jobpost.JobPost;
 import jikgong.domain.jobpost.repository.JobPostRepository;
 import jikgong.domain.member.entity.Member;
@@ -32,6 +33,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Transactional
 public class ApplyCompanyService {
+
+    private final HistoryService historyService;
 
     private final ApplyRepository applyRepository;
     private final MemberRepository memberRepository;
@@ -104,7 +107,10 @@ public class ApplyCompanyService {
 
             // applyStatus 갱신
             int updatedCount = updateApplyStatus(ApplyStatus.ACCEPTED, applyList);
-
+            
+            // history 생성
+            historyService.createHistoriesByAcceptedApplies(company.getId(), applyList);
+            
             // 모집된 인원 갱신
             workDate.plusRegisteredNum(updatedCount);
 

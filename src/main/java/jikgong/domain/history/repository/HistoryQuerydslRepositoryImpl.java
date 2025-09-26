@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -17,16 +18,25 @@ public class HistoryQuerydslRepositoryImpl implements HistoryQuerydslRepository 
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Optional<History> findByWorkDate(Long workerId, LocalDate date) {
+    public Optional<History> findByWorkDateForWorker(Long workerId, LocalDate date) {
         return Optional.ofNullable(queryFactory
                 .selectFrom(history)
-                .where(eqWorkerId(workerId),
+                .where(eqMemberId(workerId),
                         eqWorkDate(date))
                 .fetchOne());
     }
 
-    private BooleanExpression eqWorkerId(Long workerId) {
-        return workerId == null ? null : history.member.id.eq(workerId);
+    @Override
+    public List<History> findByWorkDateForCompany(Long companyId, LocalDate date) {
+        return queryFactory
+                .selectFrom(history)
+                .where(eqMemberId(companyId),
+                        eqWorkDate(date))
+                .fetch();
+    }
+
+    private BooleanExpression eqMemberId(Long memberId) {
+        return memberId == null ? null : history.member.id.eq(memberId);
     }
 
     private BooleanExpression eqWorkDate(LocalDate date) {

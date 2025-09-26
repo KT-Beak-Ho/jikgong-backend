@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name="[공통] 근무 기록")
+@Tag(name="[사업자] 근무 기록")
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -33,7 +33,7 @@ public class HistoryController {
     private final HistoryService historyService;
 
     @Operation(summary = "출근 / 결근 선택")
-    @PostMapping("/api/history/start")
+    @PostMapping("/api/history/company/start")
     public ResponseEntity<Response> saveHistoryAtStart(@AuthenticationPrincipal PrincipalDetails principalDetails,
         @RequestBody HistoryStartSaveRequest request) {
         int saveCount = historyService.saveHistoryAtStart(principalDetails.getMember().getId(), request);
@@ -41,15 +41,26 @@ public class HistoryController {
     }
 
     @Operation(summary = "조퇴 / 퇴근 선택")
-    @PostMapping("/api/history/finish")
+    @PostMapping("/api/history/company/finish")
     public ResponseEntity<Response> updateHistoryAtFinish(@AuthenticationPrincipal PrincipalDetails principalDetails,
         @RequestBody HistoryFinishSaveRequest request) {
         int updateCount = historyService.updateHistoryAtFinish(principalDetails.getMember().getId(), request);
         return ResponseEntity.ok(new Response("조퇴, 퇴근 결과 저장 완료"));
     }
 
+    @Operation(summary = "근무 기록 목록 조회")
+    @GetMapping("/api/history/company/{jobPostId}/{workDateId}")
+    public ResponseEntity<Response> getHistories(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                 @PathVariable("jobPostId") Long jobPostId,
+                                                 @PathVariable("workDateId") Long workDateId) {
+        Long companyId = principalDetails.getMember().getId();
+
+        List<HistoryManageResponse> response = historyService.findHistories(companyId, jobPostId, workDateId);
+        return ResponseEntity.ok(new Response(response, "근무 기록 목록 반환 완료"));
+    }
+
     @Operation(summary = "인력 관리: 출근 / 결근 조회")
-    @GetMapping("/api/history/start/{jobPostId}/{workDateId}")
+    @GetMapping("/api/history/company/start/{jobPostId}/{workDateId}")
     public ResponseEntity<Response> findHistoryAtStart(@AuthenticationPrincipal PrincipalDetails principalDetails,
         @PathVariable("jobPostId") Long jobPostId,
         @PathVariable("workDateId") Long workDateId) {
@@ -59,7 +70,7 @@ public class HistoryController {
     }
 
     @Operation(summary = "인력 관리: 퇴근 / 조퇴 조회")
-    @GetMapping("/api/history/finish/{jobPostId}/{workDateId}")
+    @GetMapping("/api/history/company/finish/{jobPostId}/{workDateId}")
     public ResponseEntity<Response> findHistoryAtFinish(@AuthenticationPrincipal PrincipalDetails principalDetails,
         @PathVariable("jobPostId") Long jobPostId,
         @PathVariable("workDateId") Long workDateId) {

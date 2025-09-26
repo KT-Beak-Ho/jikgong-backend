@@ -38,6 +38,17 @@ public class HistoryService {
     private final JobPostRepository jobPostRepository;
     private final WorkDateRepository workDateRepository;
 
+    public void createHistoriesByAcceptedApplies(Long companyId, List<Apply> applies) {
+        Member company = memberRepository.findById(companyId)
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+
+        List<History> histories = applies.stream()
+                .map(History::from)
+                .toList();
+
+        historyRepository.saveAll(histories);
+    }
+
     /**
      * 출근, 결근 여부 저장
      * 기존 출근, 결근에 대한 정보가 있다면 제거 후 저장
@@ -123,6 +134,21 @@ public class HistoryService {
         }
 
         return updateFinishWork + updateEarlyLeave;
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<HistoryManageResponse> findHistories(Long companyId, Long jobPostId, Long workDateId) {
+        Member company = memberRepository.findById(companyId)
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+        JobPost jobPost = jobPostRepository.findByIdAndMember(company.getId(), jobPostId)
+                .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
+        WorkDate workDate = workDateRepository.findByIdAndJobPost(jobPost.getId(), workDateId)
+                .orElseThrow(() -> new JikgongException(ErrorCode.WORK_DATE_NOT_FOUND));
+
+        return historyRepository.findByWorkDateForCompany(company.getId(), workDate.getDate()).stream()
+                .map(HistoryManageResponse::from)
+                .toList();
     }
 
     /**

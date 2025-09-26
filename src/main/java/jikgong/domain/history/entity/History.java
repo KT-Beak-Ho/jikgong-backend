@@ -1,9 +1,13 @@
 package jikgong.domain.history.entity;
 
 import jakarta.persistence.*;
+import jikgong.domain.apply.entity.Apply;
+import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.common.BaseEntity;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.workdate.entity.WorkDate;
+import jikgong.global.exception.ErrorCode;
+import jikgong.global.exception.JikgongException;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,6 +24,8 @@ public class History extends BaseEntity {
     @GeneratedValue
     @Column(name = "history_id")
     private Long id;
+
+    private String description; // 사업자가 직접 작성하는 메모
 
     @Enumerated(EnumType.STRING)
     private WorkStatus startStatus; // 출근, 결근
@@ -55,5 +61,16 @@ public class History extends BaseEntity {
             .member(member)
             .workDate(workDate)
             .build();
+    }
+
+    public static History from(Apply apply) {
+        if(apply.getStatus() != ApplyStatus.ACCEPTED) {
+            throw new JikgongException(ErrorCode.HISTORY_UNACCEPTED_APPLY);
+        } else {
+            return History.builder()
+                    .member(apply.getMember())
+                    .workDate(apply.getWorkDate())
+                    .build();
+        }
     }
 }

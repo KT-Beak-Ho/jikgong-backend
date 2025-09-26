@@ -88,9 +88,10 @@ public enum ErrorCode {
     /**
      * 근무 기록
      */
-    HISTORY_NOT_FOUND_APPLY(HttpStatus.NOT_FOUND, "HISTORY-001", "일자리 공고에 신청한 내역이 없습니다."),
-    HISTORY_ALREADY_EXIST(HttpStatus.CONFLICT, "HISTORY-002", "이미 동일한 출근, 결근 데이터가 있습니다."),
-    HISTORY_UPDATE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "HISTORY-003", "출,퇴근 데이터 업데이트 중 에러가 발생했습니다."),
+    HISTORY_UNACCEPTED_APPLY(HttpStatus.BAD_REQUEST, "HISTORY-001", "수락되지 않은 일자리의 근무 기록은 생성될 수 없습니다."),
+    HISTORY_NOT_FOUND_APPLY(HttpStatus.NOT_FOUND, "HISTORY-002", "일자리 공고에 신청한 내역이 없습니다."),
+    HISTORY_ALREADY_EXIST(HttpStatus.CONFLICT, "HISTORY-003", "이미 동일한 출근, 결근 데이터가 있습니다."),
+    HISTORY_UPDATE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "HISTORY-004", "출,퇴근 데이터 업데이트 중 에러가 발생했습니다."),
 
     /**
      * 이력서 (맞춤 정보)
