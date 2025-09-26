@@ -27,11 +27,11 @@ public class HistoryQuerydslRepositoryImpl implements HistoryQuerydslRepository 
     }
 
     @Override
-    public List<History> findByWorkDateForCompany(Long companyId, LocalDate date) {
+    public List<History> findByWorkDateIdForCompany(Long companyId, Long workDateId) {
         return queryFactory
                 .selectFrom(history)
                 .where(eqMemberId(companyId),
-                        eqWorkDate(date))
+                        eqWorkDateId(workDateId))
                 .fetch();
     }
 
@@ -39,7 +39,12 @@ public class HistoryQuerydslRepositoryImpl implements HistoryQuerydslRepository 
         return memberId == null ? null : history.member.id.eq(memberId);
     }
 
+    private BooleanExpression eqWorkDateId(Long workDateId) {
+        return workDateId == null ? null : history.workDate.id.eq(workDateId);
+    }
+
     private BooleanExpression eqWorkDate(LocalDate date) {
         return date == null ? null : history.workDate.date.eq(date);
     }
+
 }

@@ -146,7 +146,7 @@ public class HistoryService {
         WorkDate workDate = workDateRepository.findByIdAndJobPost(jobPost.getId(), workDateId)
                 .orElseThrow(() -> new JikgongException(ErrorCode.WORK_DATE_NOT_FOUND));
 
-        return historyRepository.findByWorkDateForCompany(company.getId(), workDate.getDate()).stream()
+        return historyRepository.findByWorkDateIdForCompany(company.getId(), workDate.getId()).stream()
                 .map(HistoryManageResponse::from)
                 .toList();
     }
