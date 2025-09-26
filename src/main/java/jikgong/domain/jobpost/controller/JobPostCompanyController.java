@@ -62,10 +62,10 @@ public class JobPostCompanyController {
         return ResponseEntity.ok(new Response("모집 공고 등록 완료"));
     }
 
-    @Operation(summary = "등록한 모집 공고 리스트 조회", description = "완료된 공고, 진행 중인 공고, 예정된 공고")
+    @Operation(summary = "등록한 모집 공고 목록 조회", description = "완료된 공고, 진행 중인 공고, 예정된 공고")
     @GetMapping("/api/job-post/company/list/{projectId}")
     public ResponseEntity<Response> findJobPosts(@AuthenticationPrincipal PrincipalDetails principalDetails,
-        @RequestParam("jobPostStatus") JobPostStatus jobPostStatus,
+        @RequestParam(required = false, value = "jobPostStatus") JobPostStatus jobPostStatus,
         @PathVariable("projectId") Long projectId,
         @RequestParam(name = "page", defaultValue = "0") int page,
         @RequestParam(name = "size", defaultValue = "10") int size) {
