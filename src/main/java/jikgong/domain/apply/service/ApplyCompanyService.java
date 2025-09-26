@@ -48,12 +48,21 @@ public class ApplyCompanyService {
         JobPost jobPost = jobPostRepository.findByIdAndMember(company.getId(), jobPostId)
             .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
 
-        Page<Apply> applyPage = applyRepository.findApplyForCompanyByApplyStatus(
-                company.getId(),
-                jobPost.getId(),
-                status,
-                pageable
-        );
+        Page<Apply> applyPage;
+        if(status == null) {
+            applyPage = applyRepository.findApplyForCompany(
+                    company.getId(),
+                    jobPost.getId(),
+                    pageable
+            );
+        } else {
+            applyPage = applyRepository.findApplyForCompanyByApplyStatus(
+                    company.getId(),
+                    jobPost.getId(),
+                    status,
+                    pageable
+            );
+        }
 
         List<ApplyManageResponse> applyManageResponseList = applyPage.getContent().stream()
             .map(ApplyManageResponse::from)

@@ -39,7 +39,7 @@ public class ApplyCompanyController {
                                                             @PathVariable("jobPostId") Long jobPostId,
                                                             @RequestParam(name = "page", defaultValue = "0") int page,
                                                             @RequestParam(name = "size", defaultValue = "10") int size,
-                                                            @RequestParam(required = false, name = "status", defaultValue = "PENDING") ApplyStatus status) {
+                                                            @RequestParam(required = false, name = "status") ApplyStatus status) {
         Long companyId = principalDetails.getMember().getId();
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("createdDate"))); // 페이징 처리 (먼저 요청한 순)
