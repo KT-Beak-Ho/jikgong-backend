@@ -21,22 +21,21 @@ public class HistoryQuerydslRepositoryImpl implements HistoryQuerydslRepository 
     public Optional<History> findByWorkDateForWorker(Long workerId, LocalDate date) {
         return Optional.ofNullable(queryFactory
                 .selectFrom(history)
-                .where(eqMemberId(workerId),
+                .where(eqWorkerId(workerId),
                         eqWorkDate(date))
                 .fetchOne());
     }
 
     @Override
-    public List<History> findByWorkDateIdForCompany(Long companyId, Long workDateId) {
+    public List<History> findByWorkDateId(Long workDateId) {
         return queryFactory
                 .selectFrom(history)
-                .where(eqMemberId(companyId),
-                        eqWorkDateId(workDateId))
+                .where(eqWorkDateId(workDateId))
                 .fetch();
     }
 
-    private BooleanExpression eqMemberId(Long memberId) {
-        return memberId == null ? null : history.member.id.eq(memberId);
+    private BooleanExpression eqWorkerId(Long workerId) {
+        return workerId == null ? null : history.member.id.eq(workerId);
     }
 
     private BooleanExpression eqWorkDateId(Long workDateId) {
