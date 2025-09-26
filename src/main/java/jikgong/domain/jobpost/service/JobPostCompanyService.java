@@ -111,7 +111,7 @@ public class JobPostCompanyService {
 
     /**
      * 프로젝트 별 모집 공고 조회
-     * 필터: 완료됨 | 진행 중 | 예정
+     * 필터: 전체(null) | 완료됨 | 진행 중 | 예정
      */
     @Transactional(readOnly = true)
     public List<JobPostListResponse> findJobPostsByMemberAndProject(Long companyId, JobPostStatus jobPostStatus,
@@ -131,6 +131,8 @@ public class JobPostCompanyService {
             jobPostList = jobPostRepository.findInProgressJobPostByMemberAndProject(now, project.getId(), pageable);
         } else if (jobPostStatus == JobPostStatus.PLANNED) {
             jobPostList = jobPostRepository.findPlannedJobPostByMemberAndProject(now, project.getId(), pageable);
+        } else {
+            jobPostList = jobPostRepository.findJobPostByMember(project.getId(), pageable);
         }
 
         return jobPostList.stream()

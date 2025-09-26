@@ -35,6 +35,9 @@ public interface JobPostRepository extends JpaRepository<JobPost, Long>, JobPost
     List<JobPost> findPlannedJobPostByMemberAndProject(@Param("now") LocalDate now, @Param("projectId") Long projectId,
         Pageable pageable);
 
+    @Query("select j from JobPost j where j.project.id = :projectId")
+    List<JobPost> findJobPostByMember(@Param("projectId") Long projectId, Pageable pageable);
+
 
     /**
      * 임시 저장

@@ -62,7 +62,7 @@ public class JobPostCompanyController {
         return ResponseEntity.ok(new Response("모집 공고 등록 완료"));
     }
 
-    @Operation(summary = "등록한 모집 공고 목록 조회", description = "완료된 공고, 진행 중인 공고, 예정된 공고")
+    @Operation(summary = "등록한 모집 공고 목록 조회", description = "전체, 완료된 공고, 진행 중인 공고, 예정된 공고")
     @GetMapping("/api/job-post/company/list/{projectId}")
     public ResponseEntity<Response> findJobPosts(@AuthenticationPrincipal PrincipalDetails principalDetails,
         @RequestParam(required = false, value = "jobPostStatus") JobPostStatus jobPostStatus,
@@ -79,7 +79,7 @@ public class JobPostCompanyController {
         Page<JobPostListResponse> jobPostListResponsePage = new PageImpl<>(jobPostListResponseList, pageable,
             jobPostListResponseList.size());
         return ResponseEntity.ok(
-            new Response(jobPostListResponsePage, "등록한 모집 공고 중 " + jobPostStatus.getDescription() + " 모집 공고 조회"));
+            new Response(jobPostListResponsePage, "모집 공고 목록 조회"));
     }
 
     @Operation(summary = "모집 공고 삭제", description = "이미 지난 공고일 경우 삭제, 그렇지 않은 경우 ACCEPTED된 지원자가 없어야 함")
