@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface HistoryRepository extends JpaRepository<History, Long> {
+public interface HistoryRepository extends JpaRepository<History, Long>, HistoryQuerydslRepository {
     // 기존 histroy 데이터 제거
     @Modifying
     @Query("delete from History h where h.workDate.id = :workDateId and (h.member.id in :startWorkList or h.member.id in :notWorkList)")

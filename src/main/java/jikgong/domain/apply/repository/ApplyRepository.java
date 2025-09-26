@@ -112,7 +112,7 @@ public interface ApplyRepository extends JpaRepository<Apply, Long>, ApplyQueryd
      * 받은 일자리 제안
      */
     @Query("select count(a) from Apply a where a.member.id = :memberId and a.workDate.date = :date and a.status = 'ACCEPTED'")
-    int findAcceptedApplyByWorkDate(@Param("memberId") Long memberId, @Param("date") LocalDate date);
+    int countAcceptedAppliesByWorkDate(@Param("memberId") Long memberId, @Param("date") LocalDate date);
 
     @Query("select a from Apply a where a.member.id = :memberId and a.workDate.date = :date and a.status = 'ACCEPTED'")
     List<Apply> checkAcceptedApplyForOffer(@Param("memberId") Long memberId, @Param("date") LocalDate date);

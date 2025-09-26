@@ -5,7 +5,7 @@ import static jikgong.domain.workdate.entity.QWorkDate.workDate;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import jikgong.domain.apply.dto.worker.ApplyStatusGetRequest;
+import jikgong.domain.apply.dto.worker.ApplyGetRequest;
 import jikgong.domain.apply.entity.Apply;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,14 +19,23 @@ public class ApplyQuerydslRepositoryImpl implements ApplyQuerydslRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Apply> findAppliesWithWorkDate(Long workerId, ApplyStatusGetRequest request) {
+    public List<Apply> findAppliesWithWorkDate(Long workerId, ApplyGetRequest request) {
         return queryFactory
-                .select(apply)
-                .from(apply)
+                .selectFrom(apply)
                 .join(apply.workDate, workDate).fetchJoin()
                 .where(eqWorkerId(workerId),
                         goeStartWorkDate(request.getStartWorkDate()),
                         loeEndWorkDate(request.getEndWorkDate()))
+                .fetch();
+    }
+
+    @Override
+    public List<Apply> findAppliesWithWorkDate(Long workerId, LocalDate date) {
+        return queryFactory
+                .selectFrom(apply)
+                .join(apply.workDate, workDate).fetchJoin()
+                .where(eqWorkerId(workerId),
+                        eqDate(date))
                 .fetch();
     }
 
@@ -40,5 +49,9 @@ public class ApplyQuerydslRepositoryImpl implements ApplyQuerydslRepository {
 
     private BooleanExpression loeEndWorkDate(LocalDate endDate) {
         return endDate == null ? null : apply.workDate.date.loe(endDate);
+    }
+
+    private BooleanExpression eqDate(LocalDate date) {
+        return date == null ? null : apply.workDate.date.eq(date);
     }
 }

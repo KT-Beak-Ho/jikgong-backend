@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ProfitRepository extends JpaRepository<Profit, Long> {
+public interface ProfitRepository extends JpaRepository<Profit, Long>, ProfitQuerydslRepository {
 
     /**
      * find by id and member

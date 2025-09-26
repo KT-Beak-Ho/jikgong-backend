@@ -5,28 +5,28 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-import jikgong.domain.apply.controller.ApplyWorkerController.ExpressiveApplyStatus;
 import jikgong.domain.apply.dto.worker.*;
+import jikgong.domain.apply.dto.worker.ApplyDailyGetResponse.ApplyProgress.StatusDecisionTime;
+import jikgong.domain.apply.dto.worker.ApplyDailyGetResponse.ApplyProgress;
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.apply.repository.ApplyRepository;
-import jikgong.domain.history.entity.History;
 import jikgong.domain.history.repository.HistoryRepository;
 import jikgong.domain.jobpost.entity.jobpost.JobPost;
 import jikgong.domain.jobpost.repository.JobPostRepository;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.repository.MemberRepository;
+import jikgong.domain.profit.repository.ProfitRepository;
 import jikgong.domain.workdate.entity.WorkDate;
 import jikgong.domain.workdate.repository.WorkDateRepository;
 import jikgong.global.exception.ErrorCode;
 import jikgong.global.exception.JikgongException;
-import jikgong.global.utils.TimeTransfer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -43,6 +43,7 @@ public class ApplyWorkerService {
     private final JobPostRepository jobPostRepository;
     private final WorkDateRepository workDateRepository;
     private final HistoryRepository historyRepository;
+    private final ProfitRepository profitRepository;
 
     /**
      * 일자리 지원,
@@ -123,29 +124,93 @@ public class ApplyWorkerService {
         return workDateList;
     }
 
-
-
     /**
      * 내 일자리
      * 확정된 내역 일별 조회
      */
     @Transactional(readOnly = true)
-    public ApplyAcceptedGetResponse findApplyHistoryDaily(Long workerId, LocalDate date) {
+    public List<ApplyDailyGetResponse> findAppliesDaily(Long workerId, ApplyDailyGetRequest request) {
         Member worker = memberRepository.findById(workerId)
-            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Optional<Apply> optionalApply = applyRepository.findApplyPerDay(worker.getId(), date, ApplyStatus.ACCEPTED);
+        List<Apply> applies = applyRepository.findAppliesWithWorkDate(worker.getId(), request.getDate());
 
-        // 신청 내역이 없는 경우 null 값 반환
-        if (optionalApply.isPresent()) {
-            return null;
+        Optional<Apply> acceptedApply = applies.stream()
+                .filter(apply -> apply.getStatus() == ApplyStatus.ACCEPTED)
+                .findFirst();
+
+        if (acceptedApply.isPresent()) {
+            return acceptedApply.stream()
+                    .map(apply -> ApplyDailyGetResponse.from(
+                            apply,
+                            getApplyProgress(workerId, apply)))
+                    .toList();
+        } else {
+            return applies.stream()
+                    .map(apply -> ApplyDailyGetResponse.from(
+                            apply,
+                            null))
+                    .toList();
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public ApplyProgress getApplyProgress(Long workerId, Apply apply) {
+        LocalDate workDate = apply.getWorkDate().getDate();
+        ApplyProgress.ApplyProgressBuilder progressBuilder = ApplyProgress.builder();
+        final AtomicReference<StatusDecisionTime> lastProgressedRef = new AtomicReference<>();
+
+        // 1. 신청 생성 상태
+        StatusDecisionTime created = new StatusDecisionTime(
+                apply.getIsOffer() ? ApplyStatus.OFFERED.getDescription()
+                        : ApplyStatus.APPLIED.getDescription(),
+                apply.getCreatedDate()
+        );
+        progressBuilder.created(created);
+        lastProgressedRef.set(created);
+
+        // 2. 결과 확정 상태
+        if (apply.getStatusDecisionTime() != null) {
+            StatusDecisionTime decided = new StatusDecisionTime(
+                    apply.getStatus().getDescription(),
+                    apply.getStatusDecisionTime()
+            );
+            progressBuilder.decided(decided);
+            lastProgressedRef.set(decided);
         }
 
-        // 확정된 일자리의 출퇴근 기록
-        Apply apply = optionalApply.get();
-        Optional<History> history = historyRepository.findByMemberAndApply(worker.getId(), apply.getWorkDate().getId());
+        // 3. 근무 기록 상태
+        historyRepository.findByWorkDate(workerId, workDate).ifPresent(history -> {
+            // 출근 정보
+            StatusDecisionTime workStarted = new StatusDecisionTime(
+                    history.getStartStatus().getDescription(),
+                    history.getStartStatusDecisionTime()
+            );
+            progressBuilder.workStarted(workStarted);
+            lastProgressedRef.set(workStarted);
 
-        return ApplyAcceptedGetResponse.from(apply, history);
+            // 퇴근 정보
+            if (history.getEndStatus() != null) {
+                StatusDecisionTime workEnded = new StatusDecisionTime(
+                        history.getEndStatus().getDescription(),
+                        history.getEndStatusDecisionTime()
+                );
+                progressBuilder.workEnded(workEnded);
+                lastProgressedRef.set(workEnded);
+            }
+        });
+
+        // 4. 근무 정산 상태
+        profitRepository.findByWorkDate(workerId, workDate).ifPresent(profit -> {
+            StatusDecisionTime paid = new StatusDecisionTime(
+                    profit.getProfitType().getDescription(),
+                    profit.getDate().atStartOfDay()
+            );
+            progressBuilder.paid(paid);
+            lastProgressedRef.set(paid);
+        });
+
+        return progressBuilder.lastProgressed(lastProgressedRef.get()).build();
     }
 
     /**
@@ -155,7 +220,7 @@ public class ApplyWorkerService {
      * 신청한 날짜: 회색으로 표시
      */
     @Transactional(readOnly = true)
-    public List<ApplyStatusGetResponse> findApplyStatus(Long workerId, ApplyStatusGetRequest request) {
+    public List<ApplyStatusGetResponse> findApplyStatus(Long workerId, ApplyGetRequest request) {
         Member worker = memberRepository.findById(workerId)
                 .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
 
@@ -178,25 +243,6 @@ public class ApplyWorkerService {
                 (existingStatus, newStatus) -> // 중복 시 병합 규칙 (ACCEPTED 우선 결합)
                         newStatus == ApplyStatus.ACCEPTED ? newStatus : existingStatus)
         );
-    }
-
-    /**
-     * 신청 내역 조회 (확정/ 진행중/ 마감)
-     */
-    @Transactional(readOnly = true)
-    public List<ApplyDailyGetResponse> findAppliesDailyByStatus(Long workerId, LocalDate date, ExpressiveApplyStatus status) {
-        Member worker = memberRepository.findById(workerId)
-            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
-
-        List<ApplyStatus> statusList = switch (status) {
-            case ACCEPTED -> List.of(ApplyStatus.ACCEPTED);
-            case PROCESSING -> List.of(ApplyStatus.PENDING, ApplyStatus.OFFERED);
-            case CLOSED -> List.of(ApplyStatus.REJECTED, ApplyStatus.CANCELED);
-        };
-
-        return applyRepository.findAppliesByDateAndStatusList(worker.getId(), date, statusList).stream()
-                .map(ApplyDailyGetResponse::from)
-                .toList();
     }
 
     /**

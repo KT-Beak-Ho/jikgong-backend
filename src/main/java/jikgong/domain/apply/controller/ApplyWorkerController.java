@@ -32,17 +32,6 @@ public class ApplyWorkerController {
 
     private final ApplyWorkerService applyWorkerService;
 
-    public enum ExpressiveApplyStatus {
-        ACCEPTED("확정"),
-        PROCESSING("진행중"),
-        CLOSED("마감");
-
-        private final String description;
-        ExpressiveApplyStatus(String description) {
-            this.description = description;
-        }
-    }
-
     @Operation(summary = "신규 일자리 신청 생성")
     @PostMapping("/api/apply/worker")
     public ResponseEntity<Response> saveApply(@AuthenticationPrincipal PrincipalDetails principalDetails,
@@ -51,10 +40,10 @@ public class ApplyWorkerController {
         return ResponseEntity.ok(new Response("일자리 신청 완료"));
     }
 
-    @Operation(summary = "일자리 신청 상태 조회", description = "신청 내역의 상태 정보를 날짜와 함께 반환함. **모든 파라미터가 없어도 정상 동작**함.")
+    @Operation(summary = "상태 정보 조회", description = "신청 내역의 상태 정보를 날짜와 함께 반환함. **모든 파라미터가 없어도 정상 동작**함.")
     @GetMapping("/api/apply/worker/status")
     public ResponseEntity<Response> getApplyStatus(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                   ApplyStatusGetRequest request) {
+                                                   ApplyGetRequest request) {
         List<ApplyStatusGetResponse> applyStatusGetResponseList = applyWorkerService.findApplyStatus(
                 principalDetails.getMember().getId(),
                 request);
@@ -62,49 +51,29 @@ public class ApplyWorkerController {
         return ResponseEntity.ok(new Response(applyStatusGetResponseList, "일자리 신청 내역 상태 조회 완료"));
     }
 
-    @Operation(summary = "일자리 신청 상태 월별 조회", description = "신청 내역 확정 화면의 달력 동그라미 표시할 날짜 반환  \n workMonth: 2024-01-01  << 이렇게 주면 년,월만 추출 예정")
+    @Operation(summary = "상태 정보 월별 조회", description = "신청 내역 확정 화면의 달력 동그라미 표시할 날짜 반환  \n workMonth: 2024-01-01  << 이렇게 주면 년,월만 추출 예정")
     @GetMapping("/api/apply/worker/status/monthly")
     public ResponseEntity<Response> getApplyStatusMonthly(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                      @RequestParam("workMonth") LocalDate workMonth) {
-        ApplyStatusGetRequest request = ApplyStatusGetRequest.builder()
+                                                          @RequestParam("workMonth") LocalDate workMonth) {
+        ApplyGetRequest request = ApplyGetRequest.builder()
                 .startWorkDate(TimeTransfer.getFirstDayOfMonth(workMonth))
                 .endWorkDate(TimeTransfer.getLastDayOfMonth(workMonth))
                 .build();
 
         List<ApplyStatusGetResponse> applyStatusGetResponseList = applyWorkerService.findApplyStatus(
-            principalDetails.getMember().getId(), request);
+                principalDetails.getMember().getId(), request);
         return ResponseEntity.ok(new Response(applyStatusGetResponseList, "일자리 신청 내역 상태 조회 완료"));
     }
 
-    @Operation(summary = "일자리 신청 내역 일별 조회 - 확정", description = "workDate: 2024-01-01")
-    @GetMapping("/api/apply/worker/accepted")
-    public ResponseEntity<Response> getApplyAccepted(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                     @RequestParam("date") LocalDate date) {
-        ApplyAcceptedGetResponse applyAcceptedGetResponse = applyWorkerService.findApplyHistoryDaily(
-                principalDetails.getMember().getId(), date);
-        return ResponseEntity.ok(new Response(applyAcceptedGetResponse, "일자리 신청 내역 조회 완료"));
-    }
+    @Operation(summary = "일별 조회")
+    @GetMapping("/api/apply/worker/daily")
+    public ResponseEntity<Response> getAppliesDaily(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                               ApplyDailyGetRequest request) {
 
-    @Operation(summary = "일자리 신청 내역 일별 조회 - 진행중")
-    @GetMapping("/api/apply/worker/pending")
-    public ResponseEntity<Response> getAppliesPending(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                      @RequestParam LocalDate date) {
-        List<ApplyDailyGetResponse> applyDailyGetResponseList = applyWorkerService.findAppliesDailyByStatus(
+        List<ApplyDailyGetResponse> response = applyWorkerService.findAppliesDaily(
                 principalDetails.getMember().getId(),
-                date,
-                ExpressiveApplyStatus.PROCESSING);
-        return ResponseEntity.ok(new Response(applyDailyGetResponseList, "일자리 신청 내역 조회 완료"));
-    }
-
-    @Operation(summary = "일자리 신청 내역 일별 조회 - 마감")
-    @GetMapping("/api/apply/worker/closed")
-    public ResponseEntity<Response> getAppliesClosed(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                     @RequestParam LocalDate date) {
-        List<ApplyDailyGetResponse> applyDailyGetResponseList = applyWorkerService.findAppliesDailyByStatus(
-                principalDetails.getMember().getId(),
-                date,
-                ExpressiveApplyStatus.CLOSED);
-        return ResponseEntity.ok(new Response(applyDailyGetResponseList, "일자리 신청 내역 조회 완료"));
+                request);
+        return ResponseEntity.ok(new Response(response, "일자리 신청 내역 조회 완료"));
     }
 
     @Operation(summary = "일자리 신청 취소", description = "지원 status가 수락됨, 대기중 일때만 가능")

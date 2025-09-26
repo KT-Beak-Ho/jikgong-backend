@@ -121,7 +121,7 @@ public class OfferWorkerService {
         }
 
         // 수락 하려는 날짜에 출역 날짜가 확정된 기록이 있는지 체크
-        if (applyRepository.findAcceptedApplyByWorkDate(worker.getId(), workDate.getDate()) != 0) {
+        if (applyRepository.countAcceptedAppliesByWorkDate(worker.getId(), workDate.getDate()) != 0) {
             throw new JikgongException(ErrorCode.APPLY_ALREADY_ACCEPTED_IN_WORK_DATE);
         }
     }
