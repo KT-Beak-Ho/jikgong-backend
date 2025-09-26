@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Slf4j
 @CompanyRoleRequired // 권한 설정
-public class ProjectController {
+public class ProjectCompanyController {
 
     private final ProjectService projectService;
 
@@ -52,7 +52,7 @@ public class ProjectController {
         return ResponseEntity.ok(new Response(projectSaveResponse, "프로젝트 생성 완료"));
     }
 
-    @Operation(summary = "프로젝트 리스트 조회")
+    @Operation(summary = "프로젝트 목록 조회")
     @GetMapping("/api/project/list")
     public ResponseEntity<Response> getProjects(@AuthenticationPrincipal PrincipalDetails principalDetails,
         @RequestParam(required = false, name = "projectStatus") ProjectStatus projectStatus,
@@ -64,7 +64,7 @@ public class ProjectController {
             principalDetails.getMember().getId(), projectStatus, pageable);
 
         if(projectStatus == null) {
-            return ResponseEntity.ok(new Response(projectListResponse, "모든 프로젝트 조회"));
+            return ResponseEntity.ok(new Response(projectListResponse, "프로젝트 목록 조회"));
 
         }
         else {
@@ -94,19 +94,7 @@ public class ProjectController {
         return ResponseEntity.ok(new Response(project, "프로젝트 조회"));
     }
 
-    @Operation(summary = "기업 검색: 프로젝트 리스트 조회")
-    @GetMapping("/api/project/list/{companyId}")
-    public ResponseEntity<Response> findProjectsForSearch(@PathVariable(name = "companyId") Long companyId) {
-        List<ProjectListSearchResponse> projectListSearchResponse = projectService.findProjectsForSearch(companyId);
-        return ResponseEntity.ok(new Response(projectListSearchResponse, "기업이 등록한 프로젝트 조회 완료"));
-    }
 
-    @Operation(summary = "기업 검색: 프로젝트 상세 정보", description = "현장정보, 건설 시공정보, 현장에 등록된 일자리 조회")
-    @GetMapping("/api/project/search/{projectId}")
-    public ResponseEntity<Response> getProjectDetailForSearch(@PathVariable(name = "projectId") Long projectId) {
-        ProjectDetailForSearchResponse projectDetailForSearchResponse = projectService.getProjectDetailForSearch(projectId);
-        return ResponseEntity.ok(new Response(projectDetailForSearchResponse, "기업이 등록한 프로젝트 상세 조회 완료"));
-    }
 
     @Operation(summary = "프로젝트 삭제", description = "관련된 모집 공고가 전부 삭제된 후 삭제 가능")
     @DeleteMapping("/api/project/{projectId}")
