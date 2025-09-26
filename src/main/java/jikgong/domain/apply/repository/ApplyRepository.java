@@ -22,10 +22,14 @@ public interface ApplyRepository extends JpaRepository<Apply, Long>, ApplyQueryd
     /**
      * 인력 관리
      */
-    @Query(value = "select a from Apply a join fetch a.member m where a.workDate.jobPost.member.id = :memberId and a.workDate.jobPost.id = :jobPostId and a.status = :status and a.workDate.id = :workDateId",
-        countQuery = "select a from Apply a where a.workDate.jobPost.member.id = :memberId and a.workDate.jobPost.id = :jobPostId and a.status = :status and a.workDate.id = :workDateId")
+    @Query(value = "select a from Apply a join fetch a.member m " +
+            "where a.workDate.jobPost.member.id = :memberId " +
+            "and a.workDate.jobPost.id = :jobPostId " +
+            "and a.status = :status",
+            countQuery = "select count(a) from Apply a " +
+                    "where a.workDate.jobPost.member.id = :memberId and a.workDate.jobPost.id = :jobPostId and a.status = :status")
     Page<Apply> findApplyForCompanyByApplyStatus(@Param("memberId") Long memberId, @Param("jobPostId") Long jobPostId,
-        @Param("workDateId") Long workDateId, @Param("status") ApplyStatus status, Pageable pageable);
+                                                 @Param("status") ApplyStatus status, Pageable pageable);
 
     @Query("select a from Apply a join fetch a.member m where a.id in :applyIdList and a.workDate.id = :workDateId and a.workDate.jobPost.id = :jobPostId")
     List<Apply> findByIdList(@Param("applyIdList") List<Long> applyIdList, @Param("workDateId") Long workDateId,

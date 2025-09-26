@@ -163,7 +163,7 @@ public class ApplyWorkerService {
         // 1. 신청 생성 상태
         StatusDecisionTime created = new StatusDecisionTime(
                 apply.getIsOffer() ? ApplyStatus.OFFERED.getDescription()
-                        : ApplyStatus.APPLIED.getDescription(),
+                        : "신청됨",
                 apply.getCreatedDate()
         );
         progressBuilder.created(created);

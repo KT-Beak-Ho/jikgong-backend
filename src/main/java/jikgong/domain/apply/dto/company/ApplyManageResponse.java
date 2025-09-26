@@ -8,6 +8,7 @@ import jikgong.domain.history.entity.WorkStatus;
 import jikgong.domain.member.entity.Gender;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.member.entity.Nationality;
+import jikgong.domain.workdate.dto.WorkDateResponse;
 import jikgong.domain.workexperience.dto.WorkExperienceResponse;
 import jikgong.global.utils.AgeTransfer;
 import lombok.Builder;
@@ -18,16 +19,21 @@ import lombok.Getter;
 public class ApplyManageResponse {
 
     /**
-     * 인력 관리: 대기 중인 인부 조회, 확정 된 인부 조회
+     * 인력 관리: 인부 조회
      */
     private Long applyId;
-    private MemberResponse memberResponse;
+    private Boolean isOffer;
+    private WorkDateResponse workDate;
+    private MemberResponse member;
+
 
     public static ApplyManageResponse from(Apply apply) {
         return ApplyManageResponse.builder()
-            .applyId(apply.getId())
-            .memberResponse(MemberResponse.from(apply.getMember()))
-            .build();
+                .applyId(apply.getId())
+                .isOffer(apply.getIsOffer())
+                .workDate(WorkDateResponse.from(apply.getWorkDate()))
+                .member(MemberResponse.from(apply.getMember()))
+                .build();
     }
 
     @Getter

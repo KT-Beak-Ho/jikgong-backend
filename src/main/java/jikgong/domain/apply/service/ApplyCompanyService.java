@@ -42,40 +42,18 @@ public class ApplyCompanyService {
      * 인력 관리, 지원자 목록 조회
      */
     @Transactional(readOnly = true)
-    public Page<ApplyManageResponse> findPendingApplyHistoryCompany(Long companyId, Long jobPostId, Long workDateId,
-        Pageable pageable) {
+    public Page<ApplyManageResponse> findApplyHistoryCompany(Long companyId, Long jobPostId, ApplyStatus status, Pageable pageable) {
         Member company = memberRepository.findById(companyId)
             .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
         JobPost jobPost = jobPostRepository.findByIdAndMember(company.getId(), jobPostId)
             .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
-        WorkDate workDate = workDateRepository.findById(workDateId)
-            .orElseThrow(() -> new JikgongException(ErrorCode.WORK_DATE_NOT_FOUND));
 
-        Page<Apply> applyPage = applyRepository.findApplyForCompanyByApplyStatus(company.getId(), jobPost.getId(),
-            workDate.getId(), ApplyStatus.PENDING, pageable);
-
-        List<ApplyManageResponse> applyManageResponseList = applyPage.getContent().stream()
-            .map(ApplyManageResponse::from)
-            .collect(Collectors.toList());
-
-        return new PageImpl<>(applyManageResponseList, pageable, applyPage.getTotalElements());
-    }
-
-    /**
-     * 인력 관리 확정 인부 조회
-     */
-    @Transactional(readOnly = true)
-    public Page<ApplyManageResponse> findAcceptedHistoryCompany(Long companyId, Long jobPostId, Long workDateId,
-        Pageable pageable) {
-        Member company = memberRepository.findById(companyId)
-            .orElseThrow(() -> new JikgongException(ErrorCode.MEMBER_NOT_FOUND));
-        JobPost jobPost = jobPostRepository.findByIdAndMember(company.getId(), jobPostId)
-            .orElseThrow(() -> new JikgongException(ErrorCode.JOB_POST_NOT_FOUND));
-        WorkDate workDate = workDateRepository.findById(workDateId)
-            .orElseThrow(() -> new JikgongException(ErrorCode.WORK_DATE_NOT_FOUND));
-
-        Page<Apply> applyPage = applyRepository.findApplyForCompanyByApplyStatus(company.getId(), jobPost.getId(),
-            workDate.getId(), ApplyStatus.ACCEPTED, pageable);
+        Page<Apply> applyPage = applyRepository.findApplyForCompanyByApplyStatus(
+                company.getId(),
+                jobPost.getId(),
+                status,
+                pageable
+        );
 
         List<ApplyManageResponse> applyManageResponseList = applyPage.getContent().stream()
             .map(ApplyManageResponse::from)

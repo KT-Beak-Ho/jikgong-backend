@@ -9,8 +9,7 @@ public enum ApplyStatus {
     REJECTED("거절됨"),
     ACCEPTED("수락됨"),
     CANCELED("취소됨"),
-    OFFERED("제안됨"),
-    APPLIED("신청됨");
+    OFFERED("제안됨");
 
     private final String description;
 

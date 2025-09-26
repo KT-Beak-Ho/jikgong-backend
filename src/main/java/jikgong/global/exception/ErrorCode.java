@@ -83,6 +83,7 @@ public enum ErrorCode {
     WORK_DATE_INVALID_RANGE(HttpStatus.BAD_REQUEST, "WORKDATE-005", "모집 공고 날짜가 프로젝트 기간에 포함되지 않습니다"),
     PROJECT_NOT_FOUND(HttpStatus.NOT_FOUND, "PROJECT-001", "프로젝트 정보가 없습니다."),
     PROJECT_DELETE_FAIL(HttpStatus.CONFLICT, "PROJECT-002", "프로젝트에 등록된 모집 공고가 있을 시 삭제할 수 없습니다."),
+    PROJECT_CREATE_FAIL(HttpStatus.BAD_REQUEST, "PROJECT-003", "프로젝트의 준공일은 현재보다 과거일 수 없습니다."),
 
     /**
      * 근무 기록

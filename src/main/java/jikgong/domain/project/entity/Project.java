@@ -1,13 +1,7 @@
 package jikgong.domain.project.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -17,6 +11,8 @@ import jikgong.domain.common.BaseEntity;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.project.dto.ProjectSaveRequest;
 import jikgong.domain.project.dto.ProjectUpdateRequest;
+import jikgong.global.exception.ErrorCode;
+import jikgong.global.exception.JikgongException;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -42,6 +38,8 @@ public class Project extends BaseEntity {
     private String description; // 프로젝트 설명
     @Embedded
     private Address address;
+    @Enumerated
+    private ProjectStatus status;
 
     private LocalDateTime deletedAt; // 논리 삭제
 
@@ -57,6 +55,14 @@ public class Project extends BaseEntity {
         this.address = address;
         this.description = description;
         this.member = member;
+        LocalDate now = LocalDate.now();
+        if(now.isBefore(startDate)) {
+            this.status = ProjectStatus.PLANNED;
+        } else if(now.isAfter(endDate)){
+            throw new JikgongException(ErrorCode.PROJECT_CREATE_FAIL);
+        } else {
+            this.status = ProjectStatus.IN_PROGRESS;
+        }
     }
 
     public static Project createEntity(ProjectSaveRequest request, Member member) {
@@ -78,12 +84,17 @@ public class Project extends BaseEntity {
         this.description = request.getDescription();
     }
 
+    public void updateProjectStatus(Project project) {
+
+    }
+
     public ProjectStatus calculateStatus() {
         LocalDate today = LocalDate.now();
         if (today.isBefore(this.startDate)) return ProjectStatus.PLANNED;
         if (today.isAfter(this.endDate)) return  ProjectStatus.COMPLETED;
         return ProjectStatus.IN_PROGRESS;
     }
+
     public Integer calculateProgress() {
         LocalDate today = LocalDate.now();
         if (today.isBefore(this.startDate)) return 0;
