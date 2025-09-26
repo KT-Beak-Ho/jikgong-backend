@@ -3,6 +3,7 @@ package jikgong.domain.apply.dto.company;
 import java.util.List;
 import java.util.stream.Collectors;
 import jikgong.domain.apply.entity.Apply;
+import jikgong.domain.apply.entity.ApplyStatus;
 import jikgong.domain.history.entity.History;
 import jikgong.domain.history.entity.WorkStatus;
 import jikgong.domain.member.entity.Gender;
@@ -21,19 +22,30 @@ public class ApplyManageResponse {
     /**
      * 인력 관리: 인부 조회
      */
-    private Long applyId;
-    private Boolean isOffer;
+    private ApplyResponse apply;
     private WorkDateResponse workDate;
     private MemberResponse member;
 
-
     public static ApplyManageResponse from(Apply apply) {
         return ApplyManageResponse.builder()
-                .applyId(apply.getId())
-                .isOffer(apply.getIsOffer())
+                .apply(ApplyResponse.from(apply.getId(), apply.getStatus()))
                 .workDate(WorkDateResponse.from(apply.getWorkDate()))
                 .member(MemberResponse.from(apply.getMember()))
                 .build();
+    }
+
+    @Getter
+    @Builder
+    public static class ApplyResponse {
+        private Long applyId;
+        private ApplyStatus status;
+
+        public static ApplyResponse from(Long applyId, ApplyStatus status) {
+            return ApplyResponse.builder()
+                    .applyId(applyId)
+                    .status(status)
+                    .build();
+        }
     }
 
     @Getter
@@ -44,8 +56,8 @@ public class ApplyManageResponse {
         private String workerName; // 노동자 이름
         private String phone; // 휴대폰 번호
         private Integer age; // 나이
-        private Gender gender; // 성별
-        private Nationality nationality; // 국적
+        private String gender; // 성별
+        private String nationality; // 국적
         private Integer workTimes; // 출역 횟수
         private Float participationRate; // 참여율
         private List<WorkExperienceResponse> workExperienceResponseList; // 경력 사항
@@ -76,8 +88,8 @@ public class ApplyManageResponse {
                 .workerName(member.getWorkerInfo().getWorkerName())
                 .phone(member.getPhone())
                 .age(age)
-                .gender(member.getWorkerInfo().getGender())
-                .nationality(member.getWorkerInfo().getNationality())
+                .gender(member.getWorkerInfo().getGender().getDescription())
+                .nationality(member.getWorkerInfo().getNationality().getDescription())
                 .workTimes(workTimes)
                 .participationRate(participationRate)
                 .workExperienceResponseList(workExperienceResponseList)

@@ -10,13 +10,13 @@ import lombok.Getter;
 public class WorkExperienceResponse {
 
     private Long workExperienceId;
-    private Tech tech; // 직종
+    private String tech; // 직종
     private Integer experienceMonths; // 경력 기간 (월)
 
     public static WorkExperienceResponse from(WorkExperience workExperience) {
         return WorkExperienceResponse.builder()
             .workExperienceId(workExperience.getId())
-            .tech(workExperience.getTech())
+            .tech(workExperience.getTech().getDescription())
             .experienceMonths(workExperience.getExperienceMonths())
             .build();
     }
