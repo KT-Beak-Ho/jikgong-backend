@@ -54,7 +54,7 @@ public class LoginService {
         // device token update
         member.updateDeviceToken(request.getDeviceToken());
 
-        return new LoginResponse(accessToken, refreshToken, member.getRole());
+        return new LoginResponse(member.getId(), accessToken, refreshToken, member.getRole());
     }
 
     private boolean isPhoneNumber(String identifier) {
@@ -87,6 +87,6 @@ public class LoginService {
         String new_refresh_token = jwtTokenProvider.createRefreshToken(loginId);
         String accessToken = jwtTokenProvider.createAccessToken(loginId);
 
-        return new LoginResponse(accessToken, new_refresh_token, member.getRole());
+        return new LoginResponse(member.getId(), accessToken, new_refresh_token, member.getRole());
     }
 }
