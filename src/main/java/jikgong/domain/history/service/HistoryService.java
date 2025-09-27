@@ -83,5 +83,6 @@ public class HistoryService {
                 .orElseThrow(() -> new JikgongException(ErrorCode.HISTORY_NOT_FOUND));
 
         history.update(request);
+        historyRepository.save(history);
     }
 }

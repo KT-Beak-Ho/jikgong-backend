@@ -48,7 +48,7 @@ public class HistoryController {
     @PutMapping("/api/history/company/{historyId}")
     public ResponseEntity<Response> putHistory(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                @PathVariable(name = "historyId") Long historyId,
-                                               HistoryPutRequest request) {
+                                               @RequestBody HistoryPutRequest request) {
         Long companyId = principalDetails.getMember().getId();
         historyService.updateHistory(companyId, historyId, request);
         return ResponseEntity.ok(new Response("근무 기록 수정 완료"));
