@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface HistoryQuerydslRepository {
     Optional<History> findByWorkDateForWorker(Long workerId, LocalDate date);
     List<History> findByWorkDateId(Long workDateId);
+    Optional<History> findByIdAndCompanyId(Long historyId, Long companyId);
 }

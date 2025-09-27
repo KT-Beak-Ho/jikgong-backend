@@ -34,8 +34,27 @@ public class HistoryQuerydslRepositoryImpl implements HistoryQuerydslRepository 
                 .fetch();
     }
 
+    @Override
+    public Optional<History> findByIdAndCompanyId(Long historyId, Long companyId) {
+        return Optional.ofNullable(queryFactory
+                .selectFrom(history)
+                .join(history.workDate).fetchJoin()
+                .join(history.workDate.jobPost).fetchJoin()
+                .where(eqHistoryId(historyId),
+                        eqCompanyId(companyId))
+                .fetchOne());
+    }
+
+    private BooleanExpression eqHistoryId(Long id) {
+        return id == null ? null : history.id.eq(id);
+    }
+
     private BooleanExpression eqWorkerId(Long workerId) {
         return workerId == null ? null : history.member.id.eq(workerId);
+    }
+
+    private BooleanExpression eqCompanyId(Long companyId) {
+        return companyId == null ? null : history.workDate.jobPost.member.id.eq(companyId);
     }
 
     private BooleanExpression eqWorkDateId(Long workDateId) {
@@ -45,5 +64,4 @@ public class HistoryQuerydslRepositoryImpl implements HistoryQuerydslRepository 
     private BooleanExpression eqWorkDate(LocalDate date) {
         return date == null ? null : history.workDate.date.eq(date);
     }
-
 }
