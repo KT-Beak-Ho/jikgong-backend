@@ -1,17 +1,15 @@
 package jikgong.domain.member.service;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import jikgong.domain.common.Address;
+
 import jikgong.domain.location.entity.Location;
 import jikgong.domain.location.repository.LocationRepository;
 import jikgong.domain.member.dto.join.JoinCompanyRequest;
 import jikgong.domain.member.dto.join.JoinWorkerRequest;
-import jikgong.domain.member.dto.join.VerificationAccountRequest;
-import jikgong.domain.member.dto.join.VerificationAccountResponse;
-import jikgong.domain.member.dto.join.VerificationSmsRequest;
-import jikgong.domain.member.dto.join.VerificationSmsResponse;
+import jikgong.domain.member.dto.join.verification.JoinVerifyAccountRequest;
+import jikgong.domain.member.dto.join.verification.JoinVerifyAccountResponse;
+import jikgong.domain.member.dto.join.verification.JoinVerifySmsRequest;
+import jikgong.domain.member.dto.join.verification.JoinVerifySmsResponse;
 import jikgong.domain.member.entity.Company;
 import jikgong.domain.member.entity.ImgType;
 import jikgong.domain.member.entity.Member;
@@ -46,15 +44,17 @@ public class JoinService {
     private final SmsService smsService;
 
     /**
-     * 노동자 회원가입 위치 정보 저장
+     * 노동자 회원가입
      */
     public Long joinWorkerMember(JoinWorkerRequest request,
         MultipartFile educationCertificateImage,
         MultipartFile workerCardImage, MultipartFile signatureImage) {
         // loginId 중복 체크
-        validationLoginId(request.getLoginId());
+        validateLoginId(request.getLoginId());
         // 휴대폰 중복 체크
-        validationPhone(request.getPhone());
+        validatePhone(request.getPhone());
+        // 이메일 중복 체크
+        validateEmail(request.getEmail());
 
         // 노동자 정보
         Worker worker = Worker.createWorker(request);
@@ -105,9 +105,9 @@ public class JoinService {
      */
     public Long joinCompanyMember(JoinCompanyRequest request, MultipartFile signatureImage) {
         // loginId 중복 체크
-        validationLoginId(request.getLoginId());
+        validateLoginId(request.getLoginId());
         // 휴대폰 중복 체크
-        validationPhone(request.getPhone());
+        validatePhone(request.getPhone());
 
         // 기업 정보
         Company company = Company.createCompany(request);
@@ -129,44 +129,51 @@ public class JoinService {
     }
 
     /**
+     * 로그인 아이디 중복 체크
+     */
+    public void validateLoginId(String loginId) {
+        if(memberRepository.existsByLoginId(loginId)) {
+            throw new JikgongException(ErrorCode.MEMBER_LOGIN_ID_EXIST);
+        }
+    }
+
+    /**
      * 휴대폰 중복 체크
      */
-    public void validationPhone(String phone) {
-        Optional<Member> member = memberRepository.findByPhone(phone);
-        if (member.isPresent()) {
+    public void validatePhone(String phone) {
+        if(memberRepository.existsByPhone(phone)) {
             throw new JikgongException(ErrorCode.MEMBER_PHONE_EXIST);
         }
     }
 
     /**
-     * loginId 중복 체크
+     * 이메일 중복 체크
      */
-    public void validationLoginId(String login) {
-        Optional<Member> member = memberRepository.findByLoginId(login);
-        if (member.isPresent()) {
-            throw new JikgongException(ErrorCode.MEMBER_LOGIN_ID_EXIST);
+    public void validateEmail(String email) {
+        if(memberRepository.existsByEmail(email)) {
+            throw new JikgongException(ErrorCode.MEMBER_EMAIL_EXIST);
         }
     }
 
     /**
      * 휴대폰 인증
      */
-    public VerificationSmsResponse sendVerificationSms(VerificationSmsRequest request) {
+    public JoinVerifySmsResponse sendVerificationSms(JoinVerifySmsRequest request) {
         // 6자리 랜덤 코드 생성
         String authCode = RandomCode.createAuthCode();
         String content = "[직공]\n본인확인 인증번호: [" + authCode + "]";
         smsService.sendSms(request.getPhone(), content);
 
-        return new VerificationSmsResponse(authCode);
+        return new JoinVerifySmsResponse(authCode);
     }
 
     /**
      * 계좌 인증
      */
-    public VerificationAccountResponse verificationAccount(VerificationAccountRequest request) {
+    public JoinVerifyAccountResponse verificationAccount(JoinVerifyAccountRequest request) {
 
         // todo: 계좌 인증
 
-        return new VerificationAccountResponse("52");
+        return new JoinVerifyAccountResponse("52");
     }
 }

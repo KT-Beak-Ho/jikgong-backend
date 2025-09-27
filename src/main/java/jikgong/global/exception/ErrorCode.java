@@ -15,13 +15,14 @@ public enum ErrorCode {
     REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "MEMBER-003", "만료된 refresh token 입니다."),
     REFRESH_TOKEN_NOT_MATCH(HttpStatus.FORBIDDEN, "MEMBER-004", "유효하지 않은 refresh token 입니다. 다시 로그인하세요."),
     MEMBER_PHONE_EXIST(HttpStatus.CONFLICT, "MEMBER-005", "이미 등록된 핸드폰 번호입니다."),
-    MEMBER_INVALID_ID_OR_PASSWORD(HttpStatus.UNAUTHORIZED, "MEMBER-006", "아이디 또는 비밀번호가 올바르지 않습니다."),
-    MEMBER_LOGIN_ID_EXIST(HttpStatus.CONFLICT, "MEMBER-007", "이미 등록된 id입니다."),
-    ROLE_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER-008", "요청된 회원의 ROLE을 특정할 수 없습니다."),
-    MEMBER_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "MEMBER-009", "인증이 필요합니다."),
-    MEMBER_FORBIDDEN(HttpStatus.FORBIDDEN, "MEMBER-010", "권한이 필요합니다."),
-    MEMBER_CONSENTS_NEED_TO_AGREE(HttpStatus.FORBIDDEN, "MEMBER-011", "회원가입을 위해선 각종 내용에 동의해야합니다."),
-    MEMBER_INVALID_AUTH_CODE(HttpStatus.BAD_REQUEST, "MEMBER-012", "인증 코드가 올바르지 않습니다."),
+    MEMBER_EMAIL_EXIST(HttpStatus.CONFLICT, "MEMBER-006", "이미 등록된 이메일입니다."),
+    MEMBER_INVALID_ID_OR_PASSWORD(HttpStatus.UNAUTHORIZED, "MEMBER-007", "아이디 또는 비밀번호가 올바르지 않습니다."),
+    MEMBER_LOGIN_ID_EXIST(HttpStatus.CONFLICT, "MEMBER-008", "이미 등록된 id입니다."),
+    ROLE_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER-009", "요청된 회원의 ROLE을 특정할 수 없습니다."),
+    MEMBER_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "MEMBER-010", "인증이 필요합니다."),
+    MEMBER_FORBIDDEN(HttpStatus.FORBIDDEN, "MEMBER-011", "권한이 필요합니다."),
+    MEMBER_CONSENTS_NEED_TO_AGREE(HttpStatus.FORBIDDEN, "MEMBER-012", "회원가입을 위해선 각종 내용에 동의해야합니다."),
+    MEMBER_INVALID_AUTH_CODE(HttpStatus.BAD_REQUEST, "MEMBER-013", "인증 코드가 올바르지 않습니다."),
     MEMBER_UPDATE_WORKER_CARD_FAIL(HttpStatus.BAD_REQUEST, "MEMBER-014", "노동자 카드 정보 업데이트에 실패했습니다."),
 
     /**
@@ -88,11 +89,10 @@ public enum ErrorCode {
     /**
      * 근무 기록
      */
-    HISTORY_UNACCEPTED_APPLY(HttpStatus.BAD_REQUEST, "HISTORY-001", "수락되지 않은 일자리의 근무 기록은 생성될 수 없습니다."),
-    HISTORY_NOT_FOUND_APPLY(HttpStatus.NOT_FOUND, "HISTORY-002", "일자리 공고에 신청한 내역이 없습니다."),
-    HISTORY_ALREADY_EXIST(HttpStatus.CONFLICT, "HISTORY-003", "이미 동일한 출근, 결근 데이터가 있습니다."),
-    HISTORY_UPDATE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "HISTORY-004", "출,퇴근 데이터 업데이트 중 에러가 발생했습니다."),
-    HISTORY_NOT_FOUND(HttpStatus.NOT_FOUND, "HISTORY-005", "근무 기록 정보가 없습니다."),
+    HISTORY_NOT_FOUND_APPLY(HttpStatus.NOT_FOUND, "HISTORY-001", "일자리 공고에 신청한 내역이 없습니다."),
+    HISTORY_ALREADY_EXIST(HttpStatus.CONFLICT, "HISTORY-002", "이미 동일한 출근, 결근 데이터가 있습니다."),
+    HISTORY_UPDATE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "HISTORY-003", "근무 기록 수정 중 오류가 발생했습니다."),
+    HISTORY_NOT_FOUND(HttpStatus.NOT_FOUND, "HISTORY-004", "근무 기록 정보가 없습니다."),
 
     /**
      * 이력서 (맞춤 정보)

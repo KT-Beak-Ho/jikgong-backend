@@ -4,6 +4,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jikgong.domain.member.dto.join.*;
+import jikgong.domain.member.dto.join.validation.JoinValidateEmailRequest;
+import jikgong.domain.member.dto.join.validation.JoinValidateLoginIdRequest;
+import jikgong.domain.member.dto.join.validation.JoinValidatePhoneRequest;
+import jikgong.domain.member.dto.join.verification.JoinVerifyAccountRequest;
+import jikgong.domain.member.dto.join.verification.JoinVerifyAccountResponse;
+import jikgong.domain.member.dto.join.verification.JoinVerifySmsRequest;
+import jikgong.domain.member.dto.join.verification.JoinVerifySmsResponse;
 import jikgong.domain.member.dto.login.LoginRequest;
 import jikgong.domain.member.dto.login.LoginResponse;
 import jikgong.domain.member.service.JoinService;
@@ -53,32 +60,39 @@ public class JoinController {
 
     @Operation(summary = "아이디 중복 체크")
     @PostMapping("/api/join/validation-loginId")
-    public ResponseEntity<Response> validationPhone(@RequestBody ValidationLoginIdRequest request) {
-        joinService.validationLoginId(request.getLoginId());
-        return ResponseEntity.ok(new Response("사용 가능한 아이디 입니다."));
+    public ResponseEntity<Response> validateLoginId(@RequestBody JoinValidateLoginIdRequest request) {
+        joinService.validateLoginId(request.getLoginId());
+        return ResponseEntity.ok(new Response("사용 가능한 아이디입니다."));
     }
 
     @Operation(summary = "휴대폰 중복 체크")
     @PostMapping("/api/join/validation-phone")
-    public ResponseEntity<Response> validationPhone(@RequestBody ValidationPhoneRequest request) {
-        joinService.validationPhone(request.getPhone());
-        return ResponseEntity.ok(new Response("사용 가능한 휴대폰 입니다."));
+    public ResponseEntity<Response> validatePhone(@RequestBody JoinValidatePhoneRequest request) {
+        joinService.validatePhone(request.getPhone());
+        return ResponseEntity.ok(new Response("사용 가능한 휴대폰입니다."));
+    }
+
+    @Operation(summary = "이메일 중복 체크")
+    @PostMapping("/api/join/validation-email")
+    public ResponseEntity<Response> validateEmail(@RequestBody JoinValidateEmailRequest request) {
+        joinService.validateEmail(request.getEmail());
+        return ResponseEntity.ok(new Response("사용 가능한 이메일입니다."));
     }
 
     @Operation(summary = "휴대폰 인증", description = "문자로 인증 코드를 발송하고, 발송한 인증 코드를 반환합니다.")
     @PostMapping("/api/join/sms-verification")
     public ResponseEntity<Response> sendVerificationCode(
-        @RequestBody VerificationSmsRequest request) {
-        VerificationSmsResponse verificationSmsResponse = joinService.sendVerificationSms(request);
-        return ResponseEntity.ok(new Response(verificationSmsResponse, "6자리 인증 코드 반환"));
+        @RequestBody JoinVerifySmsRequest request) {
+        JoinVerifySmsResponse joinVerifySmsResponse = joinService.sendVerificationSms(request);
+        return ResponseEntity.ok(new Response(joinVerifySmsResponse, "6자리 인증 코드 반환"));
     }
 
     @Operation(summary = "계좌 인증")
     @PostMapping("/api/join/account-verification")
     public ResponseEntity<Response> verificationAccount(
-        @RequestBody VerificationAccountRequest request) {
-        VerificationAccountResponse verificationAccountResponse = joinService.verificationAccount(
+        @RequestBody JoinVerifyAccountRequest request) {
+        JoinVerifyAccountResponse joinVerifyAccountResponse = joinService.verificationAccount(
             request);
-        return ResponseEntity.ok(new Response(verificationAccountResponse, "2자리 인증 코드 반환"));
+        return ResponseEntity.ok(new Response(joinVerifyAccountResponse, "2자리 인증 코드 반환"));
     }
 }
