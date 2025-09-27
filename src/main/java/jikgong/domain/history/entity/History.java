@@ -3,6 +3,7 @@ package jikgong.domain.history.entity;
 import jakarta.persistence.*;
 import jikgong.domain.apply.entity.Apply;
 import jikgong.domain.common.BaseEntity;
+import jikgong.domain.history.dto.HistoryPutRequest;
 import jikgong.domain.member.entity.Member;
 import jikgong.domain.workdate.entity.WorkDate;
 import lombok.AccessLevel;
@@ -65,5 +66,19 @@ public class History extends BaseEntity {
                     .member(apply.getMember())
                     .workDate(apply.getWorkDate())
                     .build();
+    }
+
+    public void update(HistoryPutRequest request) {
+        if (request.getStartStatus() != null) {
+            this.startStatus = request.getStartStatus();
+            this.startStatusDecisionTime = request.getStartStatusDecisionTime();
+        }
+        if (request.getEndStatus() != null) {
+            this.endStatus = request.getEndStatus();
+            this.endStatusDecisionTime = request.getEndStatusDecisionTime();
+        }
+        if (request.getDescription() != null) {
+            this.description = request.getDescription();
+        }
     }
 }
