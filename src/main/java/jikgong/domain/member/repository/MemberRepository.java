@@ -18,6 +18,12 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findByPhone(String username);
 
+    /**
+     * 각 데이터에 대한 중복 검증용
+     */
+    Boolean existsByLoginId(String loginId);
+    Boolean existsByPhone(String phone);
+    Boolean existsByEmail(String email);
 
     /**
      * history service (1차 캐싱)
