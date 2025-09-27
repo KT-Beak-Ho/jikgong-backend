@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface JobPostRepository extends JpaRepository<JobPost, Long>, JobPostRepositoryCustom {
+public interface JobPostRepository extends JpaRepository<JobPost, Long>, JobPostQuerydslRepository {
 
     /**
      * find by id and member

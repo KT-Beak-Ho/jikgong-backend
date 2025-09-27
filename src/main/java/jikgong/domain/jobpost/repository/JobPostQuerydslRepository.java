@@ -10,11 +10,13 @@ import jikgong.domain.workexperience.entity.Tech;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface JobPostRepositoryCustom {
+public interface JobPostQuerydslRepository {
 
     Page<JobPost> getMainPage(Long memberId, List<Tech> techList, List<LocalDate> workDateList, Boolean scrap,
         Boolean meal, Park park, String city, String district, Location location, SortType sortType, Pageable pageable);
 
     List<JobPost> findJobPostOnMap(Long memberId, Float northEastLat, Float northEastLng, Float southWestLat,
         Float southWestLng, List<Tech> techList, List<LocalDate> dateList, Boolean scrap);
+
+    List<JobPost> findJobPostsByIds(Long workerId, List<Long> jobPostIds);
 }

@@ -2,11 +2,13 @@ package jikgong.domain.jobpost.repository;
 
 import static jikgong.domain.jobpost.entity.jobpost.QJobPost.jobPost;
 import static jikgong.domain.member.entity.QMember.member;
+import static jikgong.domain.history.entity.QHistory.history;
 
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.util.List;
@@ -23,9 +25,18 @@ import org.springframework.data.domain.Pageable;
 
 @RequiredArgsConstructor
 @Slf4j
-public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
+public class JobPostQuerydslRepositoryImpl implements JobPostQuerydslRepository {
 
     private final JPAQueryFactory queryFactory;
+
+    @Override
+    public List<JobPost> findJobPostsByIds(Long workerId, List<Long> jobPostIds) {
+        return queryFactory
+                .selectFrom(jobPost)
+                .where(inIds(jobPostIds),
+                        eqWorkerId(workerId))
+                .fetch();
+    }
 
     @Override
     public Page<JobPost> getMainPage(Long memberId, List<Tech> techList, List<LocalDate> dateList, Boolean isScrap,
@@ -151,9 +162,21 @@ public class JobPostRepositoryImpl implements JobPostRepositoryCustom {
         return district == null ? null : jobPost.jobPostAddress.district.eq(district);
     }
 
+    private BooleanExpression eqWorkerId(Long workerId) {
+        return workerId == null ? null : JPAExpressions.selectOne()
+                .from(history)
+                .where(history.member.id.eq(workerId),
+                        history.workDate.jobPost.id.eq(jobPost.id))
+                .exists();
+    }
+
     private BooleanExpression workDateAfterToday() {
         LocalDate today = LocalDate.now();
         return jobPost.workDateList.any().date.after(today);
+    }
+
+    private BooleanExpression inIds(List<Long> ids) {
+        return ids == null ? null : jobPost.id.in(ids);
     }
 
     // 동적 정렬 기준

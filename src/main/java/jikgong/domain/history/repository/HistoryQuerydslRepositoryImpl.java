@@ -1,6 +1,9 @@
 package jikgong.domain.history.repository;
 
 import static jikgong.domain.history.entity.QHistory.history;
+import static jikgong.domain.workdate.entity.QWorkDate.workDate;
+import static jikgong.domain.jobpost.entity.jobpost.QJobPost.jobPost;
+import static jikgong.domain.member.entity.QMember.member;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -38,8 +41,9 @@ public class HistoryQuerydslRepositoryImpl implements HistoryQuerydslRepository 
     public Optional<History> findByIdAndCompanyId(Long historyId, Long companyId) {
         return Optional.ofNullable(queryFactory
                 .selectFrom(history)
-                .join(history.workDate).fetchJoin()
-                .join(history.workDate.jobPost).fetchJoin()
+                .join(history.workDate, workDate).fetchJoin()
+                .join(workDate.jobPost, jobPost).fetchJoin()
+                .join(jobPost.member, member).fetchJoin()
                 .where(eqHistoryId(historyId),
                         eqCompanyId(companyId))
                 .fetchOne());
@@ -54,7 +58,7 @@ public class HistoryQuerydslRepositoryImpl implements HistoryQuerydslRepository 
     }
 
     private BooleanExpression eqCompanyId(Long companyId) {
-        return companyId == null ? null : history.workDate.jobPost.member.id.eq(companyId);
+        return companyId == null ? null : workDate.jobPost.member.id.eq(companyId);
     }
 
     private BooleanExpression eqWorkDateId(Long workDateId) {
